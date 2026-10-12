@@ -11,7 +11,7 @@ from collections.abc import Callable
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import Response
+from fastapi.responses import PlainTextResponse, Response
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -247,6 +247,20 @@ def apply(user: User = Depends(api_user), db: Session = Depends(get_db)) -> dict
         "actions": result.actions,
         "errors": result.errors,
     }
+
+
+@router.get(
+    "/metrics",
+    tags=["status"],
+    summary="Prometheus metrics",
+    response_class=PlainTextResponse,
+    responses={200: {"content": {"text/plain": {}}}},
+)
+def metrics(user: User = Depends(api_user), db: Session = Depends(get_db)) -> Response:
+    """Prometheus text format; scrape with a read-only bearer token."""
+    from phonix.services import metrics as metrics_svc
+
+    return Response(metrics_svc.collect(db), media_type=metrics_svc.CONTENT_TYPE)
 
 
 @router.get("/status", tags=["status"])

@@ -342,6 +342,39 @@ podman build --format docker -t phonix .     # or: docker build -f Containerfile
 image/test-oci.sh localhost/phonix           # smoke test: web, Asterisk, REST API, clean stop
 ```
 
+## Monitoring with Prometheus
+
+`GET /api/v1/metrics` returns metrics in the Prometheus text format. Create a read-only token under *Advanced → API tokens* and add a scrape job:
+
+```yaml
+scrape_configs:
+  - job_name: phonix
+    scheme: https
+    metrics_path: /api/v1/metrics
+    authorization:
+      credentials: phx_...            # read-only API token
+    tls_config:
+      insecure_skip_verify: true      # only while the PBX uses its self-signed certificate
+    static_configs:
+      - targets: ["pbx.example.com"]
+```
+
+The endpoint exports these metrics:
+
+- **System:** uptime, load, memory, data partition usage and network traffic.
+- **Asterisk:** whether it is up, its start time, and active calls and channels.
+- **Phones:** count per technology, and whether each enabled phone is registered (`phonix_phone_registered`).
+- **Providers:** whether each enabled provider is registered or reachable (`phonix_provider_up`).
+- **Voicemail:** messages per mailbox (`INBOX`/`Old`).
+- **Certificate:** TLS certificate expiry and the result of the last ACME request.
+- **Configuration:** pending (not applied) changes, and the number and age of backups.
+
+Example alerts:
+
+- `phonix_provider_up == 0`
+- `phonix_asterisk_up == 0`
+- `phonix_tls_certificate_expiry_seconds - time() < 14 * 86400`
+
 ## Migrating from AskoziaPBX 1.x / 2.x
 
 1. Before flashing, copy `config.xml` from the old box. Use the old web interface (*System → Backup*), or copy `conf/config.xml` from its first partition.

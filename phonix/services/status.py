@@ -166,6 +166,9 @@ def asterisk_status() -> dict[str, Any]:
         "registrations": {},
         "iax_peers": {},
         "channels": [],
+        "current_calls": 0,
+        # "YYYY-MM-DD HH:MM:SS" local time
+        "started": "",
         "error": "",
     }
     try:
@@ -173,6 +176,9 @@ def asterisk_status() -> dict[str, Any]:
             out["running"] = True
             info = client.action("CoreStatus")
             out["uptime"] = info.get("CoreStartupTime", "")
+            out["started"] = f"{info.get('CoreStartupDate', '')} {info.get('CoreStartupTime', '')}".strip()
+            calls = info.get("CoreCurrentCalls", "")
+            out["current_calls"] = int(calls) if calls.isdigit() else 0
             settings = client.action("CoreSettings")
             out["version"] = settings.get("AsteriskVersion", "")
             for ev in client.action_list("PJSIPShowEndpoints"):
