@@ -60,8 +60,13 @@ def crud(
         except ServiceError as exc:
             raise _error(exc) from None
 
+    # FastAPI needs the real schema class in the annotation (runtime value)
     @router.post(path, tags=[tag], status_code=201, summary=f"Create {tag}")
-    def create_item(body: schema, user: User = Depends(api_user), db: Session = Depends(get_db)) -> dict[str, Any]:  # type: ignore[valid-type]
+    def create_item(
+        body: schema,  # type: ignore[valid-type]
+        user: User = Depends(api_user),
+        db: Session = Depends(get_db),
+    ) -> dict[str, Any]:  # type: ignore[valid-type]
         try:
             obj = create_fn(db, parser(body.model_dump()), user.username)  # type: ignore[attr-defined]
         except ServiceError as exc:
@@ -71,8 +76,11 @@ def crud(
 
     @router.put(path + "/{item_id}", tags=[tag], summary=f"Replace {tag}")
     def update_item(
-        item_id: int, body: schema, user: User = Depends(api_user), db: Session = Depends(get_db)
-    ) -> dict[str, Any]:  # type: ignore[valid-type]
+        item_id: int,
+        body: schema,  # type: ignore[valid-type]
+        user: User = Depends(api_user),
+        db: Session = Depends(get_db),
+    ) -> dict[str, Any]:
         try:
             obj = update_fn(db, item_id, parser(body.model_dump()), user.username)  # type: ignore[attr-defined]
         except ServiceError as exc:

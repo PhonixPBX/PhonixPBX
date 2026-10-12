@@ -97,12 +97,13 @@ def voicemail_conf(snap: Snapshot) -> str:
 
 
 def manager_conf(snap: Snapshot) -> str:
-    remote = any(
-        not ipaddress.ip_network(net, strict=False).subnet_of(ipaddress.ip_network("127.0.0.0/8"))
-        for user in snap.ami_users
-        for net in user.permit
-        if ipaddress.ip_network(net, strict=False).version == 4
-    )
+    loopback = ipaddress.IPv4Network("127.0.0.0/8")
+    remote = False
+    for user in snap.ami_users:
+        for net in user.permit:
+            parsed = ipaddress.ip_network(net, strict=False)
+            if not (isinstance(parsed, ipaddress.IPv4Network) and parsed.subnet_of(loopback)):
+                remote = True
     return render(
         "asterisk/manager.conf.j2",
         bindaddr="0.0.0.0" if remote else "127.0.0.1",  # noqa: S104 - only with remote users

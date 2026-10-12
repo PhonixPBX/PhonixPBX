@@ -12,7 +12,8 @@ def _priv(path: str, content: str, component: str, mode: int = 0o644) -> Generat
 
 
 def _split_nets(nets: list[str]) -> tuple[list[str], list[str]]:
-    v4, v6 = [], []
+    v4: list[str] = []
+    v6: list[str] = []
     for net in nets:
         parsed = ipaddress.ip_network(net, strict=False)
         (v4 if parsed.version == 4 else v6).append(str(parsed))

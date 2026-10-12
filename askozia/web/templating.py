@@ -169,7 +169,7 @@ templates.env.lstrip_blocks = True
 
 def render(request: Request, name: str, ctx: dict[str, Any] | None = None, status_code: int = 200) -> Any:
     section, item = active_item(request.url.path)
-    context = {
+    context: dict[str, Any] = {
         "request": request,
         "csrf_token": csrf_token(request),
         "active_section": section,

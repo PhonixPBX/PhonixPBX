@@ -108,9 +108,9 @@ def cmd_legacy(args: argparse.Namespace) -> int:
         print(report.to_text())
         return 0 if report.ok else 1
     with _session() as session:
-        xml, report = exporter.export(session, user="cli")
+        xml, export_report = exporter.export(session, user="cli")
     Path(args.file).write_bytes(xml)
-    print(report.to_text())
+    print(export_report.to_text())
     return 0
 
 

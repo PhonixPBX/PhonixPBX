@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
+from dataclasses import dataclass
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -36,24 +38,22 @@ def _404(exc: NotFound) -> Response:
 # --- generic CRUD for the three simple object types ----------------------------------
 
 
+@dataclass(frozen=True)
 class Kind:
-    def __init__(
-        self,
-        name: str,
-        title: str,
-        schema: type[BaseModel],
-        list_fn: Any,
-        get_fn: Any,
-        create_fn: Any,
-        update_fn: Any,
-        delete_fn: Any,
-        to_dict: Any,
-        base: str,
-        list_tpl: str,
-        form_tpl: str,
-    ) -> None:
-        self.__dict__.update(locals())
-        del self.__dict__["self"]
+    """Describes one simple object type for the generic CRUD routes."""
+
+    name: str
+    title: str
+    schema: type[BaseModel]
+    list_fn: Callable[..., Any]
+    get_fn: Callable[..., Any]
+    create_fn: Callable[..., Any]
+    update_fn: Callable[..., Any]
+    delete_fn: Callable[..., Any]
+    to_dict: Callable[..., dict[str, Any]]
+    base: str
+    list_tpl: str
+    form_tpl: str
 
 
 APPS = Kind(

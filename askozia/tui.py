@@ -93,11 +93,13 @@ def reset_password() -> None:
     print("Password changed.")
 
 
-def _priv(action: str) -> None:
+def _priv(action: str) -> bool:
     try:
         privileged.run(action)
     except privileged.PrivilegedError as exc:
         print(f"Error: {exc}")
+        return False
+    return True
 
 
 MENU = [

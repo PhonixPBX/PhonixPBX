@@ -21,6 +21,7 @@ from __future__ import annotations
 from collections import OrderedDict
 from collections.abc import Iterable
 from dataclasses import dataclass
+from typing import Any
 
 from askozia.core.models import Application, CallGroup, ConferenceRoom, Phone, Provider
 from askozia.core.validation import parse_dialpattern
@@ -517,12 +518,13 @@ class DialplanBuilder:
         snap = self.snap
         resolved: list[tuple[str, object]] = []
         for kind, dest_id in dests:
-            pool: list = {
+            pools: dict[str, list[Any]] = {
                 "phone": snap.active_phones,
                 "callgroup": snap.callgroups,
                 "application": [a for a in snap.applications if a.enabled],
                 "conference": snap.rooms,
-            }[kind]
+            }
+            pool = pools[kind]
             obj = next((o for o in pool if o.id == dest_id), None)
             if obj is not None:
                 resolved.append((kind, obj))

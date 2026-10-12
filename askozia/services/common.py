@@ -107,9 +107,11 @@ def audit(
     )
 
 
-def diff_dicts(before: dict[str, Any], after: dict[str, Any], hide: set[str] | None = None) -> dict:
+def diff_dicts(
+    before: dict[str, Any], after: dict[str, Any], hide: set[str] | None = None
+) -> dict[str, dict[str, Any]]:
     hide = hide or set()
-    out = {}
+    out: dict[str, dict[str, Any]] = {}
     for key in sorted(set(before) | set(after)):
         if before.get(key) != after.get(key):
             if key in hide:
