@@ -1,0 +1,3 @@
+# console log level: notices and above (A/B update / health check messages
+# from askozia are notices; kernel info messages stay in dmesg only)
+dmesg_level=6

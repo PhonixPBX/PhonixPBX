@@ -1,0 +1,4 @@
+# SSH is off by default and switched on in the web interface
+# (System > General). Public key logins only; keys are read from
+# /data/ssh/authorized_keys (linked to /root/.ssh/authorized_keys).
+DROPBEAR_OPTS="-s -g -R"

@@ -1,0 +1,2 @@
+# /var/log is RAM backed: rotate at 1 MiB, keep 2 old files
+SYSLOGD_OPTS="-t -s 1024 -b 2"

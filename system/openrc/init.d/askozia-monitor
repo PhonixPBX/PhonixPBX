@@ -1,0 +1,29 @@
+#!/sbin/openrc-run
+# Watches Asterisk security events over AMI and bans offending addresses.
+
+description="AskoziaPBX security event monitor"
+
+[ -r /etc/conf.d/askozia ] && . /etc/conf.d/askozia
+export ASKOZIA_DATA_DIR ASKOZIA_BOOT_DIR ASKOZIA_PRIVILEGED ASKOZIA_LIBEXEC_DIR \
+	ASKOZIA_AMI_HOST ASKOZIA_AMI_PORT
+
+supervisor=supervise-daemon
+command=/usr/bin/askozia
+command_args="monitor"
+command_user="askozia:askozia"
+directory=/
+output_log=/var/log/askozia/monitor.log
+error_log=/var/log/askozia/monitor.log
+respawn_delay=10
+respawn_max=0
+
+depend() {
+	need asterisk
+	after askozia-apply nftables
+	use logger
+}
+
+start_pre() {
+	checkpath -d -m 0755 -o root:root /var/log/askozia
+	checkpath -f -m 0640 -o askozia:askozia /var/log/askozia/monitor.log
+}

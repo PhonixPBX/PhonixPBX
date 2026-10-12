@@ -1,0 +1,47 @@
+#!/bin/sh
+# Console front end (spawned by init on tty1 and the serial console):
+#   console <tty>
+# Runs the AskoziaPBX console menu (askozia tui). Booting with
+# "askozia.console=shell" on the kernel command line (needs physical access
+# to the boot loader) gives a root shell instead, for service and tests.
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+tty=${1:-tty1}
+case "$tty" in *[!A-Za-z0-9]*) exit 1 ;; esac
+dev=/dev/$tty
+
+# no such device (e.g. no serial port): stay idle instead of respawning
+if [ ! -c "$dev" ] || ! stty -F "$dev" >/dev/null 2>&1; then
+	exec sleep 2147483647
+fi
+exec <"$dev" >"$dev" 2>&1
+
+case "$tty" in
+tty[0-9]*) TERM=linux ;;
+*)
+	TERM=vt100
+	stty -F "$dev" 115200 sane 2>/dev/null
+	;;
+esac
+export TERM
+[ -r /etc/conf.d/askozia ] && . /etc/conf.d/askozia
+export ASKOZIA_DATA_DIR ASKOZIA_BOOT_DIR ASKOZIA_PRIVILEGED 2>/dev/null
+cd /
+
+for w in $(cat /proc/cmdline); do
+	if [ "$w" = askozia.console=shell ]; then
+		printf '\nAskoziaPBX service shell on %s (askozia.console=shell)\n' "$tty"
+		exec setsid -w -c /bin/sh -l
+	fi
+done
+
+started=$(cut -d. -f1 /proc/uptime)
+setsid -w -c askozia tui
+rc=$?
+now=$(cut -d. -f1 /proc/uptime)
+if [ $rc -ne 0 ] && [ $((now - started)) -lt 5 ]; then
+	# the menu is unavailable: show the banner and avoid a respawn loop
+	clear 2>/dev/null
+	askozia banner 2>/dev/null || cat /etc/issue
+	sleep 60
+fi

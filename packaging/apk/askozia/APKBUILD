@@ -1,0 +1,113 @@
+# Contributor: AskoziaPBX NG <dev@askozia.invalid>
+# Maintainer: AskoziaPBX NG <dev@askozia.invalid>
+#
+# Builds the "askozia" package from a source tarball of this repository
+# (image/lib/build-apk.sh creates askozia-$pkgver.tar.gz next to this file).
+pkgname=askozia
+pkgver=${ASKOZIA_PKGVER:-3.0.0_pre0}
+pkgrel=0
+pkgdesc="AskoziaPBX NG - Asterisk PBX appliance: web interface and system integration"
+url="https://github.com/resmo/AskoziaPBX"
+arch="noarch"
+license="GPL-2.0-or-later"
+depends="
+	python3
+	py3-fastapi
+	uvicorn
+	py3-pydantic
+	py3-sqlalchemy
+	py3-alembic
+	py3-jinja2
+	py3-argon2-cffi
+	py3-itsdangerous
+	py3-python-multipart
+	py3-babel
+	py3-defusedxml
+	py3-cryptography
+	py3-zstandard
+	py3-httpx
+	asterisk
+	asterisk-sounds-en
+	asterisk-sounds-moh
+	asterisk-srtp
+	asterisk-opus
+	asterisk-speex
+	msmtp
+	nftables
+	nftables-openrc
+	chrony
+	chrony-openrc
+	nginx
+	nginx-openrc
+	doas
+	tzdata
+	ca-certificates-bundle
+	iproute2
+	dropbear
+	dropbear-openrc
+	e2fsprogs
+	dosfstools
+	logrotate
+	openrc
+	"
+makedepends="py3-gpep517 py3-setuptools py3-wheel py3-installer"
+install="$pkgname.pre-install"
+subpackages="$pkgname-pyc"
+source="$pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$pkgver"
+# the test suite runs in CI (.github/workflows/ci.yml) against the dev image
+options="!check"
+
+build() {
+	gpep517 build-wheel \
+		--wheel-dir .dist \
+		--output-fd 3 3>&1 >&2
+}
+
+package() {
+	python3 -m installer -d "$pkgdir" .dist/*.whl
+
+	local sys="$builddir/system"
+	local pyver
+	pyver=$(python3 -c 'import sys; print(f"{sys.version_info[0]}.{sys.version_info[1]}")')
+
+	# safety net: data files missing from [tool.setuptools.package-data]
+	local site="$pkgdir/usr/lib/python$pyver/site-packages" f
+	( cd "$builddir" && find askozia -type f ! -name '*.py' ! -name '*.pyc' ! -path '*/__pycache__/*' ) |
+	while read -r f; do
+		if [ ! -e "$site/$f" ]; then
+			warning "package data missing from the wheel, copied: $f"
+			install -Dm644 "$builddir/$f" "$site/$f"
+		fi
+	done
+
+	# OpenRC services
+	local svc
+	for svc in askozia-firstboot askozia-apply askozia-web askozia-monitor askozia-healthcheck; do
+		install -Dm755 "$sys/openrc/init.d/$svc" "$pkgdir/etc/init.d/$svc"
+	done
+	install -Dm644 "$sys/openrc/conf.d/askozia" "$pkgdir/etc/conf.d/askozia"
+
+	# privileged helper and other scripts
+	install -Dm755 "$sys/libexec/priv" "$pkgdir/usr/libexec/askozia/priv"
+	install -Dm644 "$sys/libexec/bootctl.sh" "$pkgdir/usr/libexec/askozia/bootctl.sh"
+	local f
+	for f in verify-manifest notify-missed-call healthcheck-loop console; do
+		install -Dm755 "$sys/libexec/$f" "$pkgdir/usr/libexec/askozia/$f"
+	done
+	install -Dm400 "$sys/doas.d/askozia.conf" "$pkgdir/etc/doas.d/askozia.conf"
+
+	# web server, log rotation, kernel settings
+	install -Dm644 "$sys/nginx/askozia.conf" "$pkgdir/etc/nginx/http.d/askozia.conf"
+	install -Dm644 "$sys/logrotate.d/askozia" "$pkgdir/etc/logrotate.d/askozia"
+	install -Dm644 "$sys/sysctl.d/askozia.conf" "$pkgdir/etc/sysctl.d/askozia.conf"
+
+	# static web assets are served by nginx
+	mkdir -p "$pkgdir/usr/share/askozia"
+	ln -s "../../lib/python$pyver/site-packages/askozia/web/static" \
+		"$pkgdir/usr/share/askozia/static"
+
+	install -d -m750 "$pkgdir/etc/askozia"
+}
+
+sha512sums=""
