@@ -1,0 +1,13 @@
+# Image build environment (used by image/build.sh). Everything that touches
+# the target root file systems runs in here; no root, loop devices or binfmt
+# are needed on the host.
+FROM docker.io/library/alpine:3.24
+
+RUN apk add --no-cache \
+        abuild py3-gpep517 py3-setuptools py3-wheel py3-installer python3 \
+        py3-cryptography \
+        squashfs-tools mtools dosfstools e2fsprogs e2fsprogs-extra sfdisk \
+        grub grub-bios grub-efi kmod cpio zstd xz gzip openssl \
+        tar coreutils findutils util-linux-misc file bash git
+
+WORKDIR /src

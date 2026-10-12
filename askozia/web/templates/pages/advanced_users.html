@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% from "macros/forms.html" import csrf, input, checkbox, form_errors with context %}
+{% from "macros/ui.html" import delete_button with context %}
+{% block content %}
+<div class="row row-cards">
+  <div class="col-lg-7"><div class="card">
+    <table class="table table-vcenter card-table">
+      <thead><tr><th>User</th><th>Last login</th><th></th></tr></thead>
+      <tbody>
+      {% for a in admins %}
+      <tr><td>{{ a.username }}{% if a.must_change_pw %} <span class="badge bg-yellow-lt">must change password</span>{% endif %}</td>
+        <td class="text-secondary">{{ a.last_login.strftime("%Y-%m-%d %H:%M") if a.last_login else "never" }}</td>
+        <td class="table-actions">{% if a.username != user.username %}{{ delete_button("/advanced/users/" ~ a.username, "administrator " ~ a.username) }}{% endif %}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div></div>
+  <div class="col-lg-5">
+    <form method="post" action="/advanced/users" class="card">
+      {{ csrf() }}
+      <div class="card-body">
+        <h3 class="card-title">Add administrator</h3>
+        {{ form_errors(errors) }}
+        {{ input("username", "Username", values or {}, errors, required=True) }}
+        {{ input("password", "Initial password", {}, errors, type="password", required=True, autocomplete="new-password") }}
+        {{ checkbox("must_change", "Must change the password at first login", {"must_change": True}, errors) }}
+      </div>
+      <div class="card-footer text-end"><button class="btn btn-primary" type="submit">Add</button></div>
+    </form>
+  </div>
+</div>
+{% endblock %}

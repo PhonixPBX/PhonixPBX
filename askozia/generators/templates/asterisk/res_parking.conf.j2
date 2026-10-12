@@ -1,0 +1,13 @@
+{{ header() }}
+[general]
+parkeddynamic=no
+
+[default]
+parkext={{ f.park_ext }}
+parkpos={{ f.park_start }}-{{ f.park_end }}
+context=parkedcalls
+parkingtime={{ f.park_time_s }}
+findslot=next
+parkinghints=yes
+comebacktoorigin=yes
+parkedmusicclass=default

@@ -1,0 +1,44 @@
+{% macro flash_messages(flashes) %}
+{% for f in flashes %}
+<div class="alert alert-{{ 'danger' if f.level == 'error' else f.level }} alert-dismissible" role="alert">
+  <div class="d-flex"><div>{{ icon({'success': 'check', 'error': 'alert-circle', 'warning': 'alert-triangle', 'info': 'info-circle'}.get(f.level, 'info-circle'), 'alert-icon') }}</div>
+  <div>{{ f.message }}</div></div>
+  <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
+</div>
+{% endfor %}
+{% endmacro %}
+
+{% macro badge(on, yes="enabled", no="disabled") %}
+{% if on %}<span class="badge bg-green-lt">{{ yes }}</span>{% else %}<span class="badge bg-secondary-lt">{{ no }}</span>{% endif %}
+{% endmacro %}
+
+{% macro status_dot(state) %}
+{% set s = (state or "") | lower %}
+{% if s in ("available", "not in use", "reachable", "registered", "ok", "online", "in use", "idle") %}
+<span class="status status-green"><span class="status-dot status-dot-animated"></span>{{ state }}</span>
+{% elif s in ("", "unknown") %}
+<span class="status status-secondary"><span class="status-dot"></span>{{ state or "unknown" }}</span>
+{% else %}
+<span class="status status-red"><span class="status-dot"></span>{{ state }}</span>
+{% endif %}
+{% endmacro %}
+
+{% macro delete_button(url, what, target="closest tr") %}
+<button type="button" class="btn btn-ghost-danger btn-icon btn-sm" title="Delete" aria-label="Delete {{ what }}"
+        hx-delete="{{ url }}" hx-confirm="Delete {{ what }}?" hx-target="{{ target }}" hx-swap="outerHTML">{{ icon("trash") }}</button>
+{% endmacro %}
+
+{% macro toggle_button(url, enabled, what) %}
+<button type="button" class="btn btn-ghost-secondary btn-icon btn-sm" title="{{ 'Disable' if enabled else 'Enable' }}"
+        aria-label="{{ 'Disable' if enabled else 'Enable' }} {{ what }}"
+        hx-post="{{ url }}" hx-target="closest tr" hx-swap="outerHTML">{{ icon("player-pause" if enabled else "player-play") }}</button>
+{% endmacro %}
+
+{% macro empty(title, text, url=None, label=None) %}
+<div class="empty">
+  <div class="empty-icon">{{ icon("mood-empty") }}</div>
+  <p class="empty-title">{{ title }}</p>
+  <p class="empty-subtitle text-secondary">{{ text }}</p>
+  {% if url %}<div class="empty-action"><a href="{{ url }}" class="btn btn-primary">{{ icon("plus") }} {{ label }}</a></div>{% endif %}
+</div>
+{% endmacro %}

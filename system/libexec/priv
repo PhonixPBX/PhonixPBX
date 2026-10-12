@@ -1,0 +1,457 @@
+#!/bin/sh
+# AskoziaPBX privileged helper.
+#
+# The web process (user "askozia") runs this - and only this - as root:
+#   doas -n /usr/libexec/askozia/priv <action> [args]
+# (rule in /etc/doas.d/askozia.conf). Every argument is validated again here;
+# the action table and STAGED_FILES must match askozia/services/privileged.py.
+set -eu
+
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+umask 022
+
+LIBEXEC=/usr/libexec/askozia
+STAGED=/run/askozia/staged
+PRIVTMP=/run/askozia-priv
+BOOT_DIR=${ASKOZIA_PRIV_BOOT_DIR:-/media/boot}
+BOARD_FILE=/etc/askozia/board
+UPDATE_KEY=/etc/askozia/update-key.pub
+MAX_STAGED_SIZE=1048576
+
+# shellcheck source=bootctl.sh
+. "$LIBEXEC/bootctl.sh"
+
+log() {
+	logger -t askozia-priv -- "$*" 2>/dev/null || true
+}
+
+die() {
+	echo "priv: $*" >&2
+	log "error: $*"
+	exit 1
+}
+
+# write a line to the kernel log (shows on the console; used as boot marker)
+kmsg() {
+	printf '<5>askozia: %s\n' "$*" >/dev/kmsg 2>/dev/null || true
+}
+
+usage() {
+	die "usage: priv <action> [args] (see askozia/services/privileged.py)"
+}
+
+nargs() {
+	[ "$1" -eq "$2" ] || die "action $ACTION takes $1 argument(s)"
+}
+
+valid_arg() {
+	# same character set as askozia.services.privileged._ARG
+	case "$1" in
+	'' | *[!A-Za-z0-9_.:/-]*) return 1 ;;
+	esac
+	[ "${#1}" -le 255 ]
+}
+
+# run a command detached from the caller (doas/subprocess must not wait)
+detach() {
+	setsid sh -c "$1" >/dev/null 2>&1 </dev/null &
+}
+
+svc_started() {
+	rc-service --quiet "$1" status >/dev/null 2>&1
+}
+
+boot_rw() {
+	mountpoint -q "$BOOT_DIR" || die "$BOOT_DIR is not mounted"
+	mount -o remount,rw "$BOOT_DIR" || die "cannot remount $BOOT_DIR read-write"
+	BOOT_REMOUNTED=1
+}
+
+boot_ro() {
+	sync
+	if [ "${BOOT_REMOUNTED:-0}" = 1 ]; then
+		mount -o remount,ro "$BOOT_DIR" 2>/dev/null || true
+		BOOT_REMOUNTED=0
+	fi
+}
+
+# base device of the boot disk, e.g. /dev/sda or /dev/mmcblk0p (partition 1 = ASKBOOT)
+disk_base() {
+	_dev=$(awk -v m="$BOOT_DIR" '$2 == m { print $1; exit }' /proc/mounts)
+	case "$_dev" in
+	/dev/*1) echo "${_dev%1}" ;;
+	*) die "cannot determine the boot disk (boot partition: '${_dev}')" ;;
+	esac
+}
+
+board() {
+	head -n 1 "$BOARD_FILE" 2>/dev/null | tr -cd 'A-Za-z0-9_-'
+}
+
+# ------------------------------------------------------------------ staged files
+
+# component -> whitelisted target files (identical to STAGED_FILES)
+staged_files() {
+	case "$1" in
+	system:network) echo /etc/network/interfaces /etc/resolv.conf ;;
+	system:hostname) echo /etc/hostname /etc/hosts ;;
+	system:time) echo /etc/chrony/chrony.conf /etc/timezone ;;
+	system:firewall) echo /etc/nftables.nft ;;
+	system:ssh) echo /etc/askozia/ssh ;;
+	*) return 1 ;;
+	esac
+}
+
+target_mode() {
+	case "$1" in
+	/etc/nftables.nft) echo 600 ;;
+	*) echo 644 ;;
+	esac
+}
+
+# Copy one staged file into place. The staging tree belongs to the
+# unprivileged user, so it is read with that user's permissions (no symlink
+# or hard link tricks can expose root-only files) into a root-only buffer.
+install_one() {
+	_target=$1
+	_src="$STAGED$_target"
+	[ -e "$_src" ] || [ -L "$_src" ] || return 1
+	mkdir -p "$PRIVTMP"
+	chmod 700 "$PRIVTMP"
+	_buf="$PRIVTMP/$(basename "$_target").$$"
+	rm -f "$_buf"
+	if ! su -s /bin/sh askozia -c 'exec head -c "$1" -- "$2"' askozia "$((MAX_STAGED_SIZE + 1))" "$_src" >"$_buf"; then
+		rm -f "$_buf"
+		die "cannot read staged file $_src"
+	fi
+	if [ "$(wc -c <"$_buf")" -gt "$MAX_STAGED_SIZE" ]; then
+		rm -f "$_buf"
+		die "staged file $_src is too large"
+	fi
+	if [ "$_target" = /etc/nftables.nft ]; then
+		nft -c -f "$_buf" || {
+			rm -f "$_buf"
+			die "firewall ruleset failed validation"
+		}
+	fi
+	mkdir -p "$(dirname "$_target")"
+	chown root:root "$_buf"
+	chmod "$(target_mode "$_target")" "$_buf"
+	mv -f "$_buf" "$_target.priv-new"
+	mv -f "$_target.priv-new" "$_target"
+	# consume the staged copy (as its owner)
+	su -s /bin/sh askozia -c 'rm -f -- "$1"' askozia "$_src" || true
+	log "installed $_target"
+	return 0
+}
+
+lan_interfaces() {
+	awk '$1 == "auto" { for (i = 2; i <= NF; i++) if ($i != "lo") print $i }' /etc/network/interfaces
+}
+
+activate() {
+	case "$1" in
+	system:network)
+		# reconfigure in the background: the caller's HTTP connection may be
+		# on the interface that is being reconfigured
+		_ifaces=$(lan_interfaces | tr '\n' ' ')
+		for _i in $_ifaces; do
+			case "$_i" in *[!A-Za-z0-9_.:-]*) die "invalid interface name $_i" ;; esac
+		done
+		detach "sleep 2; for i in $_ifaces; do ifdown -f \$i; ifup \$i; done; logger -t askozia-priv 'network reconfigured'"
+		;;
+	system:hostname)
+		hostname -F /etc/hostname
+		;;
+	system:time)
+		_tz=$(head -n 1 /etc/timezone | tr -d '[:space:]')
+		case "$_tz" in
+		'' | *..* | /* | *[!A-Za-z0-9_+/-]*) die "invalid timezone '$_tz'" ;;
+		esac
+		[ -f "/usr/share/zoneinfo/$_tz" ] || die "unknown timezone $_tz"
+		ln -sfn "/usr/share/zoneinfo/$_tz" /etc/localtime
+		if svc_started chronyd; then
+			rc-service chronyd restart >/dev/null 2>&1 || die "chronyd restart failed"
+		fi
+		;;
+	system:firewall)
+		nft -c -f /etc/nftables.nft || die "firewall ruleset failed validation"
+		nft -f /etc/nftables.nft || die "loading the firewall ruleset failed"
+		;;
+	system:ssh)
+		if [ "$(head -n 1 /etc/askozia/ssh 2>/dev/null)" = on ]; then
+			rc-update add dropbear default >/dev/null 2>&1 || true
+			svc_started dropbear || rc-service dropbear start >/dev/null 2>&1 || die "starting ssh failed"
+		else
+			rc-update del dropbear default >/dev/null 2>&1 || true
+			! svc_started dropbear || rc-service dropbear stop >/dev/null 2>&1 || true
+		fi
+		;;
+	esac
+}
+
+do_install_staged() {
+	_comp=$1
+	_files=$(staged_files "$_comp") || die "unknown component $_comp"
+	_n=0
+	for _f in $_files; do
+		if install_one "$_f"; then _n=$((_n + 1)); fi
+	done
+	activate "$_comp"
+	echo "$_comp: installed $_n file(s)"
+}
+
+# ------------------------------------------------------------------ updates
+
+bundle_member_ok() {
+	case "$1" in
+	manifest.json | manifest.sig | rootfs.squashfs | vmlinuz | initramfs | boot.tar) return 0 ;;
+	*) return 1 ;;
+	esac
+}
+
+sha256_of() {
+	sha256sum "$1" | cut -d' ' -f1
+}
+
+do_install_update() {
+	_bundle=$1
+	case "$_bundle" in /*) ;; *) die "bundle path must be absolute" ;; esac
+	_real=$(readlink -f -- "$_bundle" 2>/dev/null) || die "bundle $_bundle not found"
+	[ -e "$_real" ] || die "bundle $_bundle not found"
+	case "$_real" in
+	/data/* | /run/askozia/*) ;;
+	*) die "bundles are only accepted from /data or /run/askozia" ;;
+	esac
+	[ -f "$_real" ] || die "bundle is not a regular file"
+	[ -r "$UPDATE_KEY" ] || die "no update signing key at $UPDATE_KEY"
+
+	_board=$(board)
+	[ -n "$_board" ] || die "unknown board (missing $BOARD_FILE)"
+	_cur=$(bootctl_current)
+	_target=$(bootctl_other "$_cur")
+	_base=$(disk_base)
+	_part="${_base}$(bootctl_partnum "$_target")"
+	[ -b "$_part" ] || die "target partition $_part not found"
+	if grep -q "^$_part " /proc/mounts; then die "target partition $_part is in use"; fi
+
+	mkdir -p /data/tmp
+	WORK=$(mktemp -d /data/tmp/update.XXXXXX)
+	chmod 700 "$WORK"
+	trap 'rm -rf "$WORK"; boot_ro' EXIT INT TERM
+
+	# member names are checked before anything is extracted
+	tar -tf "$_real" >"$WORK/members" || die "bundle is not a tar archive"
+	while IFS= read -r _m; do
+		bundle_member_ok "$_m" || die "unexpected bundle member '$_m'"
+	done <"$WORK/members"
+	for _m in manifest.json manifest.sig rootfs.squashfs vmlinuz initramfs; do
+		grep -qx "$_m" "$WORK/members" || die "bundle lacks $_m"
+	done
+
+	mkdir "$WORK/x"
+	(cd "$WORK/x" && tar -xf "$_real" manifest.json manifest.sig) || die "cannot extract manifest"
+	# signature (ed25519 over manifest.json), board and checksum list
+	python3 -I "$LIBEXEC/verify-manifest" "$WORK/x" "$_board" "$UPDATE_KEY" >"$WORK/sums" ||
+		die "bundle signature/manifest verification failed"
+	_version=$(sed -n 's/^version //p' "$WORK/sums")
+	sed -i '/^version /d' "$WORK/sums"
+
+	_small="vmlinuz initramfs"
+	grep -qx boot.tar "$WORK/members" && _small="$_small boot.tar"
+	# shellcheck disable=SC2086
+	(cd "$WORK/x" && tar -xf "$_real" $_small) || die "cannot extract boot files"
+	for _m in $_small; do
+		_want=$(awk -v n="$_m" '$2 == n { print $1 }' "$WORK/sums")
+		[ -n "$_want" ] || die "$_m is not covered by the manifest"
+		[ "$(sha256_of "$WORK/x/$_m")" = "$_want" ] || die "checksum mismatch for $_m"
+	done
+	_want_root=$(awk '$2 == "rootfs.squashfs" { print $1 }' "$WORK/sums")
+	[ -n "$_want_root" ] || die "rootfs.squashfs is not covered by the manifest"
+
+	# root filesystem -> inactive slot (streamed, then read back and verified)
+	_size=$(tar -tvf "$_real" rootfs.squashfs | awk '{ print $3; exit }')
+	case "$_size" in '' | *[!0-9]*) die "cannot determine rootfs size" ;; esac
+	_psize=$(blockdev --getsize64 "$_part")
+	[ "$_size" -le "$_psize" ] || die "rootfs ($_size bytes) does not fit into $_part ($_psize bytes)"
+
+	boot_rw
+	bootctl_cancel_trial "$_target"
+	log "installing $_version into slot $_target ($_part)"
+	tar -xOf "$_real" rootfs.squashfs | dd of="$_part" bs=1M conv=fsync 2>/dev/null ||
+		die "writing $_part failed"
+	sync
+	echo 3 >/proc/sys/vm/drop_caches 2>/dev/null || true
+	if [ "$(head -c "$_size" "$_part" | sha256sum | cut -d' ' -f1)" != "$_want_root" ]; then
+		dd if=/dev/zero of="$_part" bs=1M count=1 conv=fsync 2>/dev/null || true
+		die "verification of the written root filesystem failed"
+	fi
+
+	# kernel, initramfs (+ Pi device trees/overlays) -> /slotX on ASKBOOT
+	_new="$BOOT_DIR/slot$_target.new"
+	rm -rf "$_new"
+	mkdir -p "$_new"
+	if [ -f "$WORK/x/boot.tar" ]; then
+		tar -xf "$WORK/x/boot.tar" -C "$_new" || die "cannot unpack boot.tar"
+	fi
+	cp "$WORK/x/vmlinuz" "$_new/vmlinuz"
+	cp "$WORK/x/initramfs" "$_new/initramfs"
+	if [ "$(bootctl_loader)" = rpi ]; then
+		# same kernel command line, other slot
+		sed "s/askozia\.slot=[AB]/askozia.slot=$_target/" "$BOOT_DIR/slot$_cur/cmdline.txt" >"$_new/cmdline.txt"
+	fi
+	sync
+	rm -rf "$BOOT_DIR/slot$_target"
+	mv "$_new" "$BOOT_DIR/slot$_target"
+	sync
+	printf '%s\n' "$_version" >"$BOOT_DIR/slot$_target/version"
+
+	bootctl_arm_trial "$_target"
+	boot_ro
+	log "update $_version installed into slot $_target, trial boot armed"
+	kmsg "update $_version installed into slot $_target"
+	echo "installed $_version into slot $_target - reboot to activate"
+}
+
+do_mark_good() {
+	_cur=$(bootctl_current)
+	if bootctl_is_trial; then
+		boot_rw
+		bootctl_mark_good
+		boot_ro
+		log "slot $_cur confirmed"
+		kmsg "boot slot $_cur marked good (update confirmed)"
+		echo "slot $_cur marked good"
+	else
+		kmsg "boot slot $_cur marked good"
+		echo "slot $_cur is already permanent"
+	fi
+}
+
+do_factory_reset() {
+	boot_rw
+	: >"$BOOT_DIR/factory-reset"
+	boot_ro
+	log "factory reset requested, rebooting"
+	kmsg "factory reset requested"
+	detach "sleep 2; /sbin/reboot"
+	echo "factory reset scheduled, rebooting"
+}
+
+# ------------------------------------------------------------------ firewall
+
+ip_family() {
+	case "$1" in
+	*:*)
+		case "$1" in *[!0-9a-fA-F:.]*) return 1 ;; esac
+		[ "${#1}" -le 45 ] || return 1
+		echo 6
+		;;
+	*.*.*.*)
+		case "$1" in *[!0-9.]*) return 1 ;; esac
+		_old_ifs=$IFS
+		IFS=.
+		# shellcheck disable=SC2086
+		set -- $1
+		IFS=$_old_ifs
+		[ $# -eq 4 ] || return 1
+		for _o in "$@"; do
+			case "$_o" in '' | ???*?) return 1 ;; esac
+			[ "$_o" -le 255 ] || return 1
+		done
+		echo 4
+		;;
+	*) return 1 ;;
+	esac
+}
+
+do_ban() {
+	_fam=$(ip_family "$1") || die "invalid IP address $1"
+	case "$2" in '' | *[!0-9]*) die "invalid ban duration $2" ;; esac
+	[ "${#2}" -le 8 ] && [ "$2" -ge 1 ] && [ "$2" -le 31536000 ] || die "ban duration out of range"
+	nft add element inet askozia "banned$_fam" "{ $1 timeout ${2}s }" || die "nft failed"
+	log "banned $1 for $2s"
+}
+
+do_unban() {
+	_fam=$(ip_family "$1") || die "invalid IP address $1"
+	nft delete element inet askozia "banned$_fam" "{ $1 }" 2>/dev/null || true
+	log "unbanned $1"
+}
+
+# ------------------------------------------------------------------ main
+
+[ "$(id -u)" -eq 0 ] || die "must run as root"
+[ $# -ge 1 ] || usage
+ACTION=$1
+shift
+for _a in "$@"; do
+	valid_arg "$_a" || die "invalid argument"
+done
+
+case "$ACTION" in
+install-staged)
+	nargs 1 $#
+	do_install_staged "$1"
+	;;
+asterisk-restart)
+	nargs 0 $#
+	if svc_started asterisk; then
+		rc-service asterisk restart >/dev/null 2>&1 || die "asterisk restart failed"
+	else
+		rc-service asterisk start >/dev/null 2>&1 || die "asterisk start failed"
+	fi
+	;;
+asterisk-start)
+	nargs 0 $#
+	svc_started asterisk || rc-service asterisk start >/dev/null 2>&1 || die "asterisk start failed"
+	;;
+nginx-reload)
+	nargs 0 $#
+	nginx -t -q || die "nginx configuration test failed"
+	rc-service nginx reload >/dev/null 2>&1 || die "nginx reload failed"
+	;;
+time-sync)
+	nargs 0 $#
+	chronyc -a makestep >/dev/null || die "chronyc makestep failed"
+	;;
+reboot)
+	nargs 0 $#
+	log "reboot requested"
+	detach "sleep 2; /sbin/reboot"
+	;;
+shutdown)
+	nargs 0 $#
+	log "shutdown requested"
+	detach "sleep 2; /sbin/poweroff"
+	;;
+factory-reset)
+	nargs 0 $#
+	do_factory_reset
+	;;
+install-update)
+	nargs 1 $#
+	do_install_update "$1"
+	;;
+mark-good)
+	nargs 0 $#
+	do_mark_good
+	;;
+boot-status)
+	# read-only, for diagnostics (not used by the web process)
+	nargs 0 $#
+	bootctl_status
+	;;
+ban)
+	nargs 2 $#
+	do_ban "$1" "$2"
+	;;
+unban)
+	nargs 1 $#
+	do_unban "$1"
+	;;
+*)
+	usage
+	;;
+esac

@@ -1,0 +1,22 @@
+# Development / CI image: the same Alpine release and packages as the appliance.
+FROM docker.io/library/alpine:3.24
+
+RUN apk add --no-cache \
+        asterisk asterisk-sounds-en asterisk-sounds-moh asterisk-srtp asterisk-opus \
+        asterisk-speex asterisk-curl \
+        python3 py3-fastapi uvicorn py3-pydantic py3-sqlalchemy py3-alembic py3-jinja2 \
+        py3-argon2-cffi py3-itsdangerous py3-python-multipart py3-babel py3-defusedxml \
+        py3-cryptography py3-zstandard py3-httpx py3-pytest \
+        msmtp nftables chrony sipp tzdata ca-certificates openssl iproute2 bash
+
+ENV ASKOZIA_DATA_DIR=/data \
+    ASKOZIA_PRIVILEGED=dry-run \
+    ASKOZIA_DEV=1 \
+    PYTHONPATH=/src \
+    PYTHONDONTWRITEBYTECODE=1
+
+WORKDIR /src
+
+# "askozia" command running the code mounted at /src
+RUN printf '#!/bin/sh\nexec python3 -m askozia.cli "$@"\n' > /usr/local/bin/askozia \
+    && chmod 755 /usr/local/bin/askozia

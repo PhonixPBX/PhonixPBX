@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% from "macros/forms.html" import csrf, input, secret, checkbox, select, form_errors, submit with context %}
+{% block content %}
+<div class="row row-cards">
+<div class="col-lg-8">
+<form method="post" action="/services/email" class="card">
+  {{ csrf() }}
+  <div class="card-header"><h3 class="card-title">Outgoing mail server (SMTP)</h3></div>
+  <div class="card-body">
+    {{ form_errors(errors) }}
+    <p class="text-secondary">Used for voicemail-to-e-mail and missed call notifications.</p>
+    <div class="row">
+      <div class="col-md-8">{{ input("host", "SMTP server", values, errors, placeholder="smtp.example.com") }}</div>
+      <div class="col-md-4">{{ input("port", "Port", values, errors, type="number", attrs='min="1" max="65535"') }}</div>
+    </div>
+    {{ select("encryption", "Encryption", values, errors, [("starttls", "STARTTLS (port 587)"), ("tls", "TLS / SMTPS (port 465)"), ("none", "none (port 25)")]) }}
+    {{ input("from_address", "Sender address", values, errors, type="email", placeholder="pbx@example.com") }}
+    {{ checkbox("auth", "Server requires authentication", values, errors) }}
+    <div class="row" data-show-if="auth=true">
+      <div class="col-md-6">{{ input("username", "Username", values, errors, autocomplete="off") }}</div>
+      <div class="col-md-6">{{ secret("password", "Password", values, errors, generate=False) }}</div>
+    </div>
+    {{ checkbox("verify_cert", "Verify the server certificate", values, errors) }}
+  </div>
+  {{ submit() }}
+</form>
+</div>
+<div class="col-lg-4">
+<div class="card">
+  <div class="card-header"><h3 class="card-title">Send a test message</h3></div>
+  <div class="card-body">
+    <form hx-post="/services/email/test" hx-target="#mail-test" hx-swap="innerHTML" hx-disable="find button">
+      <div class="mb-3"><label class="form-label" for="test-to">Recipient</label><input id="test-to" type="email" name="to" class="form-control" required></div>
+      <button class="btn w-100" type="submit"><span class="spinner-border spinner-border-sm me-2 htmx-indicator"></span>{{ icon("send", "me-1") }}Send test</button>
+    </form>
+    <div id="mail-test"></div>
+    <p class="text-secondary small mt-2">Uses the applied configuration &mdash; apply pending changes first.</p>
+  </div>
+</div>
+</div>
+</div>
+{% endblock %}

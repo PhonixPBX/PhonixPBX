@@ -1,0 +1,30 @@
+{{ header() }}
+[general]
+enabled=yes
+port=5038
+bindaddr={{ bindaddr }}
+displayconnects=no
+timestampevents=yes
+authlimit=3
+authtimeout=30
+
+; used by the AskoziaPBX web interface
+[askozia]
+secret={{ internal_secret }}
+deny=0.0.0.0/0.0.0.0
+permit=127.0.0.1/255.255.255.255
+read=all
+write=all
+writetimeout=5000
+
+{% for u in users %}
+[{{ u.username }}]
+secret={{ u.secret }}
+deny=0.0.0.0/0.0.0.0
+{% for net in u.permit %}
+permit={{ net_mask(net) }}
+{% endfor %}
+read={{ u.read_perms | join(",") }}
+write={{ u.write_perms | join(",") }}
+
+{% endfor %}

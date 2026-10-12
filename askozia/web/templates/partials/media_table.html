@@ -1,0 +1,19 @@
+{% from "macros/ui.html" import delete_button with context %}
+<div class="card-header"><h3 class="card-title">Uploaded files</h3></div>
+{% if files %}
+<table class="table table-vcenter card-table">
+  <thead><tr><th>Type</th><th>Name</th><th>Size</th><th>Uploaded</th><th></th></tr></thead>
+  <tbody>
+  {% for f in files %}
+  <tr>
+    <td><span class="badge bg-primary-lt">{{ kinds[f.kind] }}</span></td>
+    <td>{{ f.name }}</td><td>{{ f.size | filesize }}</td><td>{{ f.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+    <td class="table-actions">
+      <a class="btn btn-ghost-primary btn-icon btn-sm" href="/services/media/file/{{ f.id }}" aria-label="Download {{ f.name }}">{{ icon("download") }}</a>
+      {{ delete_button("/services/media/file/" ~ f.id, f.name) }}
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}<div class="card-body text-secondary">No files uploaded.</div>{% endif %}

@@ -1,0 +1,17 @@
+# Versions shipped by Alpine 3.24 (the appliance runtime). Dev/CI installs use
+# these so we never depend on APIs newer than the image provides.
+fastapi==0.136.1
+starlette==1.1.0
+uvicorn==0.44.0
+pydantic==2.12.5
+sqlalchemy==2.0.49
+alembic==1.13.1
+jinja2==3.1.6
+argon2-cffi==25.1.0
+itsdangerous==2.2.0
+python-multipart==0.0.32
+babel==2.18.0
+defusedxml==0.7.1
+cryptography==47.0.0
+zstandard==0.25.0
+httpx==0.28.1

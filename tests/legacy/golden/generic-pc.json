@@ -1,0 +1,222 @@
+{
+  "db": {
+    "ami_users": [],
+    "applications": [
+      {
+        "description": "0000CF - Activate and deactivate call forwarding.",
+        "enabled": true,
+        "extension": "000023",
+        "legacy_uniqid": "DIALPLAN-APPLICATION-14778225794decb30253418",
+        "logic": "1,Answer()\n2,GotoIf($[\"${DB(CF/${CALLERID(num)})}\" != \"\"]?removecf:setcfnumber)\n3(setcfnumber),Playback(vm-enter-num-to-call)\n4,Read(CF_DESTINATION,beep,,,,5)\n5,GotoIf($[\"${CF_DESTINATION}\" = \"\" | \"${CF_DESTINATION}\" = \"${EXTEN}\"]?10)\n6,Set(DB(CF/${CALLERID(num)})=${CF_DESTINATION})\n7,SayDigits(${CF_DESTINATION})\n8,Playback(auth-thankyou)\n9,Hangup()\n10,Playback(invalid)\n11,Hangup()\n12(removecf),Set(old=${DB_DELETE(CF/${CALLERID(num)})})\n13,PlayTones(!500/100,0/100,!500/100)\n14,Wait(1)\n15,Hangup()",
+        "name": "Call forwarding",
+        "public_access": false,
+        "public_name": ""
+      },
+      {
+        "description": "0000ECHO - Echoes audio and video back to the caller. Used to test connection delay.",
+        "enabled": true,
+        "extension": "00003246",
+        "legacy_uniqid": "DIALPLAN-APPLICATION-14520268874c62d16c931be",
+        "logic": "1,Answer()\n2,Echo()\n3,Hangup()",
+        "name": "Echo",
+        "public_access": false,
+        "public_name": ""
+      },
+      {
+        "description": "0000IP - Reads back the system IP address.",
+        "enabled": true,
+        "extension": "000047",
+        "legacy_uniqid": "DIALPLAN-APPLICATION-16151900034c62d16c92eba",
+        "logic": "1,Answer()\n2,Set(IPOUTPUT=${ASKOZIA_LAN_IP})\n3,NoOp(IPOUTPUT: ${IPOUTPUT})\n4,Playback(beep)\nn,SayDigits(${CUT(IPOUTPUT,.,1)})\nn,Playback(silence/1)\nn,SayDigits(${CUT(IPOUTPUT,.,2)})\nn,Playback(silence/1)\nn,SayDigits(${CUT(IPOUTPUT,.,3)})\nn,Playback(silence/1)\nn,SayDigits(${CUT(IPOUTPUT,.,4)})\nn,Playback(silence/1)\nn,Playback(silence/1)\nn,Goto(4)",
+        "name": "Read IP",
+        "public_access": false,
+        "public_name": ""
+      },
+      {
+        "description": "0000ME - Reads back the extension being used to call the application.",
+        "enabled": true,
+        "extension": "000063",
+        "legacy_uniqid": "APPLICATION-MAPPING-17266106704d401be865273",
+        "logic": "1,Answer()\n2,Playback(beep)\n3,SayDigits(${CALLERID(number)})\nn,Playback(silence/1)\nn,Playback(silence/1)\nn,Playback(silence/1)\nn,Goto(2)",
+        "name": "Read extension number",
+        "public_access": false,
+        "public_name": ""
+      },
+      {
+        "description": "0000MILLI - Generates a constant 1000Hz tone. Used to test connection quality.",
+        "enabled": true,
+        "extension": "000064554",
+        "legacy_uniqid": "DIALPLAN-APPLICATION-7375249804c62d16c9336d",
+        "logic": "1,Answer()\n2,Milliwatt()\n3,Hangup()",
+        "name": "Milliwatt",
+        "public_access": false,
+        "public_name": ""
+      },
+      {
+        "description": "0000VM - Voicemail system",
+        "enabled": true,
+        "extension": "000086",
+        "legacy_uniqid": "DIALPLAN-APPLICATION-7643526674dde509b64232",
+        "logic": "1,Answer()\n2,VoiceMailMain(${CALLERID(num)}@default)\n3,Hangup()",
+        "name": "Voicemail system",
+        "public_access": false,
+        "public_name": ""
+      },
+      {
+        "description": "0000WEASELS",
+        "enabled": true,
+        "extension": "00009327357",
+        "legacy_uniqid": "DIALPLAN-APPLICATION-13903502574df9cf4ca35a0",
+        "logic": "1,Answer()\n2,Playback(tt-weasels)\n3,Hangup()",
+        "name": "Weasels",
+        "public_access": false,
+        "public_name": ""
+      }
+    ],
+    "callgroups": [],
+    "phones": [],
+    "providers": [],
+    "rooms": [
+      {
+        "admin_pin": "",
+        "legacy_uniqid": "CONFERENCE-ROOM-914902610465bd5b50d0c6",
+        "name": "Default Conference",
+        "number": "2663",
+        "pin": "",
+        "public_access": false,
+        "public_name": ""
+      }
+    ],
+    "settings": {
+      "email": {
+        "auth": true,
+        "encryption": "starttls",
+        "from_address": "",
+        "host": "",
+        "password": "",
+        "port": 587,
+        "username": "",
+        "verify_cert": true
+      },
+      "features": {
+        "attended_transfer": "**",
+        "atxfer_noanswer_timeout_s": 15,
+        "blind_transfer": "##",
+        "disconnect": "*0",
+        "feature_digit_timeout_ms": 500,
+        "park_end": 720,
+        "park_ext": "700",
+        "park_start": 701,
+        "park_time_s": 30,
+        "pickup": "*8",
+        "transfer_digit_timeout_s": 3
+      },
+      "firewall": {
+        "admin_allowed_networks": [],
+        "ban_enabled": true,
+        "ban_seconds": 3600,
+        "ban_threshold": 10,
+        "enabled": true,
+        "sip_allowed_networks": []
+      },
+      "gui": {
+        "expand_advanced": false,
+        "session_minutes": 60
+      },
+      "iax": {
+        "enabled": true,
+        "force_jitterbuffer": false,
+        "jitterbuffer": false,
+        "manual_attributes": "",
+        "port": 4569
+      },
+      "media": {
+        "custom_moh": false,
+        "custom_vm_greeting": false
+      },
+      "network": {
+        "address": "192.168.1.2",
+        "dns_servers": [
+          "192.168.1.1"
+        ],
+        "external_address": "",
+        "external_hostname": "",
+        "gateway": "192.168.1.1",
+        "interface": "eth0",
+        "ipv6": "auto",
+        "mode": "dhcp",
+        "prefix": 24,
+        "topology": "public"
+      },
+      "rtp": {
+        "port_end": 20000,
+        "port_start": 10000
+      },
+      "sip": {
+        "default_expiry": 3600,
+        "manual_attributes": "",
+        "max_expiry": 7200,
+        "min_expiry": 60,
+        "srtp": "off",
+        "srv_lookup": true,
+        "tcp_enabled": false,
+        "tls_enabled": false,
+        "tls_port": 5061,
+        "udp_port": 5060
+      },
+      "system": {
+        "domain": "local",
+        "hostname": "askoziapbx",
+        "ntp_servers": [
+          "pool.ntp.org"
+        ],
+        "prompt_language": "en",
+        "ssh_enabled": false,
+        "timezone": "UTC",
+        "tonezone": "us",
+        "ui_language": "en"
+      },
+      "update": {
+        "auto_check": false,
+        "check_url": ""
+      },
+      "voicemail": {
+        "attach_audio": true,
+        "custom_body": "",
+        "custom_subject": "",
+        "from_address": "",
+        "from_name": "AskoziaPBX Voicemail",
+        "keep_messages": true,
+        "max_message_seconds": 180
+      }
+    }
+  },
+  "report": {
+    "counts": {
+      "applications": {
+        "create": 7,
+        "skip": 0,
+        "update": 0
+      },
+      "rooms": {
+        "create": 1,
+        "skip": 0,
+        "update": 0
+      },
+      "settings": {
+        "create": 0,
+        "skip": 0,
+        "update": 8
+      },
+      "users": {
+        "create": 0,
+        "skip": 1,
+        "update": 0
+      }
+    },
+    "dropped_sections": [],
+    "errors": [],
+    "ok": true,
+    "source_version": "2.1"
+  }
+}

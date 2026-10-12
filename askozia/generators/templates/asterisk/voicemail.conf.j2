@@ -1,0 +1,35 @@
+{{ header() }}
+[general]
+format=wav49|wav
+serveremail={{ from_address }}
+fromstring={{ vm.from_name | cfg }}
+attach={{ vm.attach_audio | yesno }}
+delete={{ (not vm.keep_messages and email_ok) | yesno }}
+maxsecs={{ vm.max_message_seconds }}
+minsecs=1
+maxlogins=3
+skipms=3000
+review=no
+operator=no
+saycid=no
+sendvoicemail=no
+pollmailboxes=no
+emaildateformat=%A, %d %B %Y at %H:%M:%S
+mailcmd=/usr/bin/msmtp -C {{ msmtprc }} -t
+{% if vm.custom_subject %}
+emailsubject={{ vm.custom_subject | cfg }}
+{% else %}
+emailsubject=New voicemail ${VM_MSGNUM} in mailbox ${VM_MAILBOX} from ${VM_CALLERID}
+{% endif %}
+{% if vm.custom_body %}
+emailbody={{ vm_body(vm.custom_body) }}
+{% else %}
+emailbody=Hello ${VM_NAME},\n\nyou have a new message (number ${VM_MSGNUM}, ${VM_DUR} long) in mailbox ${VM_MAILBOX} from ${VM_CALLERID}, on ${VM_DATE}.\n\n-- \nAskoziaPBX\n
+{% endif %}
+
+[zonemessages]
+
+[default]
+{% for p in phones %}
+{{ p.extension }} => {{ p.vm_pin or "0000" }},{{ p.callerid | replace(",", " ") }},{{ p.vm_email if email_ok else "" }},,attach={{ vm.attach_audio | yesno }}|delete={{ (not vm.keep_messages and email_ok and p.vm_email != "") | yesno }}
+{% endfor %}

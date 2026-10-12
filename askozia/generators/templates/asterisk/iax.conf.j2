@@ -1,0 +1,69 @@
+{{ header() }}
+[general]
+bindport={{ iax.port }}
+bindaddr=0.0.0.0
+delayreject=yes
+language={{ language }}
+bandwidth=high
+disallow=all
+allow=g722,alaw,ulaw,gsm
+jitterbuffer={{ iax.jitterbuffer | yesno }}
+forcejitterbuffer={{ iax.force_jitterbuffer | yesno }}
+autokill=yes
+{% for p in providers if p.registration %}
+register => {{ p.username }}{% if p.secret %}:{{ p.secret }}{% endif %}@{{ p.host }}{% if p.port %}:{{ p.port }}{% endif %}
+
+{% endfor %}
+{% for line in manual_lines(iax.manual_attributes) %}
+{{ line }}
+{% endfor %}
+
+;
+; providers
+;
+{% for p in providers %}
+; {{ p.name }}
+[prov-{{ p.id }}]
+type=friend
+host={{ p.host }}
+{% if p.port %}
+port={{ p.port }}
+{% endif %}
+username={{ p.username }}
+secret={{ p.secret }}
+auth={{ p.iax_auth }}
+context={{ provider_context[p.id] }}
+language={{ p.language }}
+qualify={{ "yes" if p.qualify else "no" }}
+trunk=no
+disallow=all
+allow={{ p.codecs | join(",") }}
+{% for line in manual_lines(p.manual_attributes) %}
+{{ line }}
+{% endfor %}
+
+{% endfor %}
+;
+; phones
+;
+{% for p in phones %}
+; {{ p.callerid }} <{{ p.extension }}>
+[{{ p.extension }}]
+type=friend
+host=dynamic
+secret={{ p.secret }}
+auth=md5
+context=phone-{{ p.extension }}
+callerid={{ p.callerid | quote }} <{{ p.extension }}>
+language={{ p.language }}
+qualify={{ "yes" if p.qualify else "no" }}
+disallow=all
+allow={{ p.codecs | join(",") }}
+{% if p.vm_enabled %}
+mailbox={{ p.extension }}@default
+{% endif %}
+{% for line in manual_lines(p.manual_attributes) %}
+{{ line }}
+{% endfor %}
+
+{% endfor %}

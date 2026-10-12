@@ -1,0 +1,43 @@
+# Packages installed into every AskoziaPBX root file system (Alpine 3.24).
+# One package per line; "name=version" pins an exact version. The versions
+# actually installed are recorded in out/askozia-<version>-<board>.packages.
+alpine-baselayout
+alpine-baselayout-data
+alpine-keys
+alpine-release
+busybox
+busybox-binsh
+busybox-openrc
+busybox-mdev-openrc
+busybox-suid
+openrc
+musl-utils
+ifupdown-ng
+kmod
+e2fsprogs
+dosfstools
+util-linux-misc
+tzdata
+ca-certificates-bundle
+chrony
+chrony-openrc
+nftables
+nftables-openrc
+nginx
+nginx-openrc
+msmtp
+doas
+dropbear
+dropbear-openrc
+logrotate
+python3
+pyc
+askozia
+asterisk
+asterisk-sounds-en
+asterisk-sounds-moh
+asterisk-srtp
+asterisk-opus
+asterisk-speex
+# audio conversion of uploaded media (mp3/ogg/wav)
+sox

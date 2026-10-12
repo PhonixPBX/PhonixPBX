@@ -1,0 +1,25 @@
+{{ header() }}
+[directories]
+astcachedir => /var/cache/asterisk
+astetcdir => /etc/asterisk
+astmoddir => /usr/lib/asterisk/modules
+astvarlibdir => /var/lib/asterisk
+astdbdir => {{ astdb_dir }}
+astkeydir => /var/lib/asterisk
+astdatadir => /usr/share/asterisk
+astagidir => /var/lib/asterisk/agi-bin
+astspooldir => /var/spool/asterisk
+astrundir => /var/run/asterisk
+astlogdir => /var/log/asterisk
+astsbindir => /usr/sbin
+
+[options]
+verbose=2
+debug=0
+runuser=asterisk
+rungroup=asterisk
+defaultlanguage={{ language }}
+documentation_language=en_US
+transmit_silence=yes
+hideconnect=yes
+systemname={{ hostname }}

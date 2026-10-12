@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% from "macros/forms.html" import csrf, input, form_errors, submit with context %}
+{% block content %}
+<form method="post" action="/advanced/rtp" class="card">
+  {{ csrf() }}
+  <div class="card-body">
+    {{ form_errors(errors) }}
+    <p class="text-secondary">UDP ports used for audio and video. Each call uses two ports per leg.</p>
+    <div class="row">
+      <div class="col-md-6">{{ input("port_start", "First port", values, errors, type="number") }}</div>
+      <div class="col-md-6">{{ input("port_end", "Last port", values, errors, type="number") }}</div>
+    </div>
+  </div>
+  {{ submit() }}
+</form>
+{% endblock %}

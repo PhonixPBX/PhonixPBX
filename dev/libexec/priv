@@ -1,0 +1,41 @@
+#!/bin/sh
+# Privileged helper for the dev container (ASKOZIA_PRIVILEGED=exec).
+# Implements what makes sense inside a container: Asterisk control. Actions
+# that would touch the host network, firewall, boot slots etc. are only logged.
+set -eu
+action=${1:-}
+[ $# -gt 0 ] && shift
+log() { echo "dev-priv: $*" >&2; }
+
+asterisk_running() { asterisk -rx "core show version" >/dev/null 2>&1; }
+
+start_asterisk() {
+	asterisk -U asterisk -G asterisk >/dev/null 2>&1 || true
+	i=0
+	while [ $i -lt 30 ]; do
+		asterisk -rx "core waitfullybooted" >/dev/null 2>&1 && return 0
+		i=$((i + 1))
+		sleep 1
+	done
+	log "Asterisk did not start, see /var/log/asterisk/messages"
+	return 1
+}
+
+case "$action" in
+asterisk-restart)
+	if asterisk_running; then
+		asterisk -rx "core stop now" >/dev/null 2>&1 || true
+		sleep 2
+	fi
+	start_asterisk
+	;;
+asterisk-start)
+	asterisk_running || start_asterisk
+	;;
+install-staged)
+	log "would install ${1:-?} (host networking/firewall are not touched in dev)"
+	;;
+*)
+	log "ignoring '$action $*' in the dev container"
+	;;
+esac

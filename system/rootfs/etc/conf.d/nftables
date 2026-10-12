@@ -1,0 +1,2 @@
+rules_file="/etc/nftables.nft"
+save_on_stop="no"

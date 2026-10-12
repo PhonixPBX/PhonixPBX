@@ -1,0 +1,13 @@
+{{ header() }}
+; "pjsip send notify <name> endpoint <ext>" - used by the phones list
+[reboot]
+Event=check-sync
+Content=
+
+[reboot-snom]
+Event=check-sync\;reboot=true
+Content=
+
+[reboot-polycom]
+Event=check-sync
+Content=

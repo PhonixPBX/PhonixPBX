@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% from "macros/forms.html" import csrf, input, checkbox, form_errors, submit with context %}
+{% block page_title %}{{ "New conference room" if is_new else "Edit conference room " ~ values.name }}{% endblock %}
+{% block content %}
+<form method="post" action="/services/conferencing/{{ 'new' if is_new else obj_id }}" class="card">
+  {{ csrf() }}
+  <div class="card-body">
+    {{ form_errors(errors) }}
+    <div class="row">
+      <div class="col-md-4">{{ input("number", "Number", values, errors, required=True, attrs='inputmode="numeric" data-mask="digits"') }}</div>
+      <div class="col-md-8">{{ input("name", "Name", values, errors, required=True) }}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">{{ input("pin", "PIN", values, errors, attrs='inputmode="numeric" data-mask="digits"', help="Optional. Callers must enter it to join.") }}</div>
+      <div class="col-md-6">{{ input("admin_pin", "Admin PIN", values, errors, attrs='inputmode="numeric" data-mask="digits"', help="Optional. Joins as moderator.") }}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">{{ checkbox("public_access", "Reachable from outside", values, errors) }}</div>
+      <div class="col-md-6" data-show-if="public_access=true">{{ input("public_name", "Public name", values, errors) }}</div>
+    </div>
+  </div>
+  {{ submit("Create" if is_new else "Save", cancel="/services/conferencing") }}
+</form>
+{% endblock %}

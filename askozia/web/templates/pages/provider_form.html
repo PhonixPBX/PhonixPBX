@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% from "macros/forms.html" import csrf, input, secret, textarea, checkbox, select, codecs, form_errors, submit with context %}
+{% set tech = values.tech %}
+{% block page_title %}{{ "New" if is_new else "Edit" }} {{ techs[tech] }} provider{% if not is_new %} {{ values.name }}{% endif %}{% endblock %}
+{% block content %}
+<form method="post" action="/accounts/providers/{{ 'new' if is_new else provider_id }}" class="card">
+  {{ csrf() }}
+  <input type="hidden" name="tech" value="{{ tech }}">
+  <div class="card-header">
+    <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs" role="tablist">
+      <li class="nav-item"><a href="#tab-account" class="nav-link active" data-bs-toggle="tab" role="tab">Account</a></li>
+      <li class="nav-item"><a href="#tab-outgoing" class="nav-link" data-bs-toggle="tab" role="tab">Outgoing calls</a></li>
+      <li class="nav-item"><a href="#tab-incoming" class="nav-link" data-bs-toggle="tab" role="tab">Incoming calls</a></li>
+      <li class="nav-item"><a href="#tab-advanced" class="nav-link" data-bs-toggle="tab" role="tab">Codecs &amp; advanced</a></li>
+    </ul>
+  </div>
+  <div class="card-body">
+    {{ form_errors(errors) }}
+    <div class="tab-content">
+      <div class="tab-pane active show" id="tab-account" role="tabpanel">
+        {{ input("name", "Name", values, errors, required=True) }}
+        <div class="row">
+          <div class="col-md-6">{{ input("host", "Host", values, errors, required=True, placeholder="sip.provider.example", help="Hostname or IP address of the provider.") }}</div>
+          <div class="col-md-3">{{ input("port", "Port", values, errors, type="number", attrs='min="1" max="65535"', help="Empty = default.") }}</div>
+          {% if tech == "pjsip" %}<div class="col-md-3">{{ select("transport", "Transport", values, errors, [("udp", "UDP"), ("tcp", "TCP"), ("tls", "TLS")]) }}</div>{% endif %}
+        </div>
+        <div class="row">
+          <div class="col-md-6">{{ input("username", "Username", values, errors, required=True) }}</div>
+          <div class="col-md-6">{{ secret("secret", "Password", values, errors, is_new=is_new, generate=False) }}</div>
+        </div>
+        {{ checkbox("registration", "Register with the provider", values, errors, help="Disable for providers that authenticate by IP address.") }}
+        <div class="row">
+          {% if tech == "pjsip" %}
+          <div class="col-md-4">{{ input("auth_user", "Authentication user", values, errors, help="Only if different from the username.") }}</div>
+          <div class="col-md-4">{{ input("from_user", "From user", values, errors) }}</div>
+          <div class="col-md-4">{{ input("from_domain", "From domain", values, errors, help="Defaults to the host.") }}</div>
+          {% else %}
+          <div class="col-md-4">{{ select("iax_auth", "Authentication", values, errors, [("md5", "MD5"), ("plaintext", "Plain text"), ("rsa", "RSA")]) }}</div>
+          {% endif %}
+        </div>
+        {% if not is_new %}<input type="hidden" name="enabled" value="{{ 'true' if values.enabled else 'false' }}">{% endif %}
+      </div>
+
+      <div class="tab-pane" id="tab-outgoing" role="tabpanel">
+        {{ textarea("dialpatterns", "Dial patterns", values, errors, mono=True, rows=4,
+           help="One pattern per line. Phones dialing a matching number use this provider. X = any digit, N = 2-9, Z = 1-9, . = one or more, [1-5] = range. '0|X.' strips the leading 0; '49+0|X.' replaces it with 49.") }}
+        {{ select("failover_provider_id", "Failover provider", values, errors, options(others), empty="- none -", help="Used when this provider is unavailable or congested.") }}
+        <div class="row">
+          <div class="col-md-4">{{ select("callerid_source", "Outgoing caller ID", values, errors, [("phones", "use the phone's caller ID"), ("string", "fixed caller ID")]) }}</div>
+          <div class="col-md-8" data-show-if="callerid_source=string">{{ input("callerid_string", "Fixed caller ID", values, errors, placeholder="Company <4930123456>") }}</div>
+        </div>
+      </div>
+
+      <div class="tab-pane" id="tab-incoming" role="tabpanel">
+        <p class="text-secondary">Route incoming calls by the dialed number (DID). Leave the pattern empty to catch all calls. Several destinations with the same pattern ring in parallel.</p>
+        <div id="routes">
+          {% for r in values.incoming_routes %}
+          {% set idx = loop.index0 %}
+          <div class="row g-2 dyn-row">
+            <div class="col-md-4"><input class="form-control font-monospace" name="route_pattern_{{ idx }}" value="{{ r.pattern }}" placeholder="all numbers" aria-label="incoming number pattern"></div>
+            <div class="col-md-7"><select class="form-select" name="route_dest_{{ idx }}" data-tom aria-label="destination">
+              {% for value, text in destinations %}<option value="{{ value }}" {% if value == r.dest_type ~ ":" ~ r.dest_id %}selected{% endif %}>{{ text }}</option>{% endfor %}
+            </select></div>
+            <div class="col-md-1"><button type="button" class="btn btn-icon btn-ghost-danger" data-remove-row aria-label="remove route">{{ icon("x") }}</button></div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="invalid-feedback d-block">{% for k, e in (errors or {}).items() if k.startswith("incoming_routes") %}Route {{ k.split(".")[1] | int + 1 if "." in k else "" }}: {{ e }} {% endfor %}</div>
+        <button type="button" class="btn mt-2" data-add-row="#route-template" data-into="#routes">{{ icon("plus") }} Add route</button>
+        <template id="route-template">
+          <div class="row g-2 dyn-row">
+            <div class="col-md-4"><input class="form-control font-monospace" name="route_pattern___INDEX__" placeholder="all numbers" aria-label="incoming number pattern"></div>
+            <div class="col-md-7"><select class="form-select" name="route_dest___INDEX__" data-tom aria-label="destination">
+              {% for value, text in destinations %}<option value="{{ value }}">{{ text }}</option>{% endfor %}
+            </select></div>
+            <div class="col-md-1"><button type="button" class="btn btn-icon btn-ghost-danger" data-remove-row aria-label="remove route">{{ icon("x") }}</button></div>
+          </div>
+        </template>
+        <hr>
+        <div class="row">
+          <div class="col-md-4">{{ input("readback_number", "Public number", values, errors, help="Your main number at this provider (informational).") }}</div>
+          <div class="col-md-4">{{ select("incoming_cid_override", "Incoming caller ID", values, errors, [("", "unchanged"), ("replacenamewithnum", "replace name with number"), ("replace", "replace with text"), ("prepend", "prepend text to name")]) }}</div>
+          <div class="col-md-4" data-show-if="incoming_cid_override=replace|prepend">{{ input("incoming_cid_string", "Caller ID text", values, errors) }}</div>
+        </div>
+      </div>
+
+      <div class="tab-pane" id="tab-advanced" role="tabpanel">
+        {{ codecs(values, errors) }}
+        <div class="row">
+          <div class="col-md-4">{{ select("language", "Language", values, errors, LANGUAGES.items() | list) }}</div>
+          <div class="col-md-4">{{ select("dtmf_mode", "DTMF mode", values, errors, [("rfc4733", "RFC 4733 (RFC 2833)"), ("inband", "In-band"), ("info", "SIP INFO"), ("auto", "Auto")]) }}</div>
+          <div class="col-md-4">{{ input("qualify", "Qualify interval (s)", values, errors, type="number", attrs='min="0" max="3600"') }}</div>
+        </div>
+        {{ checkbox("nat", "Provider is reached through NAT (symmetric RTP)", values, errors) }}
+        {{ textarea("manual_attributes", "Additional options", values, errors, mono=True, rows=3, help="Advanced: one key=value per line, appended to the generated endpoint/peer.") }}
+      </div>
+    </div>
+  </div>
+  {{ submit("Create provider" if is_new else "Save", cancel="/accounts/providers") }}
+</form>
+{% endblock %}

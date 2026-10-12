@@ -1,0 +1,7 @@
+<div class="alert alert-success mt-3">
+  Version <strong>{{ info.version }}</strong> has been installed into the inactive slot.
+  <form method="post" action="/system/reboot" class="mt-2">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <button class="btn btn-success" type="submit" name="action" value="reboot">{{ icon("refresh", "me-1") }}Reboot into the new firmware</button>
+  </form>
+</div>

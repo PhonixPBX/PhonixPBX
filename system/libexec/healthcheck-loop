@@ -1,0 +1,38 @@
+#!/bin/sh
+# Runs as user askozia after boot (started by /etc/init.d/askozia-healthcheck).
+# Retries "askozia healthcheck --mark-good" until it succeeds. If this boot is
+# an unconfirmed trial of a freshly installed update and the system does not
+# become healthy in time, reboot: the boot loader then falls back to the
+# previous slot.
+set -u
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+LIBEXEC=/usr/libexec/askozia
+TIMEOUT=${ASKOZIA_HEALTHCHECK_TIMEOUT:-600}
+INTERVAL=${ASKOZIA_HEALTHCHECK_INTERVAL:-15}
+BOOT_DIR=${ASKOZIA_BOOT_DIR:-/media/boot}
+
+# shellcheck source=bootctl.sh
+. "$LIBEXEC/bootctl.sh"
+
+if bootctl_is_trial; then trial=1; else trial=0; fi
+echo "$(date) healthcheck started (slot $(bootctl_current), trial=$trial)"
+start=$(cut -d. -f1 /proc/uptime)
+while :; do
+	if askozia healthcheck --mark-good; then
+		echo "$(date) healthy"
+		exit 0
+	fi
+	now=$(cut -d. -f1 /proc/uptime)
+	if [ $((now - start)) -ge "$TIMEOUT" ]; then
+		if [ "$trial" = 1 ]; then
+			echo "$(date) trial boot did not become healthy within ${TIMEOUT}s - rebooting to roll back"
+			logger -t askozia-healthcheck "trial boot unhealthy, rolling back" || true
+			doas -n "$LIBEXEC/priv" reboot
+			exit 1
+		fi
+		echo "$(date) system not healthy after ${TIMEOUT}s"
+		logger -t askozia-healthcheck "system not healthy after ${TIMEOUT}s" || true
+		exit 1
+	fi
+	sleep "$INTERVAL"
+done

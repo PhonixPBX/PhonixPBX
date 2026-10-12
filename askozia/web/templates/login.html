@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block title %}Login · AskoziaPBX{% endblock %}
+{% block body_class %}d-flex flex-column askozia-login{% endblock %}
+{% block body %}
+<div class="page page-center">
+  <div class="container container-tight py-4">
+    <div class="text-center mb-4">
+      <img src="/static/img/logobig.png" alt="AskoziaPBX" class="askozia-login-logo">
+    </div>
+    <div class="card card-md">
+      <div class="card-body">
+        <h2 class="h2 text-center mb-4">Login to your PBX</h2>
+        {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+        <form action="/login" method="post" autocomplete="off">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <input type="hidden" name="next" value="{{ next }}">
+          <div class="mb-3">
+            <label class="form-label" for="username">Username</label>
+            <input type="text" id="username" name="username" class="form-control" value="{{ username }}" autocomplete="username" required autofocus>
+          </div>
+          <div class="mb-2">
+            <label class="form-label" for="password">Password</label>
+            <input type="password" id="password" name="password" class="form-control" autocomplete="current-password" required>
+          </div>
+          <div class="form-footer">
+            <button type="submit" class="btn btn-primary w-100">Sign in</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="text-center text-secondary mt-3 small">
+      The initial password is shown on the system console. Lost it? Use the console menu to reset it.
+    </div>
+  </div>
+</div>
+{% endblock %}

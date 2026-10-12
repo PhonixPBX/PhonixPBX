@@ -1,0 +1,2 @@
+# Local Raspberry Pi settings (kept across updates), e.g.:
+# dtoverlay=disable-bt

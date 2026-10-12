@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% from "macros/ui.html" import empty with context %}
+{% block actions %}
+<div class="btn-list">
+  <a href="/accounts/phones/new?tech=pjsip" class="btn btn-primary">{{ icon("plus") }} SIP phone</a>
+  <a href="/accounts/phones/new?tech=iax" class="btn">{{ icon("plus") }} IAX phone</a>
+  <a href="/accounts/phones/new?tech=external" class="btn">{{ icon("plus") }} External phone</a>
+</div>
+{% endblock %}
+{% block content %}
+<div class="card">
+  {% if phones %}
+  <div class="table-responsive">
+    <table class="table table-vcenter card-table table-hover">
+      <thead><tr><th>Extension</th><th>Name</th><th>Type</th><th>Status</th><th>Voicemail</th><th>Description</th><th></th></tr></thead>
+      <tbody hx-get="/accounts/phones/status" hx-trigger="load, every 15s" hx-swap="none">
+        {% for p in phones %}{% include "partials/phone_row.html" %}{% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  {{ empty("No phones yet", "Create a SIP phone and register your desk phone or softphone with it.", "/accounts/phones/new", "Add a phone") }}
+  {% endif %}
+</div>
+<p class="text-secondary small mt-2">
+  SIP phones register with the extension as username and the account password. The server address is this system's IP address.
+</p>
+{% endblock %}

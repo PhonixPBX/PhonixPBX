@@ -1,0 +1,7 @@
+# initramfs drivers for the Raspberry Pi kernel (most storage drivers are
+# built in; dependencies are added automatically, missing modules skipped)
+squashfs
+overlay
+nls_cp437
+nls_iso8859_1
+nls_utf8

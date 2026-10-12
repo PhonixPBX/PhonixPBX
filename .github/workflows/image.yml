@@ -1,0 +1,106 @@
+name: image
+
+on:
+  push:
+    branches: [master, main, askozia-ng]
+    tags: ["v*"]
+  pull_request:
+    paths:
+      - "image/**"
+      - "system/**"
+      - "packaging/**"
+      - ".github/workflows/image.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CONTAINER: docker
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        board: [pc-amd64, rpi-arm64, pc-x86]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Signing keys
+        env:
+          UPDATE_KEY: ${{ secrets.ASKOZIA_UPDATE_SIGNING_KEY }}
+          ABUILD_KEY: ${{ secrets.ASKOZIA_ABUILD_KEY }}
+          ABUILD_PUB: ${{ secrets.ASKOZIA_ABUILD_KEY_PUB }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/keys"
+          if [ -n "$UPDATE_KEY" ]; then
+            printf '%s\n' "$UPDATE_KEY" > "$RUNNER_TEMP/keys/update-signing.pem"
+            echo "ASKOZIA_UPDATE_SIGNING_KEY=$RUNNER_TEMP/keys/update-signing.pem" >> "$GITHUB_ENV"
+          else
+            echo "::warning::no ASKOZIA_UPDATE_SIGNING_KEY secret - using a throwaway key (test build)"
+          fi
+          if [ -n "$ABUILD_KEY" ]; then
+            printf '%s\n' "$ABUILD_KEY" > "$RUNNER_TEMP/keys/askozia-abuild.rsa"
+            printf '%s\n' "$ABUILD_PUB" > "$RUNNER_TEMP/keys/askozia-abuild.rsa.pub"
+            echo "ASKOZIA_ABUILD_KEY=$RUNNER_TEMP/keys/askozia-abuild.rsa" >> "$GITHUB_ENV"
+          fi
+      - name: Build apk and image
+        run: image/build.sh ${{ matrix.board }}
+      - name: Fix ownership of build output
+        run: sudo chown -R "$(id -u):$(id -g)" out image/work image/keys
+      - name: Inspect image
+        run: |
+          zstd -d -c out/askozia-*-${{ matrix.board }}.img.zst > disk.img
+          sfdisk -d disk.img
+          rm disk.img
+      - name: Enable KVM
+        if: matrix.board != 'rpi-arm64'
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+          sudo apt-get update -qq && sudo apt-get install -y -qq qemu-system-x86 ovmf
+      - name: QEMU boot smoke test (UEFI + BIOS, update + rollback)
+        if: matrix.board == 'pc-amd64'
+        run: image/test-qemu.sh --board pc-amd64 --firmware both --update --timeout 600
+      - name: QEMU boot smoke test (BIOS)
+        if: matrix.board == 'pc-x86'
+        run: image/test-qemu.sh --board pc-x86 --firmware bios --timeout 900
+      - name: Upload serial logs
+        if: always() && matrix.board != 'rpi-arm64'
+        uses: actions/upload-artifact@v4
+        with:
+          name: serial-logs-${{ matrix.board }}
+          path: image/work/qemu/*.log
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v4
+        with:
+          name: askozia-${{ matrix.board }}
+          path: |
+            out/askozia-*-${{ matrix.board }}.img.zst
+            out/askozia-*-${{ matrix.board }}.update
+            out/askozia-*-${{ matrix.board }}.packages
+          compression-level: 0
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: askozia-*
+          merge-multiple: true
+          path: out
+      - name: SHA256SUMS
+        run: cd out && sha256sum askozia-*.img.zst askozia-*.update > SHA256SUMS
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            out/askozia-*.img.zst
+            out/askozia-*.update
+            out/SHA256SUMS

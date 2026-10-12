@@ -1,0 +1,195 @@
+#!/bin/sh
+# AskoziaPBX initramfs
+#
+#  1. load storage/file system drivers, find the ASKBOOT partition
+#  2. grow the ASKDATA partition to the end of the disk (first boot)
+#  3. A/B trial accounting (Raspberry Pi), factory reset (wipe ASKDATA)
+#  4. mount the squashfs root of the booted slot with a tmpfs overlay,
+#     ASKDATA at /data and ASKBOOT at /media/boot, then switch_root
+#
+# Kernel parameters:
+#   askozia.slot=A|B     slot to boot (set by GRUB / cmdline.txt)
+#   askozia.trial=1      unconfirmed trial boot of an update (GRUB)
+#   askozia.debug=1      shell on errors instead of rebooting, verbose
+#   askozia.break=1      shell before switch_root
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+
+/bin/busybox mkdir -p /proc /sys /dev /run /tmp /mnt/boot /sysroot
+/bin/busybox mount -t proc -o nosuid,nodev,noexec proc /proc
+/bin/busybox mount -t sysfs -o nosuid,nodev,noexec sysfs /sys
+/bin/busybox mount -t devtmpfs -o nosuid,mode=0755 devtmpfs /dev 2>/dev/null
+[ -c /dev/console ] || mknod -m 600 /dev/console c 5 1
+exec </dev/console >/dev/console 2>&1
+
+SLOT=A
+TRIAL=0
+DEBUG=0
+BREAK=0
+for w in $(cat /proc/cmdline); do
+	case "$w" in
+	askozia.slot=B) SLOT=B ;;
+	askozia.trial=1) TRIAL=1 ;;
+	askozia.debug=1) DEBUG=1 ;;
+	askozia.break=1) BREAK=1 ;;
+	esac
+done
+
+# messages go to the kernel log so they appear on every console (screen and
+# serial), not only on /dev/console
+msg() {
+	if [ -w /dev/kmsg ]; then
+		echo "<5>askozia-init: $*" >/dev/kmsg
+	else
+		echo "askozia-init: $*"
+	fi
+}
+
+shell() {
+	echo "askozia-init: starting a shell, exit to continue"
+	setsid -c /bin/sh -l 2>/dev/null || /bin/sh -l
+}
+
+fatal() {
+	msg "ERROR: $*"
+	if [ "$TRIAL" = 1 ] && [ "$DEBUG" != 1 ]; then
+		msg "this is a trial boot of an update - rebooting into the previous slot"
+		sync
+		sleep 5
+		reboot -f
+	fi
+	if [ "$DEBUG" = 1 ]; then
+		shell
+	else
+		msg "boot with askozia.debug=1 for a rescue shell; rebooting in 60 seconds"
+		sleep 60
+	fi
+	sync
+	reboot -f
+}
+
+# ------------------------------------------------------------ drivers
+if [ -f /lib/modules/load.order ]; then
+	while read -r m; do
+		insmod "/lib/modules/$m" 2>/dev/null
+	done </lib/modules/load.order
+fi
+
+# ------------------------------------------------------------ boot disk
+msg "booting slot $SLOT$([ "$TRIAL" = 1 ] && echo ' (trial)')"
+BOOTDEV=""
+i=0
+while [ $i -lt 300 ]; do
+	BOOTDEV=$(findfs LABEL=ASKBOOT 2>/dev/null)
+	[ -n "$BOOTDEV" ] && break
+	[ $i -eq 30 ] && msg "waiting for the ASKBOOT partition ..."
+	sleep 0.1
+	i=$((i + 1))
+done
+case "$BOOTDEV" in
+/dev/*1) BASE=${BOOTDEV%1} ;;
+'') fatal "no partition labelled ASKBOOT found" ;;
+*) fatal "unexpected boot partition $BOOTDEV" ;;
+esac
+# /dev/sda1 -> /dev/sda, /dev/mmcblk0p1 -> /dev/mmcblk0, /dev/nvme0n1p1 -> /dev/nvme0n1
+case "$BASE" in
+*[0-9]p) DISK=${BASE%p} ;;
+*) DISK=$BASE ;;
+esac
+DATADEV=${BASE}4
+[ "$SLOT" = A ] && ROOTDEV=${BASE}2 || ROOTDEV=${BASE}3
+[ "$DEBUG" = 1 ] && msg "disk $DISK boot $BOOTDEV root $ROOTDEV data $DATADEV"
+
+wait_dev() {
+	j=0
+	while [ ! -b "$1" ] && [ $j -lt 50 ]; do
+		sleep 0.1
+		j=$((j + 1))
+	done
+	[ -b "$1" ]
+}
+
+# ------------------------------------------------------------ grow ASKDATA
+grow_data() {
+	dn=${DISK#/dev/}
+	pn=${DATADEV#/dev/}
+	[ -r "/sys/class/block/$pn/start" ] || return 0
+	disk_size=$(cat "/sys/class/block/$dn/size")
+	p_start=$(cat "/sys/class/block/$pn/start")
+	p_size=$(cat "/sys/class/block/$pn/size")
+	free=$((disk_size - p_start - p_size))
+	# grow when more than 64 MiB are unused (MBR: at most 2 TiB)
+	[ "$free" -gt 131072 ] || return 0
+	max=$((4294967295 - p_start))
+	[ "$p_size" -lt "$max" ] || return 0
+	msg "growing the data partition to the end of the disk"
+	echo ", +" | sfdisk --no-reread --no-tell-kernel -q -N 4 "$DISK" >/dev/null 2>&1 ||
+		echo ", $max" | sfdisk --no-reread --no-tell-kernel -q -N 4 "$DISK" >/dev/null 2>&1 ||
+		{ msg "WARNING: resizing the partition failed"; return 0; }
+	blockdev --rereadpt "$DISK" 2>/dev/null || partx -u "$DISK" 2>/dev/null
+	sleep 1
+	wait_dev "$DATADEV" || fatal "$DATADEV vanished after resizing"
+	e2fsck -f -y "$DATADEV" >/dev/null 2>&1
+	resize2fs "$DATADEV" >/dev/null 2>&1 || msg "WARNING: resize2fs failed"
+}
+grow_data
+
+# ------------------------------------------------------------ ASKBOOT
+fsck.vfat -a -w "$BOOTDEV" >/dev/null 2>&1
+mount -t vfat -o rw,noatime,nodev,nosuid,noexec,umask=0022,iocharset=iso8859-1 "$BOOTDEV" /mnt/boot ||
+	fatal "cannot mount the boot partition $BOOTDEV"
+
+BOOT_DIR=/mnt/boot
+. /lib/askozia/bootctl.sh
+rc=0
+bootctl_initramfs_account || rc=$?
+if [ $rc -eq 2 ]; then
+	msg "trial boot of slot $SLOT was not confirmed - returning to the previous slot"
+	umount /mnt/boot
+	sync
+	reboot -f
+fi
+[ "$TRIAL" = 1 ] && msg "trial boot of slot $SLOT"
+
+# ------------------------------------------------------------ factory reset / ASKDATA
+wait_dev "$DATADEV" || fatal "data partition $DATADEV not found"
+if [ -f /mnt/boot/factory-reset ]; then
+	msg "factory reset: wiping the data partition"
+	mke2fs -q -F -t ext4 -L ASKDATA -m 1 "$DATADEV" || fatal "formatting $DATADEV failed"
+	rm -f /mnt/boot/factory-reset
+	sync
+fi
+e2fsck -p "$DATADEV" >/dev/null 2>&1
+rc=$?
+if [ $rc -ge 4 ]; then
+	msg "data partition has errors, running a full check"
+	e2fsck -f -y "$DATADEV"
+	rc=$?
+	[ $rc -lt 4 ] || fatal "the data partition is damaged (e2fsck exit code $rc)"
+fi
+
+# ------------------------------------------------------------ root file system
+wait_dev "$ROOTDEV" || fatal "root partition $ROOTDEV not found"
+mkdir -p /media/root-ro /media/overlay
+mount -t squashfs -o ro "$ROOTDEV" /media/root-ro ||
+	fatal "cannot mount the root file system of slot $SLOT ($ROOTDEV)"
+[ -x /media/root-ro/sbin/init ] || fatal "slot $SLOT contains no system"
+mount -t tmpfs -o mode=0755,size=50% tmpfs /media/overlay
+mkdir -p /media/overlay/upper /media/overlay/work
+mount -t overlay -o lowerdir=/media/root-ro,upperdir=/media/overlay/upper,workdir=/media/overlay/work \
+	overlay /sysroot || fatal "cannot mount the overlay root"
+
+mount -t ext4 -o noatime,nodev,nosuid "$DATADEV" /sysroot/data ||
+	fatal "cannot mount the data partition $DATADEV"
+mount --move /mnt/boot /sysroot/media/boot
+mount -o remount,ro /sysroot/media/boot
+mount --move /media/root-ro /sysroot/media/root-ro
+mount --move /media/overlay /sysroot/media/overlay
+
+[ "$BREAK" = 1 ] && shell
+
+for d in /dev /sys /proc; do
+	mount --move "$d" "/sysroot$d" 2>/dev/null || umount -l "$d"
+done
+exec switch_root /sysroot /sbin/init
+echo "askozia-init: switch_root failed"
+exec /bin/sh
