@@ -19,10 +19,11 @@ from phonix import __version__, config
 from phonix.core import settings as st
 from phonix.core import validation as v
 from phonix.core.models import User
+from phonix.core.shacrypt import sha512_crypt
 from phonix.services import backup as backup_svc
 from phonix.services import privileged, status, update
 from phonix.services.common import ServiceError, audit
-from phonix.web.deps import get_db, ui_user
+from phonix.web.deps import form_to_dict, get_db, ui_user
 from phonix.web.routes.ui.common import page, redirect, save_settings_form
 from phonix.web.templating import flash, render
 
@@ -52,8 +53,31 @@ def general(request: Request, user: User = Depends(ui_user), db: Session = Depen
 
 @router.post("/general")
 async def general_save(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
+    form = await request.form()
+    password = str(form.get("ssh_password", ""))
+    extra: dict[str, str] = {}
+    if form.get("ssh_password_clear"):
+        extra["ssh_password_hash"] = ""
+    elif password:
+        if len(password) < 8:
+            values = {**st.load(db, st.SystemSettings).model_dump(), **form_to_dict(form, st.SystemSettings)}
+            errors = {"ssh_password": "The password must have at least 8 characters"}
+            return page(
+                request,
+                "pages/system_general.html",
+                status_code=422,
+                values=values,
+                errors=errors,
+                timezones=_timezones(),
+            )
+        extra["ssh_password_hash"] = sha512_crypt(password)
     saved, values, errors = await save_settings_form(
-        request, db, st.SystemSettings, ("system", "network", "telephony", "firewall")
+        request,
+        db,
+        st.SystemSettings,
+        ("system", "network", "telephony", "firewall"),
+        secret_fields=("ssh_password_hash",),
+        extra=extra,
     )
     if not saved:
         return page(

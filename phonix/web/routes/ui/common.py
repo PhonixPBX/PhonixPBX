@@ -47,6 +47,7 @@ async def save_settings_form(
     model: type[st.SettingsGroup],
     areas: tuple[str, ...],
     secret_fields: tuple[str, ...] = (),
+    extra: dict[str, Any] | None = None,
 ) -> tuple[bool, dict[str, Any], dict[str, str]]:
     """Validate and store a settings form. Returns (saved, values, errors)."""
     from pydantic import ValidationError
@@ -59,6 +60,7 @@ async def save_settings_form(
         if not submitted.get(name):
             submitted.pop(name, None)  # keep the stored secret
     data.update(submitted)
+    data.update(extra or {})
     try:
         new = model.model_validate(data)
     except ValidationError as exc:

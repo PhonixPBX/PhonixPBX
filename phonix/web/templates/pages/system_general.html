@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "macros/forms.html" import csrf, input, textarea, checkbox, select, form_errors, submit with context %}
+{% from "macros/forms.html" import csrf, input, secret, textarea, checkbox, select, form_errors, submit with context %}
 {% block content %}
 <form method="post" action="/system/general" class="card">
   {{ csrf() }}
@@ -20,6 +20,10 @@
     </div>
     <hr>
     {{ checkbox("ssh_enabled", "Enable SSH access (key or password login for root)", values, errors, help="Only enable when needed. Access can additionally be limited under Advanced > Firewall.") }}
+    <div class="row">
+      <div class="col-md-6">{{ secret("ssh_password", "SSH root password", values, errors, generate=False, is_new=not values.get("ssh_password_hash"), help=("A password is set. Leave empty to keep it." if values.get("ssh_password_hash") else "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters.")) }}</div>
+      {% if values.get("ssh_password_hash") %}<div class="col-md-6 pt-md-4">{{ checkbox("ssh_password_clear", "Remove the password (key logins only)", {}, errors) }}</div>{% endif %}
+    </div>
   </div>
   {{ submit() }}
 </form>

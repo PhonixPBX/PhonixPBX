@@ -45,7 +45,8 @@ add_member www-data nginx
 add_group phonix 200
 add_user phonix 200 200 /data /sbin/nologin
 add_member asterisk phonix
-# root: no password (console menu / service shell / ssh keys only)
+# root: no password (console menu / service shell / ssh keys); the SSH
+# root password from the web interface is set at boot (ssh-root-password)
 sed -i 's/^root:[^:]*:/root:*:/' "$R/etc/shadow"
 
 # --- packages ---------------------------------------------------------------

@@ -63,7 +63,13 @@ def generate(snap: Snapshot) -> list[GeneratedFile]:
         _priv("/etc/timezone", sysset.timezone + "\n", "system:time"),
         # root:phonix 0640 - the web process compares it before staging changes
         _priv("/etc/nftables.nft", nftables(snap), "system:firewall", mode=0o640),
-        _priv("/etc/phonix/ssh", ("on" if sysset.ssh_enabled else "off") + "\n", "system:ssh"),
+        # line 1: on/off, line 2: root password hash (empty = key logins only)
+        _priv(
+            "/etc/phonix/ssh",
+            ("on" if sysset.ssh_enabled else "off") + "\n" + sysset.ssh_password_hash + "\n",
+            "system:ssh",
+            mode=0o640,
+        ),
         GeneratedFile(
             path="/etc/phonix/msmtprc",
             content=render("system/msmtprc.j2", email=snap.email),

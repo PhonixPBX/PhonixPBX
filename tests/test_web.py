@@ -121,6 +121,43 @@ def test_settings_page_roundtrip(client):
     assert 'value="pbx1"' in page and "ntp.example.org" in page
 
 
+def test_ssh_root_password(client):
+    from phonix.core import settings as st
+
+    login(client)
+    form = {
+        "hostname": "pbx1",
+        "domain": "example.org",
+        "timezone": "UTC",
+        "tonezone": "us",
+        "prompt_language": "en",
+        "ui_language": "en",
+        "ntp_servers": "pool.ntp.org",
+        "ssh_enabled": "true",
+    }
+
+    def post(**extra):
+        token = csrf(client, "/system/general")
+        return client.post("/system/general", data={"csrf_token": token, **form, **extra}, follow_redirects=False)
+
+    def stored():
+        with session_scope() as s:
+            return st.load(s, st.SystemSettings).ssh_password_hash
+
+    assert post(ssh_password="short").status_code == 422 and stored() == ""
+    assert post(ssh_password="geheim123").status_code == 303
+    pw = stored()
+    assert pw.startswith("$6$") and "geheim123" not in pw
+    assert "A password is set" in client.get("/system/general").text
+    # empty field keeps it, the API never shows it
+    assert post(ssh_password="").status_code == 303 and stored() == pw
+    auth = {"Authorization": "Basic " + base64.b64encode(b"admin:adminadmin").decode()}
+    assert client.get("/api/v1/settings/system", headers=auth).json()["ssh_password_hash"] == ""
+    assert client.patch("/api/v1/settings/system", headers=auth, json={"ssh_password_hash": ""}).status_code == 200
+    assert stored() == pw
+    assert post(ssh_password_clear="true").status_code == 303 and stored() == ""
+
+
 def test_apply_via_htmx(client):
     login(client)
     token = csrf(client)

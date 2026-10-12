@@ -113,3 +113,13 @@ def test_msmtp_quoting(session, secret):
     rc = render(session)["/etc/phonix/msmtprc"].content
     line = next(x for x in rc.splitlines() if x.startswith("password "))
     assert line.startswith('password "') and line.endswith('"')
+
+
+def test_ssh_root_password_line(session):
+    from phonix.core.shacrypt import sha512_crypt
+
+    assert render(session)["/etc/phonix/ssh"].content == "off\n\n"
+    pw = sha512_crypt("geheim123")
+    st.save(session, st.SystemSettings(ssh_enabled=True, ssh_password_hash=pw))
+    f = render(session)["/etc/phonix/ssh"]
+    assert f.content == f"on\n{pw}\n" and f.mode == 0o640 and f.privileged

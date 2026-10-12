@@ -219,6 +219,7 @@
         ],
         "prompt_language": "en",
         "ssh_enabled": false,
+        "ssh_password_hash": "",
         "timezone": "Europe/Berlin",
         "tonezone": "us",
         "ui_language": "en"

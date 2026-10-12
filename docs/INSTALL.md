@@ -107,8 +107,8 @@ Access to the console means physical access, so the menu has no login.
 ### SSH
 
 SSH is off by default. When you switch it on under *System → General*:
-- Only public-key logins are accepted, as `root`.
-- Put your keys in `/data/ssh/authorized_keys`.
+- Log in as `root`, with a key or with the SSH root password set on the same page.
+- Put your keys in `/data/ssh/authorized_keys`. Without a password, only key logins work.
 - The root filesystem is read-only and changes to it are lost on reboot.
 - The configuration lives in the database at `/data/phonix.db` and is managed with the web interface or the `phonix` command.
 

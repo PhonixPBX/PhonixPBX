@@ -168,7 +168,7 @@ crud(
 
 
 SETTINGS = {st.group_name(m): m for m in st.ALL_GROUPS}
-SECRET_SETTINGS = {"email": ("password",)}
+SECRET_SETTINGS = {"email": ("password",), "system": ("ssh_password_hash",)}
 SETTINGS_AREAS = {
     "system": ("system", "network", "telephony", "firewall"),
     "network": ("network", "telephony"),
@@ -209,6 +209,9 @@ async def patch_settings(
     if not isinstance(body, dict):
         raise HTTPException(422, "expected a JSON object")
     current = st.load(db, model).model_dump()
+    for name in SECRET_SETTINGS.get(group, ()):
+        if not body.get(name):
+            body.pop(name, None)  # GET returns secrets empty: keep the stored one
     current.update(body)
     try:
         new = model.model_validate(current)

@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 
 from phonix.core import validation as v
 from phonix.core.models import Setting
+from phonix.core.shacrypt import HASH_RE
 
 
 class SettingsGroup(BaseModel):
@@ -33,6 +34,8 @@ class SystemSettings(SettingsGroup):
     ui_language: str = "en"
     ntp_servers: list[str] = Field(default_factory=lambda: ["pool.ntp.org"])
     ssh_enabled: bool = False
+    # root password for SSH logins (SHA-512 crypt, see core/shacrypt); empty = keys only
+    ssh_password_hash: str = ""
 
     @field_validator("hostname")
     @classmethod
@@ -53,6 +56,13 @@ class SystemSettings(SettingsGroup):
     @classmethod
     def _ntp(cls, value: list[str]) -> list[str]:
         return [v.host(s) for s in value if s.strip()]
+
+    @field_validator("ssh_password_hash")
+    @classmethod
+    def _ssh_password_hash(cls, value: str) -> str:
+        if value and not HASH_RE.match(value):
+            raise ValueError("Invalid password hash")
+        return value
 
     @field_validator("tonezone")
     @classmethod

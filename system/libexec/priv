@@ -118,7 +118,7 @@ staged_files() {
 
 target_mode() {
 	case "$1" in
-	/etc/nftables.nft) echo 640 ;;
+	/etc/nftables.nft | /etc/phonix/ssh) echo 640 ;;
 	*) echo 644 ;;
 	esac
 }
@@ -126,7 +126,7 @@ target_mode() {
 # group of an installed file (the web process compares /etc/nftables.nft)
 target_group() {
 	case "$1" in
-	/etc/nftables.nft) echo phonix ;;
+	/etc/nftables.nft | /etc/phonix/ssh) echo phonix ;;
 	*) echo root ;;
 	esac
 }
@@ -201,6 +201,7 @@ activate() {
 		nft -f /etc/nftables.nft || die "loading the firewall ruleset failed"
 		;;
 	system:ssh)
+		"$LIBEXEC/ssh-root-password" || die "setting the root password failed"
 		if [ "$(head -n 1 /etc/phonix/ssh 2>/dev/null)" = on ]; then
 			rc-update add dropbear default >/dev/null 2>&1 || true
 			svc_started dropbear || rc-service dropbear start >/dev/null 2>&1 || die "starting ssh failed"

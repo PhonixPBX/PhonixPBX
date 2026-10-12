@@ -59,3 +59,25 @@ def test_misc():
     with pytest.raises(ValueError):
         v.codecs(["mp3"])
     assert v.codecs(["ALAW", "alaw", "g722"]) == ["alaw", "g722"]
+
+
+def test_sha512_crypt_reference_vectors():
+    from phonix.core.shacrypt import HASH_RE, sha512_crypt
+
+    # test vectors from the SHA-crypt specification
+    assert sha512_crypt("Hello world!", "saltstring", 5000) == (
+        "$6$saltstring$svn8UoSVapNtMuq1ukKS4tPQd8iKwSMHWjl/O817G3uBnIFNjnQJuesI68u4OTLiBFdcbYEdFCoEOfaS35inz1"
+    )
+    assert sha512_crypt("Hello world!", "saltstringsaltstring", 10000) == (
+        "$6$rounds=10000$saltstringsaltst$OW1/O6BYHV6BcXZu8QVeXbDWra3Oeqh0sbHbbMCVNSnCM/UrjmM0Dp8vOuZeHBy/YTBmSK6H9qs/y3RnOaw5v."
+    )
+    assert HASH_RE.match(sha512_crypt("secret-pw"))
+
+
+def test_ssh_password_hash_rejects_garbage():
+    from pydantic import ValidationError
+
+    from phonix.core import settings as st
+
+    with pytest.raises(ValidationError):
+        st.SystemSettings(ssh_password_hash="$6$x$abc\nroot::0:")

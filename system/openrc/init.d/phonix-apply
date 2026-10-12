@@ -50,7 +50,9 @@ start() {
 		ln -sfn "/usr/share/zoneinfo/$tz" /etc/localtime
 	fi
 
-	# ssh on/off (runlevels live on the tmpfs overlay: decided on every boot)
+	# ssh on/off and the root password (runlevels and /etc/shadow live on
+	# the tmpfs overlay: decided on every boot)
+	/usr/libexec/phonix/ssh-root-password || ewarn "setting the root password failed"
 	if [ "$(head -n 1 /etc/phonix/ssh 2>/dev/null)" = on ]; then
 		ln -sfn /etc/init.d/dropbear /etc/runlevels/default/dropbear
 	else
