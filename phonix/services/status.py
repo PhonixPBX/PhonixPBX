@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import platform
+import re
 import shutil
 import time
 from collections import deque
@@ -180,12 +181,15 @@ def asterisk_status() -> dict[str, Any]:
                     "contacts": ev.get("Contacts", ""),
                 }
             for ev in client.action_list("PJSIPShowContacts"):
-                aor = ev.get("Aor", "")
+                # ContactList events carry no Aor field; the contact is named
+                # "<aor>;@<hash>" ("<aor>@@<hash>" on older Asterisk)
+                aor = re.split(r";@|@@", ev.get("ObjectName", ""), maxsplit=1)[0]
+                rtt = ev.get("RoundtripUsec", "")
                 out["endpoints"].setdefault(aor, {}).setdefault("addresses", []).append(
                     {
                         "uri": ev.get("Uri", ""),
                         "status": ev.get("Status", ""),
-                        "rtt": ev.get("RoundtripUsec", ""),
+                        "rtt": rtt if rtt.isdigit() else "",
                         "agent": ev.get("UserAgent", ""),
                     }
                 )
