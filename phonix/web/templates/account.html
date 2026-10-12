@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% from "macros/forms.html" import csrf, select, form_errors with context %}
+{% block pretitle %}{{ _("Account") }}{% endblock %}
+{% block page_title %}{{ _("Preferences") }}{% endblock %}
+{% block content %}
+<div class="row"><div class="col-lg-6">
+<form method="post" action="/account" class="card">
+  {{ csrf() }}
+  <div class="card-body">
+    {{ form_errors(errors) }}
+    {{ select("language", _("Language"), values, errors, languages, empty=_("%(language)s (default)", language="English"), help=_("Language of the web interface for %(user)s.", user=user.username)) }}
+    <a href="/password">{{ icon("key", "me-1") }}{{ _("Change password") }}</a>
+  </div>
+  <div class="card-footer text-end"><button class="btn btn-primary" type="submit">{{ _("Save") }}</button></div>
+</form>
+</div></div>
+{% endblock %}

@@ -12,12 +12,16 @@ from fastapi import HTTPException, Request
 from sqlalchemy.orm import Session
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.responses import Response
+from starlette.types import ASGIApp, Receive, Scope, Send
 
+from phonix import i18n
 from phonix.core.models import User
 
 SESSION_USER = "uid"
 SESSION_CSRF = "csrf"
 SESSION_LOGIN_AT = "at"
+# web interface language of the logged in user (read by LanguageMiddleware)
+SESSION_LANGUAGE = "lang"
 SAFE_METHODS = {"GET", "HEAD", "OPTIONS"}
 
 
@@ -58,6 +62,7 @@ def login(request: Request, user: User) -> None:
     request.session[SESSION_USER] = user.id
     request.session[SESSION_LOGIN_AT] = int(time.time())
     request.session[SESSION_CSRF] = secrets.token_urlsafe(32)
+    request.session[SESSION_LANGUAGE] = i18n.normalize(user.language)
 
 
 def logout(request: Request) -> None:
@@ -78,6 +83,8 @@ def current_user(request: Request, session: Session, max_age_minutes: int) -> Us
     else:
         # sliding expiration
         request.session[SESSION_LOGIN_AT] = int(time.time())
+        # language changed by another session: used from the next request on
+        request.session[SESSION_LANGUAGE] = i18n.normalize(user.language)
     return user
 
 
@@ -150,3 +157,18 @@ class SecurityHeaders(BaseHTTPMiddleware):
         else:
             response.headers.setdefault("Cache-Control", "no-store")
         return response
+
+
+class LanguageMiddleware:
+    """Set the request's translation language from the session (pure ASGI, inside SessionMiddleware)."""
+
+    def __init__(self, app: ASGIApp) -> None:
+        self.app = app
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+        session = scope.get("session") or {}
+        with i18n.language(session.get(SESSION_LANGUAGE)):
+            await self.app(scope, receive, send)

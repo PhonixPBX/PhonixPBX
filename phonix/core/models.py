@@ -55,6 +55,8 @@ class User(Base):
     must_change_pw: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[dt.datetime] = mapped_column(DateTime, default=utcnow)
     last_login: Mapped[dt.datetime | None] = mapped_column(DateTime, nullable=True)
+    # web interface language (phonix.i18n.LANGUAGE_NAMES); None = English
+    language: Mapped[str | None] = mapped_column(String(8), nullable=True)
     api_tokens: Mapped[list[ApiToken]] = relationship(
         back_populates="user", cascade="all, delete-orphan", passive_deletes=True
     )

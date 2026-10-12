@@ -17,7 +17,7 @@ from phonix import __version__, config
 from phonix.core import migrate
 from phonix.services import secrets, setup
 from phonix.web.routes import api, ui
-from phonix.web.security import LoginRequired, PasswordChangeRequired, SecurityHeaders
+from phonix.web.security import LanguageMiddleware, LoginRequired, PasswordChangeRequired, SecurityHeaders
 from phonix.web.templating import render
 
 log = logging.getLogger(__name__)
@@ -53,6 +53,8 @@ def create_app() -> FastAPI:
         openapi_url="/api/v1/openapi.json",
     )
     app.add_middleware(SecurityHeaders)
+    # inside the session middleware (added later = outer), reads the session
+    app.add_middleware(LanguageMiddleware)
     app.add_middleware(
         SessionMiddleware,
         secret_key=secrets.get("session_key"),

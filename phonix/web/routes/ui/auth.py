@@ -6,7 +6,9 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import RedirectResponse, Response
 from sqlalchemy.orm import Session
 
+from phonix import i18n
 from phonix.core.models import User
+from phonix.i18n import _
 from phonix.services import firstboot, users
 from phonix.services.common import ServiceError
 from phonix.web import security
@@ -43,7 +45,7 @@ async def login(request: Request, db: Session = Depends(get_db)) -> Response:
             status_code=429,
             next=target,
             username=username,
-            error="Too many failed attempts. Please wait a few minutes.",
+            error=_("Too many failed attempts. Please wait a few minutes."),
         )
     user = users.authenticate(db, username, password)
     if user is None:
@@ -54,7 +56,7 @@ async def login(request: Request, db: Session = Depends(get_db)) -> Response:
             status_code=401,
             next=target,
             username=username,
-            error="Invalid username or password.",
+            error=_("Invalid username or password."),
         )
     security.login_limiter.reset(key)
     security.login(request, user)
@@ -66,6 +68,38 @@ async def logout(request: Request) -> Response:
     await security.verify_csrf(request)
     security.logout(request)
     return RedirectResponse("/login", status_code=303)
+
+
+def _languages() -> list[tuple[str, str]]:
+    return [(code, name) for code, name in i18n.LANGUAGE_NAMES.items() if code != i18n.DEFAULT]
+
+
+@router.get("/account")
+def account_form(request: Request, user: User = Depends(require_user)) -> Response:
+    return page(request, "account.html", languages=_languages(), values={"language": user.language or ""})
+
+
+@router.post("/account")
+async def account_save(request: Request, user: User = Depends(require_user), db: Session = Depends(get_db)) -> Response:
+    await security.verify_csrf(request)
+    form = await request.form()
+    language = str(form.get("language", ""))
+    try:
+        users.set_language(db, user, language)
+    except ServiceError as exc:
+        return page(
+            request,
+            "account.html",
+            status_code=422,
+            languages=_languages(),
+            values={"language": language},
+            errors=service_errors(exc),
+        )
+    request.session[security.SESSION_LANGUAGE] = i18n.normalize(user.language)
+    # flash in the new language
+    with i18n.language(user.language):
+        flash(request, _("Your preferences have been saved."))
+    return RedirectResponse("/account", status_code=303)
 
 
 @router.get("/password")
@@ -86,5 +120,5 @@ async def password_change(
     except ServiceError as exc:
         return page(request, "password.html", status_code=422, errors=service_errors(exc))
     firstboot.forget_initial_password()
-    flash(request, "Your password has been changed.")
+    flash(request, _("Your password has been changed."))
     return RedirectResponse("/", status_code=303)

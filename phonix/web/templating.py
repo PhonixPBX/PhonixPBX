@@ -10,8 +10,9 @@ from fastapi import Request
 from fastapi.templating import Jinja2Templates
 from markupsafe import Markup
 
-from phonix import __version__
+from phonix import __version__, i18n
 from phonix.core import validation as v
+from phonix.i18n import N_
 from phonix.services import platform
 from phonix.services.common import AREAS
 from phonix.web.security import csrf_token
@@ -39,75 +40,75 @@ class MenuSection:
 MENU: list[MenuSection] = [
     MenuSection(
         "system",
-        "System",
+        N_("System"),
         "settings",
         [
-            MenuItem("General Setup", "/system/general"),
-            MenuItem("Network", "/system/network"),
-            MenuItem("Storage", "/system/storage"),
-            MenuItem("Firmware", "/system/firmware"),
-            MenuItem("Backup/Restore", "/system/backup"),
-            MenuItem("Factory Defaults", "/system/defaults"),
-            MenuItem("Reboot", "/system/reboot"),
+            MenuItem(N_("General Setup"), "/system/general"),
+            MenuItem(N_("Network"), "/system/network"),
+            MenuItem(N_("Storage"), "/system/storage"),
+            MenuItem(N_("Firmware"), "/system/firmware"),
+            MenuItem(N_("Backup/Restore"), "/system/backup"),
+            MenuItem(N_("Factory Defaults"), "/system/defaults"),
+            MenuItem(N_("Reboot"), "/system/reboot"),
         ],
     ),
     MenuSection(
         "accounts",
-        "Accounts",
+        N_("Accounts"),
         "phone",
         [
-            MenuItem("Phones", "/accounts/phones"),
-            MenuItem("Providers", "/accounts/providers"),
+            MenuItem(N_("Phones"), "/accounts/phones"),
+            MenuItem(N_("Providers"), "/accounts/providers"),
         ],
     ),
     MenuSection(
         "dialplan",
-        "Dialplan",
+        N_("Dialplan"),
         "route",
         [
-            MenuItem("Applications", "/dialplan/applications"),
-            MenuItem("Call Groups", "/dialplan/callgroups"),
-            MenuItem("Transfers & Parking", "/dialplan/transfers"),
-            MenuItem("Overview (print)", "/dialplan/print"),
+            MenuItem(N_("Applications"), "/dialplan/applications"),
+            MenuItem(N_("Call Groups"), "/dialplan/callgroups"),
+            MenuItem(N_("Transfers & Parking"), "/dialplan/transfers"),
+            MenuItem(N_("Overview (print)"), "/dialplan/print"),
         ],
     ),
     MenuSection(
         "services",
-        "Services",
+        N_("Services"),
         "server",
         [
-            MenuItem("Notifications", "/services/email"),
-            MenuItem("Voicemail", "/services/voicemail"),
-            MenuItem("Conferencing", "/services/conferencing"),
-            MenuItem("Media", "/services/media"),
+            MenuItem(N_("Notifications"), "/services/email"),
+            MenuItem(N_("Voicemail"), "/services/voicemail"),
+            MenuItem(N_("Conferencing"), "/services/conferencing"),
+            MenuItem(N_("Media"), "/services/media"),
         ],
     ),
     MenuSection(
         "status",
-        "Status",
+        N_("Status"),
         "activity",
         [
-            MenuItem("Summary", "/", ("/",)),
-            MenuItem("Calls & Registrations", "/status/calls"),
-            MenuItem("Graphs", "/status/graphs"),
-            MenuItem("Logs", "/status/logs"),
-            MenuItem("Audit Log", "/status/audit"),
+            MenuItem(N_("Summary"), "/", ("/",)),
+            MenuItem(N_("Calls & Registrations"), "/status/calls"),
+            MenuItem(N_("Graphs"), "/status/graphs"),
+            MenuItem(N_("Logs"), "/status/logs"),
+            MenuItem(N_("Audit Log"), "/status/audit"),
         ],
     ),
     MenuSection(
         "advanced",
-        "Advanced",
+        N_("Advanced"),
         "adjustments",
         [
-            MenuItem("SIP", "/advanced/sip"),
-            MenuItem("IAX", "/advanced/iax"),
-            MenuItem("RTP", "/advanced/rtp"),
-            MenuItem("Manager (AMI)", "/advanced/manager"),
-            MenuItem("Firewall", "/advanced/firewall"),
-            MenuItem("Certificate", "/advanced/certificate"),
-            MenuItem("Administrators", "/advanced/users"),
-            MenuItem("API tokens", "/advanced/tokens"),
-            MenuItem("GUI Options", "/advanced/gui"),
+            MenuItem(N_("SIP"), "/advanced/sip"),
+            MenuItem(N_("IAX"), "/advanced/iax"),
+            MenuItem(N_("RTP"), "/advanced/rtp"),
+            MenuItem(N_("Manager (AMI)"), "/advanced/manager"),
+            MenuItem(N_("Firewall"), "/advanced/firewall"),
+            MenuItem(N_("Certificate"), "/advanced/certificate"),
+            MenuItem(N_("Administrators"), "/advanced/users"),
+            MenuItem(N_("API tokens"), "/advanced/tokens"),
+            MenuItem(N_("GUI Options"), "/advanced/gui"),
         ],
     ),
 ]
@@ -134,6 +135,42 @@ def flash(request: Request, message: str, level: str = "success") -> None:
 
 def pop_flashes(request: Request) -> list[dict[str, str]]:
     return list(request.session.pop("flash", []) or [])
+
+
+# device, registration and peer states as Asterisk reports them (translated for display)
+ASTERISK_STATES = (
+    N_("Not in use"),
+    N_("In use"),
+    N_("Busy"),
+    N_("Ringing"),
+    N_("Ring+Inuse"),
+    N_("On Hold"),
+    N_("Unavailable"),
+    N_("Invalid"),
+    N_("Unknown"),
+    N_("Registered"),
+    N_("Unregistered"),
+    N_("Rejected"),
+    N_("Stopped"),
+    N_("Reachable"),
+    N_("Unreachable"),
+    N_("Lagged"),
+    N_("Avail"),
+    N_("Unavail"),
+    # channel states
+    N_("Up"),
+    N_("Down"),
+    N_("Ring"),
+    N_("Dialing"),
+    N_("Pre-ring"),
+    N_("Reserved"),
+    N_("Off hook"),
+)
+
+
+def _state(value: str) -> str:
+    """Translate an Asterisk state (no %-formatting: the value is not a template string)."""
+    return i18n.translations(i18n.get_language()).gettext(value) if value else value
 
 
 def _icon(name: str, cls: str = "") -> Markup:
@@ -175,7 +212,16 @@ templates.env.globals.update(
         "CODECS_VIDEO": v.CODECS_VIDEO,
     }
 )
+templates.env.add_extension("jinja2.ext.i18n")
+templates.env.install_gettext_callables(  # type: ignore[attr-defined]
+    gettext=lambda message: i18n.translations(i18n.get_language()).gettext(message),
+    ngettext=lambda s, p, n: i18n.translations(i18n.get_language()).ngettext(s, p, n),
+    newstyle=True,
+)
+templates.env.globals["UI_LANGUAGES"] = i18n.LANGUAGE_NAMES
+templates.env.globals["ui_language"] = i18n.get_language
 templates.env.filters["filesize"] = _filesize
+templates.env.filters["state"] = _state
 templates.env.trim_blocks = True
 templates.env.lstrip_blocks = True
 

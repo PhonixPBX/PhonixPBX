@@ -10,7 +10,9 @@ from argon2.exceptions import InvalidHashError, VerificationError
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from phonix import i18n
 from phonix.core.models import User, utcnow
+from phonix.i18n import _
 from phonix.services.common import NotFound, ServiceError, audit, generate_secret
 
 _hasher = PasswordHasher()
@@ -27,9 +29,9 @@ def hash_password(password: str) -> str:
 
 def check_password_policy(password: str) -> None:
     if len(password) < MIN_PASSWORD:
-        raise ServiceError(fields={"password": f"Password must have at least {MIN_PASSWORD} characters"})
+        raise ServiceError(fields={"password": _("Password must have at least %(min)s characters", min=MIN_PASSWORD)})
     if len(password) > 256:
-        raise ServiceError(fields={"password": "Password is too long"})
+        raise ServiceError(fields={"password": _("Password is too long")})
 
 
 def authenticate(session: Session, username: str, password: str) -> User | None:
@@ -63,9 +65,9 @@ def get_by_name(session: Session, username: str) -> User | None:
 def create_user(session: Session, username: str, password: str, must_change: bool = False, actor: str = "") -> User:
     username = username.strip().lower()
     if not _USERNAME.match(username):
-        raise ServiceError(fields={"username": "Use lowercase letters, digits, '.', '_' or '-'"})
+        raise ServiceError(fields={"username": _("Use lowercase letters, digits, '.', '_' or '-'")})
     if get_by_name(session, username):
-        raise ServiceError(fields={"username": "User already exists"})
+        raise ServiceError(fields={"username": _("User already exists")})
     check_password_policy(password)
     user = User(username=username, password_hash=hash_password(password), must_change_pw=must_change)
     session.add(user)
@@ -77,7 +79,7 @@ def create_user(session: Session, username: str, password: str, must_change: boo
 def set_password(session: Session, username: str, password: str, must_change: bool = False, actor: str = "") -> User:
     user = get_by_name(session, username)
     if user is None:
-        raise NotFound("User not found")
+        raise NotFound(_("User not found"))
     check_password_policy(password)
     user.password_hash = hash_password(password)
     user.must_change_pw = must_change
@@ -89,20 +91,30 @@ def change_own_password(session: Session, user: User, current: str, new: str, co
     try:
         _hasher.verify(user.password_hash, current)
     except (VerificationError, InvalidHashError):
-        raise ServiceError(fields={"current": "Current password is wrong"}) from None
+        raise ServiceError(fields={"current": _("Current password is wrong")}) from None
     if new != confirm:
-        raise ServiceError(fields={"confirm": "Passwords do not match"})
+        raise ServiceError(fields={"confirm": _("Passwords do not match")})
     if new == current:
-        raise ServiceError(fields={"password": "Choose a different password"})
+        raise ServiceError(fields={"password": _("Choose a different password")})
     set_password(session, user.username, new, must_change=False, actor=user.username)
+
+
+def set_language(session: Session, user: User, language: str, actor: str = "") -> None:
+    """Web interface language of ``user``; ``""`` = default (English)."""
+    if language and language not in i18n.LANGUAGE_NAMES:
+        raise ServiceError(fields={"language": _("Unknown language")})
+    value = language or None
+    if user.language != value:
+        user.language = value
+        audit(session, actor or user.username, "language", "user", user.id, f"{user.username}: {language or 'default'}")
 
 
 def delete_user(session: Session, username: str, actor: str = "") -> None:
     user = get_by_name(session, username)
     if user is None:
-        raise NotFound("User not found")
+        raise NotFound(_("User not found"))
     if count(session) <= 1:
-        raise ServiceError("The last administrator cannot be deleted")
+        raise ServiceError(_("The last administrator cannot be deleted"))
     audit(session, actor, "delete", "user", user.id, username)
     session.delete(user)
 

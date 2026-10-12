@@ -49,6 +49,7 @@ phonix = [
     "core/migrations/*.mako",
     "core/migrations/versions/*.py",
     "generators/templates/**/*",
+    "locale/*/LC_MESSAGES/*.po",
     "generators/data/*",
     "web/templates/**/*",
     "web/static/**/*",
