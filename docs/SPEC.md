@@ -89,7 +89,7 @@ The table list below is derived from the old `config.xml` schema:
   - Columns: id, username, argon2 hash, role (`admin` only in v1), `must_change_pw`.
 - `phones`: id, tech (`pjsip|iax|external`), extension (unique), name, secret, callerid, codecs, language, `voicemail_enabled`, `vm_pin`, `vm_email`, `nat`, `qualify`, `dtmf_mode`, `max_contacts`, `external_number` (for tech=`external`), `ui_order`.
 - `providers`: id, tech (`pjsip|iax`), name, host, port, username, secret, `auth_user`, `from_domain`, `from_user`, `register`, codecs, `outbound_callerid`, enabled.
-  - `provider_dialpatterns`: provider_id, pattern, prefix_strip, prefix_add, priority.
+  - `provider_dialpatterns`: provider_id, pattern, position. The pattern keeps the legacy syntax `[add+][strip|]pattern` (e.g. `49+0|X.`), so legacy configs import 1:1.
   - `provider_incoming_map`: provider_id, did_pattern, target_type, target_id.
 - `callgroups` (ring groups): id, extension, name, strategy, ring_time, and a failover destination.
   - `callgroup_members`: group_id, phone_id, position.
@@ -126,7 +126,7 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 - Providers: PJSIP trunk with registration, IAX trunk
 
 **Dialplan**
-- Applications, with a CodeMirror editor that has Asterisk syntax highlighting
+- Applications, edited in a monospace auto-growing textarea (Tabler's Autosize; CodeMirror is not part of the Tabler-supported libraries) with server-side validation of every line
 - Call groups
 - Transfers/Features: feature codes and parking
 - The printable dialplan view stays
@@ -295,7 +295,7 @@ Everything hardware-specific listed in the confirmed decisions, plus Humbug anal
 | Use | Value |
 |---|---|
 | Primary, navbar and header background (`--tblr-primary`, `.navbar` background) | `#435370` |
-| Sidebar background | `#9D9D9D`, with white nav text |
+| Sidebar background | `#435370` with a `#9D9D9D` border; the active item uses `#687BA4` (white text on the legacy grey `#9D9D9D` fails WCAG contrast) |
 | Accent / info | `#687BA4` |
 | Light info backgrounds | `#D9DEE8` |
 | Danger | `#A12A2A`, with background `#FFD9D1` |
@@ -304,7 +304,7 @@ Everything hardware-specific listed in the confirmed decisions, plus Humbug anal
 
 - Logos are reused from `usr/www/logo.png` (150×46), `logobig.png` (520×147, used on the login page) and `favicon.ico`.
 - An SVG trace of the logo is optional later; the PNGs are used as-is in v1.
-- The footer reads "AskoziaPBX".
+- The footer reads "AskoziaPBX" and the version.
 
 **Usability**
 - Dark mode uses Tabler's built-in theme with the same primary color.
@@ -451,3 +451,12 @@ Each phase ends shippable and tested.
   - Each test waits for HTTPS 200 on the login page and for Asterisk to be up.
   - It then runs an update to slot B, reboots, and runs a forced-failure rollback test.
 - **Hardware:** a manual checklist on a Pi 4 and a Pi 5. Flash the image, boot it, open the web UI, register a softphone, call the echo test, update and roll back.
+
+## 10. Implementation notes (as built)
+
+- Python runtime on Alpine 3.24 is 3.14; development and CI also run the suite on 3.10 (`dev/constraints-alpine-3.24.txt` pins the Alpine package versions).
+- Asterisk 22 has no `Macro()`; the generated dialplan uses `Gosub` subroutines (`sub-dial`, `sub-try`, `sub-checkcf`, `sub-missed-call`). Missed call mails run as a hangup handler.
+- PJSIP providers register with `line=yes`; several accounts on the same host share one inbound context that dispatches on the account user name (legacy behaviour).
+- The legacy "direct dial SIP URI" context (`outgoing-uri`) is not ported (toll-fraud risk, no PJSIP equivalent without a fixed domain).
+- Swagger UI at `/api/docs` loads its assets from jsDelivr and therefore needs internet access; `/api/v1/openapi.json` is always available.
+- UI translations (Babel) are not wired yet; the interface is English only.
