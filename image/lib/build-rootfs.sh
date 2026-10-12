@@ -98,6 +98,10 @@ if [ "${CONTAINER:-0}" = 1 ]; then
 	# cmode=console); tty1 stays for lxc-console / pct console (cmode=tty)
 	sed -i "/^::ctrlaltdel/i ::respawn:/usr/libexec/phonix/console console" "$R/etc/inittab"
 	sed -i 's/^# \/etc\/inittab - PhonixPBX appliance/# \/etc\/inittab - PhonixPBX system container/' "$R/etc/inittab"
+	# Proxmox VE appends "ttyN::respawn:/sbin/getty" lines to the inittab of
+	# Alpine containers at every start; a getty on tty1 next to the console
+	# menu makes both fight over the terminal
+	: >"$R/etc/.pve-ignore.inittab"
 	sed -i '1s/.*/# Default for system containers: DHCP on eth0. Not managed by PhonixPBX;\n# Proxmox VE rewrites this file from the container settings./' \
 		"$R/etc/network/interfaces"
 	cat >"$R/etc/fstab" <<'FSTAB'
