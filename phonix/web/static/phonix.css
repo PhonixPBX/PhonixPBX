@@ -150,6 +150,19 @@
   color: light-dark(#3d4757, var(--tblr-secondary));
 }
 
+/* progress bars tall enough for a percentage label inside the bar, whatever size modifier */
+.progress,
+.progress-sm,
+.progress-lg,
+.progress-xl {
+  --tblr-progress-height: 1.25rem;
+  --tblr-progress-font-size: 0.75rem;
+  line-height: normal;
+}
+.progress-bar {
+  font-weight: var(--tblr-font-weight-medium);
+}
+
 /* top bar matches the sidebar: legacy header slate */
 .phonix-topbar {
   --tblr-navbar-border-width: 0;
