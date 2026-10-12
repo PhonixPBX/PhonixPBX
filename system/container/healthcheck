@@ -1,0 +1,14 @@
+#!/bin/sh
+# Health check of the PhonixPBX OCI container (HEALTHCHECK in Containerfile):
+# the web interface answers through nginx and Asterisk is running.
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+port=${PHONIX_HTTPS_PORT:-443}
+curl -fsk -o /dev/null --max-time 5 "https://127.0.0.1:$port/healthz" || {
+	echo "web interface not responding"
+	exit 1
+}
+asterisk -rx "core show version" >/dev/null 2>&1 || {
+	echo "Asterisk not running"
+	exit 1
+}
+echo ok

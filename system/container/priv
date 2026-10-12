@@ -1,0 +1,304 @@
+#!/bin/sh
+# PhonixPBX privileged helper for the OCI container image (no OpenRC).
+#
+# Installed as /usr/libexec/phonix/priv; the web process (user "phonix")
+# runs it through doas exactly like the appliance helper
+# (system/libexec/priv), with the same action table (must match
+# phonix/services/privileged.py). Inside a container it only does what
+# belongs to the container: Asterisk and nginx control, the time zone and -
+# when the firewall was enabled at start (PHONIX_FIREWALL=1, CAP_NET_ADMIN) -
+# the nftables ruleset and address bans. Network, host name, clock, SSH and
+# firmware updates belong to the container host / image and are refused or
+# only logged.
+set -eu
+
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+umask 022
+
+STAGED=/run/phonix/staged
+PRIVTMP=/run/phonix-priv
+# created by the entry point when the nftables ruleset could be loaded
+FIREWALL_FLAG=$PRIVTMP/firewall
+FACTORY_RESET_FLAG=/var/lib/phonix/factory-reset
+MAX_STAGED_SIZE=1048576
+
+# messages go to the container log (stdout of PID 1)
+log() {
+	echo "phonix-priv: $*" >/proc/1/fd/1 2>/dev/null || true
+}
+
+die() {
+	echo "priv: $*" >&2
+	log "error: $*"
+	exit 1
+}
+
+usage() {
+	die "usage: priv <action> [args] (see phonix/services/privileged.py)"
+}
+
+nargs() {
+	[ "$1" -eq "$2" ] || die "action $ACTION takes $1 argument(s)"
+}
+
+valid_arg() {
+	# same character set as phonix.services.privileged._ARG
+	case "$1" in
+	'' | *[!A-Za-z0-9_.:/-]*) return 1 ;;
+	esac
+	[ "${#1}" -le 255 ]
+}
+
+# run a command detached from the caller (doas/subprocess must not wait)
+detach() {
+	setsid sh -c "$1" >/dev/null 2>&1 </dev/null &
+}
+
+firewall_enabled() {
+	[ -e "$FIREWALL_FLAG" ]
+}
+
+# stop the container: the entry point (child of tini, PID 1) shuts down
+# cleanly on SIGTERM; the restart policy decides whether it comes back
+stop_container() {
+	detach "sleep 2; kill -TERM 1"
+}
+
+# ------------------------------------------------------------------ Asterisk
+
+asterisk_running() {
+	asterisk -rx "core show version" >/dev/null 2>&1
+}
+
+start_asterisk() {
+	asterisk -U asterisk -G asterisk </dev/null >/dev/null 2>&1 || true
+	_i=0
+	while [ $_i -lt 30 ]; do
+		asterisk -rx "core waitfullybooted" >/dev/null 2>&1 && return 0
+		_i=$((_i + 1))
+		sleep 1
+	done
+	die "Asterisk did not start, see /var/log/asterisk/messages"
+}
+
+stop_asterisk() {
+	asterisk_running || return 0
+	asterisk -rx "core stop now" >/dev/null 2>&1 || true
+	_i=0
+	while [ $_i -lt 20 ] && pidof asterisk >/dev/null 2>&1; do
+		_i=$((_i + 1))
+		sleep 0.5
+	done
+	pkill -KILL -x asterisk 2>/dev/null || true
+}
+
+# ------------------------------------------------------------------ staged files
+
+# component -> whitelisted target files (identical to STAGED_FILES)
+staged_files() {
+	case "$1" in
+	system:network) echo /etc/network/interfaces /etc/resolv.conf ;;
+	system:hostname) echo /etc/hostname /etc/hosts ;;
+	system:time) echo /etc/chrony/chrony.conf /etc/timezone ;;
+	system:firewall) echo /etc/nftables.nft ;;
+	system:ssh) echo /etc/phonix/ssh ;;
+	*) return 1 ;;
+	esac
+}
+
+# drop a staged file without installing it (as its owner)
+discard_one() {
+	su -s /bin/sh phonix -c 'rm -f -- "$1"' phonix "$STAGED$1" 2>/dev/null || true
+}
+
+# Copy one staged file into place - same as the appliance helper: the
+# staging tree belongs to the unprivileged user, so it is read with that
+# user's permissions into a root-only buffer (no symlink or hard link tricks).
+install_one() {
+	_target=$1
+	_mode=$2
+	_group=$3
+	_src="$STAGED$_target"
+	[ -e "$_src" ] || [ -L "$_src" ] || return 1
+	mkdir -p "$PRIVTMP"
+	chmod 700 "$PRIVTMP"
+	_buf="$PRIVTMP/$(basename "$_target").$$"
+	rm -f "$_buf"
+	if ! su -s /bin/sh phonix -c 'exec head -c "$1" -- "$2"' phonix "$((MAX_STAGED_SIZE + 1))" "$_src" >"$_buf"; then
+		rm -f "$_buf"
+		die "cannot read staged file $_src"
+	fi
+	if [ "$(wc -c <"$_buf")" -gt "$MAX_STAGED_SIZE" ]; then
+		rm -f "$_buf"
+		die "staged file $_src is too large"
+	fi
+	if [ "$_target" = /etc/nftables.nft ]; then
+		nft -c -f "$_buf" || {
+			rm -f "$_buf"
+			die "firewall ruleset failed validation"
+		}
+	fi
+	mkdir -p "$(dirname "$_target")"
+	chown "root:$_group" "$_buf"
+	chmod "$_mode" "$_buf"
+	mv -f "$_buf" "$_target.priv-new"
+	mv -f "$_target.priv-new" "$_target"
+	discard_one "$_target"
+	log "installed $_target"
+	return 0
+}
+
+do_install_staged() {
+	_comp=$1
+	_files=$(staged_files "$_comp") || die "unknown component $_comp"
+	case "$_comp" in
+	system:time)
+		discard_one /etc/chrony/chrony.conf
+		if install_one /etc/timezone 644 root; then
+			_tz=$(head -n 1 /etc/timezone | tr -d '[:space:]')
+			case "$_tz" in
+			'' | *..* | /* | *[!A-Za-z0-9_+/-]*) die "invalid timezone '$_tz'" ;;
+			esac
+			[ -f "/usr/share/zoneinfo/$_tz" ] || die "unknown timezone $_tz"
+			# /etc/localtime may be bind mounted from the host
+			ln -sfn "/usr/share/zoneinfo/$_tz" /etc/localtime 2>/dev/null ||
+				log "cannot change /etc/localtime (bind mount?)"
+		fi
+		echo "$_comp: time zone installed (the clock is set by the container host)"
+		;;
+	system:firewall)
+		if firewall_enabled; then
+			install_one /etc/nftables.nft 640 phonix || true
+			nft -c -f /etc/nftables.nft || die "firewall ruleset failed validation"
+			nft -f /etc/nftables.nft || die "loading the firewall ruleset failed"
+			echo "$_comp: ruleset loaded"
+		else
+			# keep the file for the next start (PHONIX_FIREWALL=1), not loaded
+			install_one /etc/nftables.nft 640 phonix || true
+			log "firewall is disabled in this container, ruleset not loaded"
+			echo "$_comp: firewall disabled in the container (PHONIX_FIREWALL=1 enables it)"
+		fi
+		;;
+	*)
+		for _f in $_files; do discard_one "$_f"; done
+		log "$_comp is managed by the container host, ignored"
+		echo "$_comp: managed by the container host"
+		;;
+	esac
+}
+
+# ------------------------------------------------------------------ firewall
+
+ip_family() {
+	case "$1" in
+	*:*)
+		case "$1" in *[!0-9a-fA-F:.]*) return 1 ;; esac
+		[ "${#1}" -le 45 ] || return 1
+		echo 6
+		;;
+	*.*.*.*)
+		case "$1" in *[!0-9.]*) return 1 ;; esac
+		_old_ifs=$IFS
+		IFS=.
+		# shellcheck disable=SC2086
+		set -- $1
+		IFS=$_old_ifs
+		[ $# -eq 4 ] || return 1
+		for _o in "$@"; do
+			case "$_o" in '' | ???*?) return 1 ;; esac
+			[ "$_o" -le 255 ] || return 1
+		done
+		echo 4
+		;;
+	*) return 1 ;;
+	esac
+}
+
+do_ban() {
+	_fam=$(ip_family "$1") || die "invalid IP address $1"
+	case "$2" in '' | *[!0-9]*) die "invalid ban duration $2" ;; esac
+	[ "${#2}" -le 8 ] && [ "$2" -ge 1 ] && [ "$2" -le 31536000 ] || die "ban duration out of range"
+	firewall_enabled || die "firewall disabled in the container, $1 not banned"
+	nft add element inet phonix "banned$_fam" "{ $1 timeout ${2}s }" || die "nft failed"
+	log "banned $1 for $2s"
+}
+
+do_unban() {
+	_fam=$(ip_family "$1") || die "invalid IP address $1"
+	firewall_enabled || return 0
+	nft delete element inet phonix "banned$_fam" "{ $1 }" 2>/dev/null || true
+	log "unbanned $1"
+}
+
+no_slots() {
+	die "PhonixPBX runs in a container: firmware updates and boot slots do not apply - pull the new image and recreate the container with the same /data volume"
+}
+
+# ------------------------------------------------------------------ main
+
+[ "$(id -u)" -eq 0 ] || die "must run as root"
+[ $# -ge 1 ] || usage
+ACTION=$1
+shift
+for _a in "$@"; do
+	valid_arg "$_a" || die "invalid argument"
+done
+
+case "$ACTION" in
+install-staged)
+	nargs 1 $#
+	do_install_staged "$1"
+	;;
+asterisk-restart)
+	nargs 0 $#
+	log "restarting Asterisk"
+	stop_asterisk
+	start_asterisk
+	;;
+asterisk-start)
+	nargs 0 $#
+	asterisk_running || start_asterisk
+	;;
+nginx-reload)
+	nargs 0 $#
+	nginx -t -q || die "nginx configuration test failed"
+	nginx -s reload || die "nginx reload failed"
+	;;
+time-sync)
+	nargs 0 $#
+	die "the clock of a container is set by the container host"
+	;;
+reboot | shutdown)
+	nargs 0 $#
+	log "$ACTION requested: stopping the container"
+	stop_container
+	echo "stopping the container (the restart policy decides whether it starts again)"
+	;;
+factory-reset)
+	nargs 0 $#
+	mkdir -p "$(dirname "$FACTORY_RESET_FLAG")"
+	: >"$FACTORY_RESET_FLAG"
+	log "factory reset requested: /data is erased at the next start"
+	stop_container
+	echo "factory reset scheduled, stopping the container"
+	;;
+install-update | mark-good)
+	no_slots
+	;;
+boot-status)
+	nargs 0 $#
+	echo "board $(cat /etc/phonix/board 2>/dev/null): OCI container, no boot slots"
+	;;
+ban)
+	nargs 2 $#
+	do_ban "$1" "$2"
+	;;
+unban)
+	nargs 1 $#
+	do_unban "$1"
+	;;
+*)
+	usage
+	;;
+esac

@@ -1,0 +1,258 @@
+#!/bin/sh
+# PhonixPBX OCI container entry point (runs as root under tini).
+#
+#   entrypoint              prepare /data, generate the configuration, start
+#                           and supervise Asterisk, the security monitor, the
+#                           web interface (user phonix) and nginx
+#   entrypoint <cmd> [args] prepare /data, then run <cmd> instead, e.g.
+#                           "phonix user passwd admin"
+#
+# Equivalent of the appliance's OpenRC services phonix-firstboot,
+# phonix-apply, asterisk, phonix-web, phonix-monitor and nginx. If one of
+# them dies (Asterisk: is down for more than 60 s, longer than a restart from
+# the web interface takes) the container exits non-zero, so that the restart
+# policy of the container engine takes over. SIGTERM/SIGINT stop everything
+# cleanly (exit 0).
+#
+# Environment:
+#   PHONIX_HTTP_PORT / PHONIX_HTTPS_PORT  web ports (80/443), e.g. with
+#                          --network host when the host uses 80/443 itself
+#   PHONIX_FIREWALL=1      load the nftables ruleset (needs CAP_NET_ADMIN;
+#                          with --network host it goes into the HOST's netns)
+set -u
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+: "${PHONIX_DATA_DIR:=/data}"
+: "${PHONIX_BOOT_DIR:=$PHONIX_DATA_DIR/import}"
+: "${PHONIX_PRIVILEGED:=doas}"
+: "${PHONIX_LIBEXEC_DIR:=/usr/libexec/phonix}"
+export PHONIX_DATA_DIR PHONIX_BOOT_DIR PHONIX_PRIVILEGED PHONIX_LIBEXEC_DIR
+D=$PHONIX_DATA_DIR
+LIBEXEC=/usr/libexec/phonix
+HTTP_PORT=${PHONIX_HTTP_PORT:-80}
+HTTPS_PORT=${PHONIX_HTTPS_PORT:-443}
+SOCKET=/run/phonix/web.sock
+FACTORY_RESET_FLAG=/var/lib/phonix/factory-reset
+ASTERISK_GRACE=60
+
+log() {
+	echo "phonix: $*"
+}
+
+die() {
+	echo "phonix: ERROR: $*" >&2
+	exit 1
+}
+
+[ "$(id -u)" -eq 0 ] || die "the entry point must run as root (the web interface runs as user phonix)"
+case "$D" in /?*) ;; *) die "PHONIX_DATA_DIR must be an absolute path" ;; esac
+for _p in "$HTTP_PORT" "$HTTPS_PORT"; do
+	case "$_p" in '' | *[!0-9]*) die "invalid port '$_p'" ;; esac
+done
+
+WEB_PID='' MONITOR_PID='' NGINX_PID='' CROND_PID='' SLEEP_PID=''
+STOPPING=0
+
+# ------------------------------------------------------------------ shutdown
+
+pid_alive() {
+	# children that died stay zombies until the shell reaps them
+	[ -n "$1" ] && [ -r "/proc/$1/stat" ] && ! grep -q '^[0-9]* (.*) Z' "/proc/$1/stat" 2>/dev/null
+}
+
+wait_gone() { # seconds pid...
+	_t=$(($1 * 5))
+	shift
+	while [ "$_t" -gt 0 ]; do
+		_any=0
+		for _p in "$@"; do pid_alive "$_p" && _any=1; done
+		[ "$_any" = 0 ] && return 0
+		_t=$((_t - 1))
+		sleep 0.2
+	done
+	return 1
+}
+
+shutdown() {
+	[ "$STOPPING" = 1 ] && return
+	STOPPING=1
+	trap '' TERM INT HUP
+	log "stopping PhonixPBX"
+	[ -n "$SLEEP_PID" ] && kill "$SLEEP_PID" 2>/dev/null
+	[ -n "$NGINX_PID" ] && nginx -s quit 2>/dev/null
+	for _p in $WEB_PID $MONITOR_PID $CROND_PID; do kill -TERM "$_p" 2>/dev/null; done
+	if asterisk -rx "core show version" >/dev/null 2>&1; then
+		# finish within the engine's default stop timeout (10 s)
+		asterisk -rx "core stop gracefully" >/dev/null 2>&1 &
+		_i=0
+		while [ $_i -lt 15 ] && pidof asterisk >/dev/null 2>&1; do
+			_i=$((_i + 1))
+			sleep 0.2
+		done
+		pidof asterisk >/dev/null 2>&1 && asterisk -rx "core stop now" >/dev/null 2>&1
+	fi
+	# shellcheck disable=SC2086
+	if ! wait_gone 5 $NGINX_PID $WEB_PID $MONITOR_PID $CROND_PID; then
+		for _p in $NGINX_PID $WEB_PID $MONITOR_PID $CROND_PID; do kill -KILL "$_p" 2>/dev/null; done
+	fi
+	pkill -KILL -x asterisk 2>/dev/null
+	log "stopped"
+	exit "${1:-0}"
+}
+trap 'shutdown 0' TERM INT
+trap '' HUP
+
+# ------------------------------------------------------------------ /data
+
+dir() { # mode owner path...
+	_mode=$1
+	_owner=$2
+	shift 2
+	for _d in "$@"; do
+		mkdir -p "$_d" && chown "$_owner" "$_d" && chmod "$_mode" "$_d" ||
+			die "cannot prepare $_d"
+	done
+}
+
+if [ -e "$FACTORY_RESET_FLAG" ]; then
+	log "factory reset: erasing $D"
+	find "$D" -mindepth 1 -maxdepth 1 ! -name lost+found -exec rm -rf {} + &&
+		rm -f "$FACTORY_RESET_FLAG"
+fi
+
+# same layout as phonix-firstboot on the appliance
+dir 0750 phonix:asterisk "$D"
+dir 0750 phonix:phonix "$D/state" "$D/backups" "$D/tmp"
+dir 0750 phonix:asterisk "$D/tls"
+dir 2750 phonix:asterisk "$D/media"
+dir 0750 asterisk:asterisk "$D/asterisk" "$D/spool"
+dir 0700 nginx:nginx "$D/tmp/nginx"
+dir 0755 root:root "$D/log" "$D/import"
+if [ ! -s "$D/machine-id" ]; then
+	tr -d '-' </proc/sys/kernel/random/uuid >"$D/machine-id"
+fi
+ln -sfn "$D/machine-id" /etc/machine-id 2>/dev/null || true
+
+# runtime directories (phonix-apply on the appliance)
+dir 0750 phonix:asterisk /etc/asterisk /etc/phonix
+dir 0711 phonix:phonix /run/phonix
+dir 0700 phonix:phonix /run/phonix/staged
+dir 0700 root:root /run/phonix-priv /var/lib/phonix
+dir 0755 root:root /var/log/phonix
+dir 0750 asterisk:asterisk /var/run/asterisk /var/log/asterisk /var/lib/asterisk \
+	/var/lib/asterisk/keys /var/cache/asterisk
+dir 0755 nginx:nginx /run/nginx
+rm -f "$SOCKET" /run/phonix-priv/firewall
+
+log "initialising (database, certificate, admin user)"
+(
+	umask 077
+	phonix firstboot >"$D/state/firstboot.log.new" 2>&1
+)
+rc=$?
+mv -f "$D/state/firstboot.log.new" "$D/state/firstboot.log"
+chmod 0600 "$D/state/firstboot.log"
+if [ $rc -ne 0 ]; then
+	grep -v -i password "$D/state/firstboot.log" | tail -n 20 >&2
+	die "phonix firstboot failed"
+fi
+for _f in "$D"/phonix.db "$D"/phonix.db-wal "$D"/phonix.db-shm "$D"/secrets.json; do
+	[ -e "$_f" ] && chown phonix:phonix "$_f" && chmod 0640 "$_f"
+done
+chown phonix:asterisk "$D/tls" "$D"/tls/* 2>/dev/null
+[ -e "$D/tls/server.key" ] && chmod 0640 "$D/tls/server.key"
+
+if [ $# -gt 0 ]; then
+	# one-off command against the data volume (no services running)
+	trap - TERM INT
+	exec "$@"
+fi
+
+# ------------------------------------------------------------------ configuration
+
+log "generating the configuration"
+# writes /etc/asterisk, msmtprc, time zone and firewall files; network and
+# host name are left to the container engine (board oci-*)
+if ! phonix apply --boot >/var/log/phonix/apply-boot.log 2>&1; then
+	tail -n 20 /var/log/phonix/apply-boot.log >&2
+	log "WARNING: phonix apply failed (see /var/log/phonix/apply-boot.log)"
+fi
+chown -R phonix:asterisk /etc/asterisk
+find /etc/asterisk -type f -exec chmod 0640 {} +
+tz=$(head -n 1 /etc/timezone 2>/dev/null | tr -d '[:space:]')
+if [ -n "$tz" ] && [ -f "/usr/share/zoneinfo/$tz" ]; then
+	ln -sfn "/usr/share/zoneinfo/$tz" /etc/localtime 2>/dev/null || true
+fi
+
+if [ "${PHONIX_FIREWALL:-0}" = 1 ]; then
+	if nft -f /etc/nftables.nft; then
+		: >/run/phonix-priv/firewall
+		log "firewall enabled"
+	else
+		log "WARNING: PHONIX_FIREWALL=1 but the ruleset could not be loaded (CAP_NET_ADMIN missing?)"
+	fi
+fi
+
+# nginx: same site as the appliance, ports adjustable
+conf=/etc/nginx/http.d/phonix.conf
+sed -e "s/listen 80 /listen $HTTP_PORT /; s/listen \[::\]:80 /listen [::]:$HTTP_PORT /" \
+	-e "s/listen 443 /listen $HTTPS_PORT /; s/listen \[::\]:443 /listen [::]:$HTTPS_PORT /" \
+	/usr/share/phonix/nginx-phonix.conf >"$conf.new"
+if [ "$HTTPS_PORT" != 443 ]; then
+	sed -i "s|return 301 https://\$host\$request_uri;|return 301 https://\$host:$HTTPS_PORT\$request_uri;|" "$conf.new"
+fi
+if [ ! -e /proc/net/if_inet6 ]; then
+	# IPv6 disabled in the container's network namespace
+	sed -i '/listen \[::\]/d' "$conf.new"
+fi
+mv -f "$conf.new" "$conf"
+nginx -t -q || die "nginx configuration test failed"
+
+# ------------------------------------------------------------------ services
+
+log "starting Asterisk"
+"$LIBEXEC/priv" asterisk-start || log "WARNING: Asterisk did not start, see /var/log/asterisk/messages"
+
+su-exec phonix phonix monitor &
+MONITOR_PID=$!
+su-exec phonix phonix web --uds "$SOCKET" &
+WEB_PID=$!
+nginx -g 'daemon off;' &
+NGINX_PID=$!
+# log rotation (/etc/periodic/daily/logrotate); not critical
+crond -f -l 8 &
+CROND_PID=$!
+
+_i=0
+while [ $_i -lt 30 ] && [ ! -S "$SOCKET" ]; do
+	_i=$((_i + 1))
+	sleep 1
+done
+phonix banner 2>/dev/null | sed "s|https://\([^/]*\)/|https://\1:$HTTPS_PORT/|; s|:443/|/|"
+log "web interface: https on port $HTTPS_PORT (use the address/port published on the container host)"
+log "running"
+
+# ------------------------------------------------------------------ supervision
+
+down=0
+while :; do
+	for _svc in "web:$WEB_PID" "monitor:$MONITOR_PID" "nginx:$NGINX_PID"; do
+		if ! pid_alive "${_svc#*:}"; then
+			log "ERROR: ${_svc%%:*} exited"
+			shutdown 1
+		fi
+	done
+	if asterisk -rx "core show version" >/dev/null 2>&1; then
+		down=0
+	else
+		down=$((down + 5))
+		if [ $down -ge $ASTERISK_GRACE ]; then
+			log "ERROR: Asterisk is not running (for ${ASTERISK_GRACE}s)"
+			shutdown 1
+		fi
+	fi
+	sleep 5 &
+	SLEEP_PID=$!
+	wait "$SLEEP_PID"
+	SLEEP_PID=
+done
