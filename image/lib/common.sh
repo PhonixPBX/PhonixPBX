@@ -96,3 +96,17 @@ busybox_links() {
 kernel_version() {
 	ls "$1/lib/modules" | head -n 1
 }
+
+# SHA256SUMS over all release artifacts in $OUT (disk images, update
+# bundles, container tarballs)
+write_sha256sums() {
+	(
+		cd "$OUT" || exit 1
+		set --
+		for _f in phonix-*.img.zst phonix-*.update phonix-*.tar.xz; do
+			[ -f "$_f" ] && set -- "$@" "$_f"
+		done
+		[ $# -gt 0 ] || exit 0
+		sha256sum "$@" >SHA256SUMS
+	)
+}

@@ -154,5 +154,5 @@ msg "[$BOARD] update bundle"
 SIGNKEY=${PHONIX_UPDATE_SIGNING_KEY:-$KEYS_DIR/update-signing.pem}
 "$IMG/mkbundle.sh" "$BOARD" "$VERSION" "$P/payload" "$SIGNKEY" "$OUT/$NAME.update"
 
-(cd "$OUT" && sha256sum phonix-*.img.zst phonix-*.update >SHA256SUMS)
+write_sha256sums
 msg "[$BOARD] done: $OUT/$NAME.img.zst ($(du -h "$OUT/$NAME.img.zst" | cut -f1)), $NAME.update ($(du -h "$OUT/$NAME.update" | cut -f1))"
