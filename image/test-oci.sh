@@ -6,8 +6,8 @@
 # Runs the image with a fresh data volume and published ports, waits until
 # https://localhost:<port>/login answers 200, the health check passes and
 # Asterisk runs, checks that the web process runs as user phonix, creates a
-# phone through the REST API (basic auth with the initial admin password
-# from the container log) and applies it, then stops the container with
+# phone through the REST API (bearer token from "phonix token create" in the
+# container) and applies it, then stops the container with
 # SIGTERM and checks the exit code. Environment: CONTAINER (podman, docker),
 # PORT (host port for 443, default 28443), TIMEOUT (300).
 set -eu
@@ -61,10 +61,13 @@ until pw=$("$ENGINE" logs "$name" 2>&1 | sed -n 's/.*Initial login: admin \/ \([
 	sleep 1
 done
 echo "ok: initial admin password in the log"
-code=$(curl -sk -o /dev/null -w '%{http_code}' -u "admin:$pw" -H 'Content-Type: application/json' \
+token=$("$ENGINE" exec "$name" phonix token create smoke-test | tail -n 1)
+case "$token" in phx_*) ;; *) fail "no API token: $token" ;; esac
+auth="Authorization: Bearer $token"
+code=$(curl -sk -o /dev/null -w '%{http_code}' -H "$auth" -H 'Content-Type: application/json' \
 	-d '{"extension":"777","callerid":"OCI test"}' "https://127.0.0.1:$PORT/api/v1/phones")
 [ "$code" = 201 ] || fail "creating a phone through the API: HTTP $code"
-curl -sk -u "admin:$pw" -X POST "https://127.0.0.1:$PORT/api/v1/apply" | grep -q '"ok":true' || fail "apply failed"
+curl -sk -H "$auth" -X POST "https://127.0.0.1:$PORT/api/v1/apply" | grep -q '"ok":true' || fail "apply failed"
 "$ENGINE" exec "$name" asterisk -rx "pjsip show endpoint 777" | grep -q 'Endpoint:  777' ||
 	fail "phone 777 not in Asterisk"
 echo "ok: phone created and applied through the REST API"

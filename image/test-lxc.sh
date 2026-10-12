@@ -82,11 +82,14 @@ in_ct 'su -s /bin/sh phonix -c "doas -n /usr/libexec/phonix/priv install-update 
 	grep -q container || fail "install-update is not refused in the container"
 echo "ok: firmware updates are refused"
 
-pw=$(in_ct 'cat /data/state/initial-admin-password')
-code=$(curl -sk -o /dev/null -w '%{http_code}' -u "admin:$pw" -H 'Content-Type: application/json' \
+in_ct 'test -s /data/state/initial-admin-password' || fail "no initial admin password"
+token=$(in_ct 'phonix token create smoke-test' | tail -n 1)
+case "$token" in phx_*) ;; *) fail "no API token: $token" ;; esac
+auth="Authorization: Bearer $token"
+code=$(curl -sk -o /dev/null -w '%{http_code}' -H "$auth" -H 'Content-Type: application/json' \
 	-d '{"extension":"777","callerid":"LXC test"}' "https://127.0.0.1:$PORT/api/v1/phones")
 [ "$code" = 201 ] || fail "creating a phone through the API: HTTP $code"
-curl -sk -u "admin:$pw" -X POST "https://127.0.0.1:$PORT/api/v1/apply" | grep -q '"ok":true' || fail "apply failed"
+curl -sk -H "$auth" -X POST "https://127.0.0.1:$PORT/api/v1/apply" | grep -q '"ok":true' || fail "apply failed"
 in_ct 'asterisk -rx "pjsip show endpoint 777"' | grep -q 'Endpoint:  777' || fail "phone 777 not in Asterisk"
 in_ct 'test ! -e /etc/network/interfaces.priv-new && grep -q "iface lo" /etc/network/interfaces' ||
 	fail "PhonixPBX touched /etc/network/interfaces"
