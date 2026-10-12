@@ -71,6 +71,7 @@ We are reviving the product on current technology:
 
 **The REST API comes first.**
 - `/api/v1/...` is a JSON API with an OpenAPI schema.
+- Scripts authenticate with bearer tokens (`Authorization: Bearer phx_...`). Tokens are managed under *Advanced → API tokens* or with `phonix token`. Each token is read-only (GET only) or read-write, can be disabled, and expires after 1–3653 days or never (no expiry set). Only a SHA-256 hash is stored, and the last use is recorded. HTTP basic auth is not accepted. The web interface's own requests use the session cookie plus the CSRF header.
 - The HTML UI and the API call the same service layer.
 
 ### Tech choices

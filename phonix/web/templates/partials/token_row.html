@@ -1,0 +1,15 @@
+{% from "macros/ui.html" import delete_button, toggle_button with context %}
+{% set state = token_status(t) %}
+<tr id="token-{{ t.id }}"{% if state != "active" %} class="text-secondary"{% endif %}>
+  <td><div class="fw-bold">{{ t.name }}</div><div class="small text-secondary font-monospace">{{ t.prefix }}&hellip;</div></td>
+  <td>{% if t.read_only %}<span class="badge bg-blue-lt">read-only</span>{% else %}<span class="badge bg-orange-lt">read-write</span>{% endif %}</td>
+  <td>{% if state == "active" %}<span class="badge bg-green-lt">active</span>{% elif state == "expired" %}<span class="badge bg-red-lt">expired</span>{% else %}<span class="badge bg-secondary-lt">disabled</span>{% endif %}</td>
+  <td>{{ t.user.username }}</td>
+  <td class="text-secondary">{{ t.created_at.strftime("%Y-%m-%d") }}</td>
+  <td class="text-secondary">{{ t.last_used_at.strftime("%Y-%m-%d %H:%M") if t.last_used_at else "never" }}</td>
+  <td class="text-secondary">{{ t.expires_at.strftime("%Y-%m-%d") if t.expires_at else "unlimited" }}</td>
+  <td class="table-actions">
+    {{ toggle_button("/advanced/tokens/" ~ t.id ~ "/toggle", t.enabled, "token " ~ t.name) }}
+    {{ delete_button("/advanced/tokens/" ~ t.id, "token " ~ t.name) }}
+  </td>
+</tr>

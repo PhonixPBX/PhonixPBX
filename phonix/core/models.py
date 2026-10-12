@@ -55,6 +55,30 @@ class User(Base):
     must_change_pw: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[dt.datetime] = mapped_column(DateTime, default=utcnow)
     last_login: Mapped[dt.datetime | None] = mapped_column(DateTime, nullable=True)
+    api_tokens: Mapped[list[ApiToken]] = relationship(
+        back_populates="user", cascade="all, delete-orphan", passive_deletes=True
+    )
+
+
+class ApiToken(Base):
+    """Bearer token for /api/v1; only the sha256 of the token is stored."""
+
+    __tablename__ = "api_tokens"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(64))
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True)
+    # start of the token, to recognise it in lists
+    prefix: Mapped[str] = mapped_column(String(16))
+    read_only: Mapped[bool] = mapped_column(Boolean, default=True)
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    created_at: Mapped[dt.datetime] = mapped_column(DateTime, default=utcnow)
+    last_used_at: Mapped[dt.datetime | None] = mapped_column(DateTime, nullable=True)
+    # None = unlimited
+    expires_at: Mapped[dt.datetime | None] = mapped_column(DateTime, nullable=True)
+
+    user: Mapped[User] = relationship(back_populates="api_tokens")
 
 
 class Setting(Base):

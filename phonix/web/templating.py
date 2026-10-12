@@ -106,6 +106,7 @@ MENU: list[MenuSection] = [
             MenuItem("Firewall", "/advanced/firewall"),
             MenuItem("Certificate", "/advanced/certificate"),
             MenuItem("Administrators", "/advanced/users"),
+            MenuItem("API tokens", "/advanced/tokens"),
             MenuItem("GUI Options", "/advanced/gui"),
         ],
     ),

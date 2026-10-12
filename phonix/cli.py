@@ -126,6 +126,49 @@ def cmd_backup(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_token(args: argparse.Namespace) -> int:
+    from phonix.services import tokens, users
+    from phonix.services.common import ServiceError
+
+    try:
+        with _session() as session:
+            if args.action == "create":
+                if not args.name:
+                    print("ERROR a token name is required", file=sys.stderr)
+                    return 2
+                user = users.get_by_name(session, args.user)
+                if user is None:
+                    print(f"ERROR no administrator {args.user!r}", file=sys.stderr)
+                    return 1
+                _token, plain = tokens.create(
+                    session, user, args.name, read_only=args.read_only, expires_in_days=args.expires_days, actor="cli"
+                )
+                print(plain)
+            elif args.action == "list":
+                for t in tokens.list_tokens(session):
+                    d = tokens.to_dict(t)
+                    last = d["last_used_at"].strftime("%Y-%m-%d %H:%M") if d["last_used_at"] else "never"
+                    until = d["expires_at"].strftime("%Y-%m-%d") if d["expires_at"] else "unlimited"
+                    access = "ro" if d["read_only"] else "rw"
+                    print(
+                        f"{d['id']:>4}  {d['name']:<24} {d['prefix']}  {access}  {d['status']:<8}  {d['user']:<12}"
+                        f"  last used {last:<16}  valid until {until}"
+                    )
+            else:
+                if not args.name or not args.name.isdigit():
+                    print("ERROR give the token id (see 'phonix token list')", file=sys.stderr)
+                    return 2
+                token_id = int(args.name)
+                if args.action == "delete":
+                    tokens.delete(session, token_id, actor="cli")
+                else:
+                    tokens.set_enabled(session, token_id, args.action == "enable", actor="cli")
+    except ServiceError as exc:
+        print(f"ERROR {exc}", file=sys.stderr)
+        return 1
+    return 0
+
+
 def cmd_cert(args: argparse.Namespace) -> int:
     from phonix.services import acme
     from phonix.services.common import ServiceError
@@ -224,6 +267,14 @@ def build_parser() -> argparse.ArgumentParser:
     b.add_argument("action", choices=["create", "restore"])
     b.add_argument("file", nargs="?")
     b.set_defaults(func=cmd_backup)
+
+    t = sub.add_parser("token", help="manage API bearer tokens")
+    t.add_argument("action", choices=["create", "list", "enable", "disable", "delete"])
+    t.add_argument("name", nargs="?", help="token name (create) or id (enable/disable/delete)")
+    t.add_argument("--user", default="admin", help="owning administrator (create)")
+    t.add_argument("--read-only", action="store_true", help="GET requests only (create)")
+    t.add_argument("--expires-days", type=int, help="validity in days (create); default unlimited")
+    t.set_defaults(func=cmd_token)
 
     c = sub.add_parser("cert", help="ACME certificate (Let's Encrypt)")
     c.add_argument("action", choices=["renew"])

@@ -24,6 +24,17 @@ def csrf(c, url="/login"):
     return re.search(r'name="csrf-token" content="([^"]+)"', c.get(url).text).group(1)
 
 
+def bearer(read_only=False, expires_in_days=None, name="test"):
+    """Authorization header with a new API token of ``admin``."""
+    from phonix.services import tokens
+
+    with session_scope() as s:
+        _, plain = tokens.create(
+            s, users.get_by_name(s, "admin"), name, read_only=read_only, expires_in_days=expires_in_days
+        )
+    return {"Authorization": f"Bearer {plain}"}
+
+
 def login(c, password="adminadmin"):
     return c.post(
         "/login",
@@ -151,7 +162,7 @@ def test_ssh_root_password(client):
     assert "A password is set" in client.get("/system/general").text
     # empty field keeps it, the API never shows it
     assert post(ssh_password="").status_code == 303 and stored() == pw
-    auth = {"Authorization": "Basic " + base64.b64encode(b"admin:adminadmin").decode()}
+    auth = bearer()
     assert client.get("/api/v1/settings/system", headers=auth).json()["ssh_password_hash"] == ""
     assert client.patch("/api/v1/settings/system", headers=auth, json={"ssh_password_hash": ""}).status_code == 200
     assert stored() == pw
@@ -165,9 +176,12 @@ def test_apply_via_htmx(client):
     assert r.status_code == 200 and "Configuration applied" in r.text
 
 
-def test_api_basic_auth(client):
-    auth = {"Authorization": "Basic " + base64.b64encode(b"admin:adminadmin").decode()}
+def test_api_token_auth(client):
+    basic = {"Authorization": "Basic " + base64.b64encode(b"admin:adminadmin").decode()}
     assert client.get("/api/v1/phones").status_code == 401
+    r = client.get("/api/v1/phones", headers=basic)
+    assert r.status_code == 401 and r.headers["www-authenticate"] == "Bearer"
+    auth = bearer()
     phones = client.get("/api/v1/phones", headers=auth).json()
     assert any(p["extension"] == "101" for p in phones) and "secret" not in phones[0]
     r = client.post("/api/v1/phones", headers=auth, json={"extension": "160", "callerid": "API"})
@@ -201,3 +215,88 @@ def test_must_change_password(initialized):
         )
         assert r.status_code == 303
         assert c.get("/").status_code == 200
+
+
+def test_api_token_states(client):
+    from phonix.core.models import ApiToken, utcnow
+    from phonix.services import tokens
+
+    ro = bearer(read_only=True, name="ro")
+    assert client.get("/api/v1/phones", headers=ro).status_code == 200
+    r = client.patch("/api/v1/settings/rtp", headers=ro, json={"port_start": 12000})
+    assert r.status_code == 403 and r.json()["detail"] == "token is read-only"
+    with session_scope() as s:
+        token = s.query(ApiToken).filter_by(name="ro").one()
+        assert token.last_used_at is not None
+        tokens.set_enabled(s, token.id, False)
+    assert client.get("/api/v1/phones", headers=ro).status_code == 401
+    with session_scope() as s:
+        token = s.query(ApiToken).filter_by(name="ro").one()
+        tokens.set_enabled(s, token.id, True)
+        assert tokens.status(token) == "active"
+    assert client.get("/api/v1/phones", headers=ro).status_code == 200
+    # expired
+    with session_scope() as s:
+        token = s.query(ApiToken).filter_by(name="ro").one()
+        token.expires_at = utcnow()
+    assert client.get("/api/v1/phones", headers=ro).status_code == 401
+    # deleted
+    rw = bearer(name="rw")
+    with session_scope() as s:
+        tokens.delete(s, s.query(ApiToken).filter_by(name="rw").one().id)
+    assert client.get("/api/v1/phones", headers=rw).status_code == 401
+    # repeated bad tokens are rate limited
+    for _ in range(5):
+        client.get("/api/v1/phones", headers={"Authorization": "Bearer phx_wrong"})
+    assert client.get("/api/v1/phones", headers=bearer(name="late")).status_code == 429
+
+
+def test_token_ui(client):
+    from phonix.core.models import ApiToken
+
+    login(client)
+    data = {
+        "csrf_token": csrf(client, "/advanced/tokens"),
+        "name": "monitoring",
+        "access": "read",
+        "expires_in_days": "30",
+    }
+    r = client.post("/advanced/tokens", data=data)
+    assert r.status_code == 200
+    plain = re.search(r'id="new-token"[^>]*value="(phx_[^"]+)"', r.text).group(1)
+    assert client.get("/api/v1/status", headers={"Authorization": f"Bearer {plain}"}).status_code == 200
+    page = client.get("/advanced/tokens").text
+    assert plain not in page and plain[:12] in page and "read-only" in page and "active" in page
+    for bad in ("0", "3654", "abc"):
+        data["expires_in_days"] = bad
+        assert client.post("/advanced/tokens", data=data).status_code == 422
+    r = client.post(
+        "/advanced/tokens",
+        data={**data, "name": "deploy", "access": "write", "expires_in_days": ""},
+    )
+    assert r.status_code == 200 and "unlimited" in r.text and "read-write" in r.text
+    with session_scope() as s:
+        token = s.query(ApiToken).filter_by(name="monitoring").one()
+        token_id = token.id
+        assert (token.expires_at - token.created_at).days == 30
+    headers = {"X-CSRF-Token": csrf(client, "/advanced/tokens"), "HX-Request": "true"}
+    r = client.post(f"/advanced/tokens/{token_id}/toggle", headers=headers)
+    assert r.status_code == 200 and "disabled" in r.text
+    assert client.get("/api/v1/status", headers={"Authorization": f"Bearer {plain}"}).status_code == 401
+    assert client.delete(f"/advanced/tokens/{token_id}", headers=headers).status_code == 200
+    with session_scope() as s:
+        assert s.query(ApiToken).filter_by(name="monitoring").count() == 0
+
+
+def test_deleting_admin_removes_tokens(client):
+    from phonix.core.models import ApiToken
+
+    with session_scope() as s:
+        other = users.create_user(s, "ops", "opsopsops")
+        from phonix.services import tokens
+
+        tokens.create(s, other, "ops token")
+    with session_scope() as s:
+        users.delete_user(s, "ops")
+    with session_scope() as s:
+        assert s.query(ApiToken).count() == 0

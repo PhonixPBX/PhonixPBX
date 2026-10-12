@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import base64
-import binascii
 from collections.abc import Iterator
 from typing import Any, get_args, get_origin
 
@@ -15,9 +13,9 @@ from starlette.datastructures import FormData
 from phonix.core import settings as st
 from phonix.core.db import session_factory
 from phonix.core.models import User
-from phonix.services import users as users_service
+from phonix.services import tokens as tokens_service
 from phonix.services.common import dirty_areas
-from phonix.web.security import LoginRequired, PasswordChangeRequired, current_user, verify_csrf
+from phonix.web.security import SAFE_METHODS, LoginRequired, PasswordChangeRequired, current_user, verify_csrf
 
 
 def get_db() -> Iterator[Session]:
@@ -53,28 +51,33 @@ async def ui_user(request: Request, user: User = Depends(require_user)) -> User:
     return user
 
 
+BEARER = {"WWW-Authenticate": "Bearer"}
+
+
 async def api_user(request: Request, db: Session = Depends(get_db)) -> User:
-    """API auth: HTTP Basic (scripts) or the UI session cookie + X-CSRF-Token header."""
+    """API auth: bearer token (scripts) or the UI session cookie + X-CSRF-Token header."""
     auth = request.headers.get("authorization", "")
-    if auth.lower().startswith("basic "):
-        try:
-            username, _, password = base64.b64decode(auth[6:]).decode().partition(":")
-        except (binascii.Error, UnicodeDecodeError):
-            raise HTTPException(401, "invalid authorization header") from None
+    if auth:
+        scheme, _, credentials = auth.partition(" ")
+        if scheme.lower() != "bearer":
+            raise HTTPException(401, "use a bearer token (Advanced > API tokens)", headers=BEARER)
         from phonix.web.security import client_ip, login_limiter
 
         key = f"api:{client_ip(request)}"
         if login_limiter.blocked(key):
             raise HTTPException(429, "too many failed logins")
-        user = users_service.authenticate(db, username, password)
-        if user is None:
+        token = tokens_service.authenticate(db, credentials.strip())
+        if token is None:
             login_limiter.hit(key)
-            raise HTTPException(401, "invalid credentials", headers={"WWW-Authenticate": "Basic"})
-        request.state.user = user
-        return user
+            raise HTTPException(401, "invalid, disabled or expired token", headers=BEARER)
+        if token.read_only and request.method not in SAFE_METHODS:
+            raise HTTPException(403, "token is read-only")
+        request.state.user = token.user
+        request.state.api_token = token
+        return token.user
     user = current_user(request, db, _session_minutes(db))
     if user is None:
-        raise HTTPException(401, "authentication required", headers={"WWW-Authenticate": "Basic"})
+        raise HTTPException(401, "authentication required", headers=BEARER)
     await verify_csrf(request)
     request.state.user = user
     return user

@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from phonix.core import settings as st
 from phonix.core.models import User
 from phonix.services import acme as acme_svc
-from phonix.services import acme_providers, tls, users
+from phonix.services import acme_providers, tls, tokens, users
 from phonix.services import manager as ami_svc
 from phonix.services.common import AREAS, ServiceError, audit, diff_dicts, errors_from_validation
 from phonix.web.deps import form_to_dict, get_db, ui_user
@@ -320,6 +320,77 @@ def admin_delete(username: str, user: User = Depends(ui_user), db: Session = Dep
         users.delete_user(db, username, actor=user.username)
     except ServiceError as exc:
         raise HTTPException(400, str(exc)) from None
+    return Response("")
+
+
+# --- API tokens ----------------------------------------------------------------------------
+
+TOKEN_DEFAULTS = {"access": "read", "expires_in_days": ""}
+
+
+def _tokens_page(request: Request, db: Session, status_code: int = 200, **ctx: Any) -> Response:
+    ctx.setdefault("values", TOKEN_DEFAULTS)
+    return page(
+        request,
+        "pages/advanced_tokens.html",
+        status_code=status_code,
+        tokens=tokens.list_tokens(db),
+        token_status=tokens.status,
+        max_days=tokens.MAX_DAYS,
+        **ctx,
+    )
+
+
+@router.get("/tokens")
+def api_tokens(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
+    return _tokens_page(request, db)
+
+
+@router.post("/tokens")
+async def api_token_create(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
+    form = await request.form()
+    name = str(form.get("name", ""))
+    expires = str(form.get("expires_in_days", "")).strip()
+    values: dict[str, Any] = {
+        "name": name,
+        "access": "write" if form.get("access") == "write" else "read",
+        "expires_in_days": expires,
+    }
+    try:
+        # empty = unlimited, like "phonix token create" without --expires-days
+        days = None
+        if expires:
+            if not expires.isdigit():
+                raise ServiceError(fields={"expires_in_days": "Enter a number of days"})
+            days = int(expires)
+        token, plain = tokens.create(
+            db, user, name, read_only=values["access"] == "read", expires_in_days=days, actor=user.username
+        )
+    except ServiceError as exc:
+        db.rollback()
+        return _tokens_page(request, db, status_code=422, values=values, errors=service_errors(exc))
+    # shown once on this response; never redirected through the session/flash
+    return _tokens_page(request, db, new_token=token, new_token_plain=plain)
+
+
+@router.post("/tokens/{token_id}/toggle")
+def api_token_toggle(
+    token_id: int, request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)
+) -> Response:
+    try:
+        token = tokens.get(db, token_id)
+        tokens.set_enabled(db, token_id, not token.enabled, actor=user.username)
+    except ServiceError as exc:
+        raise HTTPException(404, str(exc)) from None
+    return page(request, "partials/token_row.html", t=token, token_status=tokens.status)
+
+
+@router.delete("/tokens/{token_id}")
+def api_token_delete(token_id: int, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
+    try:
+        tokens.delete(db, token_id, actor=user.username)
+    except ServiceError as exc:
+        raise HTTPException(404, str(exc)) from None
     return Response("")
 
 

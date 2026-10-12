@@ -8,7 +8,7 @@ from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.x509.oid import NameOID
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
-from test_web import csrf, login
+from test_web import bearer, csrf, login
 
 from phonix.core import settings as st
 from phonix.core.db import session_scope
@@ -225,7 +225,7 @@ def test_acme_form_keeps_secrets(client):
         saved = st.load(s, st.AcmeSettings)
     assert saved.dns_env == CF and saved.domains == ["pbx.example.org", "sip.example.org"]
     # the API does not return it either
-    r = client.get("/api/v1/settings/acme", auth=("admin", "adminadmin"))
+    r = client.get("/api/v1/settings/acme", headers=bearer(read_only=True))
     assert r.status_code == 200 and r.json()["dns_env"] == {"CF_DNS_API_TOKEN": ""}
 
 

@@ -220,6 +220,17 @@
       }
       return;
     }
+    // <button data-copy="#input">: copy the input's value to the clipboard
+    const copy = evt.target.closest("[data-copy]");
+    if (copy) {
+      const input = document.querySelector(copy.dataset.copy);
+      if (input) {
+        input.select();
+        if (navigator.clipboard) navigator.clipboard.writeText(input.value).catch(() => {});
+        copy.textContent = "Copied";
+      }
+      return;
+    }
     const toggle = evt.target.closest("[data-toggle-password]");
     if (toggle) {
       const input = document.querySelector(toggle.dataset.togglePassword);

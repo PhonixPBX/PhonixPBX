@@ -276,7 +276,7 @@ docker run -d --name phonix --restart unless-stopped --network host \
 docker logs phonix               # shows the web address and the initial admin password
 ```
 
-Open `https://<host-address>/` and log in as `admin` with the password from the log. You must change the password at the first login. The REST API accepts HTTP basic auth with the initial password straight away.
+Open `https://<host-address>/` and log in as `admin` with the password from the log. You must change the password at the first login. For the REST API, create a bearer token under *Advanced → API tokens*, or without the web interface with `docker exec phonix phonix token create <name>`.
 
 With published ports (bridge network):
 

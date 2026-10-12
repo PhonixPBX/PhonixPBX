@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% from "macros/forms.html" import csrf, input, radios, form_errors with context %}
+{% from "macros/ui.html" import empty with context %}
+{% block content %}
+{% if new_token %}
+<div class="alert alert-success" role="alert">
+  <h4 class="alert-title">Token "{{ new_token.name }}" created</h4>
+  <p>Copy it now: it is not shown again.</p>
+  <div class="input-group mb-2">
+    <input id="new-token" class="form-control font-monospace" type="text" value="{{ new_token_plain }}" readonly>
+    <button type="button" class="btn" data-copy="#new-token">Copy</button>
+  </div>
+  <div class="small text-secondary">Example: <code>curl -H "Authorization: Bearer {{ new_token_plain }}" {{ request.base_url }}api/v1/status</code></div>
+</div>
+{% endif %}
+<div class="row row-cards">
+  <div class="col-xl-8"><div class="card">
+    {% if tokens %}
+    <div class="table-responsive">
+    <table class="table table-vcenter card-table">
+      <thead><tr><th>Name</th><th>Access</th><th>Status</th><th>Owner</th><th>Created</th><th>Last used</th><th>Valid until</th><th></th></tr></thead>
+      <tbody>
+      {% for t in tokens %}{% include "partials/token_row.html" %}{% endfor %}
+      </tbody>
+    </table>
+    </div>
+    {% else %}
+    {{ empty("No API tokens", "Create a token to use the REST API (/api/v1) from scripts.") }}
+    {% endif %}
+  </div></div>
+  <div class="col-xl-4">
+    <form method="post" action="/advanced/tokens" class="card">
+      {{ csrf() }}
+      <div class="card-body">
+        <h3 class="card-title">Create token</h3>
+        {{ form_errors(errors) }}
+        {{ input("name", "Name", values, errors, required=True, placeholder="e.g. monitoring") }}
+        {{ radios("access", "Access", values, errors, [("read", "Read-only"), ("write", "Read-write")], help="Read-only tokens can only use GET requests.") }}
+        {{ input("expires_in_days", "Expires in (days)", values, errors, type="number", placeholder="unlimited", attrs='min="1" max="' ~ max_days ~ '"', help="1 to " ~ max_days ~ " days. Empty: the token does not expire.") }}
+        <p class="text-secondary small mb-0">Send the token in the <code>Authorization: Bearer</code> header. See the <a href="/api/docs">API documentation</a>.</p>
+      </div>
+      <div class="card-footer text-end"><button class="btn btn-primary" type="submit">{{ icon("plus", "me-1") }}Create</button></div>
+    </form>
+  </div>
+</div>
+{% endblock %}
