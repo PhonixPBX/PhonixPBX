@@ -9,6 +9,7 @@ This replaces the legacy rc.bootup / pbx_configure() / *.dirty machinery.
 
 from __future__ import annotations
 
+import contextlib
 import grp
 import logging
 import os
@@ -29,8 +30,11 @@ log = logging.getLogger(__name__)
 
 # component -> Asterisk CLI commands executed over AMI
 RELOAD_COMMANDS: dict[str, list[str]] = {
-    "asterisk:pjsip": ["module reload res_pjsip.so", "module reload res_pjsip_outbound_registration.so",
-                       "module reload res_pjsip_notify.so"],  # fmt: skip
+    "asterisk:pjsip": [
+        "module reload res_pjsip.so",
+        "module reload res_pjsip_outbound_registration.so",
+        "module reload res_pjsip_notify.so",
+    ],
     "asterisk:iax": ["iax2 reload"],
     "asterisk:dialplan": ["dialplan reload"],
     "asterisk:voicemail": ["voicemail reload"],
@@ -47,9 +51,15 @@ RELOAD_COMMANDS: dict[str, list[str]] = {
 
 # order in which components are applied
 ORDER = [
-    "system:hostname", "system:network", "system:time", "system:firewall", "system:ssh",
-    "email", "asterisk:restart", *RELOAD_COMMANDS,
-]  # fmt: skip
+    "system:hostname",
+    "system:network",
+    "system:time",
+    "system:firewall",
+    "system:ssh",
+    "email",
+    "asterisk:restart",
+    *RELOAD_COMMANDS,
+]
 
 
 @dataclass
@@ -72,10 +82,8 @@ def _write_atomic(path: Path, content: str, mode: int, group: str | None = None)
         fh.write(content)
     os.chmod(tmp, mode)
     if group and os.geteuid() == 0:
-        try:
+        with contextlib.suppress(KeyError):
             os.chown(tmp, pwd.getpwnam("askozia").pw_uid, grp.getgrnam(group).gr_gid)
-        except KeyError:
-            pass
     os.replace(tmp, path)
 
 
@@ -86,9 +94,7 @@ def _read(path: Path) -> str | None:
         return None
 
 
-def write_files(
-    files: list[GeneratedFile], direct_privileged: bool, force: bool = False
-) -> list[GeneratedFile]:
+def write_files(files: list[GeneratedFile], direct_privileged: bool, force: bool = False) -> list[GeneratedFile]:
     """Write changed files; returns the list of files that changed."""
     cfg = config.get()
     changed: list[GeneratedFile] = []

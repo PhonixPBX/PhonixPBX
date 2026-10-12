@@ -205,11 +205,30 @@ def to_dict(phone: Phone, with_secret: bool = False) -> dict[str, Any]:
 
 def _apply(session: Session, phone: Phone, data: PhoneIn) -> None:
     for field in (
-        "tech", "extension", "callerid", "description", "enabled", "ringlength", "language",
-        "codecs", "dtmf_mode", "nat", "qualify", "max_contacts", "busylevel", "public_access",
-        "public_name", "vm_enabled", "vm_pin", "vm_email", "notify_missed", "notify_email",
-        "dial_type", "dial_string", "manual_attributes",
-    ):  # fmt: skip
+        "tech",
+        "extension",
+        "callerid",
+        "description",
+        "enabled",
+        "ringlength",
+        "language",
+        "codecs",
+        "dtmf_mode",
+        "nat",
+        "qualify",
+        "max_contacts",
+        "busylevel",
+        "public_access",
+        "public_name",
+        "vm_enabled",
+        "vm_pin",
+        "vm_email",
+        "notify_missed",
+        "notify_email",
+        "dial_type",
+        "dial_string",
+        "manual_attributes",
+    ):
         setattr(phone, field, getattr(data, field))
     if data.secret:
         phone.secret = data.secret

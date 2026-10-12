@@ -157,9 +157,7 @@ def extension_owner(session: Session, number: str) -> str | None:
     return None
 
 
-def ensure_extension_free(
-    session: Session, number: str, field: str, own: tuple[type, int] | None = None
-) -> None:
+def ensure_extension_free(session: Session, number: str, field: str, own: tuple[type, int] | None = None) -> None:
     """Raise if ``number`` is used by another object than ``own`` (model, id)."""
     owners: list[tuple[type, Any]] = [
         (Phone, Phone.extension),
@@ -172,7 +170,5 @@ def ensure_extension_free(
         if obj is not None and (own is None or not (model is own[0] and obj.id == own[1])):
             raise ServiceError(fields={field: f"Number already used by {extension_owner(session, number)}"})
     features = load_settings(session, FeatureSettings)
-    if number == features.park_ext or (
-        number.isdigit() and features.park_start <= int(number) <= features.park_end
-    ):
+    if number == features.park_ext or (number.isdigit() and features.park_start <= int(number) <= features.park_end):
         raise ServiceError(fields={field: "Number is reserved for call parking"})

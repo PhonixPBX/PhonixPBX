@@ -79,9 +79,7 @@ _SECRET = re.compile(r"^[A-Za-z0-9!#$%&()*+,\-./:=?@\[\]^_{|}~]{4,128}$")
 
 def secret(value: str) -> str:
     if not _SECRET.match(value):
-        raise ValueError(
-            "Secret must be 4-128 characters without spaces, quotes, ';' or backslashes"
-        )
+        raise ValueError("Secret must be 4-128 characters without spaces, quotes, ';' or backslashes")
     return value
 
 
@@ -296,9 +294,7 @@ def application_logic(value: str) -> str:
             continue
         no_control(line, "Dialplan line")
         if not (_APP_LINE.match(line) or _INCLUDE_LINE.match(line)):
-            raise ValueError(
-                f"Invalid dialplan line: {line[:60]!r} (expected e.g. '1,Answer()' or 'n,Hangup()')"
-            )
+            raise ValueError(f"Invalid dialplan line: {line[:60]!r} (expected e.g. '1,Answer()' or 'n,Hangup()')")
         lines.append(line)
     if not lines:
         raise ValueError("Application logic must contain at least one line")
@@ -349,16 +345,46 @@ def language(value: str) -> str:
 
 
 TONEZONES = {
-    "at": "Austria", "au": "Australia", "be": "Belgium", "br": "Brazil", "ch": "Switzerland",
-    "cl": "Chile", "cn": "China", "cz": "Czech Republic", "de": "Germany", "dk": "Denmark",
-    "ee": "Estonia", "es": "Spain", "fi": "Finland", "fr": "France", "gr": "Greece",
-    "hu": "Hungary", "il": "Israel", "in": "India", "it": "Italy", "jp": "Japan",
-    "lt": "Lithuania", "mx": "Mexico", "my": "Malaysia", "nl": "Netherlands", "no": "Norway",
-    "nz": "New Zealand", "ph": "Philippines", "pl": "Poland", "pt": "Portugal", "ru": "Russia",
-    "se": "Sweden", "sg": "Singapore", "th": "Thailand", "tw": "Taiwan", "uk": "United Kingdom",
-    "us": "United States", "us-old": "United States (old)", "ve": "Venezuela",
+    "at": "Austria",
+    "au": "Australia",
+    "be": "Belgium",
+    "br": "Brazil",
+    "ch": "Switzerland",
+    "cl": "Chile",
+    "cn": "China",
+    "cz": "Czech Republic",
+    "de": "Germany",
+    "dk": "Denmark",
+    "ee": "Estonia",
+    "es": "Spain",
+    "fi": "Finland",
+    "fr": "France",
+    "gr": "Greece",
+    "hu": "Hungary",
+    "il": "Israel",
+    "in": "India",
+    "it": "Italy",
+    "jp": "Japan",
+    "lt": "Lithuania",
+    "mx": "Mexico",
+    "my": "Malaysia",
+    "nl": "Netherlands",
+    "no": "Norway",
+    "nz": "New Zealand",
+    "ph": "Philippines",
+    "pl": "Poland",
+    "pt": "Portugal",
+    "ru": "Russia",
+    "se": "Sweden",
+    "sg": "Singapore",
+    "th": "Thailand",
+    "tw": "Taiwan",
+    "uk": "United Kingdom",
+    "us": "United States",
+    "us-old": "United States (old)",
+    "ve": "Venezuela",
     "za": "South Africa",
-}  # fmt: skip
+}
 
 
 def tonezone(value: str) -> str:

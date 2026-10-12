@@ -113,9 +113,7 @@ def _apply_callgroup(session: Session, group: CallGroup, data: CallGroupIn) -> N
     group.ringlength = data.ringlength
     group.public_access = data.public_access
     group.public_name = data.public_name
-    group.members = [
-        CallGroupMember(phone_id=pid, position=i) for i, pid in enumerate(data.member_ids)
-    ]
+    group.members = [CallGroupMember(phone_id=pid, position=i) for i, pid in enumerate(data.member_ids)]
 
 
 def create_callgroup(session: Session, data: CallGroupIn, user: str = "") -> CallGroup:

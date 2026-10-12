@@ -88,7 +88,7 @@ def verify_bundle(path: Path) -> BundleInfo:
                 h = hashlib.sha256()
                 fh = tar.extractfile(member)
                 assert fh is not None
-                for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+                while chunk := fh.read(1024 * 1024):
                     h.update(chunk)
                 if h.hexdigest() != digest:
                     raise ServiceError(f"Checksum mismatch for {name}")

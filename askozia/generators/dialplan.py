@@ -139,9 +139,7 @@ def ring_steps(target: RingTarget, from_public: bool, linear: list[RingTarget] |
     timeout = str(target.ringlength) if target.ringlength else ""
     if linear:
         for member in linear:
-            steps.append(
-                f"Gosub(sub-try,s,1({member.dialstring},{options},{member.ringlength or 20}))"
-            )
+            steps.append(f"Gosub(sub-try,s,1({member.dialstring},{options},{member.ringlength or 20}))")
         steps.append(f"Gosub(sub-dial,s,1(,{target.vm_box},{options},))")
     else:
         if not target.dialstring:
@@ -166,7 +164,7 @@ def callgroup_steps(group: CallGroup, snap: Snapshot, from_public: bool) -> list
         ringlength=group.ringlength,
     )
     if group.strategy == "linear":
-        for t, phone in zip(targets, members):
+        for t, phone in zip(targets, members, strict=False):
             t.ringlength = group.ringlength or phone.ringlength or 20
         return ring_steps(target, from_public, linear=[t for t in targets if t.dialstring])
     return ring_steps(target, from_public)
@@ -199,21 +197,27 @@ class DialplanBuilder:
             greeting = next((m for m in snap.media_files if m.kind == "vm_greeting"), None)
 
         sub = self.ctx("sub-dial", "ARG1 dialstring, ARG2 voicemail box, ARG3 dial options, ARG4 timeout")
-        sub.ext("s", [
-            'GotoIf($["${ARG1}" = ""]?s-NOANSWER,1)',
-            "Dial(${ARG1},${ARG4},${ARG3})",
-            "Goto(s-${DIALSTATUS},1)",
-        ])  # fmt: skip
+        sub.ext(
+            "s",
+            [
+                'GotoIf($["${ARG1}" = ""]?s-NOANSWER,1)',
+                "Dial(${ARG1},${ARG4},${ARG3})",
+                "Goto(s-${DIALSTATUS},1)",
+            ],
+        )
         sub.ext("s-ANSWER", ["Hangup()"])
         sub.ext("s-CANCEL", ["Hangup()"])
-        sub.ext("s-BUSY", [
-            "Set(MISSEDCAUSE=busy)",
-            'GotoIf($["${ARG2}" = ""]?nobox)',
-            "Answer()",
-            "VoiceMail(${ARG2}@default,b)",
-            "Hangup()",
-            "@nobox Busy(10)",
-        ])  # fmt: skip
+        sub.ext(
+            "s-BUSY",
+            [
+                "Set(MISSEDCAUSE=busy)",
+                'GotoIf($["${ARG2}" = ""]?nobox)',
+                "Answer()",
+                "VoiceMail(${ARG2}@default,b)",
+                "Hangup()",
+                "@nobox Busy(10)",
+            ],
+        )
         sub.ext("s-NOANSWER", ["Set(MISSEDCAUSE=no-answer)", "Goto(vm,1)"])
         sub.ext("_s-.", ["Set(MISSEDCAUSE=unavailable)", "Goto(vm,1)"])
         vm_steps = [
@@ -231,45 +235,52 @@ class DialplanBuilder:
 
         # sequential ringing for "linear" call groups: returns unless answered
         sub = self.ctx("sub-try", "ARG1 dialstring, ARG2 options, ARG3 timeout")
-        sub.ext("s", [
-            "Dial(${ARG1},${ARG3},${ARG2})",
-            'GotoIf($["${DIALSTATUS}" = "ANSWER"]?done)',
-            "Return()",
-            "@done Hangup()",
-        ])  # fmt: skip
+        sub.ext(
+            "s",
+            [
+                "Dial(${ARG1},${ARG3},${ARG2})",
+                'GotoIf($["${DIALSTATUS}" = "ANSWER"]?done)',
+                "Return()",
+                "@done Hangup()",
+            ],
+        )
 
         # call forwarding (legacy macro-checkcf): DB(CF/<ext>) holds the target
         sub = self.ctx("sub-checkcf", "ARG1 extension that may be forwarded")
-        sub.ext("s", [
-            "Set(LOCAL(dest)=${DB(CF/${ARG1})})",
-            'GotoIf($["${dest}" = ""]?ret)',
-            'GotoIf($["${dest}" = "${CALLERID(num)}"]?ret)',
-            f'GotoIf($[0${{CF_HOPS}} >= {CF_MAX_HOPS}]?ret)',
-            "Set(__CF_HOPS=$[0${CF_HOPS} + 1])",
-            "GotoIf($[${DIALPLAN_EXISTS(phone-${ARG1},${dest},1)}]?fwd)",
-            "@ret Return()",
-            "@fwd StackPop()",
-            "Goto(phone-${ARG1},${dest},1)",
-        ])  # fmt: skip
+        sub.ext(
+            "s",
+            [
+                "Set(LOCAL(dest)=${DB(CF/${ARG1})})",
+                'GotoIf($["${dest}" = ""]?ret)',
+                'GotoIf($["${dest}" = "${CALLERID(num)}"]?ret)',
+                f"GotoIf($[0${{CF_HOPS}} >= {CF_MAX_HOPS}]?ret)",
+                "Set(__CF_HOPS=$[0${CF_HOPS} + 1])",
+                "GotoIf($[${DIALPLAN_EXISTS(phone-${ARG1},${dest},1)}]?fwd)",
+                "@ret Return()",
+                "@fwd StackPop()",
+                "Goto(phone-${ARG1},${dest},1)",
+            ],
+        )
 
         # missed call notification e-mail (hangup handler)
         sub = self.ctx("sub-missed-call", "hangup handler: mail missed calls")
         if snap.email.configured:
-            sub.ext("s", [
-                'GotoIf($["${DIALSTATUS}" = "ANSWER"]?done)',
-                'GotoIf($["${NOTIFY_EMAIL}" = ""]?done)',
-                'GotoIf($["${VMSTATUS}" = "SUCCESS"]?done)',
-                f'System({NOTIFY_SCRIPT} "${{NOTIFY_EMAIL}}" '
-                '"${IF($["${MISSEDCAUSE}" = ""]?hung-up:${MISSEDCAUSE})}" '
-                '"${FILTER(0-9a-zA-Z +._@<>-,${CALLERID(all)})}")',
-                "@done Return()",
-            ])  # fmt: skip
+            sub.ext(
+                "s",
+                [
+                    'GotoIf($["${DIALSTATUS}" = "ANSWER"]?done)',
+                    'GotoIf($["${NOTIFY_EMAIL}" = ""]?done)',
+                    'GotoIf($["${VMSTATUS}" = "SUCCESS"]?done)',
+                    f'System({NOTIFY_SCRIPT} "${{NOTIFY_EMAIL}}" '
+                    '"${IF($["${MISSEDCAUSE}" = ""]?hung-up:${MISSEDCAUSE})}" '
+                    '"${FILTER(0-9a-zA-Z +._@<>-,${CALLERID(all)})}")',
+                    "@done Return()",
+                ],
+            )
         else:
             sub.ext("s", ["Return()"])
 
-        self.ctx("no-inbound", "inbound requests on helper endpoints are refused").ext(
-            "_X.", ["Hangup(21)"]
-        )
+        self.ctx("no-inbound", "inbound requests on helper endpoints are refused").ext("_X.", ["Hangup(21)"])
 
     # -- per object -------------------------------------------------------------
 
@@ -292,19 +303,44 @@ class DialplanBuilder:
         snap = self.snap
         out: list[tuple[str, str, str, object, bool, str]] = []
         for phone in snap.active_phones:
-            out.append(("phone", phone.extension, f"phone {phone.callerid} <{phone.extension}>",
-                        phone, phone.public_access, phone.public_name))  # fmt: skip
+            out.append(
+                (
+                    "phone",
+                    phone.extension,
+                    f"phone {phone.callerid} <{phone.extension}>",
+                    phone,
+                    phone.public_access,
+                    phone.public_name,
+                )
+            )
         for group in snap.callgroups:
             if group.extension:
-                out.append(("callgroup", group.extension, f"call group {group.name}",
-                            group, group.public_access, group.public_name))  # fmt: skip
+                out.append(
+                    (
+                        "callgroup",
+                        group.extension,
+                        f"call group {group.name}",
+                        group,
+                        group.public_access,
+                        group.public_name,
+                    )
+                )
         for app in snap.applications:
             if app.enabled:
-                out.append(("application", ext_pattern(app.extension), f"application {app.name}",
-                            app, app.public_access, app.public_name))  # fmt: skip
+                out.append(
+                    (
+                        "application",
+                        ext_pattern(app.extension),
+                        f"application {app.name}",
+                        app,
+                        app.public_access,
+                        app.public_name,
+                    )
+                )
         for room in snap.rooms:
-            out.append(("conference", room.number, f"conference {room.name}",
-                        room, room.public_access, room.public_name))  # fmt: skip
+            out.append(
+                ("conference", room.number, f"conference {room.name}", room, room.public_access, room.public_name)
+            )
         return out
 
     def internal(self) -> None:
@@ -325,7 +361,7 @@ class DialplanBuilder:
         internal.raw("; call parking")
         internal.include("parkedcalls")
         internal.raw("; directed pickup")
-        internal.ext(f"_{f.pickup}X.", ["Pickup(${EXTEN:%d}@PICKUPMARK)" % len(f.pickup), "Hangup()"])
+        internal.ext(f"_{f.pickup}X.", [f"Pickup(${{EXTEN:{len(f.pickup)}}}@PICKUPMARK)", "Hangup()"])
         internal.raw("; device state hints")
         for phone in snap.active_phones:
             if phone.tech == "pjsip":
@@ -394,7 +430,7 @@ class DialplanBuilder:
             failover = None
         for dp in provider.dialpatterns:
             pattern, prefix, strip = parse_dialpattern(dp.pattern)
-            number = prefix + ("${EXTEN:%d}" % strip if strip else "${EXTEN}")
+            number = prefix + (f"${{EXTEN:{strip}}}" if strip else "${EXTEN}")
             if provider.tech == "iax":
                 dial = f"Dial(IAX2/prov-{provider.id}/{number},,T)"
             else:
@@ -466,12 +502,15 @@ class DialplanBuilder:
             else:
                 extens = ["_" + pattern]
             for exten in extens:
-                ctx.ext(exten, [
-                    f"NoOp(Incoming call via {provider.name} to ${{EXTEN}})",
-                    "Set(CDR(userfield)=inbound)",
-                    *cid_steps(),
-                    *steps,
-                ])  # fmt: skip
+                ctx.ext(
+                    exten,
+                    [
+                        f"NoOp(Incoming call via {provider.name} to ${{EXTEN}})",
+                        "Set(CDR(userfield)=inbound)",
+                        *cid_steps(),
+                        *steps,
+                    ],
+                )
         del snap
 
     def destination_steps(self, dests: list[tuple[str, int]]) -> list[str]:
@@ -546,11 +585,7 @@ class DialplanBuilder:
 
         out = [HEADER.format(version=snap.facts.version)]
         out.append("[general]\nstatic=yes\nwriteprotect=yes\nclearglobalvars=yes\n")
-        out.append(
-            "[globals]\n"
-            f"ASKOZIA_LAN_IP={snap.facts.lan_ip}\n"
-            "TRANSFER_CONTEXT=internal\n"
-        )
+        out.append(f"[globals]\nASKOZIA_LAN_IP={snap.facts.lan_ip}\nTRANSFER_CONTEXT=internal\n")
         for ctx in self.contexts.values():
             out.append(ctx.render())
         return "\n".join(out)

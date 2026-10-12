@@ -71,12 +71,8 @@ class PhoneBlockedProvider(Base):
 
     __tablename__ = "phone_blocked_providers"
 
-    phone_id: Mapped[int] = mapped_column(
-        ForeignKey("phones.id", ondelete="CASCADE"), primary_key=True
-    )
-    provider_id: Mapped[int] = mapped_column(
-        ForeignKey("providers.id", ondelete="CASCADE"), primary_key=True
-    )
+    phone_id: Mapped[int] = mapped_column(ForeignKey("phones.id", ondelete="CASCADE"), primary_key=True)
+    provider_id: Mapped[int] = mapped_column(ForeignKey("providers.id", ondelete="CASCADE"), primary_key=True)
 
 
 class PhoneProviderCallerId(Base):
@@ -84,12 +80,8 @@ class PhoneProviderCallerId(Base):
 
     __tablename__ = "phone_provider_callerids"
 
-    phone_id: Mapped[int] = mapped_column(
-        ForeignKey("phones.id", ondelete="CASCADE"), primary_key=True
-    )
-    provider_id: Mapped[int] = mapped_column(
-        ForeignKey("providers.id", ondelete="CASCADE"), primary_key=True
-    )
+    phone_id: Mapped[int] = mapped_column(ForeignKey("phones.id", ondelete="CASCADE"), primary_key=True)
+    provider_id: Mapped[int] = mapped_column(ForeignKey("providers.id", ondelete="CASCADE"), primary_key=True)
     callerid: Mapped[str] = mapped_column(String(128))
 
 
@@ -128,9 +120,7 @@ class Phone(Base):
 
     # external phones (tech == "external")
     dial_type: Mapped[str] = mapped_column(String(16), default="provider")
-    dial_provider_id: Mapped[int | None] = mapped_column(
-        ForeignKey("providers.id", ondelete="SET NULL"), nullable=True
-    )
+    dial_provider_id: Mapped[int | None] = mapped_column(ForeignKey("providers.id", ondelete="SET NULL"), nullable=True)
     dial_string: Mapped[str] = mapped_column(String(255), default="")
 
     # raw "key=value" lines appended to the generated endpoint section
@@ -143,9 +133,7 @@ class Phone(Base):
     provider_callerids: Mapped[list[PhoneProviderCallerId]] = relationship(
         cascade="all, delete-orphan", lazy="selectin"
     )
-    dial_provider: Mapped[Provider | None] = relationship(
-        foreign_keys=[dial_provider_id], lazy="selectin"
-    )
+    dial_provider: Mapped[Provider | None] = relationship(foreign_keys=[dial_provider_id], lazy="selectin")
 
 
 class Provider(Base):
@@ -198,9 +186,7 @@ class Provider(Base):
         order_by="ProviderIncomingRoute.position",
         lazy="selectin",
     )
-    failover_provider: Mapped[Provider | None] = relationship(
-        remote_side=[id], lazy="selectin"
-    )
+    failover_provider: Mapped[Provider | None] = relationship(remote_side=[id], lazy="selectin")
 
 
 class ProviderDialPattern(Base):

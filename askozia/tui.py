@@ -11,8 +11,8 @@ import sys
 from askozia import __version__
 from askozia.core import settings as st
 from askozia.core.db import session_scope
-from askozia.services import facts, firstboot, privileged, users
 from askozia.services import apply as apply_svc
+from askozia.services import facts, firstboot, privileged, users
 from askozia.services.common import ServiceError, mark_dirty
 
 

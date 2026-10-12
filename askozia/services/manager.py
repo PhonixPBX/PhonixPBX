@@ -17,10 +17,27 @@ from askozia.services.common import NotFound, ServiceError, audit, mark_dirty
 INTERNAL_USER = "askozia"
 
 PERMISSIONS = (
-    "all", "system", "call", "log", "verbose", "command", "agent", "user", "config",
-    "dtmf", "reporting", "cdr", "dialplan", "originate", "agi", "cc", "aoc", "test",
-    "security", "message",
-)  # fmt: skip
+    "all",
+    "system",
+    "call",
+    "log",
+    "verbose",
+    "command",
+    "agent",
+    "user",
+    "config",
+    "dtmf",
+    "reporting",
+    "cdr",
+    "dialplan",
+    "originate",
+    "agi",
+    "cc",
+    "aoc",
+    "test",
+    "security",
+    "message",
+)
 
 _NAME = re.compile(r"^[A-Za-z0-9_\-]{1,64}$")
 

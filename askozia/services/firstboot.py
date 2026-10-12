@@ -14,7 +14,7 @@ from askozia.services import secrets, setup, tls, users
 
 log = logging.getLogger(__name__)
 
-PASSWORD_FILE = "initial-admin-password"
+PASSWORD_FILE = "initial-admin-password"  # noqa: S105 - a file name
 
 
 @dataclass

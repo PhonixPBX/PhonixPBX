@@ -56,8 +56,8 @@ askozia = [
 
 [tool.ruff]
 target-version = "py310"
-line-length = 100
-extend-exclude = ["legacy"]
+line-length = 120
+extend-exclude = ["legacy/**"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "S", "SIM", "RUF"]
@@ -70,7 +70,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S105", "S106", "S108", "S311"]
+"tests/**" = ["S105", "S106", "S107", "S108", "S311"]
 "askozia/core/migrations/**" = ["E501"]
 
 [tool.mypy]
@@ -78,7 +78,7 @@ python_version = "3.10"
 plugins = ["pydantic.mypy"]
 ignore_missing_imports = true
 check_untyped_defs = true
-exclude = ["legacy/"]
+exclude = ["^legacy/"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

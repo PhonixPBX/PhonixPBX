@@ -6,6 +6,7 @@ Kept dependency free on purpose; AMI is a simple line based protocol.
 
 from __future__ import annotations
 
+import contextlib
 import itertools
 import socket
 from collections.abc import Iterator
@@ -64,10 +65,8 @@ class AmiClient:
 
     def close(self) -> None:
         if self._sock is not None:
-            try:
+            with contextlib.suppress(OSError):
                 self._send({"Action": "Logoff"})
-            except OSError:
-                pass
             self._sock.close()
             self._sock = None
 

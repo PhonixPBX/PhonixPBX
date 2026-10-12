@@ -82,8 +82,8 @@ def iax_conf(snap: Snapshot) -> str:
 
 def voicemail_conf(snap: Snapshot) -> str:
     email = snap.email
-    from_address = snap.voicemail.from_address or email.from_address or (
-        f"voicemail@{snap.system.hostname}.{snap.system.domain}"
+    from_address = (
+        snap.voicemail.from_address or email.from_address or (f"voicemail@{snap.system.hostname}.{snap.system.domain}")
     )
     return render(
         "asterisk/voicemail.conf.j2",
@@ -121,24 +121,31 @@ def moh_dir(snap: Snapshot) -> str:
 def generate(snap: Snapshot) -> list[GeneratedFile]:
     zones = (DATA / "indications_zones.conf").read_text()
     return [
-        _file("asterisk.conf", render("asterisk/asterisk.conf.j2",
-              language=snap.system.prompt_language, hostname=snap.system.hostname,
-              astdb_dir=f"{snap.facts.data_dir}/asterisk"), "asterisk:restart"),  # fmt: skip
+        _file(
+            "asterisk.conf",
+            render(
+                "asterisk/asterisk.conf.j2",
+                language=snap.system.prompt_language,
+                hostname=snap.system.hostname,
+                astdb_dir=f"{snap.facts.data_dir}/asterisk",
+            ),
+            "asterisk:restart",
+        ),
         _file("modules.conf", render("asterisk/modules.conf.j2"), "asterisk:restart"),
         _file("logger.conf", render("asterisk/logger.conf.j2"), "asterisk:logger"),
-        _file("indications.conf",
-              render("asterisk/indications.conf.j2", country=snap.system.tonezone, zones=zones),
-              "asterisk:indications"),  # fmt: skip
+        _file(
+            "indications.conf",
+            render("asterisk/indications.conf.j2", country=snap.system.tonezone, zones=zones),
+            "asterisk:indications",
+        ),
         _file("pjsip.conf", pjsip_conf(snap), "asterisk:pjsip"),
         _file("iax.conf", iax_conf(snap), "asterisk:iax"),
         _file("extensions.conf", dialplan.generate(snap), "asterisk:dialplan"),
         _file("voicemail.conf", voicemail_conf(snap), "asterisk:voicemail"),
         _file("confbridge.conf", render("asterisk/confbridge.conf.j2"), "asterisk:confbridge"),
-        _file("musiconhold.conf", render("asterisk/musiconhold.conf.j2", moh_dir=moh_dir(snap)),
-              "asterisk:moh"),  # fmt: skip
+        _file("musiconhold.conf", render("asterisk/musiconhold.conf.j2", moh_dir=moh_dir(snap)), "asterisk:moh"),
         _file("features.conf", render("asterisk/features.conf.j2", f=snap.features), "asterisk:features"),
-        _file("res_parking.conf", render("asterisk/res_parking.conf.j2", f=snap.features),
-              "asterisk:parking"),  # fmt: skip
+        _file("res_parking.conf", render("asterisk/res_parking.conf.j2", f=snap.features), "asterisk:parking"),
         _file("rtp.conf", render("asterisk/rtp.conf.j2", rtp=snap.rtp), "asterisk:rtp"),
         _file("manager.conf", manager_conf(snap), "asterisk:manager"),
         _file("cdr.conf", render("asterisk/cdr.conf.j2"), "asterisk:cdr"),
@@ -147,6 +154,5 @@ def generate(snap: Snapshot) -> list[GeneratedFile]:
         _file("udptl.conf", render("asterisk/udptl.conf.j2"), "asterisk:restart"),
         _file("pjsip_notify.conf", render("asterisk/pjsip_notify.conf.j2"), "asterisk:pjsip"),
         _file("acl.conf", render("asterisk/empty.conf.j2"), "asterisk:restart"),
-        *(_file(name, render("asterisk/stub.conf.j2"), "asterisk:restart")
-          for name in ("ccss.conf", "pjproject.conf")),
+        *(_file(name, render("asterisk/stub.conf.j2"), "asterisk:restart") for name in ("ccss.conf", "pjproject.conf")),
     ]

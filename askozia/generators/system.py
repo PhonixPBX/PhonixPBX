@@ -51,13 +51,14 @@ def generate(snap: Snapshot) -> list[GeneratedFile]:
     sysset, net = snap.system, snap.network
     fqdn = f"{sysset.hostname}.{sysset.domain}"
     files = [
-        _priv("/etc/network/interfaces",
-              render("system/interfaces.j2", net=net, hostname=sysset.hostname), "system:network"),
+        _priv(
+            "/etc/network/interfaces",
+            render("system/interfaces.j2", net=net, hostname=sysset.hostname),
+            "system:network",
+        ),
         _priv("/etc/hostname", sysset.hostname + "\n", "system:hostname"),
-        _priv("/etc/hosts", render("system/hosts.j2", net=net, fqdn=fqdn, hostname=sysset.hostname),
-              "system:hostname"),
-        _priv("/etc/chrony/chrony.conf", render("system/chrony.conf.j2", servers=sysset.ntp_servers),
-              "system:time"),
+        _priv("/etc/hosts", render("system/hosts.j2", net=net, fqdn=fqdn, hostname=sysset.hostname), "system:hostname"),
+        _priv("/etc/chrony/chrony.conf", render("system/chrony.conf.j2", servers=sysset.ntp_servers), "system:time"),
         _priv("/etc/timezone", sysset.timezone + "\n", "system:time"),
         _priv("/etc/nftables.nft", nftables(snap), "system:firewall", mode=0o600),
         _priv("/etc/askozia/ssh", ("on" if sysset.ssh_enabled else "off") + "\n", "system:ssh"),
@@ -67,13 +68,15 @@ def generate(snap: Snapshot) -> list[GeneratedFile]:
             component="email",
             mode=0o640,
         ),
-    ]  # fmt: skip
+    ]
     # with DHCP the resolver is managed by udhcpc unless servers are pinned
     if net.mode == "static" or net.dns_servers:
         servers = net.dns_servers or ([net.gateway] if net.gateway else [])
         files.append(
-            _priv("/etc/resolv.conf",
-                  render("system/resolv.conf.j2", domain=sysset.domain, servers=servers),
-                  "system:network")  # fmt: skip
+            _priv(
+                "/etc/resolv.conf",
+                render("system/resolv.conf.j2", domain=sysset.domain, servers=servers),
+                "system:network",
+            )
         )
     return files

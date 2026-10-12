@@ -28,10 +28,12 @@ def _write(path: Path, data: bytes, mode: int) -> None:
 def generate_self_signed(hostname: str, ips: list[str] | None = None, days: int = 3650) -> None:
     cfg = config.get()
     key = ec.generate_private_key(ec.SECP256R1())
-    name = x509.Name([
-        x509.NameAttribute(NameOID.COMMON_NAME, hostname),
-        x509.NameAttribute(NameOID.ORGANIZATION_NAME, "AskoziaPBX"),
-    ])  # fmt: skip
+    name = x509.Name(
+        [
+            x509.NameAttribute(NameOID.COMMON_NAME, hostname),
+            x509.NameAttribute(NameOID.ORGANIZATION_NAME, "AskoziaPBX"),
+        ]
+    )
     alt: list[x509.GeneralName] = [x509.DNSName(hostname), x509.DNSName("localhost")]
     for ip in ips or []:
         alt.append(x509.IPAddress(ipaddress.ip_address(ip)))
@@ -92,12 +94,13 @@ def install_certificate(cert_pem: bytes, key_pem: bytes) -> None:
         raise ServiceError(fields={"certificate": f"Invalid PEM data: {exc}"}) from exc
     if not certs:
         raise ServiceError(fields={"certificate": "No certificate found"})
-    pub = certs[0].public_key().public_bytes(
-        serialization.Encoding.DER, serialization.PublicFormat.SubjectPublicKeyInfo
+    pub = (
+        certs[0].public_key().public_bytes(serialization.Encoding.DER, serialization.PublicFormat.SubjectPublicKeyInfo)
     )
-    if key.public_key().public_bytes(
-        serialization.Encoding.DER, serialization.PublicFormat.SubjectPublicKeyInfo
-    ) != pub:
+    if (
+        key.public_key().public_bytes(serialization.Encoding.DER, serialization.PublicFormat.SubjectPublicKeyInfo)
+        != pub
+    ):
         raise ServiceError(fields={"private_key": "Private key does not match the certificate"})
     cfg = config.get()
     _write(cfg.tls_key_path, key_pem, 0o640)

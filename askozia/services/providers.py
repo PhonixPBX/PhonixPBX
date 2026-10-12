@@ -223,8 +223,7 @@ def to_dict(p: Provider, with_secret: bool = False) -> dict[str, Any]:
         "manual_attributes": p.manual_attributes,
         "dialpatterns": [d.pattern for d in p.dialpatterns],
         "incoming_routes": [
-            {"pattern": r.pattern, "dest_type": r.dest_type, "dest_id": r.dest_id}
-            for r in p.incoming_routes
+            {"pattern": r.pattern, "dest_type": r.dest_type, "dest_id": r.dest_id} for r in p.incoming_routes
         ],
     }
     if with_secret:
@@ -284,29 +283,42 @@ def _check_refs(session: Session, data: ProviderIn, own_id: int | None) -> None:
         for other in session.scalars(stmt):
             if other.provider_id != own_id:
                 name = session.get(Provider, other.provider_id).name  # type: ignore[union-attr]
-                raise ServiceError(
-                    fields={"dialpatterns": f"Pattern {pattern} is already used by {name}"}
-                )
+                raise ServiceError(fields={"dialpatterns": f"Pattern {pattern} is already used by {name}"})
 
 
 def _apply(provider: Provider, data: ProviderIn) -> None:
     for field in (
-        "tech", "name", "enabled", "host", "port", "transport", "username", "auth_user",
-        "from_user", "from_domain", "registration", "iax_auth", "language", "codecs", "dtmf_mode",
-        "nat", "qualify", "readback_number", "callerid_source", "callerid_string",
-        "incoming_cid_override", "incoming_cid_string", "failover_provider_id",
+        "tech",
+        "name",
+        "enabled",
+        "host",
+        "port",
+        "transport",
+        "username",
+        "auth_user",
+        "from_user",
+        "from_domain",
+        "registration",
+        "iax_auth",
+        "language",
+        "codecs",
+        "dtmf_mode",
+        "nat",
+        "qualify",
+        "readback_number",
+        "callerid_source",
+        "callerid_string",
+        "incoming_cid_override",
+        "incoming_cid_string",
+        "failover_provider_id",
         "manual_attributes",
-    ):  # fmt: skip
+    ):
         setattr(provider, field, getattr(data, field))
     if data.secret:
         provider.secret = data.secret
-    provider.dialpatterns = [
-        ProviderDialPattern(pattern=p, position=i) for i, p in enumerate(data.dialpatterns)
-    ]
+    provider.dialpatterns = [ProviderDialPattern(pattern=p, position=i) for i, p in enumerate(data.dialpatterns)]
     provider.incoming_routes = [
-        ProviderIncomingRoute(
-            pattern=r.pattern, dest_type=r.dest_type, dest_id=r.dest_id, position=i
-        )
+        ProviderIncomingRoute(pattern=r.pattern, dest_type=r.dest_type, dest_id=r.dest_id, position=i)
         for i, r in enumerate(data.incoming_routes)
     ]
 

@@ -60,9 +60,11 @@ def cmd_generate(args: argparse.Namespace) -> int:
 
     out = Path(args.output)
     with _session() as session:
-        snap = build_snapshot(session, Facts(lan_ip=args.lan_ip, lan_prefix=24,
-                                             data_dir=str(config.get().data_dir)),
-                              Secrets(ami_internal="generated-preview"))  # fmt: skip
+        snap = build_snapshot(
+            session,
+            Facts(lan_ip=args.lan_ip, lan_prefix=24, data_dir=str(config.get().data_dir)),
+            Secrets(ami_internal="generated-preview"),
+        )
         for f in generate_all(snap):
             target = out / f.path.lstrip("/")
             target.parent.mkdir(parents=True, exist_ok=True)

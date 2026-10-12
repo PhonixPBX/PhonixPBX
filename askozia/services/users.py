@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import re
 
 from argon2 import PasswordHasher
@@ -34,10 +35,8 @@ def check_password_policy(password: str) -> None:
 def authenticate(session: Session, username: str, password: str) -> User | None:
     user = session.scalar(select(User).where(User.username == username.strip().lower()))
     if user is None:
-        try:
+        with contextlib.suppress(VerificationError):
             _hasher.verify(_DUMMY_HASH, password)
-        except VerificationError:
-            pass
         return None
     try:
         _hasher.verify(user.password_hash, password)
@@ -61,9 +60,7 @@ def get_by_name(session: Session, username: str) -> User | None:
     return session.scalar(select(User).where(User.username == username))
 
 
-def create_user(
-    session: Session, username: str, password: str, must_change: bool = False, actor: str = ""
-) -> User:
+def create_user(session: Session, username: str, password: str, must_change: bool = False, actor: str = "") -> User:
     username = username.strip().lower()
     if not _USERNAME.match(username):
         raise ServiceError(fields={"username": "Use lowercase letters, digits, '.', '_' or '-'"})
@@ -77,9 +74,7 @@ def create_user(
     return user
 
 
-def set_password(
-    session: Session, username: str, password: str, must_change: bool = False, actor: str = ""
-) -> User:
+def set_password(session: Session, username: str, password: str, must_change: bool = False, actor: str = "") -> User:
     user = get_by_name(session, username)
     if user is None:
         raise NotFound("User not found")

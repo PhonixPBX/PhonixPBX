@@ -56,9 +56,11 @@ def _convert_wav(src: Path, dst: Path) -> None:
             raw = wf.readframes(frames)
     except (wave.Error, EOFError) as exc:
         raise ServiceError(
-            fields={"file": "Only PCM WAV files can be uploaded on this system (convert with: "
-                            "sox in.mp3 -r 8000 -c 1 out.wav)"}
-        ) from exc  # fmt: skip
+            fields={
+                "file": "Only PCM WAV files can be uploaded on this system (convert with: "
+                "sox in.mp3 -r 8000 -c 1 out.wav)"
+            }
+        ) from exc
     if width == 2:
         samples = array.array("h")
         samples.frombytes(raw)
@@ -69,9 +71,9 @@ def _convert_wav(src: Path, dst: Path) -> None:
     else:
         raise ServiceError(fields={"file": "Only 8 or 16 bit WAV files are supported"})
     if channels > 1:
-        samples = array.array("h", (
-            sum(samples[i:i + channels]) // channels for i in range(0, len(samples), channels)
-        ))  # fmt: skip
+        samples = array.array(
+            "h", (sum(samples[i : i + channels]) // channels for i in range(0, len(samples), channels))
+        )
     if rate != TARGET_RATE:
         step = rate / TARGET_RATE
         out = array.array("h")
