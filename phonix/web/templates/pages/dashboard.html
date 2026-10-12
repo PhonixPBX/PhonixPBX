@@ -1,73 +1,71 @@
 {% extends "base.html" %}
-{% block page_title %}Summary{% endblock %}
+{% block page_title %}{{ _("Summary") }}{% endblock %}
 {% block content %}
 {% if initial_password %}
 <div class="alert alert-warning" role="alert">
-  {{ icon("key", "me-1") }} You are still using the initial administrator password.
-  <a href="/password">Change it now</a>.
+  {{ icon("key", "me-1") }} {{ _('You are still using the initial administrator password. <a href="/password">Change it now</a>.') }}
 </div>
 {% endif %}
 {% if cert and cert.self_signed == "True" %}
 <div class="alert alert-info" role="alert">
-  {{ icon("certificate", "me-1") }} The web interface uses a self-signed certificate.
-  <a href="/advanced/certificate">Get one from Let's Encrypt or upload your own</a> to get rid of browser warnings.
+  {{ icon("certificate", "me-1") }} {{ _('The web interface uses a self-signed certificate. <a href="/advanced/certificate">Get one from Let\'s Encrypt or upload your own</a> to get rid of browser warnings.') }}
 </div>
 {% endif %}
 <div class="row row-deck row-cards">
   <div class="col-sm-6 col-lg-3">
     <div class="card"><div class="card-body">
-      <div class="subheader">Phones</div>
+      <div class="subheader">{{ _("Phones") }}</div>
       <div class="h1 mb-0">{{ phone_count }}</div>
-      <a href="/accounts/phones" class="small">manage phones</a>
+      <a href="/accounts/phones" class="small">{{ _("manage phones") }}</a>
     </div></div>
   </div>
   <div class="col-sm-6 col-lg-3">
     <div class="card"><div class="card-body">
-      <div class="subheader">Providers</div>
+      <div class="subheader">{{ _("Providers") }}</div>
       <div class="h1 mb-0">{{ provider_count }}</div>
-      <a href="/accounts/providers" class="small">manage providers</a>
+      <a href="/accounts/providers" class="small">{{ _("manage providers") }}</a>
     </div></div>
   </div>
   <div class="col-sm-6 col-lg-3">
     <div class="card"><div class="card-body">
-      <div class="subheader">CPU load</div>
+      <div class="subheader">{{ _("CPU load") }}</div>
       <div class="h1 mb-0">{{ info.load[0] }}</div>
-      <div class="text-secondary small">{{ info.load | join(" / ") }} &middot; {{ info.cpus }} CPU</div>
+      <div class="text-secondary small">{{ info.load | join(" / ") }} &middot; {{ ngettext("%(num)d CPU", "%(num)d CPUs", info.cpus) }}</div>
     </div></div>
   </div>
   <div class="col-sm-6 col-lg-3">
     <div class="card"><div class="card-body">
-      <div class="subheader">Memory</div>
+      <div class="subheader">{{ _("Memory") }}</div>
       {% set mem = info.memory %}
       {% set pct = (100 * mem.used / mem.total) | round | int if mem.total else 0 %}
       <div class="h1 mb-2">{{ pct }}%</div>
-      <div class="progress progress-sm"><div class="progress-bar bg-primary" style="width: {{ pct }}%" role="progressbar" aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100" aria-label="memory used"></div></div>
-      <div class="text-secondary small mt-1">{{ mem.used | filesize }} of {{ mem.total | filesize }}</div>
+      <div class="progress progress-sm"><div class="progress-bar bg-primary" style="width: {{ pct }}%" role="progressbar" aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100" aria-label="{{ _('memory used') }}"></div></div>
+      <div class="text-secondary small mt-1">{{ _("%(used)s of %(total)s", used=mem.used | filesize, total=mem.total | filesize) }}</div>
     </div></div>
   </div>
 
   <div class="col-lg-5">
     <div class="card">
-      <div class="card-header"><h3 class="card-title">System information</h3></div>
+      <div class="card-header"><h3 class="card-title">{{ _("System information") }}</h3></div>
       <table class="table table-sm card-table">
-        <tr><th class="w-50">Hostname</th><td>{{ system.hostname }}.{{ system.domain }}</td></tr>
+        <tr><th class="w-50">{{ _("Hostname") }}</th><td>{{ system.hostname }}.{{ system.domain }}</td></tr>
         <tr><th>LAN</th><td>{{ network.interface }} &middot; {{ "DHCP" if network.mode == "dhcp" else network.address ~ "/" ~ network.prefix }}</td></tr>
-        <tr><th>Version</th><td>PhonixPBX {{ info.version }}</td></tr>
-        <tr><th>Board / slot</th><td>{{ update.board }} / {{ update.slot }}</td></tr>
-        <tr><th>Platform</th><td>{{ info.cpu }} ({{ info.arch }})</td></tr>
-        <tr><th>Kernel</th><td>{{ info.kernel }}</td></tr>
-        <tr><th>Uptime</th><td>{{ info.uptime }}</td></tr>
-        <tr><th>Data partition</th><td>{{ info.data_disk.used | filesize }} of {{ info.data_disk.total | filesize }} used</td></tr>
-        <tr><th>Time zone</th><td>{{ system.timezone }}</td></tr>
+        <tr><th>{{ _("Version") }}</th><td>PhonixPBX {{ info.version }}</td></tr>
+        <tr><th>{{ _("Board / slot") }}</th><td>{{ update.board }} / {{ update.slot }}</td></tr>
+        <tr><th>{{ _("Platform") }}</th><td>{{ info.cpu }} ({{ info.arch }})</td></tr>
+        <tr><th>{{ _("Kernel") }}</th><td>{{ info.kernel }}</td></tr>
+        <tr><th>{{ _("Uptime") }}</th><td>{{ info.uptime }}</td></tr>
+        <tr><th>{{ _("Data partition") }}</th><td>{{ _("%(used)s of %(total)s used", used=info.data_disk.used | filesize, total=info.data_disk.total | filesize) }}</td></tr>
+        <tr><th>{{ _("Time zone") }}</th><td>{{ system.timezone }}</td></tr>
       </table>
     </div>
   </div>
   <div class="col-lg-7">
     <div class="card">
-      <div class="card-header"><h3 class="card-title">Telephony</h3>
-        <div class="card-actions"><a href="/status/calls">details</a></div></div>
+      <div class="card-header"><h3 class="card-title">{{ _("Telephony") }}</h3>
+        <div class="card-actions"><a href="/status/calls">{{ _("details") }}</a></div></div>
       <div class="card-body" hx-get="/status/asterisk?compact=1" hx-trigger="load, every 10s" hx-swap="innerHTML">
-        <div class="text-secondary"><span class="spinner-border spinner-border-sm me-2"></span>Loading Asterisk status&hellip;</div>
+        <div class="text-secondary"><span class="spinner-border spinner-border-sm me-2"></span>{{ _("Loading Asterisk status&hellip;") }}</div>
       </div>
     </div>
   </div>
@@ -79,7 +77,7 @@
   </div>
   <div class="col-lg-6">
     <div class="card">
-      <div class="card-header"><h3 class="card-title">Network traffic</h3></div>
+      <div class="card-header"><h3 class="card-title">{{ _("Network traffic") }}</h3></div>
       <div class="card-body"><div data-chart="network" data-chart-url="/status/metrics.json" data-height="180"></div></div>
     </div>
   </div>

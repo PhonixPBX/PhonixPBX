@@ -4,13 +4,13 @@
 {% block content %}
 {% if new_token %}
 <div class="alert alert-success" role="alert">
-  <h4 class="alert-title">Token "{{ new_token.name }}" created</h4>
-  <p>Copy it now: it is not shown again.</p>
+  <h4 class="alert-title">{{ _('Token "%(name)s" created', name=new_token.name) }}</h4>
+  <p>{{ _("Copy it now: it is not shown again.") }}</p>
   <div class="input-group mb-2">
     <input id="new-token" class="form-control font-monospace" type="text" value="{{ new_token_plain }}" readonly>
-    <button type="button" class="btn" data-copy="#new-token">Copy</button>
+    <button type="button" class="btn" data-copy="#new-token" data-copied="{{ _('Copied') }}">{{ _("Copy") }}</button>
   </div>
-  <div class="small text-secondary">Example: <code>curl -H "Authorization: Bearer {{ new_token_plain }}" {{ request.base_url }}api/v1/status</code></div>
+  <div class="small text-secondary">{{ _("Example:") }} <code>curl -H "Authorization: Bearer {{ new_token_plain }}" {{ request.base_url }}api/v1/status</code></div>
 </div>
 {% endif %}
 <div class="row row-cards">
@@ -18,28 +18,28 @@
     {% if tokens %}
     <div class="table-responsive">
     <table class="table table-vcenter card-table">
-      <thead><tr><th>Name</th><th>Access</th><th>Status</th><th>Owner</th><th>Created</th><th>Last used</th><th>Valid until</th><th></th></tr></thead>
+      <thead><tr><th>{{ _("Name") }}</th><th>{{ _("Access") }}</th><th>{{ _("Status") }}</th><th>{{ _("Owner") }}</th><th>{{ _("Created") }}</th><th>{{ _("Last used") }}</th><th>{{ _("Valid until") }}</th><th></th></tr></thead>
       <tbody>
       {% for t in tokens %}{% include "partials/token_row.html" %}{% endfor %}
       </tbody>
     </table>
     </div>
     {% else %}
-    {{ empty("No API tokens", "Create a token to use the REST API (/api/v1) from scripts.") }}
+    {{ empty(_("No API tokens"), _("Create a token to use the REST API (/api/v1) from scripts.")) }}
     {% endif %}
   </div></div>
   <div class="col-xl-4">
     <form method="post" action="/advanced/tokens" class="card">
       {{ csrf() }}
       <div class="card-body">
-        <h3 class="card-title">Create token</h3>
+        <h3 class="card-title">{{ _("Create token") }}</h3>
         {{ form_errors(errors) }}
-        {{ input("name", "Name", values, errors, required=True, placeholder="e.g. monitoring") }}
-        {{ radios("access", "Access", values, errors, [("read", "Read-only"), ("write", "Read-write")], help="Read-only tokens can only use GET requests.") }}
-        {{ input("expires_in_days", "Expires in (days)", values, errors, type="number", placeholder="unlimited", attrs='min="1" max="' ~ max_days ~ '"', help="1 to " ~ max_days ~ " days. Empty: the token does not expire.") }}
-        <p class="text-secondary small mb-0">Send the token in the <code>Authorization: Bearer</code> header. See the <a href="/api/docs">API documentation</a>.</p>
+        {{ input("name", _("Name"), values, errors, required=True, placeholder=_("e.g. monitoring")) }}
+        {{ radios("access", _("Access"), values, errors, [("read", _("Read-only")), ("write", _("Read-write"))], help=_("Read-only tokens can only use GET requests.")) }}
+        {{ input("expires_in_days", _("Expires in (days)"), values, errors, type="number", placeholder=_("unlimited"), attrs='min="1" max="' ~ max_days ~ '"', help=_("1 to %(max)s days. Empty: the token does not expire.", max=max_days)) }}
+        <p class="text-secondary small mb-0">{{ _('Send the token in the <code>Authorization: Bearer</code> header. See the <a href="/api/docs">API documentation</a>.') }}</p>
       </div>
-      <div class="card-footer text-end"><button class="btn btn-primary" type="submit">{{ icon("plus", "me-1") }}Create</button></div>
+      <div class="card-footer text-end"><button class="btn btn-primary" type="submit">{{ icon("plus", "me-1") }}{{ _("Create") }}</button></div>
     </form>
   </div>
 </div>

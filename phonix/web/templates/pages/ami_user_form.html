@@ -1,22 +1,22 @@
 {% extends "base.html" %}
 {% from "macros/forms.html" import csrf, input, secret, textarea, select, form_errors, submit with context %}
-{% block page_title %}{{ "New manager user" if is_new else "Edit manager user " ~ values.username }}{% endblock %}
+{% block page_title %}{{ _("New manager user") if is_new else _("Edit manager user %(name)s", name=values.username) }}{% endblock %}
 {% block content %}
 <form method="post" action="/advanced/manager/{{ 'new' if is_new else obj_id }}" class="card">
   {{ csrf() }}
   <div class="card-body">
     {{ form_errors(errors) }}
     <div class="row">
-      <div class="col-md-6">{{ input("username", "Username", values, errors, required=True) }}</div>
-      <div class="col-md-6">{{ secret("secret", "Secret", values, errors, is_new=is_new, required=True) }}</div>
+      <div class="col-md-6">{{ input("username", _("Username"), values, errors, required=True) }}</div>
+      <div class="col-md-6">{{ secret("secret", _("Secret"), values, errors, is_new=is_new, required=True) }}</div>
     </div>
-    {{ textarea("permit", "Permitted networks", values, errors, rows=2, help="One CIDR per line, e.g. 192.168.1.0/24.") }}
-    {% set perms = [] %}{% for p in ["all", "system", "call", "log", "verbose", "command", "agent", "user", "config", "dtmf", "reporting", "cdr", "dialplan", "originate", "agi", "cc", "aoc", "test", "security", "message"] %}{% set _ = perms.append((p, p)) %}{% endfor %}
+    {{ textarea("permit", _("Permitted networks"), values, errors, rows=2, help=_("One CIDR per line, e.g. 192.168.1.0/24.")) }}
+    {% set perms = [] %}{% for p in ["all", "system", "call", "log", "verbose", "command", "agent", "user", "config", "dtmf", "reporting", "cdr", "dialplan", "originate", "agi", "cc", "aoc", "test", "security", "message"] %}{% set _x = perms.append((p, p)) %}{% endfor %}
     <div class="row">
-      <div class="col-md-6">{{ select("read_perms", "Read permissions", values, errors, perms, multiple=True, tom=True) }}</div>
-      <div class="col-md-6">{{ select("write_perms", "Write permissions", values, errors, perms, multiple=True, tom=True) }}</div>
+      <div class="col-md-6">{{ select("read_perms", _("Read permissions"), values, errors, perms, multiple=True, tom=True) }}</div>
+      <div class="col-md-6">{{ select("write_perms", _("Write permissions"), values, errors, perms, multiple=True, tom=True) }}</div>
     </div>
   </div>
-  {{ submit("Create" if is_new else "Save", cancel="/advanced/manager") }}
+  {{ submit(_("Create") if is_new else _("Save"), cancel="/advanced/manager") }}
 </form>
 {% endblock %}

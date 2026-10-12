@@ -16,6 +16,7 @@ import zstandard
 
 from phonix import __version__, config
 from phonix.core import db, migrate
+from phonix.i18n import _
 from phonix.services.common import ServiceError
 
 MANIFEST = "manifest.json"
@@ -94,7 +95,7 @@ def _safe_members(tar: tarfile.TarFile) -> Iterator[tarfile.TarInfo]:
     for member in tar:
         name = member.name
         if name.startswith("/") or ".." in Path(name).parts:
-            raise ServiceError(f"Unsafe path in backup: {name}")
+            raise ServiceError(_("Unsafe path in backup: %(name)s", name=name))
         if not (member.isfile() or member.isdir()):
             continue
         top = Path(name).parts[0]
@@ -102,7 +103,7 @@ def _safe_members(tar: tarfile.TarFile) -> Iterator[tarfile.TarInfo]:
             continue
         total += member.size
         if total > MAX_RESTORE_BYTES:
-            raise ServiceError("Backup is too large")
+            raise ServiceError(_("Backup is too large"))
         yield member
 
 
@@ -117,19 +118,19 @@ def restore(source: Path) -> dict[str, object]:
                     for member in _safe_members(tar):
                         tar.extract(member, tmpdir, set_attrs=False)
         except (tarfile.TarError, zstandard.ZstdError, OSError) as exc:
-            raise ServiceError(f"Not a valid PhonixPBX backup: {exc}") from exc
+            raise ServiceError(_("Not a valid PhonixPBX backup: %(error)s", error=exc)) from exc
         try:
             manifest = json.loads((tmpdir / MANIFEST).read_text())
         except (FileNotFoundError, ValueError) as exc:
-            raise ServiceError("Backup manifest is missing") from exc
+            raise ServiceError(_("Backup manifest is missing")) from exc
         if manifest.get("format") != FORMAT or not (tmpdir / "phonix.db").is_file():
-            raise ServiceError("Unsupported backup format")
+            raise ServiceError(_("Unsupported backup format"))
         try:
             check = sqlite3.connect(tmpdir / "phonix.db")
             check.execute("PRAGMA integrity_check").fetchone()
             check.close()
         except sqlite3.DatabaseError as exc:
-            raise ServiceError("Database in backup is corrupt") from exc
+            raise ServiceError(_("Database in backup is corrupt")) from exc
 
         # safety net: keep the current state
         if cfg.db_path.exists():

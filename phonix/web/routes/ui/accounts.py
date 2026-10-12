@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 from starlette.datastructures import FormData
 
 from phonix.core.models import User
+from phonix.i18n import N_, _
 from phonix.services import phones as phone_svc
 from phonix.services import providers as provider_svc
 from phonix.services import status as status_svc
@@ -21,7 +22,7 @@ from phonix.web.templating import flash, render
 
 router = APIRouter(prefix="/accounts")
 
-TECH_LABELS = {"pjsip": "SIP", "iax": "IAX", "external": "External"}
+TECH_LABELS = {"pjsip": "SIP", "iax": "IAX", "external": N_("External")}
 
 
 def _not_found(exc: NotFound) -> Response:
@@ -115,10 +116,10 @@ async def _save_phone(request: Request, db: Session, user: User, phone_id: int |
         parsed = phone_svc.parse_phone(data)
         if phone_id is None:
             phone = phone_svc.create_phone(db, parsed, user.username)
-            flash(request, f"Phone {phone.extension} created.")
+            flash(request, _("Phone %(extension)s created.", extension=phone.extension))
         else:
             phone = phone_svc.update_phone(db, phone_id, parsed, user.username)
-            flash(request, f"Phone {phone.extension} saved.")
+            flash(request, _("Phone %(extension)s saved.", extension=phone.extension))
     except NotFound as exc:
         return _not_found(exc)
     except ServiceError as exc:
@@ -251,10 +252,10 @@ async def _save_provider(request: Request, db: Session, user: User, provider_id:
         parsed = provider_svc.parse_provider(data)
         if provider_id is None:
             provider = provider_svc.create_provider(db, parsed, user.username)
-            flash(request, f"Provider {provider.name} created.")
+            flash(request, _("Provider %(name)s created.", name=provider.name))
         else:
             provider = provider_svc.update_provider(db, provider_id, parsed, user.username)
-            flash(request, f"Provider {provider.name} saved.")
+            flash(request, _("Provider %(name)s saved.", name=provider.name))
     except NotFound as exc:
         return _not_found(exc)
     except ServiceError as exc:

@@ -2,8 +2,8 @@
 {% from "macros/ui.html" import empty with context %}
 {% block actions %}
 <div class="btn-list">
-  <a href="/accounts/providers/new?tech=pjsip" class="btn btn-primary">{{ icon("plus") }} SIP provider</a>
-  <a href="/accounts/providers/new?tech=iax" class="btn">{{ icon("plus") }} IAX provider</a>
+  <a href="/accounts/providers/new?tech=pjsip" class="btn btn-primary">{{ icon("plus") }} {{ _("SIP provider") }}</a>
+  <a href="/accounts/providers/new?tech=iax" class="btn">{{ icon("plus") }} {{ _("IAX provider") }}</a>
 </div>
 {% endblock %}
 {% block content %}
@@ -11,12 +11,12 @@
   {% if providers %}
   <div class="table-responsive">
     <table class="table table-vcenter card-table table-hover">
-      <thead><tr><th>Name</th><th>Type</th><th>Host</th><th>Username</th><th>Dial patterns</th><th>Incoming</th><th></th></tr></thead>
+      <thead><tr><th>{{ _("Name") }}</th><th>{{ _("Type") }}</th><th>{{ _("Host") }}</th><th>{{ _("Username") }}</th><th>{{ _("Dial patterns") }}</th><th>{{ _("Incoming") }}</th><th></th></tr></thead>
       <tbody>{% for p in providers %}{% include "partials/provider_row.html" %}{% endfor %}</tbody>
     </table>
   </div>
   {% else %}
-  {{ empty("No providers yet", "Add your SIP trunk or VoIP provider account to make and receive external calls.", "/accounts/providers/new", "Add a provider") }}
+  {{ empty(_("No providers yet"), _("Add your SIP trunk or VoIP provider account to make and receive external calls."), "/accounts/providers/new", _("Add a provider")) }}
   {% endif %}
 </div>
 {% endblock %}

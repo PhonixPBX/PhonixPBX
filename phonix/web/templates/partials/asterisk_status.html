@@ -1,44 +1,44 @@
 {% from "macros/ui.html" import status_dot with context %}
 {% if not ast.running %}
-<div class="alert alert-danger mb-0">{{ icon("alert-circle", "me-1") }} Asterisk is not reachable: {{ ast.error }}</div>
+<div class="alert alert-danger mb-0">{{ icon("alert-circle", "me-1") }} {{ _("Asterisk is not reachable: %(error)s", error=ast.error) }}</div>
 {% else %}
 {% set online = namespace(n=0) %}
 {% for p in phones if p.tech == "pjsip" %}{% if ast.endpoints.get(p.extension, {}).get("addresses") %}{% set online.n = online.n + 1 %}{% endif %}{% endfor %}
 <div class="row g-3 mb-3">
-  <div class="col-auto"><div class="text-secondary small">Asterisk</div><div>{{ ast.version or "running" }}</div></div>
-  <div class="col-auto"><div class="text-secondary small">Active channels</div><div class="h3 m-0">{{ ast.channels | length }}</div></div>
-  <div class="col-auto"><div class="text-secondary small">SIP phones registered</div><div class="h3 m-0">{{ online.n }} / {{ phones | selectattr("tech", "equalto", "pjsip") | list | length }}</div></div>
+  <div class="col-auto"><div class="text-secondary small">Asterisk</div><div>{{ ast.version or _("running") }}</div></div>
+  <div class="col-auto"><div class="text-secondary small">{{ _("Active channels") }}</div><div class="h3 m-0">{{ ast.channels | length }}</div></div>
+  <div class="col-auto"><div class="text-secondary small">{{ _("SIP phones registered") }}</div><div class="h3 m-0">{{ online.n }} / {{ phones | selectattr("tech", "equalto", "pjsip") | list | length }}</div></div>
 </div>
-<h4 class="mb-2">Providers</h4>
+<h4 class="mb-2">{{ _("Providers") }}</h4>
 {% if providers %}
 <table class="table table-sm table-vcenter">
-  <thead><tr><th>Name</th><th>Type</th><th>Registration / state</th></tr></thead>
+  <thead><tr><th>{{ _("Name") }}</th><th>{{ _("Type") }}</th><th>{{ _("Registration / state") }}</th></tr></thead>
   <tbody>
   {% for p in providers %}
   <tr>
     <td>{{ p.name }}</td><td>{{ "SIP" if p.tech == "pjsip" else "IAX" }}</td>
     <td>
-      {% if not p.enabled %}<span class="badge bg-secondary-lt">disabled</span>
+      {% if not p.enabled %}<span class="badge bg-secondary-lt">{{ _("disabled") }}</span>
       {% elif p.tech == "pjsip" %}
-        {% if p.registration %}{{ status_dot(ast.registrations.get("prov-" ~ p.id ~ "-reg", "not loaded")) }}{% else %}{{ status_dot(ast.endpoints.get("prov-" ~ p.id, {}).get("state", "")) }}{% endif %}
+        {% if p.registration %}{% if ("prov-" ~ p.id ~ "-reg") in ast.registrations %}{{ status_dot(ast.registrations["prov-" ~ p.id ~ "-reg"]) }}{% else %}{{ status_dot("not loaded", _("not loaded")) }}{% endif %}{% else %}{{ status_dot(ast.endpoints.get("prov-" ~ p.id, {}).get("state", "")) }}{% endif %}
       {% else %}{{ status_dot(ast.iax_peers.get("prov-" ~ p.id, "unknown")) }}{% endif %}
     </td>
   </tr>
   {% endfor %}
   </tbody>
 </table>
-{% else %}<p class="text-secondary">No providers configured.</p>{% endif %}
+{% else %}<p class="text-secondary">{{ _("No providers configured.") }}</p>{% endif %}
 
 {% if not compact %}
-<h4 class="mb-2 mt-4">Phones</h4>
+<h4 class="mb-2 mt-4">{{ _("Phones") }}</h4>
 <table class="table table-sm table-vcenter">
-  <thead><tr><th>Extension</th><th>Name</th><th>State</th><th>Contact</th><th>User agent</th></tr></thead>
+  <thead><tr><th>{{ _("Extension") }}</th><th>{{ _("Name") }}</th><th>{{ _("State") }}</th><th>{{ _("Contact") }}</th><th>{{ _("User agent") }}</th></tr></thead>
   <tbody>
   {% for p in phones if p.tech != "external" %}
   {% set ep = ast.endpoints.get(p.extension, {}) %}
   <tr>
     <td>{{ p.extension }}</td><td>{{ p.callerid }}</td>
-    <td>{% if not p.enabled %}<span class="badge bg-secondary-lt">disabled</span>{% elif p.tech == "iax" %}{{ status_dot(ast.iax_peers.get(p.extension, "unknown")) }}{% else %}{{ status_dot(ep.get("state", "")) }}{% endif %}</td>
+    <td>{% if not p.enabled %}<span class="badge bg-secondary-lt">{{ _("disabled") }}</span>{% elif p.tech == "iax" %}{{ status_dot(ast.iax_peers.get(p.extension, "unknown")) }}{% else %}{{ status_dot(ep.get("state", "")) }}{% endif %}</td>
     <td class="small">{% for a in ep.get("addresses", []) %}{{ a.uri }} ({{ a.status }}{% if a.rtt %}, {{ (a.rtt | int / 1000) | round(1) }} ms{% endif %})<br>{% endfor %}</td>
     <td class="small text-secondary">{% for a in ep.get("addresses", []) %}{{ a.agent }}<br>{% endfor %}</td>
   </tr>
@@ -47,13 +47,13 @@
 </table>
 {% endif %}
 
-<h4 class="mb-2 mt-4">Active calls</h4>
+<h4 class="mb-2 mt-4">{{ _("Active calls") }}</h4>
 {% if ast.channels %}
 <table class="table table-sm table-vcenter">
-  <thead><tr><th>Channel</th><th>Caller</th><th>Dialed</th><th>State</th><th>Application</th><th>Duration</th></tr></thead>
+  <thead><tr><th>{{ _("Channel") }}</th><th>{{ _("Caller") }}</th><th>{{ _("Dialed") }}</th><th>{{ _("State") }}</th><th>{{ _("Application") }}</th><th>{{ _("Duration") }}</th></tr></thead>
   <tbody>{% for c in ast.channels %}
-  <tr><td class="small">{{ c.channel }}</td><td>{{ c.callerid }}</td><td>{{ c.exten }}</td><td>{{ c.state }}</td><td>{{ c.app }}</td><td>{{ c.duration }}</td></tr>
+  <tr><td class="small">{{ c.channel }}</td><td>{{ c.callerid }}</td><td>{{ c.exten }}</td><td>{{ c.state | state }}</td><td>{{ c.app }}</td><td>{{ c.duration }}</td></tr>
   {% endfor %}</tbody>
 </table>
-{% else %}<p class="text-secondary mb-0">No active calls.</p>{% endif %}
+{% else %}<p class="text-secondary mb-0">{{ _("No active calls.") }}</p>{% endif %}
 {% endif %}

@@ -1,13 +1,13 @@
 {% set rd = report.to_dict() %}
 <div class="card {{ 'border-success' if rd.ok else 'border-danger' }}">
   <div class="card-body">
-    <h4>{{ "Preview" if dry_run else "Import result" }} &mdash; config.xml version {{ rd.source_version }}</h4>
-    {% if not rd.ok %}<div class="alert alert-danger">The import has errors and cannot be applied as is.</div>{% endif %}
+    <h4>{{ _("Preview") if dry_run else _("Import result") }} &mdash; {{ _("config.xml version %(version)s", version=rd.source_version) }}</h4>
+    {% if not rd.ok %}<div class="alert alert-danger">{{ _("The import has errors and cannot be applied as is.") }}</div>{% endif %}
     <table class="table table-sm">
-      <thead><tr><th>Section</th>{% for k in ["create", "update", "skip"] %}<th class="text-end">{{ k }}</th>{% endfor %}</tr></thead>
+      <thead><tr><th>{{ _("Section") }}</th>{% for k in [_("create"), _("update"), _("skip")] %}<th class="text-end">{{ k }}</th>{% endfor %}</tr></thead>
       <tbody>{% for section, counts in rd.counts.items() %}<tr><td>{{ section }}</td>{% for k in ["create", "update", "skip"] %}<td class="text-end">{{ counts.get(k, 0) }}</td>{% endfor %}</tr>{% endfor %}</tbody>
     </table>
-    {% if rd.dropped_sections %}<p class="text-secondary small">Not supported, dropped: {{ rd.dropped_sections | join(", ") }}</p>{% endif %}
+    {% if rd.dropped_sections %}<p class="text-secondary small">{{ _("Not supported, dropped: %(sections)s", sections=rd.dropped_sections | join(", ")) }}</p>{% endif %}
     {% if rd["items"] %}
     <div class="list-group list-group-flush" style="max-height: 20rem; overflow: auto">
       {% for item in rd["items"] %}
@@ -17,14 +17,14 @@
     </div>
     {% endif %}
     {% if dry_run and rd.ok and token %}
-    <form class="mt-3 d-flex gap-2 align-items-end" hx-post="/system/legacy/import" hx-target="#legacy-result" hx-confirm="Import this configuration now?">
+    <form class="mt-3 d-flex gap-2 align-items-end" hx-post="/system/legacy/import" hx-target="#legacy-result" hx-confirm="{{ _('Import this configuration now?') }}">
       <input type="hidden" name="token" value="{{ token }}">
-      <div><label class="form-label" for="legacy-mode">Mode</label>
-        <select class="form-select" id="legacy-mode" name="mode"><option value="replace">Replace current configuration (backup first)</option><option value="merge">Merge into current configuration</option></select></div>
-      <button class="btn btn-primary" type="submit">{{ icon("file-import", "me-1") }}Import</button>
+      <div><label class="form-label" for="legacy-mode">{{ _("Mode") }}</label>
+        <select class="form-select" id="legacy-mode" name="mode"><option value="replace">{{ _("Replace current configuration (backup first)") }}</option><option value="merge">{{ _("Merge into current configuration") }}</option></select></div>
+      <button class="btn btn-primary" type="submit">{{ icon("file-import", "me-1") }}{{ _("Import") }}</button>
     </form>
     {% elif not dry_run and rd.ok %}
-    <div class="alert alert-success mt-3 mb-0">Imported. Review the configuration and apply the pending changes.</div>
+    <div class="alert alert-success mt-3 mb-0">{{ _("Imported. Review the configuration and apply the pending changes.") }}</div>
     {% endif %}
   </div>
 </div>

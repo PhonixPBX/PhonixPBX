@@ -2,7 +2,7 @@
 {% block content %}
 <div class="card">
   <div class="card-body" hx-get="/status/asterisk" hx-trigger="load, every 5s" hx-swap="innerHTML">
-    <div class="text-secondary"><span class="spinner-border spinner-border-sm me-2"></span>Loading&hellip;</div>
+    <div class="text-secondary"><span class="spinner-border spinner-border-sm me-2"></span>{{ _("Loading&hellip;") }}</div>
   </div>
 </div>
 {% endblock %}

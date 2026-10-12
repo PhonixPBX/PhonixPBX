@@ -1,28 +1,28 @@
 {% extends "base.html" %}
 {% from "macros/ui.html" import delete_button, badge, empty with context %}
-{% block actions %}<a href="/dialplan/applications/new" class="btn btn-primary">{{ icon("plus") }} Application</a>{% endblock %}
+{% block actions %}<a href="/dialplan/applications/new" class="btn btn-primary">{{ icon("plus") }} {{ _("Application") }}</a>{% endblock %}
 {% block content %}
 <div class="card">
   {% if items %}
   <div class="table-responsive">
   <table class="table table-vcenter card-table table-hover">
-    <thead><tr><th>Number</th><th>Name</th><th>Description</th><th>Status</th><th></th></tr></thead>
+    <thead><tr><th>{{ _("Number") }}</th><th>{{ _("Name") }}</th><th>{{ _("Description") }}</th><th>{{ _("Status") }}</th><th></th></tr></thead>
     <tbody>
     {% for a in items %}
     <tr>
       <td><a href="/dialplan/applications/{{ a.id }}" class="fw-bold font-monospace">{{ a.extension }}</a></td>
       <td>{{ a.name }}</td>
       <td class="text-secondary">{{ a.description }}</td>
-      <td>{{ badge(a.enabled) }}{% if a.public_access %} <span class="badge bg-azure-lt">public</span>{% endif %}</td>
+      <td>{{ badge(a.enabled) }}{% if a.public_access %} <span class="badge bg-azure-lt">{{ _("public") }}</span>{% endif %}</td>
       <td class="table-actions">
-        <a href="/dialplan/applications/{{ a.id }}" class="btn btn-ghost-primary btn-icon btn-sm" aria-label="Edit {{ a.name }}">{{ icon("edit") }}</a>
-        {{ delete_button("/dialplan/applications/" ~ a.id, "application " ~ a.name) }}
+        <a href="/dialplan/applications/{{ a.id }}" class="btn btn-ghost-primary btn-icon btn-sm" aria-label="{{ _("Edit %(name)s", name=a.name) }}">{{ icon("edit") }}</a>
+        {{ delete_button("/dialplan/applications/" ~ a.id, _("application %(name)s", name=a.name)) }}
       </td>
     </tr>
     {% endfor %}
     </tbody>
   </table>
   </div>
-  {% else %}{{ empty("No applications", "Applications are small dialplan programs reachable by a number.", "/dialplan/applications/new", "Add an application") }}{% endif %}
+  {% else %}{{ empty(_("No applications"), _("Applications are small dialplan programs reachable by a number."), "/dialplan/applications/new", _("Add an application")) }}{% endif %}
 </div>
 {% endblock %}

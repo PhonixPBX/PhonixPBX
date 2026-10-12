@@ -30,6 +30,7 @@ from sqlalchemy.orm import Session
 from phonix import ami, config
 from phonix.core import settings as st
 from phonix.core.models import Provider
+from phonix.i18n import _
 from phonix.services import privileged, tls
 from phonix.services.common import ServiceError, audit
 
@@ -167,7 +168,7 @@ def _locked() -> Iterator[None]:
         try:
             fcntl.flock(fh, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:
-            raise ServiceError("A certificate request is already running.") from None
+            raise ServiceError(_("A certificate request is already running.")) from None
         yield
 
 
@@ -188,14 +189,14 @@ def reload_consumers(session: Session) -> list[str]:
     try:
         privileged.run("nginx-reload")
     except privileged.PrivilegedError as exc:
-        warnings.append(f"Reloading the web server failed: {exc}")
+        warnings.append(_("Reloading the web server failed: %(error)s", error=exc))
     # PJSIP transports only read the certificate when they are created; restart
     # once no call is active instead of dropping calls
     if tls_transport_used(session) and ami.is_running():
         try:
             ami.run_commands(["core restart when convenient"])
         except ami.AmiError as exc:
-            warnings.append(f"Restarting Asterisk for SIP-TLS failed: {exc}")
+            warnings.append(_("Restarting Asterisk for SIP-TLS failed: %(error)s", error=exc))
     return warnings
 
 
@@ -244,7 +245,7 @@ def _obtain(session: Session, acme: st.AcmeSettings, names: list[str], user: str
             check=False,
         )
     except FileNotFoundError:
-        raise ServiceError("The lego ACME client is not installed.") from None
+        raise ServiceError(_("The lego ACME client is not installed.")) from None
     except subprocess.TimeoutExpired as exc:
         output = exc.output if isinstance(exc.output, str) else ""
         raise LegoError(f"lego did not finish within {TIMEOUT} seconds.", output) from None
@@ -280,7 +281,7 @@ def _lego_error(output: str) -> str:
 def start_background() -> None:
     """Run ``phonix cert renew --force`` detached, so the web request returns at once."""
     if read_status().get("state") == "running":
-        raise ServiceError("A certificate request is already running.")
+        raise ServiceError(_("A certificate request is already running."))
     before = _read_raw().get("id")
     try:
         proc = subprocess.Popen(
@@ -293,7 +294,7 @@ def start_background() -> None:
         )
     except OSError as exc:
         write_status("error", f"Could not start the certificate request: {exc}")
-        raise ServiceError(f"Could not start the certificate request: {exc}") from exc
+        raise ServiceError(_("Could not start the certificate request: %(error)s", error=exc)) from exc
     # reap the child when it exits (a zombie would look alive to read_status)
     threading.Thread(target=proc.wait, daemon=True).start()
     # show "running" right away unless the child already wrote its own status

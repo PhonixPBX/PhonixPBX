@@ -3,13 +3,13 @@
   <div class="container-xl d-flex align-items-center gap-3">
     {{ icon("alert-triangle") }}
     <div class="flex-fill">
-      <strong>Pending changes</strong> &mdash; the configuration has been changed
-      ({{ dirty | join(", ") }}). Apply to activate.
+      {% set areas %}{% for area in dirty %}{{ _(area) }}{% if not loop.last %}, {% endif %}{% endfor %}{% endset %}
+      <strong>{{ _("Pending changes") }}</strong> &mdash; {{ _("the configuration has been changed (%(areas)s). Apply to activate.", areas=areas) }}
     </div>
     <form method="post" action="/apply" class="m-0" hx-post="/apply" hx-target="#apply-banner" hx-swap="outerHTML" hx-disable="find button">
       <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
       <button class="btn btn-dark" type="submit">
-        <span class="spinner-border spinner-border-sm me-2 htmx-indicator" role="status"></span>Apply changes
+        <span class="spinner-border spinner-border-sm me-2 htmx-indicator" role="status"></span>{{ _("Apply changes") }}
       </button>
     </form>
   </div>

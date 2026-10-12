@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 
 from phonix.core import settings as st
 from phonix.core.models import User
+from phonix.i18n import N_, _
 from phonix.services import acme as acme_svc
 from phonix.services import acme_providers, tls, tokens, users
 from phonix.services import manager as ami_svc
@@ -47,7 +48,7 @@ def _settings_routes(slug: str, model: type[st.SettingsGroup], template: str, ar
                         template,
                         status_code=422,
                         values=dict(form),
-                        errors={"port_end": "The end port must be greater than the start port."},
+                        errors={"port_end": _("The end port must be greater than the start port.")},
                     )
             except ValueError:
                 pass
@@ -65,7 +66,7 @@ for _slug, (_model, _template, _areas) in SETTINGS_PAGES.items():
 
 AMI = Kind(
     "ami_user",
-    "Manager user",
+    N_("Manager user"),
     ami_svc.AmiUserIn,
     ami_svc.list_ami_users,
     ami_svc.get_ami_user,
@@ -137,7 +138,7 @@ def _disable_acme(request: Request, db: Session) -> None:
     if acme.enabled:
         acme.enabled = False
         st.save(db, acme)
-        flash(request, "Automatic certificates were turned off.", "info")
+        flash(request, _("Automatic certificates were turned off."), "info")
 
 
 def _flash_warnings(request: Request, warnings: list[str]) -> None:
@@ -165,7 +166,7 @@ async def certificate_upload(
     audit(db, user.username, "certificate", summary="uploaded certificate")
     _disable_acme(request, db)
     _flash_warnings(request, acme_svc.reload_consumers(db))
-    flash(request, "Certificate installed.")
+    flash(request, _("Certificate installed."))
     return redirect(request, "/advanced/certificate")
 
 
@@ -176,7 +177,7 @@ def certificate_regenerate(request: Request, user: User = Depends(ui_user), db: 
     audit(db, user.username, "certificate", summary="regenerated self-signed certificate")
     _disable_acme(request, db)
     _flash_warnings(request, acme_svc.reload_consumers(db))
-    flash(request, "A new self-signed certificate was created.")
+    flash(request, _("A new self-signed certificate was created."))
     return redirect(request, "/advanced/certificate")
 
 
@@ -194,7 +195,7 @@ def _acme_dns_form(form: Any, current: st.AcmeSettings) -> tuple[str, dict[str, 
                 continue
             name, sep, value = line.partition("=")
             if not sep:
-                return code, {}, {"dns_env_text": f"Expected NAME=value: {line}"}
+                return code, {}, {"dns_env_text": _("Expected NAME=value: %(line)s", line=line)}
             name, value = name.strip(), value.strip()
             env[name] = value or keep.get(name, "")
         return code, env, {}
@@ -251,16 +252,16 @@ async def certificate_acme(
     if new.enabled and new.challenge == "dns":
         missing = acme_providers.missing(new.dns_provider, new.dns_env)
         if missing:
-            return invalid({"__all__": "Missing DNS provider credentials: " + ", ".join(missing)})
+            return invalid({"__all__": _("Missing DNS provider credentials: %(names)s", names=", ".join(missing))})
     st.save(db, new)
     diff = diff_dicts(current.model_dump(), new.model_dump(), hide=ACME_SECRETS)
     if diff:
         audit(db, user.username, "update", "settings", "acme", summary="acme", diff=diff)
     if not issue:
-        flash(request, "Settings saved.")
+        flash(request, _("Settings saved."))
         return redirect(request, "/advanced/certificate#acme")
     if not new.enabled:
-        flash(request, "Turn on automatic certificates to request one.", "warning")
+        flash(request, _("Turn on automatic certificates to request one."), "warning")
         return redirect(request, "/advanced/certificate#acme")
     db.commit()  # the background process reads the settings from the database
     try:
@@ -308,14 +309,14 @@ async def admin_add(request: Request, user: User = Depends(ui_user), db: Session
             errors=service_errors(exc),
             values=dict(form),
         )
-    flash(request, "Administrator created.")
+    flash(request, _("Administrator created."))
     return redirect(request, "/advanced/users")
 
 
 @router.delete("/users/{username}")
 def admin_delete(username: str, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
     if username == user.username:
-        raise HTTPException(400, "You cannot delete yourself")
+        raise HTTPException(400, _("You cannot delete yourself"))
     try:
         users.delete_user(db, username, actor=user.username)
     except ServiceError as exc:
@@ -361,7 +362,7 @@ async def api_token_create(request: Request, user: User = Depends(ui_user), db: 
         days = None
         if expires:
             if not expires.isdigit():
-                raise ServiceError(fields={"expires_in_days": "Enter a number of days"})
+                raise ServiceError(fields={"expires_in_days": _("Enter a number of days")})
             days = int(expires)
         token, plain = tokens.create(
             db, user, name, read_only=values["access"] == "read", expires_in_days=days, actor=user.username

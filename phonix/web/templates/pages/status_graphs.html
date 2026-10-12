@@ -2,13 +2,13 @@
 {% block content %}
 <div class="row row-cards">
   <div class="col-12"><div class="card">
-    <div class="card-header"><h3 class="card-title">CPU load</h3></div>
+    <div class="card-header"><h3 class="card-title">{{ _("CPU load") }}</h3></div>
     <div class="card-body"><div class="chart-lg" data-chart="cpu" data-chart-url="/status/metrics.json" data-height="280" data-interval="2000"></div></div>
   </div></div>
   <div class="col-12"><div class="card">
-    <div class="card-header"><h3 class="card-title">Network traffic (all interfaces)</h3></div>
+    <div class="card-header"><h3 class="card-title">{{ _("Network traffic (all interfaces)") }}</h3></div>
     <div class="card-body"><div class="chart-lg" data-chart="network" data-chart-url="/status/metrics.json" data-height="280" data-interval="2000"></div></div>
   </div></div>
 </div>
-<p class="text-secondary small mt-2">Graphs are sampled while a page with graphs is open (up to the last 120 samples).</p>
+<p class="text-secondary small mt-2">{{ _("Graphs are sampled while a page with graphs is open (up to the last 120 samples).") }}</p>
 {% endblock %}

@@ -5,10 +5,10 @@
   {{ csrf() }}
   <div class="card-body">
     {{ form_errors(errors) }}
-    <p class="text-secondary">UDP ports used for audio and video. Each call uses two ports per leg.</p>
+    <p class="text-secondary">{{ _("UDP ports used for audio and video. Each call uses two ports per leg.") }}</p>
     <div class="row">
-      <div class="col-md-6">{{ input("port_start", "First port", values, errors, type="number") }}</div>
-      <div class="col-md-6">{{ input("port_end", "Last port", values, errors, type="number") }}</div>
+      <div class="col-md-6">{{ input("port_start", _("First port"), values, errors, type="number") }}</div>
+      <div class="col-md-6">{{ input("port_end", _("Last port"), values, errors, type="number") }}</div>
     </div>
   </div>
   {{ submit() }}

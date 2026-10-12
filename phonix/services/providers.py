@@ -18,6 +18,7 @@ from phonix.core.models import (
     ProviderDialPattern,
     ProviderIncomingRoute,
 )
+from phonix.i18n import N_, _
 from phonix.services.common import (
     NotFound,
     ServiceError,
@@ -82,9 +83,9 @@ class ProviderIn(BaseModel):
     @field_validator("name")
     @classmethod
     def _name(cls, value: str) -> str:
-        value = v.config_value(value, "Name")
+        value = v.config_value(value, N_("Name"))
         if not value:
-            raise ValueError("Name is required")
+            raise ValueError(_("Name is required"))
         return value
 
     @field_validator("host")
@@ -127,13 +128,13 @@ class ProviderIn(BaseModel):
     def _readback(cls, value: str) -> str:
         value = value.strip()
         if value and not value.lstrip("+").isdigit():
-            raise ValueError("Public number must consist of digits")
+            raise ValueError(_("Public number must consist of digits"))
         return value
 
     @field_validator("callerid_string", "incoming_cid_string")
     @classmethod
     def _cid(cls, value: str) -> str:
-        return v.config_value(value, "Caller ID") if value else ""
+        return v.config_value(value, N_("Caller ID")) if value else ""
 
     @field_validator("manual_attributes")
     @classmethod
@@ -154,9 +155,9 @@ class ProviderIn(BaseModel):
     @model_validator(mode="after")
     def _cross(self) -> ProviderIn:
         if self.callerid_source == "string" and not self.callerid_string:
-            raise ValueError("callerid_string: required when the caller id source is a fixed string")
+            raise ValueError("callerid_string: " + _("required when the caller id source is a fixed string"))
         if self.incoming_cid_override in ("replace", "prepend") and not self.incoming_cid_string:
-            raise ValueError("incoming_cid_string: required for this caller id override")
+            raise ValueError("incoming_cid_string: " + _("required for this caller id override"))
         if self.tech == "iax" and self.transport != "udp":
             self.transport = "udp"
         return self
@@ -186,7 +187,7 @@ def list_providers(session: Session, tech: str | None = None) -> list[Provider]:
 def get_provider(session: Session, provider_id: int) -> Provider:
     provider = session.get(Provider, provider_id)
     if provider is None:
-        raise NotFound("Provider not found")
+        raise NotFound(_("Provider not found"))
     return provider
 
 
@@ -243,14 +244,16 @@ def destination_label(session: Session, dest_type: str, dest_id: int) -> str:
     model = DEST_MODELS.get(dest_type)
     obj = session.get(model, dest_id) if model else None
     if obj is None:
-        return f"(missing {dest_type})"
+        return _("(missing %(type)s)", type=dest_type)
     if isinstance(obj, Phone):
         return f"{obj.callerid} <{obj.extension}>"
     if isinstance(obj, ConferenceRoom):
-        return f"Conference {obj.name} <{obj.number}>"
+        return _("Conference %(name)s <%(number)s>", name=obj.name, number=obj.number)
     if isinstance(obj, CallGroup):
-        return f"Call group {obj.name}" + (f" <{obj.extension}>" if obj.extension else "")
-    return f"Application {obj.name} <{obj.extension}>"
+        if obj.extension:
+            return _("Call group %(name)s <%(number)s>", name=obj.name, number=obj.extension)
+        return _("Call group %(name)s", name=obj.name)
+    return _("Application %(name)s <%(number)s>", name=obj.name, number=obj.extension)
 
 
 def destinations(session: Session) -> list[tuple[str, str]]:
@@ -271,19 +274,23 @@ def _check_refs(session: Session, data: ProviderIn, own_id: int | None) -> None:
     for idx, route in enumerate(data.incoming_routes):
         model = DEST_MODELS[route.dest_type]
         if session.get(model, route.dest_id) is None:
-            raise ServiceError(fields={f"incoming_routes.{idx}": "Destination does not exist"})
+            raise ServiceError(fields={f"incoming_routes.{idx}": _("Destination does not exist")})
     if data.failover_provider_id is not None:
         if data.failover_provider_id == own_id:
-            raise ServiceError(fields={"failover_provider_id": "A provider cannot fail over to itself"})
+            raise ServiceError(fields={"failover_provider_id": _("A provider cannot fail over to itself")})
         if session.get(Provider, data.failover_provider_id) is None:
-            raise ServiceError(fields={"failover_provider_id": "Unknown provider"})
+            raise ServiceError(fields={"failover_provider_id": _("Unknown provider")})
     # legacy pbx_dialpattern_exists(): identical patterns on two providers are ambiguous
     for pattern in data.dialpatterns:
         stmt = select(ProviderDialPattern).where(ProviderDialPattern.pattern == pattern)
         for other in session.scalars(stmt):
             if other.provider_id != own_id:
                 name = session.get(Provider, other.provider_id).name  # type: ignore[union-attr]
-                raise ServiceError(fields={"dialpatterns": f"Pattern {pattern} is already used by {name}"})
+                raise ServiceError(
+                    fields={
+                        "dialpatterns": _("Pattern %(pattern)s is already used by %(name)s", pattern=pattern, name=name)
+                    }
+                )
 
 
 def _apply(provider: Provider, data: ProviderIn) -> None:

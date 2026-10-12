@@ -1,14 +1,14 @@
 {% from "macros/ui.html" import delete_button, toggle_button with context %}
 <tr id="provider-{{ p.id }}"{% if not p.enabled %} class="text-secondary"{% endif %}>
-  <td><a href="/accounts/providers/{{ p.id }}" class="fw-bold">{{ p.name }}</a>{% if not p.enabled %} <span class="badge bg-secondary-lt">disabled</span>{% endif %}</td>
-  <td><span class="badge bg-primary-lt">{{ techs[p.tech] }}</span></td>
+  <td><a href="/accounts/providers/{{ p.id }}" class="fw-bold">{{ p.name }}</a>{% if not p.enabled %} <span class="badge bg-secondary-lt">{{ _("disabled") }}</span>{% endif %}</td>
+  <td><span class="badge bg-primary-lt">{{ _(techs[p.tech]) }}</span></td>
   <td>{{ p.host }}{% if p.port %}:{{ p.port }}{% endif %}</td>
   <td>{{ p.username }}</td>
-  <td>{% for d in p.dialpatterns %}<code>{{ d.pattern }}</code> {% else %}<span class="text-secondary">none</span>{% endfor %}</td>
-  <td>{{ p.incoming_routes | length }} route{{ "" if p.incoming_routes | length == 1 else "s" }}</td>
+  <td>{% for d in p.dialpatterns %}<code>{{ d.pattern }}</code> {% else %}<span class="text-secondary">{{ _("none") }}</span>{% endfor %}</td>
+  <td>{{ ngettext("%(num)d route", "%(num)d routes", p.incoming_routes | length) }}</td>
   <td class="table-actions">
-    <a href="/accounts/providers/{{ p.id }}" class="btn btn-ghost-primary btn-icon btn-sm" title="Edit" aria-label="Edit provider {{ p.name }}">{{ icon("edit") }}</a>
-    {{ toggle_button("/accounts/providers/" ~ p.id ~ "/toggle", p.enabled, "provider " ~ p.name) }}
-    {{ delete_button("/accounts/providers/" ~ p.id, "provider " ~ p.name) }}
+    <a href="/accounts/providers/{{ p.id }}" class="btn btn-ghost-primary btn-icon btn-sm" title="{{ _('Edit') }}" aria-label="{{ _('Edit provider %(name)s', name=p.name) }}">{{ icon("edit") }}</a>
+    {{ toggle_button("/accounts/providers/" ~ p.id ~ "/toggle", p.enabled, _("provider %(name)s", name=p.name)) }}
+    {{ delete_button("/accounts/providers/" ~ p.id, _("provider %(name)s", name=p.name)) }}
   </td>
 </tr>

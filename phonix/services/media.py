@@ -22,11 +22,12 @@ from sqlalchemy.orm import Session
 from phonix import config
 from phonix.core import settings as st
 from phonix.core.models import MediaFile
+from phonix.i18n import N_, _
 from phonix.services.common import NotFound, ServiceError, audit, mark_dirty
 
 MAX_UPLOAD = 64 * 1024 * 1024
 TARGET_RATE = 8000
-KINDS = {"moh": "Music on hold", "vm_greeting": "Voicemail greeting"}
+KINDS = {"moh": N_("Music on hold"), "vm_greeting": N_("Voicemail greeting")}
 SINGLE = {"vm_greeting"}  # kinds with only one file
 
 
@@ -45,7 +46,7 @@ def _convert_sox(src: Path, dst: Path) -> None:
         check=False,
     )
     if proc.returncode != 0:
-        raise ServiceError(fields={"file": f"Could not convert audio: {proc.stderr.strip()[:200]}"})
+        raise ServiceError(fields={"file": _("Could not convert audio: %(error)s", error=proc.stderr.strip()[:200])})
 
 
 def _convert_wav(src: Path, dst: Path) -> None:
@@ -57,8 +58,9 @@ def _convert_wav(src: Path, dst: Path) -> None:
     except (wave.Error, EOFError) as exc:
         raise ServiceError(
             fields={
-                "file": "Only PCM WAV files can be uploaded on this system (convert with: "
-                "sox in.mp3 -r 8000 -c 1 out.wav)"
+                "file": _(
+                    "Only PCM WAV files can be uploaded on this system (convert with: sox in.mp3 -r 8000 -c 1 out.wav)"
+                )
             }
         ) from exc
     if width == 2:
@@ -69,7 +71,7 @@ def _convert_wav(src: Path, dst: Path) -> None:
     elif width == 1:
         samples = array.array("h", ((b - 128) << 8 for b in raw))
     else:
-        raise ServiceError(fields={"file": "Only 8 or 16 bit WAV files are supported"})
+        raise ServiceError(fields={"file": _("Only 8 or 16 bit WAV files are supported")})
     if channels > 1:
         samples = array.array(
             "h", (sum(samples[i : i + channels]) // channels for i in range(0, len(samples), channels))
@@ -111,11 +113,11 @@ def list_media(session: Session, kind: str | None = None) -> list[MediaFile]:
 
 def add_media(session: Session, kind: str, filename: str, data: bytes, user: str = "") -> MediaFile:
     if kind not in KINDS:
-        raise ServiceError(fields={"kind": "Unknown media type"})
+        raise ServiceError(fields={"kind": _("Unknown media type")})
     if not data:
-        raise ServiceError(fields={"file": "The file is empty"})
+        raise ServiceError(fields={"file": _("The file is empty")})
     if len(data) > MAX_UPLOAD:
-        raise ServiceError(fields={"file": "The file is too large (max. 64 MB)"})
+        raise ServiceError(fields={"file": _("The file is too large (max. 64 MB)")})
     cfg = config.get()
     target_dir = cfg.media_dir / kind
     target_dir.mkdir(parents=True, exist_ok=True)
@@ -154,7 +156,7 @@ def add_media(session: Session, kind: str, filename: str, data: bytes, user: str
 def delete_media(session: Session, media_id: int, user: str = "") -> None:
     media = session.get(MediaFile, media_id)
     if media is None:
-        raise NotFound("Media file not found")
+        raise NotFound(_("Media file not found"))
     path = config.get().media_dir / media.path
     if path.exists():
         path.unlink()

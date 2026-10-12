@@ -227,7 +227,7 @@
       if (input) {
         input.select();
         if (navigator.clipboard) navigator.clipboard.writeText(input.value).catch(() => {});
-        copy.textContent = "Copied";
+        copy.textContent = copy.dataset.copied || "Copied";
       }
       return;
     }

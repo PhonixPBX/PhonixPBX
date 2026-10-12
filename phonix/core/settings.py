@@ -15,6 +15,7 @@ from sqlalchemy.orm import Session
 from phonix.core import validation as v
 from phonix.core.models import Setting
 from phonix.core.shacrypt import HASH_RE
+from phonix.i18n import _
 
 
 class SettingsGroup(BaseModel):
@@ -62,7 +63,7 @@ class SystemSettings(SettingsGroup):
     @classmethod
     def _ssh_password_hash(cls, value: str) -> str:
         if value and not HASH_RE.match(value):
-            raise ValueError("Invalid password hash")
+            raise ValueError(_("Invalid password hash"))
         return value
 
     @field_validator("tonezone")
@@ -271,7 +272,7 @@ class AcmeSettings(SettingsGroup):
     def _server_url(cls, value: str) -> str:
         value = v.no_control(value.strip(), "URL")
         if value and not value.startswith("https://"):
-            raise ValueError("The directory URL must start with https://")
+            raise ValueError(_("The directory URL must start with https://"))
         return value
 
     @field_validator("eab_kid", "eab_hmac")
@@ -279,7 +280,7 @@ class AcmeSettings(SettingsGroup):
     def _eab(cls, value: str) -> str:
         value = value.strip()
         if value and not re.fullmatch(r"[A-Za-z0-9_=+/-]{1,512}", value):
-            raise ValueError("Invalid characters")
+            raise ValueError(_("Invalid characters"))
         return value
 
     @field_validator("domains")
@@ -292,7 +293,7 @@ class AcmeSettings(SettingsGroup):
                 continue
             name = item[2:] if item.startswith("*.") else item
             if "." not in v.domain(name):
-                raise ValueError(f"{item} is not a fully qualified domain name")
+                raise ValueError(_("%(name)s is not a fully qualified domain name", name=item))
             if item not in out:
                 out.append(item)
         return out
@@ -302,7 +303,7 @@ class AcmeSettings(SettingsGroup):
     def _provider(cls, value: str) -> str:
         value = value.strip()
         if value and not re.fullmatch(r"[a-z0-9][a-z0-9._-]{0,63}", value):
-            raise ValueError("Invalid DNS provider code")
+            raise ValueError(_("Invalid DNS provider code"))
         return value
 
     @field_validator("dns_env")
@@ -312,7 +313,7 @@ class AcmeSettings(SettingsGroup):
         for key, val in value.items():
             key = key.strip()
             if not _ENV_NAME.match(key) or key.startswith(_ENV_RESERVED):
-                raise ValueError(f"Invalid variable name {key!r}")
+                raise ValueError(_("Invalid variable name %(name)r", name=key))
             out[key] = v.no_control(val.strip(), key)
         return out
 
@@ -324,26 +325,26 @@ class AcmeSettings(SettingsGroup):
             item = item.strip()
             if not item:
                 continue
-            host, _, port = item.rpartition(":") if item.count(":") == 1 else (item, "", "")
+            host, _sep, port = item.rpartition(":") if item.count(":") == 1 else (item, "", "")
             v.host(host)
             if port and not (port.isdigit() and 0 < int(port) < 65536):
-                raise ValueError(f"Invalid port in {item}")
+                raise ValueError(_("Invalid port in %(value)s", value=item))
             out.append(item)
         return out
 
     @model_validator(mode="after")
     def _consistent(self) -> AcmeSettings:
         if self.challenge == "http" and any(d.startswith("*.") for d in self.domains):
-            raise ValueError("Wildcard domains need DNS validation")
+            raise ValueError(_("Wildcard domains need DNS validation"))
         if self.enabled:
             if not self.email:
-                raise ValueError("An e-mail address is required for the ACME account")
+                raise ValueError(_("An e-mail address is required for the ACME account"))
             if self.server == "custom" and not self.server_url:
-                raise ValueError("Enter the directory URL of the ACME server")
+                raise ValueError(_("Enter the directory URL of the ACME server"))
             if self.server == "zerossl" and not (self.eab_kid and self.eab_hmac):
-                raise ValueError("ZeroSSL needs the EAB key ID and HMAC key from the ZeroSSL dashboard")
+                raise ValueError(_("ZeroSSL needs the EAB key ID and HMAC key from the ZeroSSL dashboard"))
             if self.challenge == "dns" and not self.dns_provider:
-                raise ValueError("Choose a DNS provider")
+                raise ValueError(_("Choose a DNS provider"))
         return self
 
     @property

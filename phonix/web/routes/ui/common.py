@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from phonix.core import settings as st
+from phonix.i18n import _
 from phonix.services.common import ServiceError, audit, diff_dicts, errors_from_validation, mark_dirty
 from phonix.web.deps import form_to_dict
 from phonix.web.templating import flash, render
@@ -75,7 +76,7 @@ async def save_settings_form(
         )
         if areas:
             mark_dirty(db, *areas)
-    flash(request, "Settings saved." + (" Apply the changes to activate them." if diff and areas else ""))
+    flash(request, _("Settings saved. Apply the changes to activate them.") if diff and areas else _("Settings saved."))
     return True, new.model_dump(), {}
 
 

@@ -4,26 +4,26 @@
 <div class="row row-cards">
   <div class="col-lg-6">
     <div class="card"><div class="card-body">
-      <h3 class="card-title">Installed firmware</h3>
+      <h3 class="card-title">{{ _("Installed firmware") }}</h3>
       <dl class="row mb-0">
-        <dt class="col-5">Version</dt><dd class="col-7">{{ info.version }}</dd>
-        <dt class="col-5">Board</dt><dd class="col-7">{{ info.board }}</dd>
+        <dt class="col-5">{{ _("Version") }}</dt><dd class="col-7">{{ info.version }}</dd>
+        <dt class="col-5">{{ _("Board") }}</dt><dd class="col-7">{{ info.board }}</dd>
         {% if info.platform in ("lxc", "oci") %}
-        <dt class="col-5">Platform</dt><dd class="col-7">{{ "LXC / Incus system container" if info.platform == "lxc" else "OCI container (Docker / Podman)" }}</dd>
+        <dt class="col-5">{{ _("Platform") }}</dt><dd class="col-7">{{ _("LXC / Incus system container") if info.platform == "lxc" else _("OCI container (Docker / Podman)") }}</dd>
         {% else %}
-        <dt class="col-5">Boot slot</dt><dd class="col-7">{{ info.slot }}</dd>
+        <dt class="col-5">{{ _("Boot slot") }}</dt><dd class="col-7">{{ info.slot }}</dd>
         {% endif %}
       </dl>
     </div></div>
     <div class="card mt-3"><div class="card-body">
-      <h3 class="card-title">Check for updates</h3>
+      <h3 class="card-title">{{ _("Check for updates") }}</h3>
       <form method="post" action="/system/firmware/settings">
         {{ csrf() }}
         {{ form_errors(errors) }}
-        {{ input("check_url", "Update information URL", values, errors, placeholder="https://updates.example.com/phonix/latest.json") }}
-        {{ checkbox("auto_check", "Check automatically", values, errors) }}
-        <button class="btn" type="submit">Save</button>
-        <button class="btn btn-primary" type="button" hx-post="/system/firmware/check" hx-target="#check-result">{{ icon("refresh", "me-1") }}Check now</button>
+        {{ input("check_url", _("Update information URL"), values, errors, placeholder="https://updates.example.com/phonix/latest.json") }}
+        {{ checkbox("auto_check", _("Check automatically"), values, errors) }}
+        <button class="btn" type="submit">{{ _("Save") }}</button>
+        <button class="btn btn-primary" type="button" hx-post="/system/firmware/check" hx-target="#check-result">{{ icon("refresh", "me-1") }}{{ _("Check now") }}</button>
       </form>
       <div id="check-result"></div>
     </div></div>
@@ -31,24 +31,22 @@
   <div class="col-lg-6">
     {% if info.platform in ("lxc", "oci") %}
     <div class="card"><div class="card-body">
-      <h3 class="card-title">Updates: replace the container image</h3>
-      <p class="text-secondary mb-2">PhonixPBX runs in a container, so firmware update bundles do not apply here.</p>
+      <h3 class="card-title">{{ _("Updates: replace the container image") }}</h3>
+      <p class="text-secondary mb-2">{{ _("PhonixPBX runs in a container, so firmware update bundles do not apply here.") }}</p>
       <p class="text-secondary mb-0">
       {% if info.platform == "oci" %}
-        Pull the new image and recreate the container with the same <code>/data</code> volume
-        (for example <code>docker compose pull &amp;&amp; docker compose up -d</code>).
+        {{ _("Pull the new image and recreate the container with the same <code>/data</code> volume (for example <code>docker compose pull &amp;&amp; docker compose up -d</code>).") }}
       {% else %}
-        Create a new container from the new template and attach the same <code>/data</code> volume,
-        or restore a backup (<em>System &rarr; Backup/Restore</em>) into the new container.
+        {{ _("Create a new container from the new template and attach the same <code>/data</code> volume, or restore a backup (<em>System &rarr; Backup/Restore</em>) into the new container.") }}
       {% endif %}
       </p>
     </div></div>
     {% else %}
     <div class="card"><div class="card-body">
-      <h3 class="card-title">Install an update</h3>
-      <p class="text-secondary">Upload a signed <code>.update</code> bundle for this board. It is written to the inactive system slot; the configuration and data are kept. If the new firmware fails to start, the previous one is booted automatically.</p>
+      <h3 class="card-title">{{ _("Install an update") }}</h3>
+      <p class="text-secondary">{{ _("Upload a signed <code>.update</code> bundle for this board. It is written to the inactive system slot; the configuration and data are kept. If the new firmware fails to start, the previous one is booted automatically.") }}</p>
       <form action="/system/firmware/upload" class="dropzone" data-dropzone data-param="file" data-max-mb="1024" data-accept=".update" data-target="#firmware-result"
-            data-message="Drop the update file here or click to upload"></form>
+            data-message="{{ _("Drop the update file here or click to upload") }}"></form>
       <div id="firmware-result"></div>
     </div></div>
     {% endif %}

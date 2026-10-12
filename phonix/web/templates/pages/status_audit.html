@@ -3,7 +3,7 @@
 <div class="card">
   <div class="table-responsive">
     <table class="table table-vcenter card-table table-sm">
-      <thead><tr><th>Time (UTC)</th><th>User</th><th>Action</th><th>Object</th><th>Details</th></tr></thead>
+      <thead><tr><th>{{ _("Time (UTC)") }}</th><th>{{ _("User") }}</th><th>{{ _("Action") }}</th><th>{{ _("Object") }}</th><th>{{ _("Details") }}</th></tr></thead>
       <tbody>
       {% for r in rows %}
       <tr>
@@ -11,17 +11,17 @@
         <td>{{ r.username }}</td>
         <td><span class="badge bg-primary-lt">{{ r.action }}</span></td>
         <td>{{ r.object_type }} {{ r.summary }}</td>
-        <td class="small text-secondary">{% if r.diff %}{% for k, d in r.diff.items() %}{{ k }}{% if d.changed %} (changed){% else %}: {{ d.get("from") }} &rarr; {{ d.get("to") }}{% endif %}{% if not loop.last %}; {% endif %}{% endfor %}{% endif %}</td>
+        <td class="small text-secondary">{% if r.diff %}{% for k, d in r.diff.items() %}{{ k }}{% if d.changed %} ({{ _("changed") }}){% else %}: {{ d.get("from") }} &rarr; {{ d.get("to") }}{% endif %}{% if not loop.last %}; {% endif %}{% endfor %}{% endif %}</td>
       </tr>
       {% else %}
-      <tr><td colspan="5" class="text-secondary">No entries.</td></tr>
+      <tr><td colspan="5" class="text-secondary">{{ _("No entries.") }}</td></tr>
       {% endfor %}
       </tbody>
     </table>
   </div>
   <div class="card-footer d-flex">
-    {% if page_no > 1 %}<a class="btn" href="?page_no={{ page_no - 1 }}">{{ icon("chevron-left") }} Newer</a>{% endif %}
-    {% if has_more %}<a class="btn ms-auto" href="?page_no={{ page_no + 1 }}">Older {{ icon("chevron-right") }}</a>{% endif %}
+    {% if page_no > 1 %}<a class="btn" href="?page_no={{ page_no - 1 }}">{{ icon("chevron-left") }} {{ _("Newer") }}</a>{% endif %}
+    {% if has_more %}<a class="btn ms-auto" href="?page_no={{ page_no + 1 }}">{{ _("Older") }} {{ icon("chevron-right") }}</a>{% endif %}
   </div>
 </div>
 {% endblock %}

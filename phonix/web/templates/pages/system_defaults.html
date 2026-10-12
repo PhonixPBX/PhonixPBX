@@ -5,11 +5,11 @@
 <form method="post" action="/system/defaults" class="card border-danger">
   {{ csrf() }}
   <div class="card-body">
-    <h3 class="card-title text-danger">Reset to factory defaults</h3>
-    <p>This erases the complete configuration, voicemail, media and backups on this system and reboots. Download a backup first.</p>
-    {{ input("confirm", "Type RESET to confirm", {}, errors, required=True) }}
+    <h3 class="card-title text-danger">{{ _("Reset to factory defaults") }}</h3>
+    <p>{{ _("This erases the complete configuration, voicemail, media and backups on this system and reboots. Download a backup first.") }}</p>
+    {{ input("confirm", _("Type RESET to confirm"), {}, errors, required=True) }}
   </div>
-  <div class="card-footer text-end"><button class="btn btn-danger" type="submit">{{ icon("alert-triangle", "me-1") }}Reset and reboot</button></div>
+  <div class="card-footer text-end"><button class="btn btn-danger" type="submit">{{ icon("alert-triangle", "me-1") }}{{ _("Reset and reboot") }}</button></div>
 </form>
 </div></div>
 {% endblock %}

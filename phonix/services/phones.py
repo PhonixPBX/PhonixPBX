@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from phonix.core import validation as v
 from phonix.core.models import Phone, PhoneProviderCallerId, Provider, ProviderIncomingRoute
+from phonix.i18n import N_, _
 from phonix.services.common import (
     NotFound,
     ServiceError,
@@ -33,7 +34,7 @@ _URI = re.compile(r"^[A-Za-z0-9._+\-*#]+@[A-Za-z0-9.\-:\[\]]+$")
 def public_name(value: str) -> str:
     value = value.strip()
     if value and not _PUBLIC_NAME.match(value):
-        raise ValueError("Public name may only contain letters, digits and . _ + -")
+        raise ValueError(_("Public name may only contain letters, digits and . _ + -"))
     return value
 
 
@@ -73,7 +74,7 @@ class PhoneIn(BaseModel):
 
     _ext = field_validator("extension")(lambda cls, x: v.extension(x))
     _cid = field_validator("callerid")(lambda cls, x: v.callerid_name(x))
-    _desc = field_validator("description")(lambda cls, x: v.no_control(x.strip(), "Description"))
+    _desc = field_validator("description")(lambda cls, x: v.no_control(x.strip(), N_("Description")))
     _lang = field_validator("language")(lambda cls, x: v.language(x))
     _codecs = field_validator("codecs")(lambda cls, x: v.codecs(x))
     _pub = field_validator("public_name")(lambda cls, x: public_name(x))
@@ -98,18 +99,18 @@ class PhoneIn(BaseModel):
     @model_validator(mode="after")
     def _cross(self) -> PhoneIn:
         if self.notify_missed and not self.notify_email:
-            raise ValueError("notify_email: required for missed call notifications")
+            raise ValueError("notify_email: " + _("required for missed call notifications"))
         if self.tech == "external":
             if not self.dial_string.strip():
-                raise ValueError("dial_string: required for external phones")
-            ds = v.no_control(self.dial_string.strip(), "Number")
+                raise ValueError("dial_string: " + _("required for external phones"))
+            ds = v.no_control(self.dial_string.strip(), N_("Number"))
             if self.dial_type == "provider":
                 if not self.dial_provider_id:
-                    raise ValueError("dial_provider_id: select a provider")
+                    raise ValueError("dial_provider_id: " + _("select a provider"))
                 if not re.match(r"^\+?[0-9*#]{1,32}$", ds):
-                    raise ValueError("dial_string: must be a phone number")
+                    raise ValueError("dial_string: " + _("must be a phone number"))
             elif not _URI.match(ds):
-                raise ValueError("dial_string: must look like user@host")
+                raise ValueError("dial_string: " + _("must look like user@host"))
             self.dial_string = ds
         return self
 
@@ -145,7 +146,7 @@ def list_phones(session: Session, tech: str | None = None) -> list[Phone]:
 def get_phone(session: Session, phone_id: int) -> Phone:
     phone = session.get(Phone, phone_id)
     if phone is None:
-        raise NotFound("Phone not found")
+        raise NotFound(_("Phone not found"))
     return phone
 
 
@@ -237,7 +238,7 @@ def _apply(session: Session, phone: Phone, data: PhoneIn) -> None:
     providers = {p.id: p for p in session.scalars(select(Provider))}
     unknown = [pid for pid in data.blocked_provider_ids if pid not in providers]
     if unknown or (phone.dial_provider_id and phone.dial_provider_id not in providers):
-        raise ServiceError(fields={"blocked_provider_ids": "Unknown provider"})
+        raise ServiceError(fields={"blocked_provider_ids": _("Unknown provider")})
     phone.blocked_providers = [providers[pid] for pid in data.blocked_provider_ids]
     phone.provider_callerids = [
         PhoneProviderCallerId(provider_id=pid, callerid=cid)

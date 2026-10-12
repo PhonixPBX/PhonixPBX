@@ -15,6 +15,7 @@ from sqlalchemy.orm import Session
 from phonix import config
 from phonix.core import settings as st
 from phonix.core.models import AuditLog, User
+from phonix.i18n import N_
 from phonix.services import firstboot, phones, providers, status, tls, update
 from phonix.web.deps import get_db, ui_user
 from phonix.web.routes.ui.common import page
@@ -73,7 +74,7 @@ def metrics(user: User = Depends(ui_user)) -> JSONResponse:
     return JSONResponse(data)
 
 
-LOGS = {"asterisk": "Asterisk", "system": "System"}
+LOGS = {"asterisk": "Asterisk", "system": N_("System")}
 
 
 @router.get("/status/logs")

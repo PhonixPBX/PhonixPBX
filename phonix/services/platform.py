@@ -13,6 +13,7 @@ system is updated by replacing the container image.
 from __future__ import annotations
 
 from phonix import config
+from phonix.i18n import N_
 
 CONTAINER_PREFIXES = ("lxc-", "oci-")
 
@@ -44,7 +45,7 @@ def kind(name: str | None = None) -> str:
     return "appliance"
 
 
-CONTAINER_UPDATE_HINT = (
+CONTAINER_UPDATE_HINT = N_(
     "PhonixPBX runs in a container: firmware update bundles do not apply. "
     "Update by replacing the container with a newer image and keeping /data."
 )

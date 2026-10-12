@@ -4,86 +4,86 @@
 {% block content %}
 <div class="row row-cards">
   <div class="col-lg-6"><div class="card"><div class="card-body">
-    <h3 class="card-title">Current certificate</h3>
+    <h3 class="card-title">{{ _("Current certificate") }}</h3>
     {% if cert %}
     <dl class="row">
-      <dt class="col-4">Subject</dt><dd class="col-8">{{ cert.subject }}</dd>
-      {% if cert.names %}<dt class="col-4">Names</dt><dd class="col-8">{{ cert.names }}</dd>{% endif %}
-      <dt class="col-4">Issuer</dt><dd class="col-8">{{ cert.issuer }}{% if cert.self_signed == "True" %} <span class="badge bg-yellow-lt">self-signed</span>{% endif %}</dd>
-      <dt class="col-4">Valid until</dt><dd class="col-8">{{ cert.not_after }}</dd>
+      <dt class="col-4">{{ _("Subject") }}</dt><dd class="col-8">{{ cert.subject }}</dd>
+      {% if cert.names %}<dt class="col-4">{{ _("Names") }}</dt><dd class="col-8">{{ cert.names }}</dd>{% endif %}
+      <dt class="col-4">{{ _("Issuer") }}</dt><dd class="col-8">{{ cert.issuer }}{% if cert.self_signed == "True" %} <span class="badge bg-yellow-lt">{{ _("self-signed") }}</span>{% endif %}</dd>
+      <dt class="col-4">{{ _("Valid until") }}</dt><dd class="col-8">{{ cert.not_after }}</dd>
       <dt class="col-4">SHA-256</dt><dd class="col-8 small font-monospace text-break">{{ cert.sha256 }}</dd>
     </dl>
-    {% else %}<p class="text-secondary">No certificate found.</p>{% endif %}
+    {% else %}<p class="text-secondary">{{ _("No certificate found.") }}</p>{% endif %}
     <form method="post" action="/advanced/certificate/regenerate" class="m-0">
-      {{ csrf() }}<button class="btn" type="submit">{{ icon("refresh", "me-1") }}Create new self-signed certificate</button>
+      {{ csrf() }}<button class="btn" type="submit">{{ icon("refresh", "me-1") }}{{ _("Create new self-signed certificate") }}</button>
     </form>
   </div></div></div>
   <div class="col-lg-6">
     <form method="post" action="/advanced/certificate" enctype="multipart/form-data" class="card">
       {{ csrf() }}
       <div class="card-body">
-        <h3 class="card-title">Upload certificate</h3>
+        <h3 class="card-title">{{ _("Upload certificate") }}</h3>
         {{ form_errors(upload_errors) }}
-        <div class="mb-3"><label class="form-label" for="f-cert">Certificate (PEM, may include the chain)</label><input class="form-control" type="file" id="f-cert" name="certificate" accept=".pem,.crt,.cer" required>
+        <div class="mb-3"><label class="form-label" for="f-cert">{{ _("Certificate (PEM, may include the chain)") }}</label><input class="form-control" type="file" id="f-cert" name="certificate" accept=".pem,.crt,.cer" required>
           {% if upload_errors and upload_errors.certificate %}<div class="invalid-feedback d-block">{{ upload_errors.certificate }}</div>{% endif %}</div>
-        <div class="mb-3"><label class="form-label" for="f-key">Private key (PEM, unencrypted)</label><input class="form-control" type="file" id="f-key" name="private_key" accept=".pem,.key" required>
+        <div class="mb-3"><label class="form-label" for="f-key">{{ _("Private key (PEM, unencrypted)") }}</label><input class="form-control" type="file" id="f-key" name="private_key" accept=".pem,.key" required>
           {% if upload_errors and upload_errors.private_key %}<div class="invalid-feedback d-block">{{ upload_errors.private_key }}</div>{% endif %}</div>
-        <p class="text-secondary small">Used for the web interface and SIP over TLS. Installing a certificate turns off automatic certificates.</p>
+        <p class="text-secondary small">{{ _("Used for the web interface and SIP over TLS. Installing a certificate turns off automatic certificates.") }}</p>
       </div>
-      <div class="card-footer text-end"><button class="btn btn-primary" type="submit">Install</button></div>
+      <div class="card-footer text-end"><button class="btn btn-primary" type="submit">{{ _("Install") }}</button></div>
     </form>
   </div>
   <div class="col-12">
     <form method="post" action="/advanced/certificate/acme" class="card" id="acme">
       {{ csrf() }}
-      <div class="card-header"><h3 class="card-title">Automatic certificate (Let's Encrypt / ACME)</h3></div>
+      <div class="card-header"><h3 class="card-title">{{ _("Automatic certificate (Let's Encrypt / ACME)") }}</h3></div>
       <div class="card-body">
         {{ form_errors(errors) }}
         {{ include_status() }}
-        {{ checkbox("enabled", "Obtain and renew the certificate automatically", values, errors, help="Renewed daily when it expires in less than 30 days.") }}
+        {{ checkbox("enabled", _("Obtain and renew the certificate automatically"), values, errors, help=_("Renewed daily when it expires in less than 30 days.")) }}
         <div class="row">
           <div class="col-md-6">
-            {{ select("server", "Certificate authority", values, errors, [("letsencrypt", "Let's Encrypt"), ("letsencrypt-staging", "Let's Encrypt staging (testing, untrusted)"), ("zerossl", "ZeroSSL"), ("custom", "Other ACME server")]) }}
-            <div data-show-if="server=custom">{{ input("server_url", "ACME directory URL", values, errors, type="url", placeholder="https://acme.example.com/directory") }}</div>
+            {{ select("server", _("Certificate authority"), values, errors, [("letsencrypt", "Let's Encrypt"), ("letsencrypt-staging", _("Let's Encrypt staging (testing, untrusted)")), ("zerossl", "ZeroSSL"), ("custom", _("Other ACME server"))]) }}
+            <div data-show-if="server=custom">{{ input("server_url", _("ACME directory URL"), values, errors, type="url", placeholder="https://acme.example.com/directory") }}</div>
             <div class="row" data-show-if="server=zerossl|custom">
-              <div class="col-md-6">{{ input("eab_kid", "EAB key ID", values, errors) }}</div>
-              <div class="col-md-6">{{ secret("eab_hmac", "EAB HMAC key", values, errors, generate=False) }}</div>
+              <div class="col-md-6">{{ input("eab_kid", _("EAB key ID"), values, errors) }}</div>
+              <div class="col-md-6">{{ secret("eab_hmac", _("EAB HMAC key"), values, errors, generate=False) }}</div>
             </div>
-            {{ input("email", "Account e-mail address", values, errors, type="email", placeholder="admin@example.com") }}
-            {{ textarea("domains", "Domain names", values, errors, rows=2, mono=True, placeholder=default_domain, help="One per line. Empty: " ~ default_domain ~ ". The names must be public DNS names.") }}
-            {% if local_domain %}<div class="alert alert-warning">{{ icon("alert-triangle", "me-1") }}{{ default_domain }} is not a public DNS name. Enter the names the PBX is reached by.</div>{% endif %}
+            {{ input("email", _("Account e-mail address"), values, errors, type="email", placeholder="admin@example.com") }}
+            {{ textarea("domains", _("Domain names"), values, errors, rows=2, mono=True, placeholder=default_domain, help=_("One per line. Empty: %(domain)s. The names must be public DNS names.", domain=default_domain)) }}
+            {% if local_domain %}<div class="alert alert-warning">{{ icon("alert-triangle", "me-1") }}{{ _("%(domain)s is not a public DNS name. Enter the names the PBX is reached by.", domain=default_domain) }}</div>{% endif %}
           </div>
           <div class="col-md-6">
-            {{ radios("challenge", "Validation", values, errors, [("http", "HTTP (port 80)"), ("dns", "DNS provider API")]) }}
+            {{ radios("challenge", _("Validation"), values, errors, [("http", _("HTTP (port 80)")), ("dns", _("DNS provider API"))]) }}
             <div data-show-if="challenge=http">
-              <p class="text-secondary small">The CA connects to <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: the names must resolve to this PBX and port 80 must be reachable from the internet.</p>
-              {% if admin_restricted %}<div class="alert alert-warning">{{ icon("alert-triangle", "me-1") }}The firewall only allows the web interface from <a href="/advanced/firewall">selected networks</a>, so the CA cannot reach port 80. Use DNS validation.</div>{% endif %}
+              <p class="text-secondary small">{{ _("The CA connects to <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: the names must resolve to this PBX and port 80 must be reachable from the internet.") }}</p>
+              {% if admin_restricted %}<div class="alert alert-warning">{{ icon("alert-triangle", "me-1") }}{{ _('The firewall only allows the web interface from <a href="/advanced/firewall">selected networks</a>, so the CA cannot reach port 80. Use DNS validation.') }}</div>{% endif %}
             </div>
             <div data-show-if="challenge=dns">
-              <p class="text-secondary small">A TXT record is created through the DNS provider's API. Works for PBXs that are not reachable from the internet and for wildcard names.</p>
-              {{ select("dns_provider_choice", "DNS provider", values, errors, providers, empty="- choose -") }}
+              <p class="text-secondary small">{{ _("A TXT record is created through the DNS provider's API. Works for PBXs that are not reachable from the internet and for wildcard names.") }}</p>
+              {{ select("dns_provider_choice", _("DNS provider"), values, errors, providers, empty=_("- choose -")) }}
               {% for p in provider_list %}
               <div data-show-if="dns_provider_choice={{ p.code }}">
                 {% for f in p.fields %}
                 {% set name = "env__" ~ p.code ~ "__" ~ f.env %}
-                {% if f.secret %}{{ secret(name, f.label ~ ("" if f.required else " (optional)"), values, errors, generate=False, is_new=values.get(name + "__unset")) }}
-                {% else %}{{ input(name, f.label ~ ("" if f.required else " (optional)"), values, errors, help=f.env) }}{% endif %}
+                {% if f.secret %}{{ secret(name, _(f.label) if f.required else _("%(label)s (optional)", label=_(f.label)), values, errors, generate=False, is_new=values.get(name + "__unset")) }}
+                {% else %}{{ input(name, _(f.label) if f.required else _("%(label)s (optional)", label=_(f.label)), values, errors, help=f.env) }}{% endif %}
                 {% endfor %}
               </div>
               {% endfor %}
               <div data-show-if="dns_provider_choice=other">
-                {{ input("dns_provider_other", "lego provider code", values, errors, placeholder="e.g. powerdns", help='See the <a href="https://go-acme.github.io/lego/dns/" target="_blank" rel="noopener">lego DNS provider list</a>.' | safe) }}
-                {{ textarea("dns_env_text", "Credentials", values, errors, rows=4, mono=True, placeholder="PDNS_API_URL=https://ns.example.com\nPDNS_API_KEY=...", help="NAME=value per line. Stored values are not shown: leave the value empty (NAME=) to keep it.") }}
+                {{ input("dns_provider_other", _("lego provider code"), values, errors, placeholder=_("e.g. powerdns"), help=_('See the <a href="https://go-acme.github.io/lego/dns/" target="_blank" rel="noopener">lego DNS provider list</a>.')) }}
+                {{ textarea("dns_env_text", _("Credentials"), values, errors, rows=4, mono=True, placeholder="PDNS_API_URL=https://ns.example.com\nPDNS_API_KEY=...", help=_("NAME=value per line. Stored values are not shown: leave the value empty (NAME=) to keep it.")) }}
               </div>
-              {{ textarea("dns_resolvers", "DNS resolvers for the propagation check (optional)", values, errors, rows=2, mono=True, placeholder="1.1.1.1:53", help="Useful when the PBX resolves its own domain to an internal DNS server.") }}
+              {{ textarea("dns_resolvers", _("DNS resolvers for the propagation check (optional)"), values, errors, rows=2, mono=True, placeholder="1.1.1.1:53", help=_("Useful when the PBX resolves its own domain to an internal DNS server.")) }}
             </div>
           </div>
         </div>
       </div>
       <div class="card-footer">
         <div class="d-flex">
-          <button type="submit" class="btn btn-primary ms-auto">{{ icon("device-floppy", "me-1") }}Save</button>
-          <button type="submit" class="btn ms-2" formaction="/advanced/certificate/acme?issue=1"{% if status.get("state") == "running" %} disabled{% endif %}>{{ icon("certificate", "me-1") }}Save and request certificate now</button>
+          <button type="submit" class="btn btn-primary ms-auto">{{ icon("device-floppy", "me-1") }}{{ _("Save") }}</button>
+          <button type="submit" class="btn ms-2" formaction="/advanced/certificate/acme?issue=1"{% if status.get("state") == "running" %} disabled{% endif %}>{{ icon("certificate", "me-1") }}{{ _("Save and request certificate now") }}</button>
         </div>
       </div>
     </form>

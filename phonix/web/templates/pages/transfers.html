@@ -5,24 +5,24 @@
   {{ csrf() }}
   <div class="card-body">
     {{ form_errors(errors) }}
-    <h3 class="card-title">Feature codes</h3>
+    <h3 class="card-title">{{ _("Feature codes") }}</h3>
     <div class="row">
-      <div class="col-md-3">{{ input("attended_transfer", "Attended transfer", values, errors, attrs='data-mask="dialcode"') }}</div>
-      <div class="col-md-3">{{ input("blind_transfer", "Blind transfer", values, errors, attrs='data-mask="dialcode"') }}</div>
-      <div class="col-md-3">{{ input("pickup", "Call pickup", values, errors, attrs='data-mask="dialcode"', help="Dial alone to pick up any ringing phone, or followed by an extension.") }}</div>
-      <div class="col-md-3">{{ input("disconnect", "Disconnect", values, errors, attrs='data-mask="dialcode"') }}</div>
+      <div class="col-md-3">{{ input("attended_transfer", _("Attended transfer"), values, errors, attrs='data-mask="dialcode"') }}</div>
+      <div class="col-md-3">{{ input("blind_transfer", _("Blind transfer"), values, errors, attrs='data-mask="dialcode"') }}</div>
+      <div class="col-md-3">{{ input("pickup", _("Call pickup"), values, errors, attrs='data-mask="dialcode"', help=_("Dial alone to pick up any ringing phone, or followed by an extension.")) }}</div>
+      <div class="col-md-3">{{ input("disconnect", _("Disconnect"), values, errors, attrs='data-mask="dialcode"') }}</div>
     </div>
     <div class="row">
-      <div class="col-md-4">{{ input("feature_digit_timeout_ms", "Feature digit timeout (ms)", values, errors, type="number") }}</div>
-      <div class="col-md-4">{{ input("transfer_digit_timeout_s", "Transfer digit timeout (s)", values, errors, type="number") }}</div>
-      <div class="col-md-4">{{ input("atxfer_noanswer_timeout_s", "Attended transfer no-answer timeout (s)", values, errors, type="number") }}</div>
+      <div class="col-md-4">{{ input("feature_digit_timeout_ms", _("Feature digit timeout (ms)"), values, errors, type="number") }}</div>
+      <div class="col-md-4">{{ input("transfer_digit_timeout_s", _("Transfer digit timeout (s)"), values, errors, type="number") }}</div>
+      <div class="col-md-4">{{ input("atxfer_noanswer_timeout_s", _("Attended transfer no-answer timeout (s)"), values, errors, type="number") }}</div>
     </div>
-    <h3 class="card-title mt-3">Call parking</h3>
+    <h3 class="card-title mt-3">{{ _("Call parking") }}</h3>
     <div class="row">
-      <div class="col-md-3">{{ input("park_ext", "Parking number", values, errors, attrs='data-mask="digits"', help="Transfer a call here to park it.") }}</div>
-      <div class="col-md-3">{{ input("park_start", "First slot", values, errors, type="number") }}</div>
-      <div class="col-md-3">{{ input("park_end", "Last slot", values, errors, type="number") }}</div>
-      <div class="col-md-3">{{ input("park_time_s", "Parking time (s)", values, errors, type="number") }}</div>
+      <div class="col-md-3">{{ input("park_ext", _("Parking number"), values, errors, attrs='data-mask="digits"', help=_("Transfer a call here to park it.")) }}</div>
+      <div class="col-md-3">{{ input("park_start", _("First slot"), values, errors, type="number") }}</div>
+      <div class="col-md-3">{{ input("park_end", _("Last slot"), values, errors, type="number") }}</div>
+      <div class="col-md-3">{{ input("park_time_s", _("Parking time (s)"), values, errors, type="number") }}</div>
     </div>
   </div>
   {{ submit() }}

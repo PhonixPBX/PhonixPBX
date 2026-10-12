@@ -5,11 +5,11 @@
   <aside class="navbar navbar-vertical navbar-expand-lg phonix-sidebar" data-bs-theme="dark">
     <div class="container-fluid">
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu"
-              aria-controls="sidebar-menu" aria-expanded="false" aria-label="Toggle navigation">
+              aria-controls="sidebar-menu" aria-expanded="false" aria-label="{{ _('Toggle navigation') }}">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="navbar-brand phonix-brand">
-        <a href="/" aria-label="PhonixPBX home"><img src="{{ asset('img/logo-sidebar.svg') }}" width="170" height="46" alt="PhonixPBX"></a>
+        <a href="/" aria-label="{{ _('PhonixPBX home') }}"><img src="{{ asset('img/logo-sidebar.svg') }}" width="170" height="46" alt="PhonixPBX"></a>
       </div>
       <div class="collapse navbar-collapse" id="sidebar-menu">
         <ul class="navbar-nav pt-lg-3">
@@ -19,11 +19,11 @@
             <a class="nav-link dropdown-toggle{% if open %} show{% endif %}" href="#menu-{{ section.key }}"
                data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="{{ 'true' if open else 'false' }}">
               <span class="nav-link-icon">{{ icon(section.icon) }}</span>
-              <span class="nav-link-title">{{ section.title }}</span>
+              <span class="nav-link-title">{{ _(section.title) }}</span>
             </a>
             <div class="dropdown-menu{% if open %} show{% endif %}">
               {% for item in section.items %}
-              <a class="dropdown-item{% if active_item and active_item.url == item.url %} active{% endif %}" href="{{ item.url }}">{{ item.title }}</a>
+              <a class="dropdown-item{% if active_item and active_item.url == item.url %} active{% endif %}" href="{{ item.url }}">{{ _(item.title) }}</a>
               {% endfor %}
             </div>
           </li>
@@ -36,20 +36,21 @@
     <header class="navbar navbar-expand-md d-none d-lg-flex d-print-none phonix-topbar">
       <div class="container-xl">
         <div class="navbar-nav flex-row order-md-last align-items-center gap-2">
-          <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="Dark mode" data-bs-toggle="tooltip" data-bs-placement="bottom">{{ icon("moon") }}</a>
-          <a href="?theme=light" class="nav-link px-0 hide-theme-light" title="Light mode" data-bs-toggle="tooltip" data-bs-placement="bottom">{{ icon("sun") }}</a>
+          <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="{{ _('Dark mode') }}" data-bs-toggle="tooltip" data-bs-placement="bottom">{{ icon("moon") }}</a>
+          <a href="?theme=light" class="nav-link px-0 hide-theme-light" title="{{ _('Light mode') }}" data-bs-toggle="tooltip" data-bs-placement="bottom">{{ icon("sun") }}</a>
           {% if user %}
           <div class="nav-item dropdown">
-            <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+            <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="{{ _('Open user menu') }}">
               <span class="avatar avatar-sm phonix-avatar">{{ user.username[:2] | upper }}</span>
-              <div class="d-none d-xl-block ps-2"><div>{{ user.username }}</div><div class="mt-1 small text-secondary">Administrator</div></div>
+              <div class="d-none d-xl-block ps-2"><div>{{ user.username }}</div><div class="mt-1 small text-secondary">{{ _("Administrator") }}</div></div>
             </a>
             <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-              <a href="/password" class="dropdown-item">{{ icon("key", "me-2") }}Change password</a>
+              <a href="/account" class="dropdown-item">{{ icon("language", "me-2") }}{{ _("Preferences") }}</a>
+              <a href="/password" class="dropdown-item">{{ icon("key", "me-2") }}{{ _("Change password") }}</a>
               <div class="dropdown-divider"></div>
               <form method="post" action="/logout" class="m-0">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-                <button class="dropdown-item" type="submit">{{ icon("logout", "me-2") }}Logout</button>
+                <button class="dropdown-item" type="submit">{{ icon("logout", "me-2") }}{{ _("Logout") }}</button>
               </form>
             </div>
           </div>
@@ -65,8 +66,8 @@
       <div class="container-xl">
         <div class="row g-2 align-items-center">
           <div class="col">
-            <div class="page-pretitle">{% block pretitle %}{{ active_section.title if active_section else "" }}{% endblock %}</div>
-            <h2 class="page-title">{% block page_title %}{{ active_item.title if active_item else "" }}{% endblock %}</h2>
+            <div class="page-pretitle">{% block pretitle %}{{ _(active_section.title) if active_section else "" }}{% endblock %}</div>
+            <h2 class="page-title">{% block page_title %}{{ _(active_item.title) if active_item else "" }}{% endblock %}</h2>
           </div>
           <div class="col-auto ms-auto d-print-none">{% block actions %}{% endblock %}</div>
         </div>

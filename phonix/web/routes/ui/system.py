@@ -20,6 +20,7 @@ from phonix.core import settings as st
 from phonix.core import validation as v
 from phonix.core.models import User
 from phonix.core.shacrypt import sha512_crypt
+from phonix.i18n import _
 from phonix.services import backup as backup_svc
 from phonix.services import privileged, status, update
 from phonix.services.common import ServiceError, audit
@@ -61,7 +62,7 @@ async def general_save(request: Request, user: User = Depends(ui_user), db: Sess
     elif password:
         if len(password) < 8:
             values = {**st.load(db, st.SystemSettings).model_dump(), **form_to_dict(form, st.SystemSettings)}
-            errors = {"ssh_password": "The password must have at least 8 characters"}
+            errors = {"ssh_password": _("The password must have at least 8 characters")}
             return page(
                 request,
                 "pages/system_general.html",
@@ -143,11 +144,11 @@ def _dir_size(path: Path) -> int:
 def storage(request: Request, user: User = Depends(ui_user)) -> Response:
     cfg = config.get()
     areas = [
-        ("Configuration database", cfg.db_path.parent / "phonix.db"),
-        ("Media (music on hold, greetings)", cfg.media_dir),
-        ("Backups", cfg.backup_dir),
-        ("Voicemail", cfg.path("/var/spool/asterisk/voicemail")),
-        ("Asterisk database", cfg.data_dir / "asterisk"),
+        (_("Configuration database"), cfg.db_path.parent / "phonix.db"),
+        (_("Media (music on hold, greetings)"), cfg.media_dir),
+        (_("Backups"), cfg.backup_dir),
+        (_("Voicemail"), cfg.path("/var/spool/asterisk/voicemail")),
+        (_("Asterisk database"), cfg.data_dir / "asterisk"),
     ]
     usage = []
     for label, path in areas:
@@ -186,17 +187,24 @@ async def firmware_settings(request: Request, user: User = Depends(ui_user), db:
 def firmware_check(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
     url = st.load(db, st.UpdateSettings).check_url
     if not url.startswith("https://"):
-        return _alert(request, "warning", "Configure an https:// update check URL first.")
+        return _alert(request, "warning", _("Configure an https:// update check URL first."))
     try:
         with urllib.request.urlopen(url, timeout=15) as resp:  # noqa: S310 - https only, admin configured
             data = json.loads(resp.read(65536))
         latest = str(data.get("version", "?"))
     except (OSError, ValueError) as exc:
-        return _alert(request, "danger", f"Update check failed: {exc}")
+        return _alert(request, "danger", _("Update check failed: %(error)s", error=exc))
     if latest == __version__:
-        return _alert(request, "success", f"You are running the latest version ({latest}).")
+        return _alert(request, "success", _("You are running the latest version (%(version)s).", version=latest))
     return _alert(
-        request, "info", f"Version {latest} is available (running {__version__}). Download: {data.get('url', '')}"
+        request,
+        "info",
+        _(
+            "Version %(latest)s is available (running %(version)s). Download: %(url)s",
+            latest=latest,
+            version=__version__,
+            url=data.get("url", ""),
+        ),
     )
 
 
@@ -215,7 +223,7 @@ async def firmware_upload(
         info = update.install(target)
     except (ServiceError, privileged.PrivilegedError) as exc:
         target.unlink(missing_ok=True)
-        return _alert(request, "danger", f"Update rejected: {exc}", status_code=422)
+        return _alert(request, "danger", _("Update rejected: %(error)s", error=exc), status_code=422)
     audit(db, user.username, "firmware", summary=f"installed {info.version}")
     target.unlink(missing_ok=True)
     return render(request, "partials/firmware_done.html", {"info": info})
@@ -233,16 +241,16 @@ def backup(request: Request, user: User = Depends(ui_user)) -> Response:
 def backup_create(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
     path = backup_svc.create()
     audit(db, user.username, "backup", summary=path.name)
-    flash(request, f"Backup {path.name} created.")
+    flash(request, _("Backup %(name)s created.", name=path.name))
     return redirect(request, "/system/backup")
 
 
 def _backup_file(name: str) -> Path:
     if "/" in name or not name.startswith("phonix-backup-") or not name.endswith(".tar.zst"):
-        raise HTTPException(404, "Backup not found")
+        raise HTTPException(404, _("Backup not found"))
     path = config.get().backup_dir / name
     if not path.is_file():
-        raise HTTPException(404, "Backup not found")
+        raise HTTPException(404, _("Backup not found"))
     return path
 
 
@@ -272,7 +280,10 @@ async def backup_restore(request: Request, file: UploadFile, user: User = Depend
     return _alert(
         request,
         "success",
-        f"Backup from {manifest.get('created', '?')} restored. Review the configuration and apply the changes.",
+        _(
+            "Backup from %(created)s restored. Review the configuration and apply the changes.",
+            created=manifest.get("created", "?"),
+        ),
     )
 
 
@@ -301,10 +312,10 @@ async def legacy_import(request: Request, user: User = Depends(ui_user)) -> Resp
     token = str(form.get("token", ""))
     mode = "merge" if form.get("mode") == "merge" else "replace"
     if not token.isalnum():
-        raise HTTPException(400, "invalid token")
+        raise HTTPException(400, _("invalid token"))
     path = _legacy_dir() / f"{token}.xml"
     if not path.exists():
-        return _alert(request, "danger", "The uploaded file expired, please upload it again.")
+        return _alert(request, "danger", _("The uploaded file expired, please upload it again."))
     report = importer.import_bytes(path.read_bytes(), mode=mode, dry_run=False, user=user.username)
     path.unlink(missing_ok=True)
     resp = render(request, "partials/legacy_report.html", {"report": report, "token": "", "dry_run": False})
@@ -335,7 +346,7 @@ async def defaults_do(request: Request, user: User = Depends(ui_user), db: Sessi
     form = await request.form()
     if form.get("confirm") != "RESET":
         return page(
-            request, "pages/system_defaults.html", status_code=422, errors={"confirm": "Type RESET to confirm."}
+            request, "pages/system_defaults.html", status_code=422, errors={"confirm": _("Type RESET to confirm.")}
         )
     audit(db, user.username, "factory-reset")
     db.commit()
@@ -345,7 +356,9 @@ async def defaults_do(request: Request, user: User = Depends(ui_user), db: Sessi
         flash(request, str(exc), "error")
         return redirect(request, "/system/defaults")
     return page(
-        request, "pages/system_rebooting.html", message="The system is being reset to factory defaults and reboots now."
+        request,
+        "pages/system_rebooting.html",
+        message=_("The system is being reset to factory defaults and reboots now."),
     )
 
 
@@ -366,9 +379,9 @@ async def reboot_do(request: Request, user: User = Depends(ui_user), db: Session
         flash(request, str(exc), "error")
         return redirect(request, "/system/reboot")
     msg = (
-        "The system is shutting down."
+        _("The system is shutting down.")
         if action == "shutdown"
-        else "The system is rebooting. This page reloads when it is back."
+        else _("The system is rebooting. This page reloads when it is back.")
     )
     return page(request, "pages/system_rebooting.html", message=msg, poll=action == "reboot")
 

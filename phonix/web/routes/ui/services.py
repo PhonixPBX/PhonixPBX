@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 from phonix import config
 from phonix.core import settings as st
 from phonix.core.models import MediaFile, User
+from phonix.i18n import N_, _
 from phonix.services import dialplan as dp
 from phonix.services import media as media_svc
 from phonix.services.common import NotFound, ServiceError
@@ -63,11 +64,16 @@ async def email_test(request: Request, user: User = Depends(ui_user), db: Sessio
     except (OSError, subprocess.TimeoutExpired) as exc:
         ok, detail = False, str(exc)
     if ok:
-        return render(request, "partials/alert.html", {"level": "success", "message": f"Test message sent to {to}."})
+        return render(
+            request, "partials/alert.html", {"level": "success", "message": _("Test message sent to %(to)s.", to=to)}
+        )
     return render(
         request,
         "partials/alert.html",
-        {"level": "danger", "message": f"Sending failed (did you apply the settings?): {detail[:300]}"},
+        {
+            "level": "danger",
+            "message": _("Sending failed (did you apply the settings?): %(detail)s", detail=detail[:300]),
+        },
     )
 
 
@@ -103,7 +109,7 @@ async def voicemail_save(request: Request, user: User = Depends(ui_user), db: Se
 
 ROOMS = Kind(
     "conference",
-    "Conference room",
+    N_("Conference room"),
     dp.ConferenceRoomIn,
     dp.list_rooms,
     dp.get_room,
@@ -164,7 +170,7 @@ def media_delete(
 def media_download(media_id: int, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
     media = db.get(MediaFile, media_id)
     if media is None or not media_svc.media_path(media).exists():
-        raise HTTPException(404, "Media file not found")
+        raise HTTPException(404, _("Media file not found"))
     return FileResponse(
         media_svc.media_path(media), media_type="audio/wav", filename=f"{media.name.rsplit('.', 1)[0]}.wav"
     )

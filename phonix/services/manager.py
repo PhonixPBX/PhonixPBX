@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 
 from phonix.core import validation as v
 from phonix.core.models import AmiUser
+from phonix.i18n import _
 from phonix.services.common import NotFound, ServiceError, audit, mark_dirty
 
 # reserved for the PBX itself (see generators/asterisk.py)
@@ -56,9 +57,9 @@ class AmiUserIn(BaseModel):
     def _name(cls, value: str) -> str:
         value = value.strip()
         if not _NAME.match(value):
-            raise ValueError("Username may contain letters, digits, '_' and '-'")
+            raise ValueError(_("Username may contain letters, digits, '_' and '-'"))
         if value in (INTERNAL_USER, "general"):
-            raise ValueError("This username is reserved")
+            raise ValueError(_("This username is reserved"))
         return value
 
     @field_validator("secret")
@@ -71,7 +72,7 @@ class AmiUserIn(BaseModel):
     def _permit(cls, value: list[str]) -> list[str]:
         nets = [v.network(n) for n in value if n.strip()]
         if not nets:
-            raise ValueError("At least one permitted network is required")
+            raise ValueError(_("At least one permitted network is required"))
         return nets
 
     @field_validator("read_perms", "write_perms")
@@ -79,7 +80,7 @@ class AmiUserIn(BaseModel):
     def _perms(cls, value: list[str]) -> list[str]:
         for perm in value:
             if perm not in PERMISSIONS:
-                raise ValueError(f"Unknown permission {perm!r}")
+                raise ValueError(_("Unknown permission %(name)r", name=perm))
         return list(dict.fromkeys(value))
 
 
@@ -90,7 +91,7 @@ def list_ami_users(session: Session) -> list[AmiUser]:
 def get_ami_user(session: Session, user_id: int) -> AmiUser:
     user = session.get(AmiUser, user_id)
     if user is None:
-        raise NotFound("Manager user not found")
+        raise NotFound(_("Manager user not found"))
     return user
 
 
@@ -107,9 +108,9 @@ def to_dict(u: AmiUser) -> dict[str, Any]:
 def _apply(session: Session, user: AmiUser, data: AmiUserIn) -> None:
     other = session.scalar(select(AmiUser).where(AmiUser.username == data.username))
     if other is not None and other.id != user.id:
-        raise ServiceError(fields={"username": "Username already exists"})
+        raise ServiceError(fields={"username": _("Username already exists")})
     if not data.secret and not user.secret:
-        raise ServiceError(fields={"secret": "A secret is required"})
+        raise ServiceError(fields={"secret": _("A secret is required")})
     user.username = data.username
     if data.secret:
         user.secret = data.secret

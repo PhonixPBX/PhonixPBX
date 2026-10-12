@@ -23,9 +23,9 @@
   <div class="input-group">
     <input type="password" class="form-control{% if errors and errors.get(name) %} is-invalid{% endif %}" id="f-{{ name }}" name="{{ name }}"
            value="{{ values.get(name, '') if is_new else '' }}" autocomplete="new-password"
-           placeholder="{{ '' if is_new else 'unchanged - leave empty to keep' }}">
-    <button type="button" class="btn btn-icon" data-toggle-password="#f-{{ name }}" title="Show/hide" aria-label="Show or hide">{{ icon("eye") }}</button>
-    {% if generate %}<button type="button" class="btn" data-generate-secret="#f-{{ name }}">{{ icon("refresh", "me-1") }}Generate</button>{% endif %}
+           placeholder="{{ '' if is_new else _('unchanged - leave empty to keep') }}">
+    <button type="button" class="btn btn-icon" data-toggle-password="#f-{{ name }}" title="{{ _('Show/hide') }}" aria-label="{{ _('Show or hide') }}">{{ icon("eye") }}</button>
+    {% if generate %}<button type="button" class="btn" data-generate-secret="#f-{{ name }}">{{ icon("refresh", "me-1") }}{{ _("Generate") }}</button>{% endif %}
   </div>
   {{ _feedback(name, errors, help) }}
 </div>
@@ -90,18 +90,18 @@
 {% if errors %}
 <div class="alert alert-danger" role="alert">
   <div class="d-flex"><div>{{ icon("alert-circle", "alert-icon") }}</div>
-  <div><h4 class="alert-title">Please correct the highlighted fields</h4>
+  <div><h4 class="alert-title">{{ _("Please correct the highlighted fields") }}</h4>
   {% if errors.get("__all__") %}<div class="text-secondary">{{ errors.get("__all__") }}</div>{% endif %}
   </div></div>
 </div>
 {% endif %}
 {% endmacro %}
 
-{% macro submit(label="Save", cancel=None) %}
+{% macro submit(label=None, cancel=None) %}
 <div class="card-footer text-end">
   <div class="d-flex">
-    {% if cancel %}<a href="{{ cancel }}" class="btn btn-link">Cancel</a>{% endif %}
-    <button type="submit" class="btn btn-primary ms-auto">{{ icon("device-floppy", "me-1") }}{{ label }}</button>
+    {% if cancel %}<a href="{{ cancel }}" class="btn btn-link">{{ _("Cancel") }}</a>{% endif %}
+    <button type="submit" class="btn btn-primary ms-auto">{{ icon("device-floppy", "me-1") }}{{ label if label is not none else _("Save") }}</button>
   </div>
 </div>
 {% endmacro %}
@@ -109,12 +109,12 @@
 {% macro codecs(values, errors) %}
 {% set selected = values.get("codecs") or [] %}
 <div class="mb-3">
-  <label class="form-label" for="f-codecs">Codecs <span class="form-label-description">first = preferred</span></label>
+  <label class="form-label" for="f-codecs">{{ _("Codecs") }} <span class="form-label-description">{{ _("first = preferred") }}</span></label>
   <input type="hidden" name="codecs__present" value="1">
   <select id="f-codecs" name="codecs" multiple data-tom data-tom-sortable class="form-select{% if errors and errors.get('codecs') %} is-invalid{% endif %}">
     {% for c in selected %}<option value="{{ c }}" selected>{{ c }}</option>{% endfor %}
     {% for c in CODECS_AUDIO + CODECS_VIDEO if c not in selected %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
   </select>
-  {{ _feedback("codecs", errors, "Audio: " ~ CODECS_AUDIO | join(", ") ~ ". Video: " ~ CODECS_VIDEO | join(", ")) }}
+  {{ _feedback("codecs", errors, _("Audio: %(audio)s. Video: %(video)s", audio=CODECS_AUDIO | join(", "), video=CODECS_VIDEO | join(", "))) }}
 </div>
 {% endmacro %}

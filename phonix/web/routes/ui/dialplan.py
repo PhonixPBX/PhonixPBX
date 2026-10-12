@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 
 from phonix.core import settings as st
 from phonix.core.models import User
+from phonix.i18n import N_, _
 from phonix.services import dialplan as dp
 from phonix.services import phones as phone_svc
 from phonix.services import providers as provider_svc
@@ -58,7 +59,7 @@ class Kind:
 
 APPS = Kind(
     "application",
-    "Application",
+    N_("Application"),
     dp.ApplicationIn,
     dp.list_applications,
     dp.get_application,
@@ -72,7 +73,7 @@ APPS = Kind(
 )
 GROUPS = Kind(
     "callgroup",
-    "Call group",
+    N_("Call group"),
     dp.CallGroupIn,
     dp.list_callgroups,
     dp.get_callgroup,
@@ -154,7 +155,8 @@ def register(kind: Kind, target: APIRouter = router, prefix: str = "/dialplan") 
         except ServiceError as exc:
             db.rollback()
             return form_page(request, db, model_values(kind.schema, data), service_errors(exc), obj_id, 422)
-        flash(request, f"{kind.title} {getattr(obj, 'name', None) or getattr(obj, 'username', '')} saved.")
+        name = getattr(obj, "name", None) or getattr(obj, "username", "")
+        flash(request, _("Changes saved: %(kind)s %(name)s.", kind=_(kind.title), name=name))
         return redirect(request, kind.base)
 
     @target.post(base + "/new", name=f"{kind.name}_create")
@@ -208,10 +210,10 @@ def overview(request: Request, user: User = Depends(ui_user), db: Session = Depe
         rows.append(
             {
                 "number": p.extension,
-                "type": "Phone (" + {"pjsip": "SIP", "iax": "IAX", "external": "external"}[p.tech] + ")",
+                "type": _("Phone (%(tech)s)", tech={"pjsip": "SIP", "iax": "IAX", "external": _("external")}[p.tech]),
                 "name": p.callerid,
                 "info": p.description,
-                "public": p.public_name if p.public_access and p.public_name else ("yes" if p.public_access else ""),
+                "public": p.public_name if p.public_access and p.public_name else (_("yes") if p.public_access else ""),
             }
         )
     for g in dp.list_callgroups(db):
@@ -219,30 +221,30 @@ def overview(request: Request, user: User = Depends(ui_user), db: Session = Depe
             rows.append(
                 {
                     "number": g.extension,
-                    "type": "Call group",
+                    "type": _("Call group"),
                     "name": g.name,
                     "info": ", ".join(m.phone.extension for m in g.members),
-                    "public": g.public_name or ("yes" if g.public_access else ""),
+                    "public": g.public_name or (_("yes") if g.public_access else ""),
                 }
             )
     for r in dp.list_rooms(db):
         rows.append(
             {
                 "number": r.number,
-                "type": "Conference",
+                "type": _("Conference"),
                 "name": r.name,
-                "info": "PIN protected" if r.pin else "",
-                "public": "yes" if r.public_access else "",
+                "info": _("PIN protected") if r.pin else "",
+                "public": _("yes") if r.public_access else "",
             }
         )
     for a in dp.list_applications(db):
         rows.append(
             {
                 "number": a.extension,
-                "type": "Application",
+                "type": _("Application"),
                 "name": a.name,
                 "info": a.description,
-                "public": "yes" if a.public_access else "",
+                "public": _("yes") if a.public_access else "",
             }
         )
     rows.sort(key=lambda r: (len(r["number"]), r["number"]))

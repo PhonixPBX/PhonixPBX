@@ -11,6 +11,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
 
 from phonix.core.models import ApiToken, User, utcnow
+from phonix.i18n import _
 from phonix.services.common import NotFound, ServiceError, audit
 
 PREFIX = "phx_"
@@ -42,9 +43,9 @@ def create(
     """Create a token; the plain text is returned once and never stored."""
     name = name.strip()
     if not name or len(name) > 64:
-        raise ServiceError(fields={"name": "Enter a name of up to 64 characters"})
+        raise ServiceError(fields={"name": _("Enter a name of up to 64 characters")})
     if expires_in_days is not None and not 1 <= expires_in_days <= MAX_DAYS:
-        raise ServiceError(fields={"expires_in_days": f"Choose 1 to {MAX_DAYS} days"})
+        raise ServiceError(fields={"expires_in_days": _("Choose 1 to %(max)s days", max=MAX_DAYS)})
     plain = PREFIX + secrets.token_urlsafe(32)
     now = utcnow()
     token = ApiToken(
@@ -85,7 +86,7 @@ def list_tokens(session: Session) -> list[ApiToken]:
 def get(session: Session, token_id: int) -> ApiToken:
     token = session.get(ApiToken, token_id)
     if token is None:
-        raise NotFound("Token not found")
+        raise NotFound(_("Token not found"))
     return token
 
 

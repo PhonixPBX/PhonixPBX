@@ -13,20 +13,23 @@ import ipaddress
 import re
 from functools import lru_cache
 
+from phonix.i18n import N_, _
+
 _CONTROL = re.compile(r"[\x00-\x1f\x7f]")
 
 
-def no_control(value: str, what: str = "Value") -> str:
+def no_control(value: str, what: str = N_("Value")) -> str:
+    """``what`` names the value; pass it marked with ``N_`` (it is translated here)."""
     if _CONTROL.search(value):
-        raise ValueError(f"{what} must not contain control characters or line breaks")
+        raise ValueError(_("%(what)s must not contain control characters or line breaks", what=_(what)))
     return value
 
 
-def config_value(value: str, what: str = "Value") -> str:
+def config_value(value: str, what: str = N_("Value")) -> str:
     """A value safe to place after ``key=`` in an Asterisk config file."""
     value = no_control(value.strip(), what)
     if ";" in value:
-        raise ValueError(f"{what} must not contain ';'")
+        raise ValueError(_("%(what)s must not contain ';'", what=_(what)))
     return value
 
 
@@ -36,7 +39,7 @@ _EXTENSION = re.compile(r"^[0-9]{1,20}$")
 def extension(value: str) -> str:
     value = value.strip()
     if not _EXTENSION.match(value):
-        raise ValueError("Extension must consist of 1-20 digits")
+        raise ValueError(_("Extension must consist of 1-20 digits"))
     return value
 
 
@@ -49,7 +52,7 @@ def extension_or_pattern(value: str) -> str:
     if _EXTENSION.match(value):
         return value
     if not _PATTERN_EXT.match(value):
-        raise ValueError("Extension must be digits or an Asterisk pattern (X, N, Z, [], ., !)")
+        raise ValueError(_("Extension must be digits or an Asterisk pattern (X, N, Z, [], ., !)"))
     return value.lstrip("_")
 
 
@@ -59,7 +62,7 @@ _CALLERID = re.compile(r'^[^"<>;\\\x00-\x1f\x7f]{1,80}$')
 def callerid_name(value: str) -> str:
     value = value.strip()
     if not _CALLERID.match(value):
-        raise ValueError('Caller ID may not be empty or contain " < > ; \\')
+        raise ValueError(_('Caller ID may not be empty or contain " < > ; \\'))
     return value
 
 
@@ -70,7 +73,7 @@ def callerid_string(value: str) -> str:
     """Full caller id like ``Name <+4912345>`` or just a number."""
     value = value.strip()
     if not value or not _CALLERID_STRING.match(value):
-        raise ValueError('Caller ID must look like "Name <number>" or a number')
+        raise ValueError(_('Caller ID must look like "Name <number>" or a number'))
     return value
 
 
@@ -79,7 +82,7 @@ _SECRET = re.compile(r"^[A-Za-z0-9!#$%&()*+,\-./:=?@\[\]^_{|}~]{4,128}$")
 
 def secret(value: str) -> str:
     if not _SECRET.match(value):
-        raise ValueError("Secret must be 4-128 characters without spaces, quotes, ';' or backslashes")
+        raise ValueError(_("Secret must be 4-128 characters without spaces, quotes, ';' or backslashes"))
     return value
 
 
@@ -89,7 +92,7 @@ _PIN = re.compile(r"^[0-9]{0,16}$")
 def pin(value: str) -> str:
     value = value.strip()
     if not _PIN.match(value):
-        raise ValueError("PIN must consist of digits only")
+        raise ValueError(_("PIN must consist of digits only"))
     return value
 
 
@@ -99,7 +102,7 @@ _USERNAME = re.compile(r"^[A-Za-z0-9._@+\-]{1,128}$")
 def sip_username(value: str) -> str:
     value = value.strip()
     if not _USERNAME.match(value):
-        raise ValueError("Username may only contain letters, digits and . _ @ + -")
+        raise ValueError(_("Username may only contain letters, digits and . _ @ + -"))
     return value
 
 
@@ -109,17 +112,17 @@ _LABEL = re.compile(r"^(?!-)[A-Za-z0-9-]{1,63}(?<!-)$")
 def hostname_label(value: str) -> str:
     value = value.strip()
     if not _LABEL.match(value):
-        raise ValueError("Hostname must be 1-63 letters, digits or '-'")
+        raise ValueError(_("Hostname must be 1-63 letters, digits or '-'"))
     return value
 
 
 def domain(value: str) -> str:
     value = value.strip().rstrip(".")
     if not value:
-        raise ValueError("Domain must not be empty")
+        raise ValueError(_("Domain must not be empty"))
     for label in value.split("."):
         if not _LABEL.match(label):
-            raise ValueError("Invalid domain name")
+            raise ValueError(_("Invalid domain name"))
     return value
 
 
@@ -134,28 +137,28 @@ def host(value: str) -> str:
     try:
         return domain(value)
     except ValueError:
-        raise ValueError("Must be a hostname or IP address") from None
+        raise ValueError(_("Must be a hostname or IP address")) from None
 
 
 def ip(value: str) -> str:
     try:
         return str(ipaddress.ip_address(value.strip()))
     except ValueError:
-        raise ValueError("Must be an IP address") from None
+        raise ValueError(_("Must be an IP address")) from None
 
 
 def ipv4(value: str) -> str:
     try:
         return str(ipaddress.IPv4Address(value.strip()))
     except ValueError:
-        raise ValueError("Must be an IPv4 address") from None
+        raise ValueError(_("Must be an IPv4 address")) from None
 
 
 def network(value: str) -> str:
     try:
         return str(ipaddress.ip_network(value.strip(), strict=False))
     except ValueError:
-        raise ValueError("Must be a network in CIDR notation (e.g. 192.168.1.0/24)") from None
+        raise ValueError(_("Must be a network in CIDR notation (e.g. 192.168.1.0/24)")) from None
 
 
 _EMAIL = re.compile(r"^[^@\s;<>\"]+@[^@\s;<>\"]+\.[^@\s;<>\"]+$")
@@ -164,7 +167,7 @@ _EMAIL = re.compile(r"^[^@\s;<>\"]+@[^@\s;<>\"]+\.[^@\s;<>\"]+$")
 def email(value: str) -> str:
     value = value.strip()
     if not _EMAIL.match(value):
-        raise ValueError("Must be a valid e-mail address")
+        raise ValueError(_("Must be a valid e-mail address"))
     return value
 
 
@@ -174,7 +177,7 @@ _IFACE = re.compile(r"^[A-Za-z0-9._-]{1,15}$")
 def interface_name(value: str) -> str:
     value = value.strip()
     if not _IFACE.match(value):
-        raise ValueError("Invalid interface name")
+        raise ValueError(_("Invalid interface name"))
     return value
 
 
@@ -195,7 +198,7 @@ def timezone(value: str) -> str:
         return value
     if not zones and re.match(r"^[A-Za-z0-9_+\-/]{1,64}$", value):
         return value
-    raise ValueError("Unknown time zone")
+    raise ValueError(_("Unknown time zone"))
 
 
 _FEATURE = re.compile(r"^[0-9*#]{1,8}$")
@@ -204,7 +207,7 @@ _FEATURE = re.compile(r"^[0-9*#]{1,8}$")
 def feature_code(value: str) -> str:
     value = value.strip()
     if not _FEATURE.match(value):
-        raise ValueError("Feature codes consist of digits, '*' and '#'")
+        raise ValueError(_("Feature codes consist of digits, '*' and '#'"))
     return value
 
 
@@ -217,36 +220,36 @@ def dialpattern(value: str, incoming: bool = False) -> str:
     value = value.strip().upper()
     allowed = r"^[XNZ0-9\-\[\].!]+$" if incoming else r"^[XNZ0-9\-\[\].!|+*#]+$"
     if not value or not re.match(allowed, value):
-        raise ValueError("Dial pattern contains an invalid character")
+        raise ValueError(_("Dial pattern contains an invalid character"))
     for char in "|+":
         if value.count(char) > 1:
-            raise ValueError(f"Dial pattern may contain only one '{char}'")
+            raise ValueError(_("Dial pattern may contain only one '%(char)s'", char=char))
     is_open = False
     open_index = 0
     for idx, char in enumerate(value):
         if char == "[":
             if is_open:
-                raise ValueError("Nested square brackets are not allowed")
+                raise ValueError(_("Nested square brackets are not allowed"))
             is_open, open_index = True, idx
         elif char == "]":
             if not is_open:
-                raise ValueError("Unmatched square bracket")
+                raise ValueError(_("Unmatched square bracket"))
             if idx - open_index < 2:
-                raise ValueError("Empty square brackets")
+                raise ValueError(_("Empty square brackets"))
             is_open = False
     if is_open:
-        raise ValueError("Unmatched square bracket")
+        raise ValueError(_("Unmatched square bracket"))
     rest = value
     if "+" in rest:
         add, rest = rest.split("+", 1)
         if not re.match(r"^[0-9*#]+$", add):
-            raise ValueError("Prefixes to add may only contain digits, '*' and '#'")
+            raise ValueError(_("Prefixes to add may only contain digits, '*' and '#'"))
     if "|" in rest:
         strip = rest.split("|", 1)[0]
         if "." in strip or "!" in strip:
-            raise ValueError("Wildcards '.' and '!' are not allowed before '|'")
+            raise ValueError(_("Wildcards '.' and '!' are not allowed before '|'"))
     if not rest.replace("|", ""):
-        raise ValueError("Dial pattern is empty")
+        raise ValueError(_("Dial pattern is empty"))
     return value
 
 
@@ -276,7 +279,7 @@ def manual_attributes(value: str) -> str:
         if not line or line.startswith(";"):
             continue
         if not _ATTR_LINE.match(line):
-            raise ValueError(f"Invalid attribute line: {line[:40]!r} (expected key=value)")
+            raise ValueError(_("Invalid attribute line: %(line)r (expected key=value)", line=line[:40]))
         lines.append(line)
     return "\n".join(lines)
 
@@ -292,12 +295,14 @@ def application_logic(value: str) -> str:
         line = raw.strip()
         if not line or line.startswith(";"):
             continue
-        no_control(line, "Dialplan line")
+        no_control(line, N_("Dialplan line"))
         if not (_APP_LINE.match(line) or _INCLUDE_LINE.match(line)):
-            raise ValueError(f"Invalid dialplan line: {line[:60]!r} (expected e.g. '1,Answer()' or 'n,Hangup()')")
+            raise ValueError(
+                _("Invalid dialplan line: %(line)r (expected e.g. '1,Answer()' or 'n,Hangup()')", line=line[:60])
+            )
         lines.append(line)
     if not lines:
-        raise ValueError("Application logic must contain at least one line")
+        raise ValueError(_("Application logic must contain at least one line"))
     return "\n".join(lines)
 
 
@@ -313,81 +318,81 @@ def codecs(values: list[str]) -> list[str]:
         if not codec:
             continue
         if codec not in CODECS:
-            raise ValueError(f"Unknown codec {codec!r}")
+            raise ValueError(_("Unknown codec %(codec)r", codec=codec))
         if codec not in out:
             out.append(codec)
     if not out:
-        raise ValueError("Select at least one codec")
+        raise ValueError(_("Select at least one codec"))
     return out
 
 
 LANGUAGES = {
-    "en": "English",
-    "en_GB": "English (UK)",
-    "de": "German",
-    "fr": "French",
-    "es": "Spanish",
-    "it": "Italian",
-    "nl": "Dutch",
-    "da": "Danish",
-    "sv": "Swedish",
-    "pl": "Polish",
-    "pt_BR": "Portuguese (Brazil)",
-    "ru": "Russian",
-    "ja": "Japanese",
+    "en": N_("English"),
+    "en_GB": N_("English (UK)"),
+    "de": N_("German"),
+    "fr": N_("French"),
+    "es": N_("Spanish"),
+    "it": N_("Italian"),
+    "nl": N_("Dutch"),
+    "da": N_("Danish"),
+    "sv": N_("Swedish"),
+    "pl": N_("Polish"),
+    "pt_BR": N_("Portuguese (Brazil)"),
+    "ru": N_("Russian"),
+    "ja": N_("Japanese"),
 }
 
 
 def language(value: str) -> str:
     if value not in LANGUAGES:
-        raise ValueError("Unknown language")
+        raise ValueError(_("Unknown language"))
     return value
 
 
 TONEZONES = {
-    "at": "Austria",
-    "au": "Australia",
-    "be": "Belgium",
-    "br": "Brazil",
-    "ch": "Switzerland",
-    "cl": "Chile",
-    "cn": "China",
-    "cz": "Czech Republic",
-    "de": "Germany",
-    "dk": "Denmark",
-    "ee": "Estonia",
-    "es": "Spain",
-    "fi": "Finland",
-    "fr": "France",
-    "gr": "Greece",
-    "hu": "Hungary",
-    "il": "Israel",
-    "in": "India",
-    "it": "Italy",
-    "jp": "Japan",
-    "lt": "Lithuania",
-    "mx": "Mexico",
-    "my": "Malaysia",
-    "nl": "Netherlands",
-    "no": "Norway",
-    "nz": "New Zealand",
-    "ph": "Philippines",
-    "pl": "Poland",
-    "pt": "Portugal",
-    "ru": "Russia",
-    "se": "Sweden",
-    "sg": "Singapore",
-    "th": "Thailand",
-    "tw": "Taiwan",
-    "uk": "United Kingdom",
-    "us": "United States",
-    "us-old": "United States (old)",
-    "ve": "Venezuela",
-    "za": "South Africa",
+    "at": N_("Austria"),
+    "au": N_("Australia"),
+    "be": N_("Belgium"),
+    "br": N_("Brazil"),
+    "ch": N_("Switzerland"),
+    "cl": N_("Chile"),
+    "cn": N_("China"),
+    "cz": N_("Czech Republic"),
+    "de": N_("Germany"),
+    "dk": N_("Denmark"),
+    "ee": N_("Estonia"),
+    "es": N_("Spain"),
+    "fi": N_("Finland"),
+    "fr": N_("France"),
+    "gr": N_("Greece"),
+    "hu": N_("Hungary"),
+    "il": N_("Israel"),
+    "in": N_("India"),
+    "it": N_("Italy"),
+    "jp": N_("Japan"),
+    "lt": N_("Lithuania"),
+    "mx": N_("Mexico"),
+    "my": N_("Malaysia"),
+    "nl": N_("Netherlands"),
+    "no": N_("Norway"),
+    "nz": N_("New Zealand"),
+    "ph": N_("Philippines"),
+    "pl": N_("Poland"),
+    "pt": N_("Portugal"),
+    "ru": N_("Russia"),
+    "se": N_("Sweden"),
+    "sg": N_("Singapore"),
+    "th": N_("Thailand"),
+    "tw": N_("Taiwan"),
+    "uk": N_("United Kingdom"),
+    "us": N_("United States"),
+    "us-old": N_("United States (old)"),
+    "ve": N_("Venezuela"),
+    "za": N_("South Africa"),
 }
 
 
 def tonezone(value: str) -> str:
     if value not in TONEZONES:
-        raise ValueError("Unknown tone zone")
+        raise ValueError(_("Unknown tone zone"))
     return value

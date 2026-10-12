@@ -6,23 +6,24 @@
   <div class="card-body">
     {{ form_errors(errors) }}
     <div class="row">
-      <div class="col-md-6">{{ input("hostname", "Hostname", values, errors, required=True, help=("Used by PhonixPBX (certificate, Asterisk). The host name of the container itself is set on the container host." if platform in ("lxc", "oci") else "")) }}</div>
-      <div class="col-md-6">{{ input("domain", "Domain", values, errors, required=True) }}</div>
+      <div class="col-md-6">{{ input("hostname", _("Hostname"), values, errors, required=True, help=(_("Used by PhonixPBX (certificate, Asterisk). The host name of the container itself is set on the container host.") if platform in ("lxc", "oci") else "")) }}</div>
+      <div class="col-md-6">{{ input("domain", _("Domain"), values, errors, required=True) }}</div>
     </div>
     <div class="row">
-      <div class="col-md-6">{% set tz = [] %}{% for z in timezones %}{% set _ = tz.append((z, z)) %}{% endfor %}{{ select("timezone", "Time zone", values, errors, tz, tom=True) }}</div>
-      <div class="col-md-6">{{ textarea("ntp_servers", "Time servers", values, errors, rows=2, help=("Not used in a container: the clock comes from the container host." if platform in ("lxc", "oci") else "One per line.")) }}</div>
+      <div class="col-md-6">{% set tz = [] %}{% for z in timezones %}{% set _x = tz.append((z, z)) %}{% endfor %}{{ select("timezone", _("Time zone"), values, errors, tz, tom=True) }}</div>
+      <div class="col-md-6">{{ textarea("ntp_servers", _("Time servers"), values, errors, rows=2, help=(_("Not used in a container: the clock comes from the container host.") if platform in ("lxc", "oci") else _("One per line."))) }}</div>
     </div>
     <div class="row">
-      <div class="col-md-4">{{ select("tonezone", "Tone zone", values, errors, TONEZONES.items() | sort(attribute=1) | list, tom=True, help="Country specific dial, busy and ring tones.") }}</div>
-      <div class="col-md-4">{{ select("prompt_language", "Default prompt language", values, errors, LANGUAGES.items() | list) }}</div>
-      <div class="col-md-4">{{ select("ui_language", "Web interface language", values, errors, [("en", "English")], help="More languages will follow.") }}</div>
+      {% set zones = [] %}{% for k, v in TONEZONES.items() %}{% set _x = zones.append((k, _(v))) %}{% endfor %}
+      <div class="col-md-6">{{ select("tonezone", _("Tone zone"), values, errors, zones | sort(attribute=1), tom=True, help=_("Country specific dial, busy and ring tones.")) }}</div>
+      {% set langs = [] %}{% for k, v in LANGUAGES.items() %}{% set _x = langs.append((k, _(v))) %}{% endfor %}
+      <div class="col-md-6">{{ select("prompt_language", _("Default prompt language"), values, errors, langs) }}</div>
     </div>
     <hr>
-    {{ checkbox("ssh_enabled", "Enable SSH access (key or password login for root)", values, errors, help="Only enable when needed. Access can additionally be limited under Advanced > Firewall.") }}
+    {{ checkbox("ssh_enabled", _("Enable SSH access (key or password login for root)"), values, errors, help=_("Only enable when needed. Access can additionally be limited under Advanced > Firewall.")) }}
     <div class="row">
-      <div class="col-md-6">{{ secret("ssh_password", "SSH root password", values, errors, generate=False, is_new=not values.get("ssh_password_hash"), help=("A password is set. Leave empty to keep it." if values.get("ssh_password_hash") else "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters.")) }}</div>
-      {% if values.get("ssh_password_hash") %}<div class="col-md-6 pt-md-4">{{ checkbox("ssh_password_clear", "Remove the password (key logins only)", {}, errors) }}</div>{% endif %}
+      <div class="col-md-6">{{ secret("ssh_password", _("SSH root password"), values, errors, generate=False, is_new=not values.get("ssh_password_hash"), help=(_("A password is set. Leave empty to keep it.") if values.get("ssh_password_hash") else _("No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."))) }}</div>
+      {% if values.get("ssh_password_hash") %}<div class="col-md-6 pt-md-4">{{ checkbox("ssh_password_clear", _("Remove the password (key logins only)"), {}, errors) }}</div>{% endif %}
     </div>
   </div>
   {{ submit() }}

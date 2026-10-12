@@ -17,6 +17,7 @@ from phonix.core.models import (
     Phone,
     ProviderIncomingRoute,
 )
+from phonix.i18n import N_, _
 from phonix.services.common import (
     NotFound,
     ServiceError,
@@ -49,7 +50,7 @@ class CallGroupIn(BaseModel):
     member_ids: list[int] = Field(default_factory=list)
 
     _name = field_validator("name")(lambda cls, x: _required_name(x))
-    _desc = field_validator("description")(lambda cls, x: v.no_control(x.strip(), "Description"))
+    _desc = field_validator("description")(lambda cls, x: v.no_control(x.strip(), N_("Description")))
     _pub = field_validator("public_name")(lambda cls, x: public_name(x))
 
     @field_validator("extension")
@@ -65,14 +66,14 @@ class CallGroupIn(BaseModel):
             if pid not in seen:
                 seen.append(pid)
         if not seen:
-            raise ValueError("Select at least one member")
+            raise ValueError(_("Select at least one member"))
         return seen
 
 
 def _required_name(value: str) -> str:
-    value = v.config_value(value, "Name")
+    value = v.config_value(value, N_("Name"))
     if not value:
-        raise ValueError("Name is required")
+        raise ValueError(_("Name is required"))
     return value
 
 
@@ -83,7 +84,7 @@ def list_callgroups(session: Session) -> list[CallGroup]:
 def get_callgroup(session: Session, group_id: int) -> CallGroup:
     group = session.get(CallGroup, group_id)
     if group is None:
-        raise NotFound("Call group not found")
+        raise NotFound(_("Call group not found"))
     return group
 
 
@@ -105,7 +106,7 @@ def _apply_callgroup(session: Session, group: CallGroup, data: CallGroupIn) -> N
     phones = {p.id for p in session.scalars(select(Phone))}
     missing = [pid for pid in data.member_ids if pid not in phones]
     if missing:
-        raise ServiceError(fields={"member_ids": "Unknown phone selected"})
+        raise ServiceError(fields={"member_ids": _("Unknown phone selected")})
     group.name = data.name
     group.extension = data.extension or None
     group.description = data.description
@@ -176,7 +177,7 @@ def list_rooms(session: Session) -> list[ConferenceRoom]:
 def get_room(session: Session, room_id: int) -> ConferenceRoom:
     room = session.get(ConferenceRoom, room_id)
     if room is None:
-        raise NotFound("Conference room not found")
+        raise NotFound(_("Conference room not found"))
     return room
 
 
@@ -194,7 +195,7 @@ def room_to_dict(r: ConferenceRoom) -> dict[str, Any]:
 
 def _apply_room(room: ConferenceRoom, data: ConferenceRoomIn) -> None:
     if data.admin_pin and data.admin_pin == data.pin:
-        raise ServiceError(fields={"admin_pin": "Admin PIN must differ from the user PIN"})
+        raise ServiceError(fields={"admin_pin": _("Admin PIN must differ from the user PIN")})
     for field in ("number", "name", "pin", "admin_pin", "public_access", "public_name"):
         setattr(room, field, getattr(data, field))
 
@@ -245,7 +246,7 @@ class ApplicationIn(BaseModel):
 
     _name = field_validator("name")(lambda cls, x: _required_name(x))
     _ext = field_validator("extension")(lambda cls, x: v.extension_or_pattern(x))
-    _desc = field_validator("description")(lambda cls, x: v.no_control(x.strip(), "Description"))
+    _desc = field_validator("description")(lambda cls, x: v.no_control(x.strip(), N_("Description")))
     _logic = field_validator("logic")(lambda cls, x: v.application_logic(x))
     _pub = field_validator("public_name")(lambda cls, x: public_name(x))
 
@@ -257,7 +258,7 @@ def list_applications(session: Session) -> list[Application]:
 def get_application(session: Session, app_id: int) -> Application:
     app = session.get(Application, app_id)
     if app is None:
-        raise NotFound("Application not found")
+        raise NotFound(_("Application not found"))
     return app
 
 

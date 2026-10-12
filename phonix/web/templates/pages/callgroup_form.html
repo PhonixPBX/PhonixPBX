@@ -1,29 +1,29 @@
 {% extends "base.html" %}
 {% from "macros/forms.html" import csrf, input, checkbox, select, radios, form_errors, submit with context %}
-{% block page_title %}{{ "New call group" if is_new else "Edit call group " ~ values.name }}{% endblock %}
+{% block page_title %}{{ _("New call group") if is_new else _("Edit call group %(name)s", name=values.name) }}{% endblock %}
 {% block content %}
 <form method="post" action="/dialplan/callgroups/{{ 'new' if is_new else obj_id }}" class="card">
   {{ csrf() }}
   <div class="card-body">
     {{ form_errors(errors) }}
     <div class="row">
-      <div class="col-md-8">{{ input("name", "Name", values, errors, required=True) }}</div>
-      <div class="col-md-4">{{ input("extension", "Number", values, errors, attrs='inputmode="numeric" data-mask="digits"', help="Optional - groups can also be used only as provider destinations.") }}</div>
+      <div class="col-md-8">{{ input("name", _("Name"), values, errors, required=True) }}</div>
+      <div class="col-md-4">{{ input("extension", _("Number"), values, errors, attrs='inputmode="numeric" data-mask="digits"', help=_("Optional - groups can also be used only as provider destinations.")) }}</div>
     </div>
     {% set phone_opts = [] %}
-    {% for p in phones %}{% set _ = phone_opts.append((p.id, p.extension ~ " – " ~ p.callerid)) %}{% endfor %}
-    {{ select("member_ids", "Members", values, errors, phone_opts, multiple=True, tom=True, required=True, help="For 'one after another', phones ring in this order.") }}
+    {% for p in phones %}{% set _unused = phone_opts.append((p.id, p.extension ~ " – " ~ p.callerid)) %}{% endfor %}
+    {{ select("member_ids", _("Members"), values, errors, phone_opts, multiple=True, tom=True, required=True, help=_("For 'one after another', phones ring in this order.")) }}
     <div class="row">
-      <div class="col-md-6">{{ radios("strategy", "Ring strategy", values, errors, [("ringall", "Ring all at once"), ("linear", "One after another")]) }}</div>
-      <div class="col-md-6">{{ input("ringlength", "Ring time (seconds)", values, errors, type="number", attrs='min="5" max="600"', help="Empty = until the caller hangs up (per phone for 'one after another': default 20).") }}</div>
+      <div class="col-md-6">{{ radios("strategy", _("Ring strategy"), values, errors, [("ringall", _("Ring all at once")), ("linear", _("One after another"))]) }}</div>
+      <div class="col-md-6">{{ input("ringlength", _("Ring time (seconds)"), values, errors, type="number", attrs='min="5" max="600"', help=_("Empty = until the caller hangs up (per phone for 'one after another': default 20).")) }}</div>
     </div>
-    {{ input("description", "Description", values, errors) }}
+    {{ input("description", _("Description"), values, errors) }}
     <div class="row">
-      <div class="col-md-6">{{ checkbox("public_access", "Reachable from outside", values, errors) }}</div>
-      <div class="col-md-6" data-show-if="public_access=true">{{ input("public_name", "Public name", values, errors) }}</div>
+      <div class="col-md-6">{{ checkbox("public_access", _("Reachable from outside"), values, errors) }}</div>
+      <div class="col-md-6" data-show-if="public_access=true">{{ input("public_name", _("Public name"), values, errors) }}</div>
     </div>
-    <p class="text-secondary small">Unanswered calls go to the voicemail box of the first member (if enabled).</p>
+    <p class="text-secondary small">{{ _("Unanswered calls go to the voicemail box of the first member (if enabled).") }}</p>
   </div>
-  {{ submit("Create" if is_new else "Save", cancel="/dialplan/callgroups") }}
+  {{ submit(_("Create") if is_new else _("Save"), cancel="/dialplan/callgroups") }}
 </form>
 {% endblock %}

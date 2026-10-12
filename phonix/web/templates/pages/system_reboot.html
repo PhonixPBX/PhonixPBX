@@ -4,11 +4,11 @@
 <form method="post" action="/system/reboot" class="card">
   <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
   <div class="card-body">
-    <p>Active calls are interrupted.</p>
+    <p>{{ _("Active calls are interrupted.") }}</p>
   </div>
   <div class="card-footer d-flex gap-2">
-    <button class="btn btn-primary" type="submit" name="action" value="reboot">{{ icon("refresh", "me-1") }}Reboot</button>
-    <button class="btn btn-outline-danger ms-auto" type="submit" name="action" value="shutdown">{{ icon("power", "me-1") }}Shut down</button>
+    <button class="btn btn-primary" type="submit" name="action" value="reboot">{{ icon("refresh", "me-1") }}{{ _("Reboot") }}</button>
+    <button class="btn btn-outline-danger ms-auto" type="submit" name="action" value="shutdown">{{ icon("power", "me-1") }}{{ _("Shut down") }}</button>
   </div>
 </form>
 </div></div>

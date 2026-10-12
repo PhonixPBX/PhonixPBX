@@ -4,10 +4,10 @@
 <div class="row row-cards">
   <div class="col-lg-6">
     <div class="card">
-      <div class="card-header"><h3 class="card-title">Backups</h3>
+      <div class="card-header"><h3 class="card-title">{{ _("Backups") }}</h3>
         <div class="card-actions">
           <form method="post" action="/system/backup/create" class="m-0"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-            <button class="btn btn-primary" type="submit">{{ icon("database-export", "me-1") }}Create backup</button></form>
+            <button class="btn btn-primary" type="submit">{{ icon("database-export", "me-1") }}{{ _("Create backup") }}</button></form>
         </div>
       </div>
       {% if backups %}
@@ -16,35 +16,35 @@
         {% for b in backups %}
         <tr><td>{{ b.name }}</td><td class="text-secondary">{{ b.stat().st_size | filesize }}</td>
           <td class="table-actions">
-            <a class="btn btn-ghost-primary btn-icon btn-sm" href="/system/backup/download/{{ b.name }}" aria-label="Download {{ b.name }}">{{ icon("download") }}</a>
+            <a class="btn btn-ghost-primary btn-icon btn-sm" href="/system/backup/download/{{ b.name }}" aria-label="{{ _("Download %(name)s", name=b.name) }}">{{ icon("download") }}</a>
             {{ delete_button("/system/backup/" ~ b.name, b.name) }}
           </td></tr>
         {% endfor %}
         </tbody>
       </table>
-      {% else %}<div class="card-body text-secondary">No backups yet. Backups contain the configuration, media and the TLS certificate.</div>{% endif %}
+      {% else %}<div class="card-body text-secondary">{{ _("No backups yet. Backups contain the configuration, media and the TLS certificate.") }}</div>{% endif %}
     </div>
     <div class="card mt-3">
-      <div class="card-header"><h3 class="card-title">Restore</h3></div>
+      <div class="card-header"><h3 class="card-title">{{ _("Restore") }}</h3></div>
       <div class="card-body">
-        <p class="text-secondary">Upload a PhonixPBX backup (<code>.tar.zst</code>). The current state is backed up first.</p>
+        <p class="text-secondary">{{ _("Upload a PhonixPBX backup (<code>.tar.zst</code>). The current state is backed up first.") }}</p>
         <form action="/system/backup/restore" class="dropzone" data-dropzone data-param="file" data-max-mb="2048" data-accept=".zst" data-target="#restore-result"
-              data-message="Drop the backup here or click to upload"></form>
+              data-message="{{ _("Drop the backup here or click to upload") }}"></form>
         <div id="restore-result"></div>
       </div>
     </div>
   </div>
   <div class="col-lg-6">
     <div class="card">
-      <div class="card-header"><h3 class="card-title">Legacy AskoziaPBX</h3></div>
+      <div class="card-header"><h3 class="card-title">{{ _("Legacy AskoziaPBX") }}</h3></div>
       <div class="card-body">
-        <p>Import the <code>config.xml</code> of an AskoziaPBX 2.x system. You get a preview of what is imported, adapted (e.g. SIP to PJSIP) or dropped (analog/ISDN hardware) before anything changes.</p>
+        <p>{{ _("Import the <code>config.xml</code> of an AskoziaPBX 2.x system. You get a preview of what is imported, adapted (e.g. SIP to PJSIP) or dropped (analog/ISDN hardware) before anything changes.") }}</p>
         <form action="/system/legacy/upload" class="dropzone" data-dropzone data-param="file" data-max-mb="10" data-accept=".xml" data-target="#legacy-result"
-              data-message="Drop config.xml here or click to upload"></form>
+              data-message="{{ _("Drop config.xml here or click to upload") }}"></form>
         <div id="legacy-result" class="mt-3"></div>
         <hr>
-        <p class="mb-2">Export the current configuration in the legacy format (best effort; contains passwords in plain text).</p>
-        <a class="btn" href="/system/legacy/export">{{ icon("file-export", "me-1") }}Export config.xml</a>
+        <p class="mb-2">{{ _("Export the current configuration in the legacy format (best effort; contains passwords in plain text).") }}</p>
+        <a class="btn" href="/system/legacy/export">{{ icon("file-export", "me-1") }}{{ _("Export config.xml") }}</a>
       </div>
     </div>
   </div>

@@ -20,6 +20,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
 from phonix import __version__, config
+from phonix.i18n import _
 from phonix.services import platform, privileged
 from phonix.services.common import ServiceError
 
@@ -53,45 +54,51 @@ def _public_key() -> Ed25519PublicKey:
     try:
         key = serialization.load_pem_public_key(path.read_bytes())
     except (FileNotFoundError, ValueError) as exc:
-        raise ServiceError("No update signing key installed on this system") from exc
+        raise ServiceError(_("No update signing key installed on this system")) from exc
     if not isinstance(key, Ed25519PublicKey):
-        raise ServiceError("Update signing key is not an ed25519 key")
+        raise ServiceError(_("Update signing key is not an ed25519 key"))
     return key
 
 
 def verify_bundle(path: Path) -> BundleInfo:
     if platform.is_container():
-        raise ServiceError(platform.CONTAINER_UPDATE_HINT)
+        raise ServiceError(_(platform.CONTAINER_UPDATE_HINT))
     if path.stat().st_size > MAX_BUNDLE:
-        raise ServiceError("Update file is too large")
+        raise ServiceError(_("Update file is too large"))
     try:
         with tarfile.open(path, mode="r:") as tar:
             names = {m.name: m for m in tar.getmembers()}
             if "manifest.json" not in names or "manifest.sig" not in names:
-                raise ServiceError("Not a PhonixPBX update bundle")
+                raise ServiceError(_("Not a PhonixPBX update bundle"))
             manifest_raw = tar.extractfile(names["manifest.json"]).read()  # type: ignore[union-attr]
             signature = tar.extractfile(names["manifest.sig"]).read()  # type: ignore[union-attr]
             try:
                 _public_key().verify(signature, manifest_raw)
             except InvalidSignature as exc:
-                raise ServiceError("Update signature is invalid") from exc
+                raise ServiceError(_("Update signature is invalid")) from exc
             manifest = json.loads(manifest_raw)
             info = BundleInfo(manifest["version"], manifest["board"], dict(manifest["files"]))
             if info.board != current_board():
-                raise ServiceError(f"Update is for board {info.board}, this system is {current_board()}")
+                raise ServiceError(
+                    _(
+                        "Update is for board %(board)s, this system is %(current)s",
+                        board=info.board,
+                        current=current_board(),
+                    )
+                )
             for name, digest in info.files.items():
                 member = names.get(name)
                 if member is None or not member.isfile():
-                    raise ServiceError(f"Update bundle is missing {name}")
+                    raise ServiceError(_("Update bundle is missing %(name)s", name=name))
                 h = hashlib.sha256()
                 fh = tar.extractfile(member)
                 assert fh is not None
                 while chunk := fh.read(1024 * 1024):
                     h.update(chunk)
                 if h.hexdigest() != digest:
-                    raise ServiceError(f"Checksum mismatch for {name}")
+                    raise ServiceError(_("Checksum mismatch for %(name)s", name=name))
     except (tarfile.TarError, KeyError, ValueError) as exc:
-        raise ServiceError(f"Not a valid update bundle: {exc}") from exc
+        raise ServiceError(_("Not a valid update bundle: %(error)s", error=exc)) from exc
     return info
 
 

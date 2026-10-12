@@ -21,6 +21,7 @@ from phonix.core.models import (
 )
 from phonix.core.settings import FeatureSettings
 from phonix.core.settings import load as load_settings
+from phonix.i18n import N_, _
 
 
 class ServiceError(Exception):
@@ -36,14 +37,51 @@ class NotFound(ServiceError):
     pass
 
 
+def _validation_message(err: Any) -> str:
+    """Our own (translated) text for pydantic's built-in English messages."""
+    kind = err["type"]
+    ctx = err.get("ctx") or {}
+    if kind == "missing":
+        return _("This field is required")
+    if kind in ("int_parsing", "int_type", "int_from_float"):
+        return _("Must be a whole number")
+    if kind in ("float_parsing", "float_type", "decimal_parsing", "decimal_type"):
+        return _("Must be a number")
+    if kind in ("bool_parsing", "bool_type"):
+        return _("Must be yes or no")
+    if kind == "greater_than_equal":
+        return _("Must be at least %(ge)s", ge=ctx.get("ge"))
+    if kind == "greater_than":
+        return _("Must be greater than %(gt)s", gt=ctx.get("gt"))
+    if kind == "less_than_equal":
+        return _("Must be at most %(le)s", le=ctx.get("le"))
+    if kind == "less_than":
+        return _("Must be less than %(lt)s", lt=ctx.get("lt"))
+    if kind == "string_too_long":
+        return _("At most %(max)s characters allowed", max=ctx.get("max_length"))
+    if kind == "string_too_short":
+        return _("At least %(min)s characters required", min=ctx.get("min_length"))
+    if kind == "too_long":
+        return _("At most %(max)s entries allowed", max=ctx.get("max_length"))
+    if kind == "too_short":
+        return _("At least %(min)s entries required", min=ctx.get("min_length"))
+    if kind in ("literal_error", "enum"):
+        return _("Invalid choice")
+    if kind == "string_pattern_mismatch":
+        return _("Invalid format")
+    if kind in ("string_type", "list_type", "dict_type", "model_type"):
+        return _("Invalid value")
+    msg = str(err["msg"])
+    if msg.startswith("Value error, "):  # our own validators, already translated
+        msg = msg[len("Value error, ") :]
+    return msg
+
+
 def errors_from_validation(exc: ValidationError) -> dict[str, str]:
     out: dict[str, str] = {}
     for err in exc.errors():
         loc = ".".join(str(p) for p in err["loc"] if p != "__root__") or "__all__"
-        msg = err["msg"]
-        if msg.startswith("Value error, "):
-            msg = msg[len("Value error, ") :]
-        out.setdefault(loc, msg)
+        out.setdefault(loc, _validation_message(err))
     return out
 
 
@@ -57,15 +95,15 @@ def parse(model: type[BaseModel], data: dict[str, Any]) -> Any:
 # --- areas: what an "apply" will touch, shown in the pending-changes banner --
 
 AREAS = {
-    "accounts": "Phones and providers",
-    "dialplan": "Dialplan",
-    "services": "Voicemail, conferencing and media",
-    "telephony": "SIP, IAX and RTP settings",
-    "manager": "Asterisk manager users",
-    "email": "E-mail notifications",
-    "network": "Network",
-    "system": "System settings",
-    "firewall": "Firewall",
+    "accounts": N_("Phones and providers"),
+    "dialplan": N_("Dialplan"),
+    "services": N_("Voicemail, conferencing and media"),
+    "telephony": N_("SIP, IAX and RTP settings"),
+    "manager": N_("Asterisk manager users"),
+    "email": N_("E-mail notifications"),
+    "network": N_("Network"),
+    "system": N_("System settings"),
+    "firewall": N_("Firewall"),
 }
 
 
@@ -141,21 +179,21 @@ def extension_owner(session: Session, number: str) -> str | None:
     """Return a description of whatever already uses ``number`` (or None)."""
     phone = session.scalar(select(Phone).where(Phone.extension == number))
     if phone:
-        return f"phone {phone.callerid} <{phone.extension}>"
+        return _("phone %(callerid)s <%(extension)s>", callerid=phone.callerid, extension=phone.extension)
     group = session.scalar(select(CallGroup).where(CallGroup.extension == number))
     if group:
-        return f"call group {group.name}"
+        return _("call group %(name)s", name=group.name)
     room = session.scalar(select(ConferenceRoom).where(ConferenceRoom.number == number))
     if room:
-        return f"conference room {room.name}"
+        return _("conference room %(name)s", name=room.name)
     app = session.scalar(select(Application).where(Application.extension == number))
     if app:
-        return f"application {app.name}"
+        return _("application %(name)s", name=app.name)
     features = load_settings(session, FeatureSettings)
     if number == features.park_ext:
-        return "call parking"
+        return _("call parking")
     if number.isdigit() and features.park_start <= int(number) <= features.park_end:
-        return "a parking slot"
+        return _("a parking slot")
     return None
 
 
@@ -170,7 +208,9 @@ def ensure_extension_free(session: Session, number: str, field: str, own: tuple[
     for model, column in owners:
         obj = session.scalar(select(model).where(column == number))
         if obj is not None and (own is None or not (model is own[0] and obj.id == own[1])):
-            raise ServiceError(fields={field: f"Number already used by {extension_owner(session, number)}"})
+            raise ServiceError(
+                fields={field: _("Number already used by %(owner)s", owner=extension_owner(session, number))}
+            )
     features = load_settings(session, FeatureSettings)
     if number == features.park_ext or (number.isdigit() and features.park_start <= int(number) <= features.park_end):
-        raise ServiceError(fields={field: "Number is reserved for call parking"})
+        raise ServiceError(fields={field: _("Number is reserved for call parking")})

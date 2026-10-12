@@ -2,18 +2,18 @@
 <tr id="phone-{{ p.id }}"{% if not p.enabled %} class="text-secondary"{% endif %}>
   <td><a href="/accounts/phones/{{ p.id }}" class="fw-bold">{{ p.extension }}</a></td>
   <td>{{ p.callerid }}</td>
-  <td><span class="badge bg-primary-lt">{{ techs[p.tech] }}</span></td>
+  <td><span class="badge bg-primary-lt">{{ _(techs[p.tech]) }}</span></td>
   <td id="phone-status-{{ p.id }}">
-    {% if not p.enabled %}<span class="badge bg-secondary-lt">disabled</span>
+    {% if not p.enabled %}<span class="badge bg-secondary-lt">{{ _("disabled") }}</span>
     {% elif p.tech == "external" %}
-      <span class="text-secondary small">{% if p.dial_type == "provider" %}{{ p.dial_string }} via {{ providers[p.dial_provider_id].name if p.dial_provider_id in providers else "?" }}{% else %}{{ p.dial_string }}{% endif %}</span>
+      <span class="text-secondary small">{% if p.dial_type == "provider" %}{{ _("%(number)s via %(provider)s", number=p.dial_string, provider=providers[p.dial_provider_id].name if p.dial_provider_id in providers else "?") }}{% else %}{{ p.dial_string }}{% endif %}</span>
     {% else %}<span class="text-secondary small">&hellip;</span>{% endif %}
   </td>
   <td>{% if p.vm_enabled %}{{ icon("mail", "text-green") }}{% else %}<span class="text-secondary">&ndash;</span>{% endif %}</td>
   <td class="text-secondary">{{ p.description }}</td>
   <td class="table-actions">
-    <a href="/accounts/phones/{{ p.id }}" class="btn btn-ghost-primary btn-icon btn-sm" title="Edit" aria-label="Edit phone {{ p.extension }}">{{ icon("edit") }}</a>
-    {{ toggle_button("/accounts/phones/" ~ p.id ~ "/toggle", p.enabled, "phone " ~ p.extension) }}
-    {{ delete_button("/accounts/phones/" ~ p.id, "phone " ~ p.extension) }}
+    <a href="/accounts/phones/{{ p.id }}" class="btn btn-ghost-primary btn-icon btn-sm" title="{{ _('Edit') }}" aria-label="{{ _('Edit phone %(ext)s', ext=p.extension) }}">{{ icon("edit") }}</a>
+    {{ toggle_button("/accounts/phones/" ~ p.id ~ "/toggle", p.enabled, _("phone %(ext)s", ext=p.extension)) }}
+    {{ delete_button("/accounts/phones/" ~ p.id, _("phone %(ext)s", ext=p.extension)) }}
   </td>
 </tr>

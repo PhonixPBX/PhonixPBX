@@ -5,11 +5,11 @@
   {{ csrf() }}
   <div class="card-body">
     {{ form_errors(errors) }}
-    {{ checkbox("enabled", "Accept IAX connections (firewall)", values, errors) }}
-    {{ input("port", "IAX port", values, errors, type="number") }}
-    {{ checkbox("jitterbuffer", "Enable jitter buffer", values, errors) }}
-    {{ checkbox("force_jitterbuffer", "Force jitter buffer", values, errors) }}
-    {{ textarea("manual_attributes", "Additional [general] options", values, errors, mono=True, rows=3) }}
+    {{ checkbox("enabled", _("Accept IAX connections (firewall)"), values, errors) }}
+    {{ input("port", _("IAX port"), values, errors, type="number") }}
+    {{ checkbox("jitterbuffer", _("Enable jitter buffer"), values, errors) }}
+    {{ checkbox("force_jitterbuffer", _("Force jitter buffer"), values, errors) }}
+    {{ textarea("manual_attributes", _("Additional [general] options"), values, errors, mono=True, rows=3) }}
   </div>
   {{ submit() }}
 </form>

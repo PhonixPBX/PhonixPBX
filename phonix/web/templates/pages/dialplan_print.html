@@ -1,31 +1,31 @@
 {% extends "base.html" %}
-{% block actions %}<button type="button" class="btn" data-print>{{ icon("printer") }} Print</button>{% endblock %}
+{% block actions %}<button type="button" class="btn" data-print>{{ icon("printer") }} {{ _("Print") }}</button>{% endblock %}
 {% block content %}
 <div class="card mb-3">
-  <div class="card-header"><h3 class="card-title">Internal numbers</h3></div>
+  <div class="card-header"><h3 class="card-title">{{ _("Internal numbers") }}</h3></div>
   <table class="table table-sm card-table">
-    <thead><tr><th>Number</th><th>Type</th><th>Name</th><th>Details</th><th>Public</th></tr></thead>
+    <thead><tr><th>{{ _("Number") }}</th><th>{{ _("Type") }}</th><th>{{ _("Name") }}</th><th>{{ _("Details") }}</th><th>{{ _("Public") }}</th></tr></thead>
     <tbody>{% for r in rows %}<tr><td class="font-monospace">{{ r.number }}</td><td>{{ r.type }}</td><td>{{ r.name }}</td><td class="text-secondary">{{ r.info }}</td><td>{{ r.public }}</td></tr>{% endfor %}</tbody>
   </table>
 </div>
 <div class="row row-cards">
   <div class="col-md-6"><div class="card">
-    <div class="card-header"><h3 class="card-title">Feature codes</h3></div>
+    <div class="card-header"><h3 class="card-title">{{ _("Feature codes") }}</h3></div>
     <table class="table table-sm card-table">
-      <tr><td>Attended transfer</td><td class="font-monospace">{{ features.attended_transfer }}</td></tr>
-      <tr><td>Blind transfer</td><td class="font-monospace">{{ features.blind_transfer }}</td></tr>
-      <tr><td>Pickup</td><td class="font-monospace">{{ features.pickup }}</td></tr>
-      <tr><td>Disconnect</td><td class="font-monospace">{{ features.disconnect }}</td></tr>
-      <tr><td>Call parking</td><td class="font-monospace">{{ features.park_ext }} (slots {{ features.park_start }}–{{ features.park_end }})</td></tr>
+      <tr><td>{{ _("Attended transfer") }}</td><td class="font-monospace">{{ features.attended_transfer }}</td></tr>
+      <tr><td>{{ _("Blind transfer") }}</td><td class="font-monospace">{{ features.blind_transfer }}</td></tr>
+      <tr><td>{{ _("Pickup") }}</td><td class="font-monospace">{{ features.pickup }}</td></tr>
+      <tr><td>{{ _("Disconnect") }}</td><td class="font-monospace">{{ features.disconnect }}</td></tr>
+      <tr><td>{{ _("Call parking") }}</td><td class="font-monospace">{{ _("%(ext)s (slots %(start)s–%(end)s)", ext=features.park_ext, start=features.park_start, end=features.park_end) }}</td></tr>
     </table>
   </div></div>
   <div class="col-md-6"><div class="card">
-    <div class="card-header"><h3 class="card-title">Providers</h3></div>
+    <div class="card-header"><h3 class="card-title">{{ _("Providers") }}</h3></div>
     <table class="table table-sm card-table">
-      <thead><tr><th>Provider</th><th>Outgoing</th><th>Incoming</th></tr></thead>
+      <thead><tr><th>{{ _("Provider") }}</th><th>{{ _("Outgoing") }}</th><th>{{ _("Incoming") }}</th></tr></thead>
       {% for p in providers %}
       <tr><td>{{ p.name }}</td><td class="font-monospace small">{% for d in p.dialpatterns %}{{ d.pattern }}<br>{% endfor %}</td>
-      <td class="small">{% for r in p.incoming_routes %}{{ r.pattern or "all" }} &rarr; {{ destination_label(r.dest_type, r.dest_id) }}<br>{% endfor %}</td></tr>
+      <td class="small">{% for r in p.incoming_routes %}{{ r.pattern or _("all") }} &rarr; {{ destination_label(r.dest_type, r.dest_id) }}<br>{% endfor %}</td></tr>
       {% endfor %}
     </table>
   </div></div>

@@ -7,6 +7,7 @@ from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
 from phonix.core.models import User
+from phonix.i18n import _
 from phonix.services import apply as apply_service
 from phonix.services.common import AREAS, dirty_areas
 from phonix.web.deps import get_db, ui_user
@@ -33,7 +34,7 @@ def apply(request: Request, user: User = Depends(ui_user), db: Session = Depends
     if is_htmx(request):
         return render(request, "partials/apply_result.html", {"result": result, "dirty": remaining})
     if result.ok:
-        flash(request, "Configuration applied.")
+        flash(request, _("Configuration applied."))
     else:
-        flash(request, "Applying failed: " + "; ".join(result.errors), "error")
+        flash(request, _("Applying failed: %(errors)s", errors="; ".join(result.errors)), "error")
     return redirect(request, request.headers.get("referer") or "/")

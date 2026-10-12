@@ -13,6 +13,7 @@ from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.x509.oid import NameOID
 
 from phonix import config
+from phonix.i18n import _
 from phonix.services.common import ServiceError
 
 
@@ -105,9 +106,9 @@ def install_certificate(cert_pem: bytes, key_pem: bytes) -> None:
         certs = x509.load_pem_x509_certificates(cert_pem)
         key = serialization.load_pem_private_key(key_pem, password=None)
     except ValueError as exc:
-        raise ServiceError(fields={"certificate": f"Invalid PEM data: {exc}"}) from exc
+        raise ServiceError(fields={"certificate": _("Invalid PEM data: %(error)s", error=exc)}) from exc
     if not certs:
-        raise ServiceError(fields={"certificate": "No certificate found"})
+        raise ServiceError(fields={"certificate": _("No certificate found")})
     pub = (
         certs[0].public_key().public_bytes(serialization.Encoding.DER, serialization.PublicFormat.SubjectPublicKeyInfo)
     )
@@ -115,7 +116,7 @@ def install_certificate(cert_pem: bytes, key_pem: bytes) -> None:
         key.public_key().public_bytes(serialization.Encoding.DER, serialization.PublicFormat.SubjectPublicKeyInfo)
         != pub
     ):
-        raise ServiceError(fields={"private_key": "Private key does not match the certificate"})
+        raise ServiceError(fields={"private_key": _("Private key does not match the certificate")})
     cfg = config.get()
     _write(cfg.tls_key_path, key_pem, 0o640)
     _write(cfg.tls_cert_path, cert_pem, 0o644)
