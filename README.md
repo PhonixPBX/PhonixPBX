@@ -10,6 +10,29 @@ interface in the classic AskoziaPBX colours. Bootable images are built for Raspb
 - Installation: [docs/INSTALL.md](docs/INSTALL.md)
 - The original AskoziaPBX tree (T2 SDE, PHP web GUI) is preserved in [legacy/](legacy/).
 
+## Why "Phonix"?
+
+"Askozia" is a registered trademark of the former owners of AskoziaPBX, so the revived
+project needed a name of its own.
+
+**Phonix = phone + phoenix.** The project is a telephone system, and like the phoenix it
+rises again: the AskoziaPBX code base lay dormant for more than a decade, and PhonixPBX
+brings its ideas, menu structure, dialplan logic and colours back on a modern foundation.
+Old AskoziaPBX configurations can still be imported. The spelling *Phonix* instead of
+*Phoenix* is deliberate, to put the "phone" into the phoenix.
+
+- **`phonix`** is the technical name: Python package, CLI (`phonix apply`), system user,
+  paths (`/etc/phonix`) and service names.
+- **PhonixPBX** is the product name for the UI, logo, documentation and domain. The "PBX"
+  suffix says what it is and continues the AskoziaPBX naming.
+
+It is short, easy to say in English and German, works as a command, and together with the
+original AskoziaPBX colours stays recognisable for users of the old system. Other
+candidates were Hookswitch, Ringhaus, Sipora, Relaya and Lynea.
+
+The name has not been checked against trademark registers yet. Before a public release,
+search EUIPO/USPTO (Nice classes 9 and 38) and check the domain and package names.
+
 ## Layout
 
 | Path | Contents |
