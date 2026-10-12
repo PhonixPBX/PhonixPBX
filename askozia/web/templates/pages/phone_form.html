@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% from "macros/forms.html" import csrf, input, secret, textarea, checkbox, select, codecs, form_errors, submit with context %}
+{% set tech = values.tech %}
+{% block page_title %}{{ "New" if is_new else "Edit" }} {{ techs[tech] }} phone{% if not is_new %} {{ values.extension }}{% endif %}{% endblock %}
+{% block content %}
+<form method="post" action="/accounts/phones/{{ 'new' if is_new else phone_id }}" class="card">
+  {{ csrf() }}
+  <input type="hidden" name="tech" value="{{ tech }}">
+  <div class="card-header">
+    <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs" role="tablist">
+      <li class="nav-item" role="presentation"><a href="#tab-general" class="nav-link active" data-bs-toggle="tab" role="tab">General</a></li>
+      <li class="nav-item" role="presentation"><a href="#tab-voicemail" class="nav-link" data-bs-toggle="tab" role="tab">Voicemail &amp; notifications</a></li>
+      {% if tech != "external" %}
+      <li class="nav-item" role="presentation"><a href="#tab-routing" class="nav-link" data-bs-toggle="tab" role="tab">Outgoing calls</a></li>
+      <li class="nav-item" role="presentation"><a href="#tab-advanced" class="nav-link" data-bs-toggle="tab" role="tab">Codecs &amp; advanced</a></li>
+      {% endif %}
+    </ul>
+  </div>
+  <div class="card-body">
+    {{ form_errors(errors) }}
+    <div class="tab-content">
+      <div class="tab-pane active show" id="tab-general" role="tabpanel">
+        <div class="row">
+          <div class="col-md-4">{{ input("extension", "Number", values, errors, required=True, attrs='inputmode="numeric" data-mask="digits"', help="The number used to dial this phone" ~ (" and the SIP/IAX username." if tech != "external" else ".")) }}</div>
+          <div class="col-md-8">{{ input("callerid", "Caller ID name", values, errors, required=True, help="Name shown to called parties.") }}</div>
+        </div>
+        {% if tech == "external" %}
+        <div class="row">
+          <div class="col-md-4">{{ select("dial_type", "Reach this phone via", values, errors, [("provider", "a provider"), ("sip_uri", "SIP URI (user@host)"), ("iax_uri", "IAX URI (user@host)")]) }}</div>
+          <div class="col-md-4">{{ input("dial_string", "Number / URI", values, errors, required=True, placeholder="01701234567 or user@example.com") }}</div>
+          <div class="col-md-4" data-show-if="dial_type=provider">{{ select("dial_provider_id", "Provider", values, errors, options(providers), empty="- select -") }}</div>
+        </div>
+        {% else %}
+        {{ secret("secret", "Password", values, errors, is_new=is_new, required=True, help="Used by the phone to register. Generated passwords are strong; keep them.") }}
+        {% endif %}
+        <div class="row">
+          <div class="col-md-4">{{ select("language", "Language", values, errors, LANGUAGES.items() | list, help="Prompts and number read-out.") }}</div>
+          <div class="col-md-4">{{ input("ringlength", "Ring time (seconds)", values, errors, type="number", attrs='min="5" max="600"', help="Empty = ring until the caller hangs up.") }}</div>
+          <div class="col-md-4">{{ input("description", "Description", values, errors, help="For your reference only.") }}</div>
+        </div>
+        {{ checkbox("public_access", "Reachable from outside (public direct dial)", values, errors, help="Callers from providers or SIP URIs may call this phone directly.") }}
+        <div data-show-if="public_access=true">{{ input("public_name", "Public name", values, errors, help="Optional alias used in the public context (e.g. 'sales' for sip:sales@pbx). Defaults to the extension.") }}</div>
+        {% if not is_new %}<input type="hidden" name="enabled" value="{{ 'true' if values.enabled else 'false' }}">{% endif %}
+      </div>
+
+      <div class="tab-pane" id="tab-voicemail" role="tabpanel">
+        {{ checkbox("vm_enabled", "Enable voicemail", values, errors, help="Unanswered or busy calls go to voicemail. Dial 000086 (0000VM) to listen to messages.") }}
+        <div class="row" data-show-if="vm_enabled=true">
+          <div class="col-md-4">{{ input("vm_pin", "Voicemail PIN", values, errors, attrs='inputmode="numeric" data-mask="digits"') }}</div>
+          <div class="col-md-8">{{ input("vm_email", "Send voicemail to e-mail", values, errors, type="email", help="Requires e-mail notifications (Services &gt; Notifications).") }}</div>
+        </div>
+        <hr>
+        {{ checkbox("notify_missed", "E-mail notification on missed calls", values, errors) }}
+        <div data-show-if="notify_missed=true">{{ input("notify_email", "Notification address", values, errors, type="email") }}</div>
+      </div>
+
+      {% if tech != "external" %}
+      <div class="tab-pane" id="tab-routing" role="tabpanel">
+        {% if providers %}
+        {{ select("blocked_provider_ids", "Block providers", values, errors, options(providers), multiple=True, tom=True, help="This phone cannot place outgoing calls through the selected providers.") }}
+        <h4 class="mt-4">Outgoing caller ID per provider</h4>
+        <p class="text-secondary small">Optional; overrides the provider's caller ID setting for calls from this phone. Format: <code>Name &lt;number&gt;</code>.</p>
+        {% for prov in providers %}
+        <div class="row align-items-center mb-2">
+          <div class="col-md-4"><label class="form-label m-0" for="cid_{{ prov.id }}">{{ prov.name }}</label></div>
+          <div class="col-md-8"><input class="form-control" id="cid_{{ prov.id }}" name="cid_{{ prov.id }}" value="{{ values.provider_callerids.get(prov.id, values.provider_callerids.get(prov.id | string, '')) }}" placeholder="use provider setting"></div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="text-secondary">No providers are configured yet.</p>
+        {% endif %}
+      </div>
+
+      <div class="tab-pane" id="tab-advanced" role="tabpanel">
+        {{ codecs(values, errors) }}
+        <div class="row">
+          <div class="col-md-4">{{ select("dtmf_mode", "DTMF mode", values, errors, [("rfc4733", "RFC 4733 (RFC 2833)"), ("inband", "In-band"), ("info", "SIP INFO"), ("auto", "Auto")]) }}</div>
+          <div class="col-md-4">{{ input("qualify", "Qualify interval (s)", values, errors, type="number", attrs='min="0" max="3600"', help="0 disables keep-alive checks.") }}</div>
+          {% if tech == "pjsip" %}<div class="col-md-4">{{ input("max_contacts", "Max. registered devices", values, errors, type="number", attrs='min="1" max="10"') }}</div>{% endif %}
+        </div>
+        <div class="row">
+          <div class="col-md-4">{{ input("busylevel", "Busy level", values, errors, type="number", attrs='min="1" max="100"', help="Report busy with this many concurrent calls.") }}</div>
+          <div class="col-md-8">{{ checkbox("nat", "Phone is behind NAT (symmetric RTP, rewrite contact)", values, errors) }}</div>
+        </div>
+        {{ textarea("manual_attributes", "Additional " ~ ("PJSIP endpoint" if tech == "pjsip" else "IAX peer") ~ " options", values, errors, mono=True, rows=3, help="Advanced: one key=value per line, appended to the generated section.") }}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {{ submit("Create phone" if is_new else "Save", cancel="/accounts/phones") }}
+</form>
+{% endblock %}

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <meta name="htmx-config" content='{"defaultTimeout": 120000}'>
+  <title>{% block title %}{% if active_item %}{{ active_item.title }} · {% endif %}AskoziaPBX{% endblock %}</title>
+  <link rel="icon" href="/static/img/favicon.ico">
+  <link rel="stylesheet" href="/static/vendor/tabler/tabler.min.css">
+  <link rel="stylesheet" href="/static/vendor/tabler/tabler-vendors.min.css">
+  <link rel="stylesheet" href="/static/vendor/icons/tabler-icons.min.css">
+  <link rel="stylesheet" href="/static/vendor/libs/tom-select/tom-select.bootstrap5.min.css">
+  <link rel="stylesheet" href="/static/askozia.css">
+  <script src="/static/vendor/tabler/tabler-theme.min.js"></script>
+</head>
+<body class="{% block body_class %}{% endblock %}">
+{% block body %}{% endblock %}
+<script src="/static/vendor/tabler/tabler.min.js" defer></script>
+<script src="/static/vendor/htmx/htmx.min.js" defer></script>
+<script src="/static/vendor/htmx/hx-sse.min.js" defer></script>
+<script src="/static/vendor/libs/tom-select/tom-select.base.min.js" defer></script>
+<script src="/static/vendor/libs/autosize/autosize.min.js" defer></script>
+<script src="/static/vendor/libs/imask/imask.min.js" defer></script>
+<script src="/static/vendor/libs/dropzone/dropzone-min.js" defer></script>
+<script src="/static/vendor/libs/apexcharts/apexcharts.min.js" defer></script>
+<script src="/static/askozia.js" defer></script>
+</body>
+</html>

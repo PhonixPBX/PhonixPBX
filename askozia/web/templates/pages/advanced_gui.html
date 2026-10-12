@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% from "macros/forms.html" import csrf, input, checkbox, form_errors, submit with context %}
+{% block content %}
+<form method="post" action="/advanced/gui" class="card">
+  {{ csrf() }}
+  <div class="card-body">
+    {{ form_errors(errors) }}
+    {{ input("session_minutes", "Log out after inactivity (minutes)", values, errors, type="number") }}
+    {{ checkbox("expand_advanced", "Always expand advanced sections", values, errors) }}
+    <p class="text-secondary">Light/dark theme: use the moon/sun icon in the top bar.</p>
+  </div>
+  {{ submit() }}
+</form>
+{% endblock %}

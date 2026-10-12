@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from "macros/forms.html" import csrf, input, textarea, checkbox, form_errors, submit with context %}
+{% block content %}
+<form method="post" action="/advanced/firewall" class="card">
+  {{ csrf() }}
+  <div class="card-body">
+    {{ form_errors(errors) }}
+    {{ checkbox("enabled", "Enable the firewall", values, errors, help="Only web interface, SSH (if enabled), SIP/IAX and RTP are reachable.") }}
+    <div class="row">
+      <div class="col-md-6">{{ textarea("admin_allowed_networks", "Networks allowed to manage the PBX", values, errors, rows=3, help="Web interface and SSH. One CIDR per line, e.g. 192.168.1.0/24. Empty = everyone.") }}</div>
+      <div class="col-md-6">{{ textarea("sip_allowed_networks", "Networks allowed to use SIP/IAX", values, errors, rows=3, help="Phones and providers. Empty = everyone (recommended only with strong passwords).") }}</div>
+    </div>
+    <h3 class="card-title mt-3">Brute force protection</h3>
+    {{ checkbox("ban_enabled", "Block addresses after repeated authentication failures", values, errors) }}
+    <div class="row">
+      <div class="col-md-6">{{ input("ban_threshold", "Failures within 10 minutes", values, errors, type="number") }}</div>
+      <div class="col-md-6">{{ input("ban_seconds", "Block duration (s)", values, errors, type="number") }}</div>
+    </div>
+    <div class="alert alert-warning mb-0">Make sure the network of your computer is allowed before applying restrictions.</div>
+  </div>
+  {{ submit() }}
+</form>
+{% endblock %}

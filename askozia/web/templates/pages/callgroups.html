@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% from "macros/ui.html" import delete_button, empty with context %}
+{% block actions %}<a href="/dialplan/callgroups/new" class="btn btn-primary">{{ icon("plus") }} Call group</a>{% endblock %}
+{% block content %}
+<div class="card">
+  {% if items %}
+  <div class="table-responsive">
+  <table class="table table-vcenter card-table table-hover">
+    <thead><tr><th>Number</th><th>Name</th><th>Members</th><th>Strategy</th><th></th></tr></thead>
+    <tbody>
+    {% for g in items %}
+    <tr>
+      <td><a href="/dialplan/callgroups/{{ g.id }}" class="fw-bold">{{ g.extension or "–" }}</a></td>
+      <td>{{ g.name }}{% if g.public_access %} <span class="badge bg-azure-lt">public</span>{% endif %}</td>
+      <td>{% for m in g.members %}<span class="badge bg-primary-lt me-1">{{ m.phone.extension }} {{ m.phone.callerid }}</span>{% endfor %}</td>
+      <td>{{ "ring all" if g.strategy == "ringall" else "one after another" }}</td>
+      <td class="table-actions">
+        <a href="/dialplan/callgroups/{{ g.id }}" class="btn btn-ghost-primary btn-icon btn-sm" aria-label="Edit {{ g.name }}">{{ icon("edit") }}</a>
+        {{ delete_button("/dialplan/callgroups/" ~ g.id, "call group " ~ g.name) }}
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}{{ empty("No call groups", "Call groups ring several phones at once or one after another.", "/dialplan/callgroups/new", "Add a call group") }}{% endif %}
+</div>
+{% endblock %}

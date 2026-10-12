@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row row-cards">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">Music on hold</h3></div>
+      <div class="card-body">
+        <p class="text-secondary">Upload your own hold music. Files are converted to 8 kHz mono WAV. Without uploads the bundled music is used.</p>
+        <form action="/services/media/moh" class="dropzone" data-dropzone data-param="file" data-max-mb="64" data-accept="audio/*,.wav,.mp3,.ogg,.flac" data-target="#media-files"
+              data-message="Drop audio files here or click to upload"></form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">Voicemail greeting</h3></div>
+      <div class="card-body">
+        <p class="text-secondary">A custom greeting played before callers leave a message (replaces the standard "unavailable" message).</p>
+        <form action="/services/media/vm_greeting" class="dropzone" data-dropzone data-param="file" data-max-mb="16" data-accept="audio/*,.wav,.mp3,.ogg" data-target="#media-files"
+              data-message="Drop the greeting here or click to upload"></form>
+      </div>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="card" id="media-files">{% include "partials/media_table.html" %}</div>
+  </div>
+  <div class="col-12">
+    <div class="card"><div class="card-body">
+      <h3 class="card-title">Voice prompts</h3>
+      <p class="mb-0 text-secondary">System prompts use the default language <strong>{{ LANGUAGES[system.prompt_language] }}</strong> (change it under <a href="/system/general">General Setup</a>). The firmware ships English prompts; other languages fall back to English recordings.</p>
+    </div></div>
+  </div>
+</div>
+{% endblock %}

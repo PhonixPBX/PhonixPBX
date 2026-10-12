@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% from "macros/forms.html" import csrf, input, textarea, checkbox, select, form_errors, submit with context %}
+{% block content %}
+<form method="post" action="/system/general" class="card">
+  {{ csrf() }}
+  <div class="card-body">
+    {{ form_errors(errors) }}
+    <div class="row">
+      <div class="col-md-6">{{ input("hostname", "Hostname", values, errors, required=True) }}</div>
+      <div class="col-md-6">{{ input("domain", "Domain", values, errors, required=True) }}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">{% set tz = [] %}{% for z in timezones %}{% set _ = tz.append((z, z)) %}{% endfor %}{{ select("timezone", "Time zone", values, errors, tz, tom=True) }}</div>
+      <div class="col-md-6">{{ textarea("ntp_servers", "Time servers", values, errors, rows=2, help="One per line.") }}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">{{ select("tonezone", "Tone zone", values, errors, TONEZONES.items() | sort(attribute=1) | list, tom=True, help="Country specific dial, busy and ring tones.") }}</div>
+      <div class="col-md-4">{{ select("prompt_language", "Default prompt language", values, errors, LANGUAGES.items() | list) }}</div>
+      <div class="col-md-4">{{ select("ui_language", "Web interface language", values, errors, [("en", "English")], help="More languages will follow.") }}</div>
+    </div>
+    <hr>
+    {{ checkbox("ssh_enabled", "Enable SSH access (key or password login for root)", values, errors, help="Only enable when needed. Access can additionally be limited under Advanced > Firewall.") }}
+  </div>
+  {{ submit() }}
+</form>
+{% endblock %}

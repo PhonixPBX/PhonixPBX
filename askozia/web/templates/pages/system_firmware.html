@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% from "macros/forms.html" import csrf, input, checkbox, form_errors with context %}
+{% block content %}
+<div class="row row-cards">
+  <div class="col-lg-6">
+    <div class="card"><div class="card-body">
+      <h3 class="card-title">Installed firmware</h3>
+      <dl class="row mb-0">
+        <dt class="col-5">Version</dt><dd class="col-7">{{ info.version }}</dd>
+        <dt class="col-5">Board</dt><dd class="col-7">{{ info.board }}</dd>
+        <dt class="col-5">Boot slot</dt><dd class="col-7">{{ info.slot }}</dd>
+      </dl>
+    </div></div>
+    <div class="card mt-3"><div class="card-body">
+      <h3 class="card-title">Check for updates</h3>
+      <form method="post" action="/system/firmware/settings">
+        {{ csrf() }}
+        {{ form_errors(errors) }}
+        {{ input("check_url", "Update information URL", values, errors, placeholder="https://updates.example.com/askozia/latest.json") }}
+        {{ checkbox("auto_check", "Check automatically", values, errors) }}
+        <button class="btn" type="submit">Save</button>
+        <button class="btn btn-primary" type="button" hx-post="/system/firmware/check" hx-target="#check-result">{{ icon("refresh", "me-1") }}Check now</button>
+      </form>
+      <div id="check-result"></div>
+    </div></div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card"><div class="card-body">
+      <h3 class="card-title">Install an update</h3>
+      <p class="text-secondary">Upload a signed <code>.update</code> bundle for this board. It is written to the inactive system slot; the configuration and data are kept. If the new firmware fails to start, the previous one is booted automatically.</p>
+      <form action="/system/firmware/upload" class="dropzone" data-dropzone data-param="file" data-max-mb="1024" data-accept=".update" data-target="#firmware-result"
+            data-message="Drop the update file here or click to upload"></form>
+      <div id="firmware-result"></div>
+    </div></div>
+  </div>
+</div>
+{% endblock %}

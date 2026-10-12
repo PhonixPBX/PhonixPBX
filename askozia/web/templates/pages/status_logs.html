@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block actions %}
+<div class="btn-group">
+  {% for key, title in logs.items() %}
+  <a href="/status/logs?log={{ key }}" class="btn{% if key == current %} btn-primary{% endif %}">{{ title }}</a>
+  {% endfor %}
+</div>
+{% endblock %}
+{% block content %}
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">{{ logs[current] }} log <span class="text-secondary small ms-2">{{ path }}</span></h3>
+    <div class="card-actions"><span class="badge bg-green-lt">{{ icon("broadcast") }} live</span></div>
+  </div>
+  <div class="card-body p-2">
+    <div class="log-view" data-autoscroll hx-sse:connect="/status/logs/stream?log={{ current }}" hx-swap="beforeend">
+      {% for line in lines %}<div>{{ line }}</div>{% endfor %}
+      {% if not lines %}<div class="text-secondary">The log is empty or not available.</div>{% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

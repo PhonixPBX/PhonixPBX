@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="empty">
+  <div class="empty-icon"><span class="spinner-border"></span></div>
+  <p class="empty-title">{{ message }}</p>
+  {% if poll %}<div data-reload-when-up="/system/ping"></div>
+  <p class="empty-subtitle text-secondary"><a href="/">Back to the dashboard</a></p>{% endif %}
+</div>
+{% endblock %}

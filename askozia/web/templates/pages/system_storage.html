@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+{% set pct = (100 * disk.used / disk.total) | round | int if disk.total else 0 %}
+<div class="card mb-3"><div class="card-body">
+  <h3 class="card-title">Data partition <span class="text-secondary small">{{ data_dir }}</span></h3>
+  <div class="progress progress-lg mb-2"><div class="progress-bar {{ 'bg-danger' if pct > 90 else 'bg-primary' }}" style="width: {{ pct }}%" role="progressbar" aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100" aria-label="used">{{ pct }}%</div></div>
+  <div class="text-secondary">{{ disk.used | filesize }} used of {{ disk.total | filesize }}. The data partition keeps configuration, voicemail, media and backups across firmware updates.</div>
+</div></div>
+<div class="card">
+  <table class="table card-table">
+    <thead><tr><th>Content</th><th>Location</th><th class="text-end">Size</th></tr></thead>
+    <tbody>{% for u in usage %}<tr><td>{{ u.label }}</td><td class="text-secondary small">{{ u.path }}</td><td class="text-end">{{ u.size | filesize }}</td></tr>{% endfor %}</tbody>
+  </table>
+</div>
+{% endblock %}

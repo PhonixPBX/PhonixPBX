@@ -1,0 +1,120 @@
+{# Form field macros. `values` is a dict of current values, `errors` maps field -> message. #}
+
+{% macro csrf() %}<input type="hidden" name="csrf_token" value="{{ csrf_token }}">{% endmacro %}
+
+{% macro _feedback(name, errors, help) %}
+{% if errors and errors.get(name) %}<div class="invalid-feedback d-block">{{ errors.get(name) }}</div>{% endif %}
+{% if help %}<small class="form-hint">{{ help }}</small>{% endif %}
+{% endmacro %}
+
+{% macro input(name, label, values, errors, type="text", help="", required=False, placeholder="", attrs="", autocomplete="off", value=None) %}
+{% set val = value if value is not none else values.get(name, "") %}
+<div class="mb-3">
+  <label class="form-label{% if required %} required{% endif %}" for="f-{{ name }}">{{ label }}</label>
+  <input type="{{ type }}" class="form-control{% if errors and errors.get(name) %} is-invalid{% endif %}" id="f-{{ name }}" name="{{ name }}"
+         value="{{ '' if val is none else val }}" placeholder="{{ placeholder }}" autocomplete="{{ autocomplete }}" {% if required %}required{% endif %} {{ attrs | safe }}>
+  {{ _feedback(name, errors, help) }}
+</div>
+{% endmacro %}
+
+{% macro secret(name, label, values, errors, help="", required=False, generate=True, is_new=False) %}
+<div class="mb-3">
+  <label class="form-label{% if required and is_new %} required{% endif %}" for="f-{{ name }}">{{ label }}</label>
+  <div class="input-group">
+    <input type="password" class="form-control{% if errors and errors.get(name) %} is-invalid{% endif %}" id="f-{{ name }}" name="{{ name }}"
+           value="{{ values.get(name, '') if is_new else '' }}" autocomplete="new-password"
+           placeholder="{{ '' if is_new else 'unchanged - leave empty to keep' }}">
+    <button type="button" class="btn btn-icon" data-toggle-password="#f-{{ name }}" title="Show/hide" aria-label="Show or hide">{{ icon("eye") }}</button>
+    {% if generate %}<button type="button" class="btn" data-generate-secret="#f-{{ name }}">{{ icon("refresh", "me-1") }}Generate</button>{% endif %}
+  </div>
+  {{ _feedback(name, errors, help) }}
+</div>
+{% endmacro %}
+
+{% macro textarea(name, label, values, errors, help="", rows=4, mono=False, required=False, placeholder="") %}
+<div class="mb-3">
+  <label class="form-label{% if required %} required{% endif %}" for="f-{{ name }}">{{ label }}</label>
+  <textarea class="form-control{% if mono %} font-monospace{% endif %}{% if errors and errors.get(name) %} is-invalid{% endif %}" id="f-{{ name }}" name="{{ name }}"
+            rows="{{ rows }}" data-autosize placeholder="{{ placeholder }}" spellcheck="false">{{ values.get(name, "") if values.get(name) is string else (values.get(name) or []) | join("\n") }}</textarea>
+  {{ _feedback(name, errors, help) }}
+</div>
+{% endmacro %}
+
+{% macro checkbox(name, label, values, errors, help="", switch=True) %}
+<div class="mb-3">
+  <input type="hidden" name="{{ name }}__present" value="1">
+  <label class="form-check{% if switch %} form-switch{% endif %}">
+    <input class="form-check-input" type="checkbox" name="{{ name }}" value="true" {% if values.get(name) %}checked{% endif %}>
+    <span class="form-check-label">{{ label }}</span>
+  </label>
+  {{ _feedback(name, errors, help) }}
+</div>
+{% endmacro %}
+
+{% macro select(name, label, values, errors, options, help="", required=False, multiple=False, tom=False, empty=None, attrs="") %}
+{# options: list of (value, label) #}
+{% set current = values.get(name) %}
+<div class="mb-3">
+  <label class="form-label{% if required %} required{% endif %}" for="f-{{ name }}">{{ label }}</label>
+  {% if multiple %}<input type="hidden" name="{{ name }}__present" value="1">{% endif %}
+  <select class="form-select{% if errors and errors.get(name) %} is-invalid{% endif %}" id="f-{{ name }}" name="{{ name }}"
+          {% if multiple %}multiple{% endif %} {% if tom %}data-tom{% endif %} {{ attrs | safe }}>
+    {% if empty is not none %}<option value="">{{ empty }}</option>{% endif %}
+    {% for value, text in options %}
+    {% if multiple %}
+    <option value="{{ value }}" {% if current and (value in current or value | string in current | map("string") | list) %}selected{% endif %}>{{ text }}</option>
+    {% else %}
+    <option value="{{ value }}" {% if current is not none and current | string == value | string %}selected{% endif %}>{{ text }}</option>
+    {% endif %}
+    {% endfor %}
+  </select>
+  {{ _feedback(name, errors, help) }}
+</div>
+{% endmacro %}
+
+{% macro radios(name, label, values, errors, options, help="") %}
+<div class="mb-3">
+  <div class="form-label">{{ label }}</div>
+  <div class="btn-group w-100" role="group">
+    {% for value, text in options %}
+    <input type="radio" class="btn-check" name="{{ name }}" id="f-{{ name }}-{{ loop.index }}" value="{{ value }}" autocomplete="off"
+           {% if values.get(name) | string == value | string %}checked{% endif %}>
+    <label for="f-{{ name }}-{{ loop.index }}" class="btn">{{ text }}</label>
+    {% endfor %}
+  </div>
+  {{ _feedback(name, errors, help) }}
+</div>
+{% endmacro %}
+
+{% macro form_errors(errors) %}
+{% if errors %}
+<div class="alert alert-danger" role="alert">
+  <div class="d-flex"><div>{{ icon("alert-circle", "alert-icon") }}</div>
+  <div><h4 class="alert-title">Please correct the highlighted fields</h4>
+  {% if errors.get("__all__") %}<div class="text-secondary">{{ errors.get("__all__") }}</div>{% endif %}
+  </div></div>
+</div>
+{% endif %}
+{% endmacro %}
+
+{% macro submit(label="Save", cancel=None) %}
+<div class="card-footer text-end">
+  <div class="d-flex">
+    {% if cancel %}<a href="{{ cancel }}" class="btn btn-link">Cancel</a>{% endif %}
+    <button type="submit" class="btn btn-primary ms-auto">{{ icon("device-floppy", "me-1") }}{{ label }}</button>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro codecs(values, errors) %}
+{% set selected = values.get("codecs") or [] %}
+<div class="mb-3">
+  <label class="form-label" for="f-codecs">Codecs <span class="form-label-description">first = preferred</span></label>
+  <input type="hidden" name="codecs__present" value="1">
+  <select id="f-codecs" name="codecs" multiple data-tom data-tom-sortable class="form-select{% if errors and errors.get('codecs') %} is-invalid{% endif %}">
+    {% for c in selected %}<option value="{{ c }}" selected>{{ c }}</option>{% endfor %}
+    {% for c in CODECS_AUDIO + CODECS_VIDEO if c not in selected %}<option value="{{ c }}">{{ c }}</option>{% endfor %}
+  </select>
+  {{ _feedback("codecs", errors, "Audio: " ~ CODECS_AUDIO | join(", ") ~ ". Video: " ~ CODECS_VIDEO | join(", ")) }}
+</div>
+{% endmacro %}

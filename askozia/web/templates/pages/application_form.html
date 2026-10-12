@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% from "macros/forms.html" import csrf, input, textarea, checkbox, form_errors, submit with context %}
+{% block page_title %}{{ "New application" if is_new else "Edit application " ~ values.name }}{% endblock %}
+{% block content %}
+<form method="post" action="/dialplan/applications/{{ 'new' if is_new else obj_id }}" class="card">
+  {{ csrf() }}
+  <div class="card-body">
+    {{ form_errors(errors) }}
+    <div class="row">
+      <div class="col-md-4">{{ input("extension", "Number", values, errors, required=True, help="Digits or an Asterisk pattern like _0XX.") }}</div>
+      <div class="col-md-8">{{ input("name", "Name", values, errors, required=True) }}</div>
+    </div>
+    {{ input("description", "Description", values, errors) }}
+    {{ textarea("logic", "Application logic", values, errors, mono=True, rows=10, required=True,
+       help="One step per line: priority,Application(arguments), e.g. '1,Answer()', 'n,Playback(hello-world)', 'n,Hangup()'. 'include => context' lines are allowed.") }}
+    <div class="row">
+      <div class="col-md-4">{{ checkbox("enabled", "Enabled", values, errors) }}</div>
+      <div class="col-md-4">{{ checkbox("public_access", "Reachable from outside", values, errors) }}</div>
+      <div class="col-md-4" data-show-if="public_access=true">{{ input("public_name", "Public name", values, errors) }}</div>
+    </div>
+  </div>
+  {{ submit("Create" if is_new else "Save", cancel="/dialplan/applications") }}
+</form>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from "macros/forms.html" import csrf, input, textarea, checkbox, form_errors, submit with context %}
+{% block content %}
+{% if not email_ok %}<div class="alert alert-info">Voicemail can be read by dialing <strong>000086</strong>. Configure <a href="/services/email">e-mail notifications</a> to receive messages by e-mail.</div>{% endif %}
+<form method="post" action="/services/voicemail" class="card">
+  {{ csrf() }}
+  <div class="card-body">
+    {{ form_errors(errors) }}
+    <div class="row">
+      <div class="col-md-6">{{ input("from_address", "Sender address", values, errors, type="email", help="Defaults to the notification sender address.") }}</div>
+      <div class="col-md-6">{{ input("from_name", "Sender name", values, errors) }}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">{{ input("max_message_seconds", "Max. message length (s)", values, errors, type="number") }}</div>
+      <div class="col-md-4">{{ checkbox("attach_audio", "Attach the recording to the e-mail", values, errors) }}</div>
+      <div class="col-md-4">{{ checkbox("keep_messages", "Keep messages on the PBX after e-mailing", values, errors) }}</div>
+    </div>
+    {{ input("custom_subject", "E-mail subject", values, errors, placeholder="New voicemail ${VM_MSGNUM} in mailbox ${VM_MAILBOX} from ${VM_CALLERID}") }}
+    {{ textarea("custom_body", "E-mail text", values, errors, rows=6, help="Variables: ${VM_NAME}, ${VM_DUR}, ${VM_MSGNUM}, ${VM_MAILBOX}, ${VM_CALLERID}, ${VM_DATE}. Empty = default text.") }}
+  </div>
+  {{ submit() }}
+</form>
+{% endblock %}

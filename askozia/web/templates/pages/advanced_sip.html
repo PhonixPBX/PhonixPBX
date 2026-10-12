@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% from "macros/forms.html" import csrf, input, textarea, checkbox, select, form_errors, submit with context %}
+{% block content %}
+<form method="post" action="/advanced/sip" class="card">
+  {{ csrf() }}
+  <div class="card-body">
+    {{ form_errors(errors) }}
+    <div class="row">
+      <div class="col-md-3">{{ input("udp_port", "SIP port (UDP/TCP)", values, errors, type="number") }}</div>
+      <div class="col-md-3">{{ checkbox("tcp_enabled", "Enable TCP", values, errors) }}</div>
+      <div class="col-md-3">{{ checkbox("tls_enabled", "Enable TLS", values, errors) }}</div>
+      <div class="col-md-3" data-show-if="tls_enabled=true">{{ input("tls_port", "TLS port", values, errors, type="number") }}</div>
+    </div>
+    {{ select("srtp", "Media encryption (SRTP)", values, errors, [("off", "off"), ("optional", "offer SRTP (SDES), fall back to RTP")]) }}
+    <h3 class="card-title mt-3">Registration timers</h3>
+    <div class="row">
+      <div class="col-md-4">{{ input("default_expiry", "Default expiry (s)", values, errors, type="number") }}</div>
+      <div class="col-md-4">{{ input("min_expiry", "Minimum expiry (s)", values, errors, type="number") }}</div>
+      <div class="col-md-4">{{ input("max_expiry", "Maximum expiry (s)", values, errors, type="number") }}</div>
+    </div>
+    {{ checkbox("srv_lookup", "Use DNS SRV lookups", values, errors) }}
+    {{ textarea("manual_attributes", "Additional [global] options", values, errors, mono=True, rows=3, help="Advanced: key=value lines appended to the PJSIP global section.") }}
+  </div>
+  {{ submit() }}
+</form>
+{% endblock %}

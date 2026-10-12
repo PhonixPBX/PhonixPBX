@@ -1,0 +1,12 @@
+{% from "macros/ui.html" import status_dot with context %}
+{% for p in phones if p.enabled and p.tech != "external" %}
+<hx-partial hx-target="#phone-status-{{ p.id }}" hx-swap="innerHTML">
+  {% if not ast.running %}<span class="badge bg-secondary-lt">Asterisk down</span>
+  {% elif p.tech == "iax" %}{{ status_dot(ast.iax_peers.get(p.extension, "unknown")) }}
+  {% else %}
+    {% set ep = ast.endpoints.get(p.extension, {}) %}
+    {% if ep.get("addresses") %}{{ status_dot("registered") }} <span class="text-secondary small">{{ ep.addresses[0].uri.split("@")[-1].split(";")[0] }}</span>
+    {% else %}{{ status_dot("not registered") }}{% endif %}
+  {% endif %}
+</hx-partial>
+{% endfor %}

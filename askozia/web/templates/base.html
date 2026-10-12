@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+{% from "macros/ui.html" import flash_messages with context %}
+{% block body %}
+<div class="page">
+  <aside class="navbar navbar-vertical navbar-expand-lg askozia-sidebar" data-bs-theme="dark">
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu"
+              aria-controls="sidebar-menu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="navbar-brand askozia-brand">
+        <a href="/" aria-label="AskoziaPBX home"><img src="/static/img/logo.png" width="150" height="46" alt="AskoziaPBX"></a>
+      </div>
+      <div class="collapse navbar-collapse" id="sidebar-menu">
+        <ul class="navbar-nav pt-lg-3">
+          {% for section in MENU %}
+          {% set open = active_section and active_section.key == section.key %}
+          <li class="nav-item dropdown{% if open %} active{% endif %}">
+            <a class="nav-link dropdown-toggle{% if open %} show{% endif %}" href="#menu-{{ section.key }}"
+               data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="{{ 'true' if open else 'false' }}">
+              <span class="nav-link-icon">{{ icon(section.icon) }}</span>
+              <span class="nav-link-title">{{ section.title }}</span>
+            </a>
+            <div class="dropdown-menu{% if open %} show{% endif %}">
+              {% for item in section.items %}
+              <a class="dropdown-item{% if active_item and active_item.url == item.url %} active{% endif %}" href="{{ item.url }}">{{ item.title }}</a>
+              {% endfor %}
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </aside>
+  <div class="page-wrapper">
+    <header class="navbar navbar-expand-md d-none d-lg-flex d-print-none askozia-topbar">
+      <div class="container-xl">
+        <div class="navbar-nav flex-row order-md-last align-items-center gap-2">
+          <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="Dark mode" data-bs-toggle="tooltip" data-bs-placement="bottom">{{ icon("moon") }}</a>
+          <a href="?theme=light" class="nav-link px-0 hide-theme-light" title="Light mode" data-bs-toggle="tooltip" data-bs-placement="bottom">{{ icon("sun") }}</a>
+          {% if user %}
+          <div class="nav-item dropdown">
+            <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+              <span class="avatar avatar-sm askozia-avatar">{{ user.username[:2] | upper }}</span>
+              <div class="d-none d-xl-block ps-2"><div>{{ user.username }}</div><div class="mt-1 small text-secondary">Administrator</div></div>
+            </a>
+            <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+              <a href="/password" class="dropdown-item">{{ icon("key", "me-2") }}Change password</a>
+              <div class="dropdown-divider"></div>
+              <form method="post" action="/logout" class="m-0">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <button class="dropdown-item" type="submit">{{ icon("logout", "me-2") }}Logout</button>
+              </form>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+        <div class="collapse navbar-collapse"><span class="text-secondary small">{{ hostname | default("") }}</span></div>
+      </div>
+    </header>
+    <div id="apply-banner" hx-get="/apply/banner" hx-trigger="askozia:dirty from:body" hx-swap="outerHTML">
+      {% include "partials/apply_banner.html" %}
+    </div>
+    <div class="page-header d-print-none">
+      <div class="container-xl">
+        <div class="row g-2 align-items-center">
+          <div class="col">
+            <div class="page-pretitle">{% block pretitle %}{{ active_section.title if active_section else "" }}{% endblock %}</div>
+            <h2 class="page-title">{% block page_title %}{{ active_item.title if active_item else "" }}{% endblock %}</h2>
+          </div>
+          <div class="col-auto ms-auto d-print-none">{% block actions %}{% endblock %}</div>
+        </div>
+      </div>
+    </div>
+    <div class="page-body">
+      <div class="container-xl">
+        <div id="flash">{{ flash_messages(flashes) }}</div>
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+    <footer class="footer footer-transparent d-print-none">
+      <div class="container-xl">
+        <div class="row text-center align-items-center">
+          <div class="col-12">AskoziaPBX {{ VERSION }} &middot; <a href="/api/docs" class="link-secondary">API</a></div>
+        </div>
+      </div>
+    </footer>
+  </div>
+</div>
+<div class="modal modal-blur fade" id="modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document"><div class="modal-content" id="modal-content"></div></div>
+</div>
+{% endblock %}

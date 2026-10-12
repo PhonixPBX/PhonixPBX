@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% from "macros/forms.html" import csrf, input, textarea, checkbox, form_errors, submit with context %}
+{% block content %}
+<form method="post" action="/advanced/iax" class="card">
+  {{ csrf() }}
+  <div class="card-body">
+    {{ form_errors(errors) }}
+    {{ checkbox("enabled", "Accept IAX connections (firewall)", values, errors) }}
+    {{ input("port", "IAX port", values, errors, type="number") }}
+    {{ checkbox("jitterbuffer", "Enable jitter buffer", values, errors) }}
+    {{ checkbox("force_jitterbuffer", "Force jitter buffer", values, errors) }}
+    {{ textarea("manual_attributes", "Additional [general] options", values, errors, mono=True, rows=3) }}
+  </div>
+  {{ submit() }}
+</form>
+{% endblock %}
