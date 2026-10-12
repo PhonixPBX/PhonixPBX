@@ -2,7 +2,8 @@
 
 The web process runs as the unprivileged ``askozia`` user. Everything that
 needs root goes through this single entry point; the helper accepts a fixed
-set of actions (see ``system/libexec/priv``). In ``dry-run`` mode (dev/tests)
+set of actions (see ``system/libexec/priv``). ``exec`` runs the helper without
+doas (the dev container uses ``dev/libexec/priv``). In ``dry-run`` mode (tests)
 calls are only recorded, and staged files are copied below ``ASKOZIA_ROOT`` so
 the result can still be inspected.
 """
@@ -74,7 +75,8 @@ def run(action: str, *args: str, timeout: int = 120) -> str:
     helper = str(cfg.libexec_dir / "priv")
     try:
         proc = subprocess.run(
-            ["doas", "-n", helper, action, *args],
+            # "exec": already root (dev container), run the helper directly
+            [helper, action, *args] if cfg.privileged_mode == "exec" else ["doas", "-n", helper, action, *args],
             capture_output=True,
             text=True,
             timeout=timeout,

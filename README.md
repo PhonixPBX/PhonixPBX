@@ -22,6 +22,22 @@ look. Bootable images are built for Raspberry Pi (arm64), amd64 and x86.
 | `system/`, `packaging/`, `image/` | files installed into the image, the APKBUILD and the image builder |
 | `tests/` | unit, web and golden-file tests; `tests/integration` runs against real Asterisk |
 
+## Quick start: run it locally in a container
+
+```sh
+dev/run.sh            # podman (CONTAINER_ENGINE=docker works too)
+dev/run.sh --reset    # start over with an empty data volume
+```
+
+This builds the Alpine 3.24 dev image (Asterisk 22 + the Python runtime from apk),
+runs first boot, generates the configuration, starts Asterisk and serves the web UI
+on http://localhost:8000 with auto-reload of the mounted source. The initial `admin`
+password is printed at startup. The container uses host networking, so softphones
+on your LAN can register against your machine's IP (SIP 5060/udp, RTP 10000-20000/udp).
+Data persists in the `askozia-dev-data` volume; `podman exec -it askozia-dev asterisk -r`
+opens the Asterisk console. Network, firewall and boot-slot actions are only logged
+inside the container.
+
 ## Development
 
 ```sh

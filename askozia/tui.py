@@ -21,7 +21,13 @@ def _lan() -> tuple[st.NetworkSettings, str]:
     with session_scope() as session:
         net = st.load(session, st.NetworkSettings)
     found = facts.interface_ipv4(net.interface)
-    ip = found[0] if found else (net.address if net.mode == "static" else "no address")
+    if found:
+        ip = found[0]
+    elif net.mode == "static":
+        ip = net.address
+    else:
+        # e.g. in the dev container where the host's interface has another name
+        ip = facts.default_route_ipv4() or "no address"
     return net, ip
 
 

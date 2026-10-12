@@ -23,7 +23,7 @@ class RuntimeConfig:
     data_dir: Path
     # prefix for every generated system file ("/" on the appliance)
     root: Path
-    # how privileged actions are executed: "doas" (appliance) or "dry-run"
+    # how privileged actions are executed: "doas" (appliance), "exec" (dev container) or "dry-run"
     privileged_mode: str
     libexec_dir: Path
     boot_dir: Path

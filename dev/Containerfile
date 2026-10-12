@@ -16,3 +16,7 @@ ENV ASKOZIA_DATA_DIR=/data \
     PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /src
+
+# "askozia" command running the code mounted at /src
+RUN printf '#!/bin/sh\nexec python3 -m askozia.cli "$@"\n' > /usr/local/bin/askozia \
+    && chmod 755 /usr/local/bin/askozia
