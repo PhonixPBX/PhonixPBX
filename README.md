@@ -4,10 +4,18 @@ PhonixPBX
 PhonixPBX is the successor of AskoziaPBX (2007–2011): an appliance PBX built on Alpine
 Linux, Asterisk 22 (PJSIP), Python (FastAPI) and SQLite, with a Tabler + htmx 4 web
 interface in the classic AskoziaPBX colours. Bootable images are built for Raspberry Pi
-(arm64), amd64 and x86. Configurations of AskoziaPBX 2.x systems can be imported.
+(arm64), amd64 and x86; the same system also ships as LXC/Incus/Proxmox VE system
+container and as OCI image for Docker/Podman. Configurations of AskoziaPBX 2.x systems
+can be imported.
 
 - Specification: [docs/SPEC.md](docs/SPEC.md)
 - Installation: [docs/INSTALL.md](docs/INSTALL.md)
+  - [Raspberry Pi, PC and VM disk images](docs/INSTALL.md#1-write-the-image)
+  - [Proxmox VE, Incus and LXC system containers](docs/INSTALL.md#lxc-incus-and-proxmox-ve-system-containers)
+  - [Container image](docs/INSTALL.md#container-image-docker-podman):
+    `docker run -d --network host -v phonix-data:/data ghcr.io/resmo/phonix:latest`
+- Downloads: [releases](https://github.com/resmo/AskoziaPBX/releases) (nightly builds:
+  the `nightly` pre-release and `ghcr.io/resmo/phonix:edge`)
 - The original AskoziaPBX tree (T2 SDE, PHP web GUI) is preserved in [legacy/](legacy/).
 
 ## Why "Phonix"?
@@ -44,6 +52,7 @@ search EUIPO/USPTO (Nice classes 9 and 38) and check the domain and package name
 | `phonix/web` | FastAPI app, Jinja templates, static assets (vendored Tabler/htmx) |
 | `phonix/cli.py` | `phonix` command (apply, firstboot, user, legacy, backup, web, …) |
 | `system/`, `packaging/`, `image/` | files installed into the image, the APKBUILD and the image builder |
+| `Containerfile`, `system/container/` | OCI image (`ghcr.io/resmo/phonix`): entry point, root helper, health check |
 | `tests/` | unit, web and golden-file tests; `tests/integration` runs against real Asterisk |
 
 ## Quick start: run it locally in a container

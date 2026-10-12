@@ -10,6 +10,14 @@ PhonixPBX ships as a complete disk image for three boards:
 
 Each release also includes a signed update bundle per board, `phonix-<version>-<board>.update`, and a `SHA256SUMS` file.
 
+PhonixPBX also runs in containers, with the same system inside:
+
+| Target | Download | Runs on |
+|---|---|---|
+| `lxc-amd64`, `lxc-arm64` | `phonix-<version>-lxc-<arch>.tar.xz` (+ `.meta.tar.xz` for `lxc-create`) | Proxmox VE, LXC: [system container](#lxc-incus-and-proxmox-ve-system-containers) |
+| | `phonix-<version>-incus-<arch>.tar.xz` | Incus / LXD (unified image) |
+| OCI image | `ghcr.io/resmo/phonix` (linux/amd64, linux/arm64) | Docker, Podman, Kubernetes: [container image](#container-image-docker-podman) |
+
 Downloads are on the GitHub releases page:
 
 - **Releases** (`v*` tags) are the versions to install.
@@ -163,6 +171,177 @@ These options are for service work. Add them in the GRUB menu (press `e`) or in 
 | `phonix.debug=1` | Rescue shell when the initramfs fails, instead of a reboot |
 | `phonix.break=1` | Shell in the initramfs just before the system starts |
 
+## LXC, Incus and Proxmox VE system containers
+
+The `lxc-<arch>` images contain the same system as the appliance: OpenRC as init, Asterisk, the web interface behind nginx (HTTPS), the security monitor, the console menu and the nftables firewall. What a container does not need is left out: kernel, initramfs, boot loader, A/B slots, device management, hardware clock and time synchronisation (the clock comes from the host).
+
+Differences to the appliance:
+
+- **`/data`** is a directory in the container. Put it on a separate volume (examples below), so the container can be replaced on updates while the data stays. The first start initialises it exactly like the data partition: database, TLS certificate, random admin password.
+- **Network, host name and DNS** belong to the container host. PhonixPBX does not write `/etc/network/interfaces`, `/etc/hostname`, `/etc/hosts` or `/etc/resolv.conf` in a container. *System → Network* shows a notice. The LAN interface setting there only picks the address that is used for SIP, and the NAT settings work as usual. The image default is DHCP on `eth0`.
+- **Updates** replace the container. *System → Firmware* says so, and update bundles are refused. To update, create a new container from the new image and attach the old `/data` volume, or restore a backup (*System → Backup/Restore*) into the new container.
+- **Factory reset** erases `/data` at the next start of the container.
+- **Console menu** runs on the container console (`/dev/console`) and on `tty1`.
+
+The containers run unprivileged. Give them at least 512 MB RAM (1 GB recommended) and 2 GB disk plus the data volume. For telephones on your LAN, attach the container to a bridge of your LAN so it gets its own address (`eth0`). Phones and providers then reach SIP (5060) and RTP (10000-20000/udp) directly.
+
+### Proxmox VE
+
+1. Upload the template: *local → CT Templates → Upload* with `phonix-<version>-lxc-amd64.tar.xz`, or on the host:
+
+   ```sh
+   wget -P /var/lib/vz/template/cache/ \
+     https://github.com/resmo/AskoziaPBX/releases/download/<tag>/phonix-<version>-lxc-amd64.tar.xz
+   ```
+
+2. Create and start the container. The OS type is detected as Alpine; `/data` gets its own volume (`mp0`):
+
+   ```sh
+   pct create 120 local:vztmpl/phonix-<version>-lxc-amd64.tar.xz \
+     --hostname pbx --ostype alpine --unprivileged 1 \
+     --cores 2 --memory 1024 --swap 512 \
+     --rootfs local-lvm:2 --mp0 local-lvm:8,mp=/data \
+     --net0 name=eth0,bridge=vmbr0,ip=dhcp \
+     --cmode console --onboot 1
+   pct start 120
+   pct console 120        # console menu with address and initial password (Ctrl+a q to leave)
+   ```
+
+   For a static address use `ip=192.168.1.10/24,gw=192.168.1.1` and set DNS with `--nameserver`.
+
+Proxmox writes `/etc/network/interfaces`, `/etc/hostname`, `/etc/hosts` and `/etc/resolv.conf` at every start from the container settings. PhonixPBX leaves these files to Proxmox, so change the network in Proxmox (`pct set 120 --net0 ...` or the GUI), not in PhonixPBX.
+
+Update to a new version, keeping the data volume:
+
+```sh
+pct stop 120
+pct create 121 local:vztmpl/phonix-<new-version>-lxc-amd64.tar.xz <same options, without --mp0>
+pct move-volume 120 mp0 --target-vmid 121 --target-volume mp0
+pct start 121
+```
+
+### Incus (and LXD)
+
+```sh
+incus image import phonix-<version>-incus-amd64.tar.xz --alias phonix
+incus storage volume create default phonix-data
+incus init phonix pbx
+incus storage volume attach default phonix-data pbx /data
+incus start pbx
+incus console pbx          # console menu (Enter to redraw, Ctrl+a q to leave)
+incus list pbx             # address of the container
+```
+
+On the default `incusbr0` network the PBX is only reachable from the host. For phones on your LAN, give it a NIC on your LAN, for example `incus config device override pbx eth0 nictype=macvlan parent=enp1s0` (or a bridged NIC). To update, `incus image import` the new version, create a new instance, and attach the same `phonix-data` volume to it. LXD works the same way with `lxc` instead of `incus`.
+
+### LXC (lxc-create)
+
+```sh
+lxc-create -n pbx -t local -- \
+  --metadata phonix-<version>-lxc-amd64.meta.tar.xz \
+  --fstree phonix-<version>-lxc-amd64.tar.xz
+# network: lxc.net.0.* in the container config (e.g. /var/lib/lxc/pbx/config)
+# data volume: lxc.mount.entry = /srv/phonix-data data none bind,create=dir 0 0
+lxc-start -n pbx
+lxc-console -n pbx -t 0    # console menu (Ctrl+a q to leave)
+```
+
+The metadata includes `alpine.common.conf`, the LXC configuration that Proxmox VE uses for Alpine as well. It also works for unprivileged containers created by a regular user.
+
+## Container image (Docker, Podman)
+
+`ghcr.io/resmo/phonix` is a multi-arch (linux/amd64, linux/arm64) application container. It has the same Alpine release, packages and file layout as the appliance, but no init system. The entry point does the following:
+
+- prepares `/data`
+- runs first boot (the initial admin password appears in the container log)
+- generates the configuration
+- starts and supervises Asterisk, the security monitor, the web interface (as user `phonix` on a unix socket) and nginx (HTTPS on 443, port 80 redirects to it)
+
+If one of them dies, the container exits with an error so that the restart policy takes over. `docker stop` shuts down cleanly. A health check tests the web interface and Asterisk.
+
+Tags:
+
+| Tag | Content |
+|---|---|
+| `latest`, `<version>` | releases (`v*` tags) |
+| `edge`, `sha-<commit>` | latest build of the default branch (testing only) |
+
+### Run it
+
+Host networking is recommended. SIP and RTP then work without NAT between the container and the host, and the PBX uses the host's address:
+
+```sh
+docker run -d --name phonix --restart unless-stopped --network host \
+  -v phonix-data:/data ghcr.io/resmo/phonix:latest
+docker logs phonix               # shows the web address and the initial admin password
+```
+
+Open `https://<host-address>/` and log in as `admin` with the password from the log. You must change the password at the first login. The REST API accepts HTTP basic auth with the initial password straight away.
+
+With published ports (bridge network):
+
+```sh
+docker run -d --name phonix --restart unless-stopped \
+  -p 80:80 -p 443:443 \
+  -p 5060:5060/udp -p 5060:5060/tcp -p 5061:5061/tcp -p 4569:4569/udp \
+  -p 10000-10100:10000-10100/udp \
+  -v phonix-data:/data ghcr.io/resmo/phonix:latest
+```
+
+When you publish ports, two settings matter:
+
+- **RTP port range.** Set it to the published range under *Advanced → RTP*. Publishing all 10000-20000 ports makes docker very slow to start.
+- **NAT.** Phones see the host's address, not the container's. Set *System → Network → NAT* to "NAT, static public IP" with the host's address.
+
+Docker compose:
+
+```yaml
+services:
+  phonix:
+    image: ghcr.io/resmo/phonix:latest
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - phonix-data:/data
+    # environment:
+    #   PHONIX_HTTPS_PORT: "8443"
+volumes:
+  phonix-data:
+```
+
+Rootless Podman cannot bind ports below 1024 on the host network. Move the web interface instead:
+
+```sh
+podman run -d --name phonix --network host -e PHONIX_HTTP_PORT=8080 -e PHONIX_HTTPS_PORT=8443 \
+  -v phonix-data:/data ghcr.io/resmo/phonix:latest
+```
+
+### Options
+
+| Environment | Default | Meaning |
+|---|---|---|
+| `PHONIX_HTTP_PORT` | `80` | HTTP port inside the container (redirects to HTTPS) |
+| `PHONIX_HTTPS_PORT` | `443` | HTTPS port inside the container |
+| `PHONIX_FIREWALL` | `0` | `1` loads PhonixPBX's nftables firewall and enables address bans by the security monitor. Needs `--cap-add NET_ADMIN`. **With `--network host` the rules go into the host's network namespace.** |
+
+Notes:
+
+- **Network, host name, DNS and clock** come from the container engine. PhonixPBX does not change them, as in the LXC images.
+- **Updates.** Pull the new image and recreate the container with the same volume: `docker pull ghcr.io/resmo/phonix:latest && docker rm -f phonix && docker run ...`, or `docker compose pull && docker compose up -d`. *System → Firmware* refuses update bundles.
+- **Reboot and shut down** in the web interface stop the container. With `--restart unless-stopped`, *Reboot* starts it again.
+- **Factory reset** stops the container and erases `/data` when the same container starts again.
+- **Console menu:** `docker exec -it phonix phonix tui`. Asterisk console: `docker exec -it phonix asterisk -r`.
+- **One-off commands** against the volume while the PBX is stopped, e.g. to reset a password: `docker run --rm -it -v phonix-data:/data ghcr.io/resmo/phonix:latest phonix user passwd admin`.
+- **AskoziaPBX `config.xml`.** Place it at `import/config.xml` in the data volume before the first start, or import it later in the web interface.
+- **Privileges.** The web process runs as user `phonix` and reaches its few root actions (reload Asterisk/nginx, time zone, firewall) through `doas`. Do not run the container with `--security-opt no-new-privileges`, which disables doas.
+
+Build the image yourself from the repository root:
+
+```sh
+podman build --format docker -t phonix .     # or: docker build -f Containerfile -t phonix .
+image/test-oci.sh localhost/phonix           # smoke test: web, Asterisk, REST API, clean stop
+```
+
 ## Migrating from AskoziaPBX 1.x / 2.x
 
 1. Before flashing, copy `config.xml` from the old box. Use the old web interface (*System → Backup*), or copy `conf/config.xml` from its first partition.
@@ -178,8 +357,9 @@ You can also import the file later under *System → Backup/Restore*.
 You need Linux with rootless podman, or docker with `CONTAINER=docker`. No root rights, loop devices or qemu-user are needed.
 
 ```sh
-image/build.sh pc-amd64             # or rpi-arm64, pc-x86, all
+image/build.sh pc-amd64             # or rpi-arm64, pc-x86, lxc-amd64, lxc-arm64, all
 image/test-qemu.sh --update         # QEMU boot test (UEFI + BIOS), update and rollback
+image/test-lxc.sh                   # boot test of the lxc-amd64 rootfs as a podman system container
 ```
 
 `image/build.sh` does the following, all inside an `alpine:3.24` container:
@@ -188,6 +368,8 @@ image/test-qemu.sh --update         # QEMU boot test (UEFI + BIOS), update and r
 2. Installs the package lists in `image/profiles/` with `apk --root --arch`.
 3. Builds the initramfs.
 4. Assembles `out/phonix-<version>-<board>.img.zst`, the `.update` bundle, a `.packages` list with the exact package versions, and `SHA256SUMS`.
+
+For the container boards (`lxc-*`), step 3 is skipped. Step 4 writes the rootfs tarball, the `lxc-create` metadata and the Incus image. All tarballs keep numeric file ownership; they are created inside the build container, where the files have their real owners.
 
 ### Signing keys
 

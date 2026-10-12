@@ -402,6 +402,17 @@ This replaces the old `/cf` and `/offload` scheme and meets the goals of the `st
 - Same as amd64, but BIOS only with i686 `linux-lts`.
 - Built in CI and boot-tested in QEMU. It ships only if Alpine x86 still packages `asterisk`; otherwise it is dropped with a note.
 
+**`lxc-amd64`, `lxc-arm64` (system containers)**
+- The same root filesystem, built by the same pipeline (`CONTAINER=1`, `LOADER=none` in the profile). There is no kernel, initramfs, boot loader or A/B slot. OpenRC is init, and the runlevels have no device, module, sysctl, clock, ACPI or health check services.
+- Output: a rootfs tarball (Proxmox VE CT template, `lxc-create -t local` with a small metadata tarball) and an Incus/LXD unified image.
+- `/data` is a directory or volume in the container. `/var/spool/asterisk` is a symlink to `/data/spool`.
+- Network, host name and DNS belong to the container host, and `phonix apply` skips `system:network` and `system:hostname` (`phonix.services.platform`). Updates replace the container. `priv install-update`/`mark-good` refuse, and factory reset empties `/data` at the next start.
+
+**OCI image (`ghcr.io/resmo/phonix`)**
+- Multi-arch application container from `Containerfile`: Alpine packages, the `phonix` wheel and the same file layout, with board `oci-<arch>`.
+- No init system. `system/container/entrypoint` runs under tini and supervises Asterisk, the web interface (user `phonix`, unix socket), the monitor and nginx.
+- Root actions go through doas to `system/container/priv`, which only does what belongs inside a container.
+
 ### Updates
 - The UI uploads a bundle or downloads it from a URL. The ed25519 signature is verified in Python with `cryptography`, using `py3-cryptography`.
 - `/usr/libexec/phonix/install-update` writes the squashfs and kernel to the inactive slot and sets the next boot to try that slot.
