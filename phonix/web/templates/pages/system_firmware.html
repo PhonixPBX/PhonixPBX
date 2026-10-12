@@ -8,7 +8,11 @@
       <dl class="row mb-0">
         <dt class="col-5">Version</dt><dd class="col-7">{{ info.version }}</dd>
         <dt class="col-5">Board</dt><dd class="col-7">{{ info.board }}</dd>
+        {% if info.platform in ("lxc", "oci") %}
+        <dt class="col-5">Platform</dt><dd class="col-7">{{ "LXC / Incus system container" if info.platform == "lxc" else "OCI container (Docker / Podman)" }}</dd>
+        {% else %}
         <dt class="col-5">Boot slot</dt><dd class="col-7">{{ info.slot }}</dd>
+        {% endif %}
       </dl>
     </div></div>
     <div class="card mt-3"><div class="card-body">
@@ -25,6 +29,21 @@
     </div></div>
   </div>
   <div class="col-lg-6">
+    {% if info.platform in ("lxc", "oci") %}
+    <div class="card"><div class="card-body">
+      <h3 class="card-title">Updates: replace the container image</h3>
+      <p class="text-secondary mb-2">PhonixPBX runs in a container, so firmware update bundles do not apply here.</p>
+      <p class="text-secondary mb-0">
+      {% if info.platform == "oci" %}
+        Pull the new image and recreate the container with the same <code>/data</code> volume
+        (for example <code>docker compose pull &amp;&amp; docker compose up -d</code>).
+      {% else %}
+        Create a new container from the new template and attach the same <code>/data</code> volume,
+        or restore a backup (<em>System &rarr; Backup/Restore</em>) into the new container.
+      {% endif %}
+      </p>
+    </div></div>
+    {% else %}
     <div class="card"><div class="card-body">
       <h3 class="card-title">Install an update</h3>
       <p class="text-secondary">Upload a signed <code>.update</code> bundle for this board. It is written to the inactive system slot; the configuration and data are kept. If the new firmware fails to start, the previous one is booted automatically.</p>
@@ -32,6 +51,7 @@
             data-message="Drop the update file here or click to upload"></form>
       <div id="firmware-result"></div>
     </div></div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

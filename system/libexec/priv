@@ -89,6 +89,19 @@ board() {
 	head -n 1 "$BOARD_FILE" 2>/dev/null | tr -cd 'A-Za-z0-9_-'
 }
 
+# container boards (lxc-*; oci-* has its own helper): no boot partition, no A/B slots; the
+# container host owns network, host name and clock
+is_container() {
+	case "$(board)" in
+	lxc-* | oci-*) return 0 ;;
+	esac
+	return 1
+}
+
+no_slots_in_container() {
+	die "PhonixPBX runs in a container (board $(board)): firmware updates and boot slots do not apply - update by replacing the container with a newer image and keep /data"
+}
+
 # ------------------------------------------------------------------ staged files
 
 # component -> whitelisted target files (identical to STAGED_FILES)
@@ -105,8 +118,16 @@ staged_files() {
 
 target_mode() {
 	case "$1" in
-	/etc/nftables.nft) echo 600 ;;
+	/etc/nftables.nft) echo 640 ;;
 	*) echo 644 ;;
+	esac
+}
+
+# group of an installed file (the web process compares /etc/nftables.nft)
+target_group() {
+	case "$1" in
+	/etc/nftables.nft) echo phonix ;;
+	*) echo root ;;
 	esac
 }
 
@@ -136,7 +157,7 @@ install_one() {
 		}
 	fi
 	mkdir -p "$(dirname "$_target")"
-	chown root:root "$_buf"
+	chown "root:$(target_group "$_target")" "$_buf"
 	chmod "$(target_mode "$_target")" "$_buf"
 	mv -f "$_buf" "$_target.priv-new"
 	mv -f "$_target.priv-new" "$_target"
@@ -194,6 +215,15 @@ activate() {
 do_install_staged() {
 	_comp=$1
 	_files=$(staged_files "$_comp") || die "unknown component $_comp"
+	if is_container; then
+		case "$_comp" in
+		system:network | system:hostname)
+			log "$_comp is managed by the container host, not installed"
+			echo "$_comp: managed by the container host"
+			return 0
+			;;
+		esac
+	fi
 	_n=0
 	for _f in $_files; do
 		if install_one "$_f"; then _n=$((_n + 1)); fi
@@ -217,6 +247,7 @@ sha256_of() {
 
 do_install_update() {
 	_bundle=$1
+	! is_container || no_slots_in_container
 	case "$_bundle" in /*) ;; *) die "bundle path must be absolute" ;; esac
 	_real=$(readlink -f -- "$_bundle" 2>/dev/null) || die "bundle $_bundle not found"
 	[ -e "$_real" ] || die "bundle $_bundle not found"
@@ -315,6 +346,7 @@ do_install_update() {
 }
 
 do_mark_good() {
+	! is_container || no_slots_in_container
 	_cur=$(bootctl_current)
 	if bootctl_is_trial; then
 		boot_rw
@@ -330,6 +362,17 @@ do_mark_good() {
 }
 
 do_factory_reset() {
+	if is_container; then
+		# no data partition to format: phonix-firstboot empties /data at the
+		# next start when it finds the marker
+		mkdir -p /var/lib/phonix
+		chmod 700 /var/lib/phonix
+		: >/var/lib/phonix/factory-reset
+		log "factory reset requested, rebooting"
+		detach "sleep 2; /sbin/reboot"
+		echo "factory reset scheduled, rebooting"
+		return 0
+	fi
 	boot_rw
 	: >"$BOOT_DIR/factory-reset"
 	boot_ro
@@ -414,6 +457,7 @@ nginx-reload)
 	;;
 time-sync)
 	nargs 0 $#
+	! is_container || die "the clock of a container is set by the container host"
 	chronyc -a makestep >/dev/null || die "chronyc makestep failed"
 	;;
 reboot)
@@ -441,6 +485,10 @@ mark-good)
 boot-status)
 	# read-only, for diagnostics (not used by the web process)
 	nargs 0 $#
+	if is_container; then
+		echo "board $(board): container, no boot slots"
+		exit 0
+	fi
 	bootctl_status
 	;;
 ban)

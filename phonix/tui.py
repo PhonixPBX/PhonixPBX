@@ -12,7 +12,7 @@ from phonix import __version__
 from phonix.core import settings as st
 from phonix.core.db import session_scope
 from phonix.services import apply as apply_svc
-from phonix.services import facts, firstboot, privileged, users
+from phonix.services import facts, firstboot, platform, privileged, users
 from phonix.services.common import ServiceError, mark_dirty
 from phonix.services.ownership import fix_data_ownership
 
@@ -57,6 +57,10 @@ def _confirm(prompt: str) -> bool:
 
 
 def set_lan() -> None:
+    if platform.is_container():
+        print("PhonixPBX runs in a container: configure the network on the container host")
+        print("(e.g. 'pct set <id> -net0 ...' on Proxmox VE, 'incus config device ...' on Incus).")
+        return
     with session_scope() as session:
         net = st.load(session, st.NetworkSettings)
         mode = _ask("Use DHCP? (y/n)", "y" if net.mode == "dhcp" else "n").lower()

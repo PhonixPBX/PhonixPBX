@@ -1,5 +1,6 @@
 #!/bin/sh
-# Console front end (spawned by init on tty1 and the serial console):
+# Console front end (spawned by init on tty1 and the serial console, in
+# system containers on /dev/console):
 #   console <tty>
 # Runs the PhonixPBX console menu (phonix tui). Booting with
 # "phonix.console=shell" on the kernel command line (needs physical access
@@ -18,6 +19,10 @@ exec <"$dev" >"$dev" 2>&1
 
 case "$tty" in
 tty[0-9]*) TERM=linux ;;
+console)
+	# container console (a pseudo terminal set up by LXC/Incus)
+	TERM=vt100
+	;;
 *)
 	TERM=vt100
 	stty -F "$dev" 115200 sane 2>/dev/null
@@ -35,8 +40,14 @@ for w in $(cat /proc/cmdline); do
 	fi
 done
 
+# make the terminal the menu's controlling terminal (Ctrl-C, password
+# prompts); a container console may already belong to another session, the
+# menu then runs without one
+ctty=-c
+setsid -w -c true 2>/dev/null || ctty=
 started=$(cut -d. -f1 /proc/uptime)
-setsid -w -c phonix tui
+# shellcheck disable=SC2086
+setsid -w $ctty phonix tui
 rc=$?
 now=$(cut -d. -f1 /proc/uptime)
 if [ $rc -ne 0 ] && [ $((now - started)) -lt 5 ]; then

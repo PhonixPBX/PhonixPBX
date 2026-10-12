@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% from "macros/forms.html" import csrf, input, textarea, select, radios, form_errors, submit with context %}
 {% block content %}
+{% if platform in ("lxc", "oci") %}<div class="alert alert-warning">{{ icon("info-circle", "me-1") }} PhonixPBX runs in a container: the address, gateway and DNS servers of the container are configured on the container host and the settings for the LAN interface below are not applied. The interface selects the address that is used for SIP; the NAT settings apply as usual.</div>{% endif %}
 {% if current %}<div class="alert alert-info">{{ icon("network", "me-1") }} Current address of {{ values.interface }}: <strong>{{ current[0] }}/{{ current[1] }}</strong></div>{% endif %}
 <form method="post" action="/system/network" class="card">
   {{ csrf() }}

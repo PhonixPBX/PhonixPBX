@@ -38,11 +38,25 @@ _prepare_dirs() {
 	fi
 	ln -sfn "$d/machine-id" /etc/machine-id
 
-	# voicemail and other spool data persist
-	if ! mountpoint -q /var/spool/asterisk; then
+	# voicemail and other spool data persist (container images link
+	# /var/spool/asterisk to /data/spool instead)
+	if [ ! -L /var/spool/asterisk ] && ! mountpoint -q /var/spool/asterisk; then
 		checkpath -d -m 0750 -o asterisk:asterisk /var/spool/asterisk
-		mount --bind "$d/spool" /var/spool/asterisk
+		mount --bind "$d/spool" /var/spool/asterisk || ewarn "cannot bind mount $d/spool on /var/spool/asterisk"
 	fi
+	return 0
+}
+
+# Container boards have no PHXDATA partition the initramfs could format: a
+# factory reset requested by "priv factory-reset" leaves a (root-only)
+# marker and the data directory is emptied here, before anything uses it.
+_factory_reset() {
+	local d="$PHONIX_DATA_DIR" marker=/var/lib/phonix/factory-reset
+	[ -e "$marker" ] || return 0
+	case "$d" in /?*) ;; *) eerror "refusing factory reset of '$d'"; return 1 ;; esac
+	ewarn "Factory reset: erasing $d"
+	find "$d" -mindepth 1 -maxdepth 1 ! -name lost+found -exec rm -rf {} + &&
+		rm -f "$marker"
 }
 
 _fix_ownership() {
@@ -61,6 +75,7 @@ _fix_ownership() {
 
 start() {
 	_env
+	_factory_reset || return 1
 	ebegin "Preparing PhonixPBX data partition"
 	_prepare_dirs
 	eend $? || return 1
