@@ -14,6 +14,7 @@ from askozia.core.db import session_scope
 from askozia.services import apply as apply_svc
 from askozia.services import facts, firstboot, privileged, users
 from askozia.services.common import ServiceError, mark_dirty
+from askozia.services.ownership import fix_data_ownership
 
 
 def _lan() -> tuple[st.NetworkSettings, str]:
@@ -127,6 +128,7 @@ def main() -> int:
             continue
         try:
             MENU[int(choice) - 1][1]()
+            fix_data_ownership()
         except (EOFError, KeyboardInterrupt):
             print()
         except Exception as exc:  # the console menu must never die

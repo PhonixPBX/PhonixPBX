@@ -231,7 +231,13 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     logging.basicConfig(level=logging.DEBUG if args.verbose else logging.INFO, format="%(message)s")
-    return int(args.func(args))
+    try:
+        return int(args.func(args))
+    finally:
+        if args.command not in ("web", "monitor"):
+            from askozia.services.ownership import fix_data_ownership
+
+            fix_data_ownership()
 
 
 if __name__ == "__main__":

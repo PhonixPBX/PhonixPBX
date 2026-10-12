@@ -46,8 +46,10 @@ include = ["askozia*"]
 askozia = [
     "core/migrations/*.ini",
     "core/migrations/*.py",
+    "core/migrations/*.mako",
     "core/migrations/versions/*.py",
     "generators/templates/**/*",
+    "generators/data/*",
     "web/templates/**/*",
     "web/static/**/*",
     "web/locale/**/*",
