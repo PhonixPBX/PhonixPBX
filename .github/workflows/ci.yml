@@ -1,0 +1,61 @@
+name: ci
+
+on:
+  push:
+    branches: [master, main, askozia-ng]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -c dev/constraints-alpine-3.24.txt -e '.[dev]'
+      - name: ruff
+        run: ruff check . && ruff format --check .
+      - name: mypy
+        run: mypy askozia
+      - name: pytest
+        run: pytest -q
+
+  shell:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck system and image scripts
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+          shellcheck -s sh -x -S warning -e SC1091,SC2034,SC2093 \
+            system/libexec/priv system/libexec/bootctl.sh system/libexec/console \
+            system/libexec/healthcheck-loop system/libexec/notify-missed-call \
+            image/initramfs/init image/build.sh image/keys.sh image/mkbundle.sh \
+            image/lib/common.sh image/lib/build-apk.sh image/lib/build-rootfs.sh \
+            image/lib/build-initramfs.sh image/lib/assemble.sh
+          for f in system/openrc/init.d/*; do shellcheck -s sh -S warning -e SC1091,SC2034,SC2154,SC2317,SC3043 "$f"; done
+      - name: python helpers
+        run: python3 -m py_compile system/libexec/verify-manifest image/lib/qemutest.py
+
+  asterisk:
+    # generated configuration must load in the Asterisk 22 of the appliance
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build dev image (Alpine 3.24, Asterisk 22)
+        run: docker build -t askozia-dev:3.24 -f dev/Containerfile dev
+      - name: Asterisk / SIPp integration tests
+        run: >
+          docker run --rm -v "$PWD:/src" -w /src askozia-dev:3.24
+          python3 -m pytest -p no:cacheprovider -m asterisk tests/integration -v
