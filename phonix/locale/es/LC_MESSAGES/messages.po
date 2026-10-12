@@ -1,0 +1,2977 @@
+# Spanish translations for PhonixPBX.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PhonixPBX project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PhonixPBX VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-12 21:37+0200\n"
+"PO-Revision-Date: 2026-10-12 21:37+0200\n"
+"Last-Translator: PhonixPBX contributors\n"
+"Language: es\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#, python-format
+msgid "%(domain)s is not a public DNS name. Enter the names the PBX is reached by."
+msgstr "%(domain)s no es un nombre DNS público. Introduzca los nombres con los que se accede a la PBX."
+
+#, python-format
+msgid "%(ext)s (slots %(start)s–%(end)s)"
+msgstr "%(ext)s (posiciones %(start)s–%(end)s)"
+
+#, python-format
+msgid "%(label)s (optional)"
+msgstr "%(label)s (opcional)"
+
+#, python-format
+msgid "%(language)s (default)"
+msgstr "%(language)s (predeterminado)"
+
+#, python-format
+msgid "%(name)s is not a fully qualified domain name"
+msgstr "%(name)s no es un nombre de dominio completo"
+
+#, python-format
+msgid "%(name)s log"
+msgstr "Registro de %(name)s"
+
+#, python-format
+msgid "%(num)d CPU"
+msgid_plural "%(num)d CPUs"
+msgstr[0] "%(num)d CPU"
+msgstr[1] "%(num)d CPU"
+
+#, python-format
+msgid "%(num)d route"
+msgid_plural "%(num)d routes"
+msgstr[0] "%(num)d ruta"
+msgstr[1] "%(num)d rutas"
+
+#, python-format
+msgid "%(number)s via %(provider)s"
+msgstr "%(number)s vía %(provider)s"
+
+#, python-format
+msgid "%(used)s of %(total)s"
+msgstr "%(used)s de %(total)s"
+
+#, python-format
+msgid "%(used)s of %(total)s used"
+msgstr "%(used)s de %(total)s en uso"
+
+#, python-format
+msgid ""
+"%(used)s used of %(total)s. The data partition keeps configuration, voicemail, media and backups across firmware "
+"updates."
+msgstr ""
+"%(used)s usados de %(total)s. La partición de datos conserva la configuración, el buzón de voz, los archivos "
+"multimedia y las copias de seguridad tras las actualizaciones de firmware."
+
+#, python-format
+msgid "%(what)s must not contain ';'"
+msgstr "%(what)s no debe contener ';'"
+
+#, python-format
+msgid "%(what)s must not contain control characters or line breaks"
+msgstr "%(what)s no debe contener caracteres de control ni saltos de línea"
+
+#, python-format
+msgid "(%(num)d reload action)"
+msgid_plural "(%(num)d reload actions)"
+msgstr[0] "(%(num)d acción de recarga)"
+msgstr[1] "(%(num)d acciones de recarga)"
+
+#, python-format
+msgid "(missing %(type)s)"
+msgstr "(falta %(type)s)"
+
+msgid "(nothing to reload)"
+msgstr "(nada que recargar)"
+
+msgid "- choose -"
+msgstr "- elegir -"
+
+msgid "- none -"
+msgstr "- ninguno -"
+
+msgid "- select -"
+msgstr "- seleccionar -"
+
+msgid "0 disables keep-alive checks."
+msgstr "0 desactiva las comprobaciones de keep-alive."
+
+msgid "01701234567 or user@example.com"
+msgstr "01701234567 o user@example.com"
+
+#, python-format
+msgid "1 to %(max)s days. Empty: the token does not expire."
+msgstr "De 1 a %(max)s días. Vacío: el token no caduca."
+
+msgid "2FA shared secret"
+msgstr "Secreto compartido 2FA"
+
+msgid ""
+"A TXT record is created through the DNS provider's API. Works for PBXs that are not reachable from the internet and "
+"for wildcard names."
+msgstr ""
+"Se crea un registro TXT a través de la API del proveedor DNS. Funciona con PBX que no son accesibles desde Internet y"
+" con nombres comodín."
+
+msgid "A certificate request is already running."
+msgstr "Ya hay una solicitud de certificado en curso."
+
+msgid "A custom greeting played before callers leave a message (replaces the standard \"unavailable\" message)."
+msgstr ""
+"Saludo personalizado que se reproduce antes de que los llamantes dejen un mensaje (sustituye al mensaje estándar de "
+"\"no disponible\")."
+
+msgid "A new self-signed certificate was created."
+msgstr "Se ha creado un nuevo certificado autofirmado."
+
+msgid "A password is set. Leave empty to keep it."
+msgstr "Hay una contraseña establecida. Déjelo vacío para conservarla."
+
+msgid "A provider cannot fail over to itself"
+msgstr "Un proveedor no puede ser su propio proveedor de respaldo"
+
+msgid "A secret is required"
+msgstr "Se requiere un secreto"
+
+msgid "ACME directory URL"
+msgstr "URL del directorio ACME"
+
+msgid "AMI is only used internally."
+msgstr "AMI solo se usa internamente."
+
+msgid "API key"
+msgstr "Clave de API"
+
+msgid "API key (prefix.secret)"
+msgstr "Clave de API (prefijo.secreto)"
+
+msgid "API password"
+msgstr "Contraseña de API"
+
+msgid "API secret"
+msgstr "Secreto de API"
+
+msgid "API token"
+msgstr "Token de API"
+
+msgid "API token (Zone.DNS edit)"
+msgstr "Token de API (Zone.DNS edit)"
+
+msgid "API tokens"
+msgstr "Tokens de API"
+
+msgid "API user"
+msgstr "Usuario de API"
+
+msgid "Accept IAX connections (firewall)"
+msgstr "Aceptar conexiones IAX (cortafuegos)"
+
+msgid "Access"
+msgstr "Acceso"
+
+msgid "Access denied"
+msgstr "Acceso denegado"
+
+msgid "Access key ID"
+msgstr "ID de clave de acceso"
+
+msgid "Access token"
+msgstr "Token de acceso"
+
+msgid "Account"
+msgstr "Cuenta"
+
+msgid "Account e-mail address"
+msgstr "Dirección de correo electrónico de la cuenta"
+
+msgid "Accounts"
+msgstr "Cuentas"
+
+msgid "Action"
+msgstr "Acción"
+
+msgid "Active calls"
+msgstr "Llamadas activas"
+
+msgid "Active calls are interrupted."
+msgstr "Las llamadas activas se interrumpen."
+
+msgid "Active channels"
+msgstr "Canales activos"
+
+msgid "Add"
+msgstr "Añadir"
+
+msgid "Add a call group"
+msgstr "Añadir un grupo de llamada"
+
+msgid "Add a phone"
+msgstr "Añadir un teléfono"
+
+msgid "Add a provider"
+msgstr "Añadir un proveedor"
+
+msgid "Add a room"
+msgstr "Añadir una sala"
+
+msgid "Add administrator"
+msgstr "Añadir administrador"
+
+msgid "Add an application"
+msgstr "Añadir una aplicación"
+
+msgid "Add route"
+msgstr "Añadir ruta"
+
+msgid "Add your SIP trunk or VoIP provider account to make and receive external calls."
+msgstr "Añada su troncal SIP o su cuenta de proveedor VoIP para realizar y recibir llamadas externas."
+
+msgid "Additional IAX peer options"
+msgstr "Opciones adicionales del peer IAX"
+
+msgid "Additional PJSIP endpoint options"
+msgstr "Opciones adicionales del endpoint PJSIP"
+
+msgid "Additional [general] options"
+msgstr "Opciones adicionales de [general]"
+
+msgid "Additional [global] options"
+msgstr "Opciones adicionales de [global]"
+
+msgid "Additional options"
+msgstr "Opciones adicionales"
+
+msgid "Admin PIN"
+msgstr "PIN de administrador"
+
+msgid "Admin PIN must differ from the user PIN"
+msgstr "El PIN de administrador debe ser distinto del PIN de usuario"
+
+msgid "Administrator"
+msgstr "Administrador"
+
+msgid "Administrator created."
+msgstr "Administrador creado."
+
+msgid "Administrators"
+msgstr "Administradores"
+
+msgid "Advanced"
+msgstr "Avanzado"
+
+msgid "Advanced: key=value lines appended to the PJSIP global section."
+msgstr "Avanzado: líneas clave=valor que se añaden a la sección global de PJSIP."
+
+msgid "Advanced: one key=value per line, appended to the generated endpoint/peer."
+msgstr "Avanzado: una clave=valor por línea, se añade al endpoint/peer generado."
+
+msgid "Advanced: one key=value per line, appended to the generated section."
+msgstr "Avanzado: una clave=valor por línea, se añade a la sección generada."
+
+msgid "Always expand advanced sections"
+msgstr "Mostrar siempre desplegadas las secciones avanzadas"
+
+msgid "An e-mail address is required for the ACME account"
+msgstr "Se requiere una dirección de correo electrónico para la cuenta ACME"
+
+msgid "Application"
+msgstr "Aplicación"
+
+#, python-format
+msgid "Application %(name)s <%(number)s>"
+msgstr "Aplicación %(name)s <%(number)s>"
+
+msgid "Application key"
+msgstr "Clave de aplicación"
+
+msgid "Application logic"
+msgstr "Lógica de la aplicación"
+
+msgid "Application logic must contain at least one line"
+msgstr "La lógica de la aplicación debe contener al menos una línea"
+
+msgid "Application not found"
+msgstr "Aplicación no encontrada"
+
+msgid "Application secret"
+msgstr "Secreto de aplicación"
+
+msgid "Applications"
+msgstr "Aplicaciones"
+
+msgid "Applications are small dialplan programs reachable by a number."
+msgstr "Las aplicaciones son pequeños programas del plan de marcado accesibles mediante un número."
+
+msgid "Apply changes"
+msgstr "Aplicar cambios"
+
+#, python-format
+msgid "Applying failed: %(errors)s"
+msgstr "Error al aplicar: %(errors)s"
+
+msgid "Applying the configuration failed."
+msgstr "Error al aplicar la configuración."
+
+msgid "Asterisk database"
+msgstr "Base de datos de Asterisk"
+
+msgid "Asterisk down"
+msgstr "Asterisk no disponible"
+
+#, python-format
+msgid "Asterisk is not reachable: %(error)s"
+msgstr "No se puede acceder a Asterisk: %(error)s"
+
+msgid "Asterisk manager users"
+msgstr "Usuarios del Asterisk Manager"
+
+#, python-format
+msgid "At least %(min)s characters required"
+msgstr "Se requieren al menos %(min)s caracteres"
+
+#, python-format
+msgid "At least %(min)s entries required"
+msgstr "Se requieren al menos %(min)s entradas"
+
+msgid "At least 8 characters."
+msgstr "Al menos 8 caracteres."
+
+msgid "At least one permitted network is required"
+msgstr "Se requiere al menos una red permitida"
+
+#, python-format
+msgid "At most %(max)s characters allowed"
+msgstr "Se permiten como máximo %(max)s caracteres"
+
+#, python-format
+msgid "At most %(max)s entries allowed"
+msgstr "Se permiten como máximo %(max)s entradas"
+
+msgid "Attach the recording to the e-mail"
+msgstr "Adjuntar la grabación al correo electrónico"
+
+msgid "Attended transfer"
+msgstr "Transferencia atendida"
+
+msgid "Attended transfer no-answer timeout (s)"
+msgstr "Tiempo de espera sin respuesta de la transferencia atendida (s)"
+
+#, python-format
+msgid "Audio: %(audio)s. Video: %(video)s"
+msgstr "Audio: %(audio)s. Vídeo: %(video)s"
+
+msgid "Audit Log"
+msgstr "Registro de auditoría"
+
+msgid "Australia"
+msgstr "Australia"
+
+msgid "Austria"
+msgstr "Austria"
+
+msgid "Authentication"
+msgstr "Autenticación"
+
+msgid "Authentication user"
+msgstr "Usuario de autenticación"
+
+msgid "Auto"
+msgstr "Automático"
+
+msgid "Automatic (SLAAC)"
+msgstr "Automática (SLAAC)"
+
+msgid "Automatic certificate (Let's Encrypt / ACME)"
+msgstr "Certificado automático (Let's Encrypt / ACME)"
+
+msgid "Automatic certificates were turned off."
+msgstr "Se han desactivado los certificados automáticos."
+
+msgid "Avail"
+msgstr "Disp."
+
+msgid "Back to the dashboard"
+msgstr "Volver al panel"
+
+#, python-format
+msgid "Backup %(name)s created."
+msgstr "Copia de seguridad %(name)s creada."
+
+#, python-format
+msgid "Backup from %(created)s restored. Review the configuration and apply the changes."
+msgstr "Copia de seguridad del %(created)s restaurada. Revise la configuración y aplique los cambios."
+
+msgid "Backup is too large"
+msgstr "La copia de seguridad es demasiado grande"
+
+msgid "Backup manifest is missing"
+msgstr "Falta el manifiesto de la copia de seguridad"
+
+msgid "Backup not found"
+msgstr "Copia de seguridad no encontrada"
+
+msgid "Backup/Restore"
+msgstr "Copia de seguridad/Restauración"
+
+msgid "Backups"
+msgstr "Copias de seguridad"
+
+msgid "Belgium"
+msgstr "Bélgica"
+
+msgid "Blind transfer"
+msgstr "Transferencia directa"
+
+msgid "Block addresses after repeated authentication failures"
+msgstr "Bloquear direcciones tras fallos de autenticación repetidos"
+
+msgid "Block duration (s)"
+msgstr "Duración del bloqueo (s)"
+
+msgid "Block providers"
+msgstr "Bloquear proveedores"
+
+msgid "Board"
+msgstr "Placa"
+
+msgid "Board / slot"
+msgstr "Placa / ranura"
+
+msgid "Boot slot"
+msgstr "Ranura de arranque"
+
+msgid "Brazil"
+msgstr "Brasil"
+
+msgid "Brute force protection"
+msgstr "Protección contra fuerza bruta"
+
+msgid "Busy"
+msgstr "Ocupado"
+
+msgid "Busy level"
+msgstr "Nivel de ocupado"
+
+msgid "CPU load"
+msgstr "Carga de CPU"
+
+msgid "Call Groups"
+msgstr "Grupos de llamada"
+
+msgid "Call group"
+msgstr "Grupo de llamada"
+
+#, python-format
+msgid "Call group %(name)s"
+msgstr "Grupo de llamada %(name)s"
+
+#, python-format
+msgid "Call group %(name)s <%(number)s>"
+msgstr "Grupo de llamada %(name)s <%(number)s>"
+
+msgid "Call group not found"
+msgstr "Grupo de llamada no encontrado"
+
+msgid "Call groups ring several phones at once or one after another."
+msgstr "Los grupos de llamada hacen sonar varios teléfonos a la vez o uno tras otro."
+
+msgid "Call parking"
+msgstr "Estacionamiento de llamadas"
+
+msgid "Call pickup"
+msgstr "Captura de llamadas"
+
+msgid "Caller"
+msgstr "Llamante"
+
+msgid "Caller ID"
+msgstr "ID de llamante"
+
+msgid "Caller ID may not be empty or contain \" < > ; \\"
+msgstr "El ID de llamante no puede estar vacío ni contener \" < > ; \\"
+
+msgid "Caller ID must look like \"Name <number>\" or a number"
+msgstr "El ID de llamante debe tener el formato \"Nombre <número>\" o ser un número"
+
+msgid "Caller ID name"
+msgstr "Nombre del ID de llamante"
+
+msgid "Caller ID text"
+msgstr "Texto del ID de llamante"
+
+msgid "Callers from providers or SIP URIs may call this phone directly."
+msgstr "Los llamantes desde proveedores o URI SIP pueden llamar directamente a este teléfono."
+
+msgid "Calls & Registrations"
+msgstr "Llamadas y registros"
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "Certificate"
+msgstr "Certificado"
+
+msgid "Certificate (PEM, may include the chain)"
+msgstr "Certificado (PEM, puede incluir la cadena)"
+
+msgid "Certificate authority"
+msgstr "Autoridad de certificación"
+
+msgid "Certificate installed."
+msgstr "Certificado instalado."
+
+msgid "Change password"
+msgstr "Cambiar contraseña"
+
+#, python-format
+msgid "Changes saved: %(kind)s %(name)s."
+msgstr "Cambios guardados: %(kind)s %(name)s."
+
+msgid "Changing the address interrupts the connection. Open the new address after applying."
+msgstr "Cambiar la dirección interrumpe la conexión. Abra la nueva dirección después de aplicar."
+
+msgid "Channel"
+msgstr "Canal"
+
+msgid "Check automatically"
+msgstr "Comprobar automáticamente"
+
+msgid "Check for updates"
+msgstr "Buscar actualizaciones"
+
+msgid "Check now"
+msgstr "Comprobar ahora"
+
+#, python-format
+msgid "Checksum mismatch for %(name)s"
+msgstr "La suma de comprobación de %(name)s no coincide"
+
+msgid "Chile"
+msgstr "Chile"
+
+msgid "China"
+msgstr "China"
+
+#, python-format
+msgid "Choose 1 to %(max)s days"
+msgstr "Elija entre 1 y %(max)s días"
+
+msgid "Choose a DNS provider"
+msgstr "Elija un proveedor DNS"
+
+msgid "Choose a different password"
+msgstr "Elija una contraseña diferente"
+
+msgid "Client ID"
+msgstr "ID de cliente"
+
+msgid "Client secret"
+msgstr "Secreto de cliente"
+
+msgid "Cloud API token"
+msgstr "Token de API de Cloud"
+
+msgid "Codecs"
+msgstr "Códecs"
+
+msgid "Codecs &amp; advanced"
+msgstr "Códecs y opciones avanzadas"
+
+msgid "Conference"
+msgstr "Conferencia"
+
+#, python-format
+msgid "Conference %(name)s <%(number)s>"
+msgstr "Conferencia %(name)s <%(number)s>"
+
+msgid "Conference room"
+msgstr "Sala de conferencias"
+
+msgid "Conference room not found"
+msgstr "Sala de conferencias no encontrada"
+
+msgid "Conference rooms let several callers talk together."
+msgstr "Las salas de conferencias permiten que varios llamantes hablen entre sí."
+
+msgid "Conferencing"
+msgstr "Conferencias"
+
+msgid "Configuration"
+msgstr "Configuración"
+
+msgid "Configuration applied."
+msgstr "Configuración aplicada."
+
+msgid "Configuration database"
+msgstr "Base de datos de configuración"
+
+msgid "Configure an https:// update check URL first."
+msgstr "Configure primero una URL https:// para la comprobación de actualizaciones."
+
+msgid "Consumer key"
+msgstr "Consumer key"
+
+msgid "Contact"
+msgstr "Contacto"
+
+msgid "Content"
+msgstr "Contenido"
+
+msgid "Copied"
+msgstr "Copiado"
+
+msgid "Copy"
+msgstr "Copiar"
+
+msgid "Copy it now: it is not shown again."
+msgstr "Cópielo ahora: no se volverá a mostrar."
+
+#, python-format
+msgid "Could not convert audio: %(error)s"
+msgstr "No se ha podido convertir el audio: %(error)s"
+
+#, python-format
+msgid "Could not start the certificate request: %(error)s"
+msgstr "No se ha podido iniciar la solicitud de certificado: %(error)s"
+
+msgid "Country specific dial, busy and ring tones."
+msgstr "Tonos de marcado, ocupado y llamada específicos del país."
+
+msgid "Create"
+msgstr "Crear"
+
+msgid "Create a SIP phone and register your desk phone or softphone with it."
+msgstr "Cree un teléfono SIP y registre en él su teléfono de sobremesa o softphone."
+
+msgid ""
+"Create a new container from the new template and attach the same <code>/data</code> volume, or restore a backup "
+"(<em>System &rarr; Backup/Restore</em>) into the new container."
+msgstr ""
+"Cree un nuevo contenedor a partir de la nueva plantilla y conecte el mismo volumen <code>/data</code>, o restaure una"
+" copia de seguridad (<em>Sistema &rarr; Copia de seguridad/Restauración</em>) en el nuevo contenedor."
+
+msgid "Create a token to use the REST API (/api/v1) from scripts."
+msgstr "Cree un token para usar la API REST (/api/v1) desde scripts."
+
+msgid "Create backup"
+msgstr "Crear copia de seguridad"
+
+msgid "Create new self-signed certificate"
+msgstr "Crear nuevo certificado autofirmado"
+
+msgid "Create phone"
+msgstr "Crear teléfono"
+
+msgid "Create provider"
+msgstr "Crear proveedor"
+
+msgid "Create token"
+msgstr "Crear token"
+
+msgid "Created"
+msgstr "Creado"
+
+msgid "Credentials"
+msgstr "Credenciales"
+
+#, python-format
+msgid "Current address of %(interface)s: <strong>%(address)s/%(prefix)s</strong>"
+msgstr "Dirección actual de %(interface)s: <strong>%(address)s/%(prefix)s</strong>"
+
+msgid "Current certificate"
+msgstr "Certificado actual"
+
+msgid "Current password"
+msgstr "Contraseña actual"
+
+msgid "Current password is wrong"
+msgstr "La contraseña actual es incorrecta"
+
+msgid "Customer number"
+msgstr "Número de cliente"
+
+msgid "Czech Republic"
+msgstr "República Checa"
+
+msgid "DNS provider"
+msgstr "Proveedor DNS"
+
+msgid "DNS provider API"
+msgstr "API del proveedor DNS"
+
+msgid "DNS resolvers for the propagation check (optional)"
+msgstr "Resolvedores DNS para la comprobación de propagación (opcional)"
+
+msgid "DNS servers"
+msgstr "Servidores DNS"
+
+msgid "DTMF mode"
+msgstr "Modo DTMF"
+
+msgid "Danish"
+msgstr "Danés"
+
+msgid "Dark mode"
+msgstr "Modo oscuro"
+
+msgid "Data partition"
+msgstr "Partición de datos"
+
+msgid "Database in backup is corrupt"
+msgstr "La base de datos de la copia de seguridad está dañada"
+
+msgid "Default expiry (s)"
+msgstr "Caducidad predeterminada (s)"
+
+msgid "Default prompt language"
+msgstr "Idioma predeterminado de las locuciones"
+
+msgid "Defaults to the host."
+msgstr "Por defecto, el host."
+
+msgid "Defaults to the notification sender address."
+msgstr "Por defecto, la dirección de remitente de las notificaciones."
+
+msgid "Delete"
+msgstr "Eliminar"
+
+#, python-format
+msgid "Delete %(what)s"
+msgstr "Eliminar %(what)s"
+
+#, python-format
+msgid "Delete %(what)s?"
+msgstr "¿Eliminar %(what)s?"
+
+msgid "Denmark"
+msgstr "Dinamarca"
+
+msgid "Description"
+msgstr "Descripción"
+
+msgid "Destination does not exist"
+msgstr "El destino no existe"
+
+msgid "Details"
+msgstr "Detalles"
+
+msgid "Dial alone to pick up any ringing phone, or followed by an extension."
+msgstr "Márquelo solo para capturar cualquier teléfono que esté sonando, o seguido de una extensión."
+
+msgid "Dial pattern contains an invalid character"
+msgstr "El patrón de marcado contiene un carácter no válido"
+
+msgid "Dial pattern is empty"
+msgstr "El patrón de marcado está vacío"
+
+#, python-format
+msgid "Dial pattern may contain only one '%(char)s'"
+msgstr "El patrón de marcado solo puede contener un '%(char)s'"
+
+msgid "Dial patterns"
+msgstr "Patrones de marcado"
+
+msgid "Dialed"
+msgstr "Marcado"
+
+msgid "Dialing"
+msgstr "Marcando"
+
+msgid "Dialplan"
+msgstr "Plan de marcado"
+
+msgid "Dialplan line"
+msgstr "Línea del plan de marcado"
+
+msgid "Digits or an Asterisk pattern like _0XX."
+msgstr "Dígitos o un patrón de Asterisk como _0XX."
+
+msgid "Disable"
+msgstr "Desactivar"
+
+#, python-format
+msgid "Disable %(what)s"
+msgstr "Desactivar %(what)s"
+
+msgid "Disable for providers that authenticate by IP address."
+msgstr "Desactívelo para proveedores que autentican por dirección IP."
+
+msgid "Disconnect"
+msgstr "Colgar"
+
+msgid "Domain"
+msgstr "Dominio"
+
+msgid "Domain must not be empty"
+msgstr "El dominio no debe estar vacío"
+
+msgid "Domain names"
+msgstr "Nombres de dominio"
+
+msgid "Down"
+msgstr "Inactivo"
+
+#, python-format
+msgid "Download %(name)s"
+msgstr "Descargar %(name)s"
+
+msgid "Drop audio files here or click to upload"
+msgstr "Suelte aquí los archivos de audio o haga clic para subirlos"
+
+msgid "Drop config.xml here or click to upload"
+msgstr "Suelte aquí el config.xml o haga clic para subirlo"
+
+msgid "Drop the backup here or click to upload"
+msgstr "Suelte aquí la copia de seguridad o haga clic para subirla"
+
+msgid "Drop the greeting here or click to upload"
+msgstr "Suelte aquí el saludo o haga clic para subirlo"
+
+msgid "Drop the update file here or click to upload"
+msgstr "Suelte aquí el archivo de actualización o haga clic para subirlo"
+
+msgid "Duration"
+msgstr "Duración"
+
+msgid "Dutch"
+msgstr "Neerlandés"
+
+msgid "E-mail notification on missed calls"
+msgstr "Notificación por correo electrónico de llamadas perdidas"
+
+msgid "E-mail notifications"
+msgstr "Notificaciones por correo electrónico"
+
+msgid "E-mail subject"
+msgstr "Asunto del correo electrónico"
+
+msgid "E-mail text"
+msgstr "Texto del correo electrónico"
+
+msgid "E.g. a DynDNS name."
+msgstr "P. ej., un nombre DynDNS."
+
+msgid "EAB HMAC key"
+msgstr "Clave HMAC de EAB"
+
+msgid "EAB key ID"
+msgstr "ID de clave de EAB"
+
+msgid "Edit"
+msgstr "Editar"
+
+#, python-format
+msgid "Edit %(name)s"
+msgstr "Editar %(name)s"
+
+#, python-format
+msgid "Edit %(tech)s phone %(extension)s"
+msgstr "Editar teléfono %(tech)s %(extension)s"
+
+#, python-format
+msgid "Edit %(tech)s provider %(name)s"
+msgstr "Editar proveedor %(tech)s %(name)s"
+
+#, python-format
+msgid "Edit application %(name)s"
+msgstr "Editar aplicación %(name)s"
+
+#, python-format
+msgid "Edit call group %(name)s"
+msgstr "Editar grupo de llamada %(name)s"
+
+#, python-format
+msgid "Edit conference room %(name)s"
+msgstr "Editar sala de conferencias %(name)s"
+
+#, python-format
+msgid "Edit manager user %(name)s"
+msgstr "Editar usuario del Manager %(name)s"
+
+#, python-format
+msgid "Edit phone %(ext)s"
+msgstr "Editar teléfono %(ext)s"
+
+#, python-format
+msgid "Edit provider %(name)s"
+msgstr "Editar proveedor %(name)s"
+
+msgid "Empty = default."
+msgstr "Vacío = valor predeterminado."
+
+msgid "Empty = ring until the caller hangs up."
+msgstr "Vacío = sonar hasta que el llamante cuelgue."
+
+msgid "Empty = until the caller hangs up (per phone for 'one after another': default 20)."
+msgstr "Vacío = hasta que el llamante cuelgue (por teléfono en 'uno tras otro': 20 por defecto)."
+
+msgid "Empty square brackets"
+msgstr "Corchetes vacíos"
+
+msgid "Enable"
+msgstr "Activar"
+
+#, python-format
+msgid "Enable %(what)s"
+msgstr "Activar %(what)s"
+
+msgid "Enable SSH access (key or password login for root)"
+msgstr "Activar el acceso SSH (inicio de sesión de root con clave o contraseña)"
+
+msgid "Enable TCP"
+msgstr "Activar TCP"
+
+msgid "Enable TLS"
+msgstr "Activar TLS"
+
+msgid "Enable jitter buffer"
+msgstr "Activar el búfer de jitter"
+
+msgid "Enable the firewall"
+msgstr "Activar el cortafuegos"
+
+msgid "Enable voicemail"
+msgstr "Activar el buzón de voz"
+
+msgid "Enabled"
+msgstr "Activado"
+
+msgid "Encryption"
+msgstr "Cifrado"
+
+msgid "Endpoint (ovh-eu, ovh-ca, ...)"
+msgstr "Endpoint (ovh-eu, ovh-ca, ...)"
+
+msgid "English"
+msgstr "Inglés"
+
+msgid "English (UK)"
+msgstr "Inglés (Reino Unido)"
+
+msgid "Enter a name of up to 64 characters"
+msgstr "Introduzca un nombre de hasta 64 caracteres"
+
+msgid "Enter a number of days"
+msgstr "Introduzca un número de días"
+
+msgid "Enter the directory URL of the ACME server"
+msgstr "Introduzca la URL del directorio del servidor ACME"
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Estonia"
+msgstr "Estonia"
+
+msgid "Example:"
+msgstr "Ejemplo:"
+
+#, python-format
+msgid "Expected NAME=value: %(line)s"
+msgstr "Se esperaba NOMBRE=valor: %(line)s"
+
+msgid "Expires in (days)"
+msgstr "Caduca en (días)"
+
+msgid "Export config.xml"
+msgstr "Exportar config.xml"
+
+msgid "Export the current configuration in the legacy format (best effort; contains passwords in plain text)."
+msgstr ""
+"Exportar la configuración actual en el formato antiguo (en la medida de lo posible; contiene las contraseñas en texto"
+" plano)."
+
+msgid "Extension"
+msgstr "Extensión"
+
+msgid "Extension must be digits or an Asterisk pattern (X, N, Z, [], ., !)"
+msgstr "La extensión debe estar formada por dígitos o ser un patrón de Asterisk (X, N, Z, [], ., !)"
+
+msgid "Extension must consist of 1-20 digits"
+msgstr "La extensión debe tener entre 1 y 20 dígitos"
+
+msgid "External"
+msgstr "Externo"
+
+msgid "External phone"
+msgstr "Teléfono externo"
+
+msgid "Factory Defaults"
+msgstr "Valores de fábrica"
+
+msgid "Failover provider"
+msgstr "Proveedor de respaldo"
+
+msgid "Failures within 10 minutes"
+msgstr "Fallos en 10 minutos"
+
+msgid "Feature codes"
+msgstr "Códigos de función"
+
+msgid "Feature codes consist of digits, '*' and '#'"
+msgstr "Los códigos de función constan de dígitos, '*' y '#'"
+
+msgid "Feature digit timeout (ms)"
+msgstr "Tiempo de espera entre dígitos de función (ms)"
+
+msgid "Finland"
+msgstr "Finlandia"
+
+msgid "Firewall"
+msgstr "Cortafuegos"
+
+msgid "Firmware"
+msgstr "Firmware"
+
+msgid "First port"
+msgstr "Primer puerto"
+
+msgid "First slot"
+msgstr "Primera posición"
+
+msgid "Fixed caller ID"
+msgstr "ID de llamante fijo"
+
+msgid "For 'one after another', phones ring in this order."
+msgstr "En 'uno tras otro', los teléfonos suenan en este orden."
+
+msgid "For your reference only."
+msgstr "Solo como referencia."
+
+msgid "Force jitter buffer"
+msgstr "Forzar el búfer de jitter"
+
+msgid "France"
+msgstr "Francia"
+
+msgid "French"
+msgstr "Francés"
+
+msgid "From domain"
+msgstr "Dominio From"
+
+msgid "From user"
+msgstr "Usuario From"
+
+msgid "GUI Options"
+msgstr "Opciones de la GUI"
+
+msgid "Gateway"
+msgstr "Puerta de enlace"
+
+msgid "General"
+msgstr "General"
+
+msgid "General Setup"
+msgstr "Configuración general"
+
+msgid "Generate"
+msgstr "Generar"
+
+msgid "German"
+msgstr "Alemán"
+
+msgid "Germany"
+msgstr "Alemania"
+
+msgid "Graphs"
+msgstr "Gráficos"
+
+msgid "Graphs are sampled while a page with graphs is open (up to the last 120 samples)."
+msgstr "Los gráficos se muestrean mientras haya abierta una página con gráficos (hasta las últimas 120 muestras)."
+
+msgid "Greece"
+msgstr "Grecia"
+
+msgid "HTTP (port 80)"
+msgstr "HTTP (puerto 80)"
+
+msgid "Host"
+msgstr "Host"
+
+msgid "Hosted zone ID"
+msgstr "ID de zona alojada"
+
+msgid "Hostname"
+msgstr "Nombre de host"
+
+msgid "Hostname must be 1-63 letters, digits or '-'"
+msgstr "El nombre de host debe tener de 1 a 63 letras, dígitos o '-'"
+
+msgid "Hostname or IP address of the provider."
+msgstr "Nombre de host o dirección IP del proveedor."
+
+msgid "Hungary"
+msgstr "Hungría"
+
+msgid "IAX"
+msgstr "IAX"
+
+msgid "IAX URI (user@host)"
+msgstr "URI IAX (usuario@host)"
+
+msgid "IAX phone"
+msgstr "Teléfono IAX"
+
+msgid "IAX port"
+msgstr "Puerto IAX"
+
+msgid "IAX provider"
+msgstr "Proveedor IAX"
+
+msgid "IP address"
+msgstr "Dirección IP"
+
+msgid "Import"
+msgstr "Importar"
+
+msgid "Import result"
+msgstr "Resultado de la importación"
+
+msgid ""
+"Import the <code>config.xml</code> of an AskoziaPBX 2.x system. You get a preview of what is imported, adapted (e.g. "
+"SIP to PJSIP) or dropped (analog/ISDN hardware) before anything changes."
+msgstr ""
+"Importe el <code>config.xml</code> de un sistema AskoziaPBX 2.x. Antes de que se modifique nada, verá una vista "
+"previa de lo que se importa, se adapta (p. ej., SIP a PJSIP) o se descarta (hardware analógico/RDSI)."
+
+msgid "Import this configuration now?"
+msgstr "¿Importar esta configuración ahora?"
+
+msgid "Imported. Review the configuration and apply the pending changes."
+msgstr "Importado. Revise la configuración y aplique los cambios pendientes."
+
+msgid ""
+"In a conference press <kbd>*</kbd> for the menu, <kbd>1</kbd> to mute, <kbd>8</kbd> to leave. Admins (admin PIN) can "
+"lock the room (<kbd>2</kbd>) and kick the last caller (<kbd>3</kbd>)."
+msgstr ""
+"En una conferencia, pulse <kbd>*</kbd> para el menú, <kbd>1</kbd> para silenciarse y <kbd>8</kbd> para salir. Los "
+"administradores (PIN de administrador) pueden bloquear la sala (<kbd>2</kbd>) y expulsar al último llamante "
+"(<kbd>3</kbd>)."
+
+msgid "In use"
+msgstr "En uso"
+
+msgid "In-band"
+msgstr "En banda"
+
+msgid "Incoming"
+msgstr "Entrantes"
+
+msgid "Incoming caller ID"
+msgstr "ID de llamante entrante"
+
+msgid "Incoming calls"
+msgstr "Llamadas entrantes"
+
+msgid "India"
+msgstr "India"
+
+msgid "Initial password"
+msgstr "Contraseña inicial"
+
+msgid "Install"
+msgstr "Instalar"
+
+msgid "Install an update"
+msgstr "Instalar una actualización"
+
+msgid "Installed firmware"
+msgstr "Firmware instalado"
+
+msgid "Interface"
+msgstr "Interfaz"
+
+msgid "Internal numbers"
+msgstr "Números internos"
+
+msgid "Invalid"
+msgstr "No válido"
+
+msgid "Invalid DNS provider code"
+msgstr "Código de proveedor DNS no válido"
+
+#, python-format
+msgid "Invalid PEM data: %(error)s"
+msgstr "Datos PEM no válidos: %(error)s"
+
+#, python-format
+msgid "Invalid attribute line: %(line)r (expected key=value)"
+msgstr "Línea de atributo no válida: %(line)r (se esperaba clave=valor)"
+
+msgid "Invalid characters"
+msgstr "Caracteres no válidos"
+
+msgid "Invalid choice"
+msgstr "Opción no válida"
+
+#, python-format
+msgid "Invalid dialplan line: %(line)r (expected e.g. '1,Answer()' or 'n,Hangup()')"
+msgstr "Línea del plan de marcado no válida: %(line)r (se esperaba p. ej. '1,Answer()' o 'n,Hangup()')"
+
+msgid "Invalid domain name"
+msgstr "Nombre de dominio no válido"
+
+msgid "Invalid format"
+msgstr "Formato no válido"
+
+msgid "Invalid interface name"
+msgstr "Nombre de interfaz no válido"
+
+msgid "Invalid password hash"
+msgstr "Hash de contraseña no válido"
+
+#, python-format
+msgid "Invalid port in %(value)s"
+msgstr "Puerto no válido en %(value)s"
+
+msgid "Invalid username or password."
+msgstr "Nombre de usuario o contraseña no válidos."
+
+msgid "Invalid value"
+msgstr "Valor no válido"
+
+#, python-format
+msgid "Invalid variable name %(name)r"
+msgstr "Nombre de variable no válido %(name)r"
+
+msgid "Israel"
+msgstr "Israel"
+
+msgid "Issuer"
+msgstr "Emisor"
+
+msgid "Italian"
+msgstr "Italiano"
+
+msgid "Italy"
+msgstr "Italia"
+
+msgid "Japan"
+msgstr "Japón"
+
+msgid "Japanese"
+msgstr "Japonés"
+
+msgid "Keep messages on the PBX after e-mailing"
+msgstr "Conservar los mensajes en la PBX después de enviarlos por correo electrónico"
+
+msgid "Kernel"
+msgstr "Kernel"
+
+msgid "LAN interface"
+msgstr "Interfaz LAN"
+
+msgid "LXC / Incus system container"
+msgstr "Contenedor de sistema LXC / Incus"
+
+msgid "Lagged"
+msgstr "Con retardo"
+
+msgid "Language"
+msgstr "Idioma"
+
+#, python-format
+msgid "Language of the web interface for %(user)s."
+msgstr "Idioma de la interfaz web para %(user)s."
+
+msgid "Last login"
+msgstr "Último inicio de sesión"
+
+msgid "Last port"
+msgstr "Último puerto"
+
+msgid "Last slot"
+msgstr "Última posición"
+
+msgid "Last used"
+msgstr "Último uso"
+
+msgid "Legacy AskoziaPBX"
+msgstr "AskoziaPBX antiguo"
+
+msgid "Let's Encrypt staging (testing, untrusted)"
+msgstr "Let's Encrypt staging (pruebas, no fiable)"
+
+msgid "Light mode"
+msgstr "Modo claro"
+
+msgid "Light/dark theme: use the moon/sun icon in the top bar."
+msgstr "Tema claro/oscuro: use el icono de luna/sol en la barra superior."
+
+msgid "Lithuania"
+msgstr "Lituania"
+
+msgid "Loading Asterisk status&hellip;"
+msgstr "Cargando el estado de Asterisk&hellip;"
+
+msgid "Loading&hellip;"
+msgstr "Cargando&hellip;"
+
+msgid "Location"
+msgstr "Ubicación"
+
+msgid "Log out after inactivity (minutes)"
+msgstr "Cerrar sesión tras inactividad (minutos)"
+
+msgid "Login"
+msgstr "Iniciar sesión"
+
+msgid "Login to your PBX"
+msgstr "Inicie sesión en su PBX"
+
+msgid "Logout"
+msgstr "Cerrar sesión"
+
+msgid "Logs"
+msgstr "Registros"
+
+msgid "Make sure the network of your computer is allowed before applying restrictions."
+msgstr "Asegúrese de que la red de su equipo esté permitida antes de aplicar restricciones."
+
+msgid "Malaysia"
+msgstr "Malasia"
+
+msgid "Manager (AMI)"
+msgstr "Manager (AMI)"
+
+msgid "Manager user"
+msgstr "Usuario del Manager"
+
+msgid "Manager user not found"
+msgstr "Usuario del Manager no encontrado"
+
+msgid "Max. message length (s)"
+msgstr "Duración máx. del mensaje (s)"
+
+msgid "Max. registered devices"
+msgstr "Máx. dispositivos registrados"
+
+msgid "Maximum expiry (s)"
+msgstr "Caducidad máxima (s)"
+
+msgid "Media"
+msgstr "Multimedia"
+
+msgid "Media (music on hold, greetings)"
+msgstr "Multimedia (música en espera, saludos)"
+
+msgid "Media encryption (SRTP)"
+msgstr "Cifrado de medios (SRTP)"
+
+msgid "Media file not found"
+msgstr "Archivo multimedia no encontrado"
+
+msgid "Members"
+msgstr "Miembros"
+
+msgid "Memory"
+msgstr "Memoria"
+
+msgid "Merge into current configuration"
+msgstr "Fusionar con la configuración actual"
+
+msgid "Mexico"
+msgstr "México"
+
+msgid "Minimum expiry (s)"
+msgstr "Caducidad mínima (s)"
+
+#, python-format
+msgid "Missing DNS provider credentials: %(names)s"
+msgstr "Faltan credenciales del proveedor DNS: %(names)s"
+
+msgid "Mode"
+msgstr "Modo"
+
+msgid "Music on hold"
+msgstr "Música en espera"
+
+msgid "Must be a hostname or IP address"
+msgstr "Debe ser un nombre de host o una dirección IP"
+
+msgid "Must be a network in CIDR notation (e.g. 192.168.1.0/24)"
+msgstr "Debe ser una red en notación CIDR (p. ej., 192.168.1.0/24)"
+
+msgid "Must be a number"
+msgstr "Debe ser un número"
+
+msgid "Must be a valid e-mail address"
+msgstr "Debe ser una dirección de correo electrónico válida"
+
+msgid "Must be a whole number"
+msgstr "Debe ser un número entero"
+
+msgid "Must be an IP address"
+msgstr "Debe ser una dirección IP"
+
+msgid "Must be an IPv4 address"
+msgstr "Debe ser una dirección IPv4"
+
+#, python-format
+msgid "Must be at least %(ge)s"
+msgstr "Debe ser como mínimo %(ge)s"
+
+#, python-format
+msgid "Must be at most %(le)s"
+msgstr "Debe ser como máximo %(le)s"
+
+#, python-format
+msgid "Must be greater than %(gt)s"
+msgstr "Debe ser mayor que %(gt)s"
+
+#, python-format
+msgid "Must be less than %(lt)s"
+msgstr "Debe ser menor que %(lt)s"
+
+msgid "Must be yes or no"
+msgstr "Debe ser sí o no"
+
+msgid "Must change the password at first login"
+msgstr "Debe cambiar la contraseña en el primer inicio de sesión"
+
+msgid "NAME=value per line. Stored values are not shown: leave the value empty (NAME=) to keep it."
+msgstr "Un NOMBRE=valor por línea. Los valores guardados no se muestran: deje el valor vacío (NOMBRE=) para conservarlo."
+
+msgid "NAT / public address"
+msgstr "NAT / dirección pública"
+
+msgid "NAT, dynamic IP (hostname)"
+msgstr "NAT, IP dinámica (nombre de host)"
+
+msgid "NAT, static public IP"
+msgstr "NAT, IP pública estática"
+
+msgid "Name"
+msgstr "Nombre"
+
+msgid "Name is required"
+msgstr "El nombre es obligatorio"
+
+msgid "Name server (host or host:port)"
+msgstr "Servidor de nombres (host o host:puerto)"
+
+msgid "Name shown to called parties."
+msgstr "Nombre que se muestra a los destinatarios de la llamada."
+
+msgid "Names"
+msgstr "Nombres"
+
+msgid "Needed when providers or remote phones reach this PBX through a NAT router."
+msgstr "Necesario cuando los proveedores o los teléfonos remotos acceden a esta PBX a través de un router NAT."
+
+msgid "Nested square brackets are not allowed"
+msgstr "No se permiten corchetes anidados"
+
+msgid "Netherlands"
+msgstr "Países Bajos"
+
+msgid "Network"
+msgstr "Red"
+
+msgid "Network traffic"
+msgstr "Tráfico de red"
+
+msgid "Network traffic (all interfaces)"
+msgstr "Tráfico de red (todas las interfaces)"
+
+msgid "Networks allowed to manage the PBX"
+msgstr "Redes autorizadas para administrar la PBX"
+
+msgid "Networks allowed to use SIP/IAX"
+msgstr "Redes autorizadas para usar SIP/IAX"
+
+#, python-format
+msgid "New %(tech)s phone"
+msgstr "Nuevo teléfono %(tech)s"
+
+#, python-format
+msgid "New %(tech)s provider"
+msgstr "Nuevo proveedor %(tech)s"
+
+msgid "New Zealand"
+msgstr "Nueva Zelanda"
+
+msgid "New application"
+msgstr "Nueva aplicación"
+
+msgid "New call group"
+msgstr "Nuevo grupo de llamada"
+
+msgid "New conference room"
+msgstr "Nueva sala de conferencias"
+
+msgid "New manager user"
+msgstr "Nuevo usuario del Manager"
+
+msgid "New password"
+msgstr "Nueva contraseña"
+
+msgid "Newer"
+msgstr "Más recientes"
+
+msgid "No API tokens"
+msgstr "No hay tokens de API"
+
+msgid "No active calls."
+msgstr "No hay llamadas activas."
+
+msgid "No applications"
+msgstr "No hay aplicaciones"
+
+msgid "No backups yet. Backups contain the configuration, media and the TLS certificate."
+msgstr ""
+"Todavía no hay copias de seguridad. Las copias de seguridad contienen la configuración, los archivos multimedia y el "
+"certificado TLS."
+
+msgid "No call groups"
+msgstr "No hay grupos de llamada"
+
+msgid "No certificate found"
+msgstr "No se ha encontrado ningún certificado"
+
+msgid "No certificate found."
+msgstr "No se ha encontrado ningún certificado."
+
+msgid "No conference rooms"
+msgstr "No hay salas de conferencias"
+
+msgid "No entries."
+msgstr "No hay entradas."
+
+msgid "No files uploaded."
+msgstr "No se han subido archivos."
+
+msgid "No manager users"
+msgstr "No hay usuarios del Manager"
+
+msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
+msgstr "Sin contraseña: solo funciona el inicio de sesión con clave (/data/ssh/authorized_keys). Al menos 8 caracteres."
+
+msgid "No phones yet"
+msgstr "Todavía no hay teléfonos"
+
+msgid "No providers are configured yet."
+msgstr "Todavía no hay proveedores configurados."
+
+msgid "No providers configured."
+msgstr "No hay proveedores configurados."
+
+msgid "No providers yet"
+msgstr "Todavía no hay proveedores"
+
+msgid "No update signing key installed on this system"
+msgstr "No hay ninguna clave de firma de actualizaciones instalada en este sistema"
+
+msgid "Norway"
+msgstr "Noruega"
+
+msgid "Not a PhonixPBX update bundle"
+msgstr "No es un paquete de actualización de PhonixPBX"
+
+#, python-format
+msgid "Not a valid PhonixPBX backup: %(error)s"
+msgstr "No es una copia de seguridad válida de PhonixPBX: %(error)s"
+
+#, python-format
+msgid "Not a valid update bundle: %(error)s"
+msgstr "No es un paquete de actualización válido: %(error)s"
+
+msgid "Not in use"
+msgstr "Libre"
+
+#, python-format
+msgid "Not supported, dropped: %(sections)s"
+msgstr "No compatible, descartado: %(sections)s"
+
+msgid "Not used in a container: the clock comes from the container host."
+msgstr "No se usa en un contenedor: la hora la proporciona el host del contenedor."
+
+msgid "Notification address"
+msgstr "Dirección de notificación"
+
+msgid "Notifications"
+msgstr "Notificaciones"
+
+msgid "Number"
+msgstr "Número"
+
+msgid "Number / URI"
+msgstr "Número / URI"
+
+#, python-format
+msgid "Number already used by %(owner)s"
+msgstr "Número ya utilizado por %(owner)s"
+
+msgid "Number is reserved for call parking"
+msgstr "El número está reservado para el estacionamiento de llamadas"
+
+msgid "OCI container (Docker / Podman)"
+msgstr "Contenedor OCI (Docker / Podman)"
+
+msgid "Object"
+msgstr "Objeto"
+
+msgid "Obtain and renew the certificate automatically"
+msgstr "Obtener y renovar el certificado automáticamente"
+
+msgid "Off"
+msgstr "Desactivado"
+
+msgid "Off hook"
+msgstr "Descolgado"
+
+msgid "Older"
+msgstr "Más antiguas"
+
+msgid "On Hold"
+msgstr "En espera"
+
+msgid "One CIDR per line, e.g. 192.168.1.0/24."
+msgstr "Un CIDR por línea, p. ej., 192.168.1.0/24."
+
+msgid "One after another"
+msgstr "Uno tras otro"
+
+msgid ""
+"One pattern per line. Phones dialing a matching number use this provider. X = any digit, N = 2-9, Z = 1-9, . = one or"
+" more, [1-5] = range. '0|X.' strips the leading 0; '49+0|X.' replaces it with 49."
+msgstr ""
+"Un patrón por línea. Los teléfonos que marcan un número coincidente usan este proveedor. X = cualquier dígito, N = "
+"2-9, Z = 1-9, . = uno o más, [1-5] = rango. '0|X.' elimina el 0 inicial; '49+0|X.' lo sustituye por 49."
+
+msgid "One per line."
+msgstr "Uno por línea."
+
+#, python-format
+msgid "One per line. Empty: %(domain)s. The names must be public DNS names."
+msgstr "Uno por línea. Vacío: %(domain)s. Los nombres deben ser nombres DNS públicos."
+
+msgid "One per line. With DHCP leave empty to use the servers from the DHCP server."
+msgstr "Uno por línea. Con DHCP, déjelo vacío para usar los servidores del servidor DHCP."
+
+msgid ""
+"One step per line: priority,Application(arguments), e.g. '1,Answer()', 'n,Playback(hello-world)', 'n,Hangup()'. "
+"'include => context' lines are allowed."
+msgstr ""
+"Un paso por línea: prioridad,Aplicación(argumentos), p. ej., '1,Answer()', 'n,Playback(hello-world)', 'n,Hangup()'. "
+"Se permiten líneas 'include => context'."
+
+msgid "Only 8 or 16 bit WAV files are supported"
+msgstr "Solo se admiten archivos WAV de 8 o 16 bits"
+
+msgid "Only PCM WAV files can be uploaded on this system (convert with: sox in.mp3 -r 8000 -c 1 out.wav)"
+msgstr "En este sistema solo se pueden subir archivos WAV PCM (convierta con: sox in.mp3 -r 8000 -c 1 out.wav)"
+
+msgid "Only enable when needed. Access can additionally be limited under Advanced > Firewall."
+msgstr "Actívelo solo cuando sea necesario. El acceso se puede limitar además en Avanzado > Cortafuegos."
+
+msgid "Only if different from the username."
+msgstr "Solo si es distinto del nombre de usuario."
+
+msgid "Only web interface, SSH (if enabled), SIP/IAX and RTP are reachable."
+msgstr "Solo son accesibles la interfaz web, SSH (si está activado), SIP/IAX y RTP."
+
+msgid "Open user menu"
+msgstr "Abrir el menú de usuario"
+
+msgid "Optional - groups can also be used only as provider destinations."
+msgstr "Opcional: los grupos también se pueden usar solo como destinos de proveedores."
+
+msgid "Optional alias used in the public context (e.g. 'sales' for sip:sales@pbx). Defaults to the extension."
+msgstr "Alias opcional usado en el contexto público (p. ej., 'sales' para sip:sales@pbx). Por defecto, la extensión."
+
+msgid "Optional. Callers must enter it to join."
+msgstr "Opcional. Los llamantes deben introducirlo para unirse."
+
+msgid "Optional. Joins as moderator."
+msgstr "Opcional. Se une como moderador."
+
+msgid ""
+"Optional; overrides the provider's caller ID setting for calls from this phone. Format: <code>Name "
+"&lt;number&gt;</code>."
+msgstr ""
+"Opcional; sustituye el ajuste de ID de llamante del proveedor para las llamadas desde este teléfono. Formato: "
+"<code>Nombre &lt;número&gt;</code>."
+
+msgid "Other ACME server"
+msgstr "Otro servidor ACME"
+
+msgid "Other lego provider ..."
+msgstr "Otro proveedor de lego ..."
+
+msgid "Outgoing"
+msgstr "Salientes"
+
+msgid "Outgoing caller ID"
+msgstr "ID de llamante saliente"
+
+msgid "Outgoing caller ID per provider"
+msgstr "ID de llamante saliente por proveedor"
+
+msgid "Outgoing calls"
+msgstr "Llamadas salientes"
+
+msgid "Outgoing mail server (SMTP)"
+msgstr "Servidor de correo saliente (SMTP)"
+
+msgid "Overview (print)"
+msgstr "Resumen (imprimir)"
+
+msgid "Owner"
+msgstr "Propietario"
+
+msgid "PIN"
+msgstr "PIN"
+
+msgid "PIN must consist of digits only"
+msgstr "El PIN solo puede contener dígitos"
+
+msgid "PIN protected"
+msgstr "Protegido con PIN"
+
+msgid "Page not found"
+msgstr "Página no encontrada"
+
+msgid "Parking number"
+msgstr "Número de estacionamiento"
+
+msgid "Parking time (s)"
+msgstr "Tiempo de estacionamiento (s)"
+
+msgid "Password"
+msgstr "Contraseña"
+
+msgid "Password is too long"
+msgstr "La contraseña es demasiado larga"
+
+#, python-format
+msgid "Password must have at least %(min)s characters"
+msgstr "La contraseña debe tener al menos %(min)s caracteres"
+
+msgid "Passwords do not match"
+msgstr "Las contraseñas no coinciden"
+
+#, python-format
+msgid "Pattern %(pattern)s is already used by %(name)s"
+msgstr "El patrón %(pattern)s ya lo utiliza %(name)s"
+
+msgid "Pending changes"
+msgstr "Cambios pendientes"
+
+msgid "Permitted networks"
+msgstr "Redes permitidas"
+
+msgid "Personal access token"
+msgstr "Token de acceso personal"
+
+msgid "Philippines"
+msgstr "Filipinas"
+
+#, python-format
+msgid "Phone %(extension)s created."
+msgstr "Teléfono %(extension)s creado."
+
+#, python-format
+msgid "Phone %(extension)s saved."
+msgstr "Teléfono %(extension)s guardado."
+
+#, python-format
+msgid "Phone (%(tech)s)"
+msgstr "Teléfono (%(tech)s)"
+
+msgid "Phone is behind NAT (symmetric RTP, rewrite contact)"
+msgstr "El teléfono está detrás de NAT (RTP simétrico, reescribir contacto)"
+
+msgid "Phone not found"
+msgstr "Teléfono no encontrado"
+
+msgid "Phones"
+msgstr "Teléfonos"
+
+msgid "Phones and providers"
+msgstr "Teléfonos y proveedores"
+
+msgid "Phones and providers. Empty = everyone (recommended only with strong passwords)."
+msgstr "Teléfonos y proveedores. Vacío = todos (recomendado solo con contraseñas seguras)."
+
+msgid "PhonixPBX home"
+msgstr "Inicio de PhonixPBX"
+
+msgid "PhonixPBX runs in a container, so firmware update bundles do not apply here."
+msgstr "PhonixPBX se ejecuta en un contenedor, por lo que los paquetes de actualización de firmware no se aplican aquí."
+
+msgid ""
+"PhonixPBX runs in a container: firmware update bundles do not apply. Update by replacing the container with a newer "
+"image and keeping /data."
+msgstr ""
+"PhonixPBX se ejecuta en un contenedor: los paquetes de actualización de firmware no se aplican. Actualice "
+"sustituyendo el contenedor por una imagen más reciente y conservando /data."
+
+msgid ""
+"PhonixPBX runs in a container: the address, gateway and DNS servers of the container are configured on the container "
+"host and the settings for the LAN interface below are not applied. The interface selects the address that is used for"
+" SIP; the NAT settings apply as usual."
+msgstr ""
+"PhonixPBX se ejecuta en un contenedor: la dirección, la puerta de enlace y los servidores DNS del contenedor se "
+"configuran en el host del contenedor y los ajustes de la interfaz LAN que aparecen a continuación no se aplican. La "
+"interfaz determina la dirección que se usa para SIP; los ajustes de NAT se aplican de la forma habitual."
+
+msgid "Pickup"
+msgstr "Captura"
+
+msgid "Plain text"
+msgstr "Texto plano"
+
+msgid "Platform"
+msgstr "Plataforma"
+
+msgid "Please choose your own password before continuing."
+msgstr "Elija su propia contraseña antes de continuar."
+
+msgid "Please correct the highlighted fields"
+msgstr "Corrija los campos resaltados"
+
+msgid "Poland"
+msgstr "Polonia"
+
+msgid "Polish"
+msgstr "Polaco"
+
+msgid "Port"
+msgstr "Puerto"
+
+msgid "Portugal"
+msgstr "Portugal"
+
+msgid "Portuguese (Brazil)"
+msgstr "Portugués (Brasil)"
+
+msgid "Pre-ring"
+msgstr "Pre-timbre"
+
+msgid "Preferences"
+msgstr "Preferencias"
+
+msgid "Prefix"
+msgstr "Prefijo"
+
+msgid "Prefixes to add may only contain digits, '*' and '#'"
+msgstr "Los prefijos que se añaden solo pueden contener dígitos, '*' y '#'"
+
+msgid "Preview"
+msgstr "Vista previa"
+
+msgid "Print"
+msgstr "Imprimir"
+
+msgid "Private key (PEM, unencrypted)"
+msgstr "Clave privada (PEM, sin cifrar)"
+
+msgid "Private key does not match the certificate"
+msgstr "La clave privada no coincide con el certificado"
+
+msgid "Prompts and number read-out."
+msgstr "Locuciones y lectura de números."
+
+msgid "Protection"
+msgstr "Protección"
+
+msgid "Provider"
+msgstr "Proveedor"
+
+#, python-format
+msgid "Provider %(name)s created."
+msgstr "Proveedor %(name)s creado."
+
+#, python-format
+msgid "Provider %(name)s saved."
+msgstr "Proveedor %(name)s guardado."
+
+msgid "Provider is reached through NAT (symmetric RTP)"
+msgstr "Se accede al proveedor a través de NAT (RTP simétrico)"
+
+msgid "Provider not found"
+msgstr "Proveedor no encontrado"
+
+msgid "Providers"
+msgstr "Proveedores"
+
+msgid "Public"
+msgstr "Público"
+
+msgid "Public IP address"
+msgstr "Dirección IP pública"
+
+msgid "Public address / no NAT"
+msgstr "Dirección pública / sin NAT"
+
+msgid "Public hostname"
+msgstr "Nombre de host público"
+
+msgid "Public name"
+msgstr "Nombre público"
+
+msgid "Public name may only contain letters, digits and . _ + -"
+msgstr "El nombre público solo puede contener letras, dígitos y . _ + -"
+
+msgid "Public number"
+msgstr "Número público"
+
+msgid "Public number must consist of digits"
+msgstr "El número público debe constar de dígitos"
+
+msgid ""
+"Pull the new image and recreate the container with the same <code>/data</code> volume (for example <code>docker "
+"compose pull &amp;&amp; docker compose up -d</code>)."
+msgstr ""
+"Descargue la nueva imagen y vuelva a crear el contenedor con el mismo volumen <code>/data</code> (por ejemplo, "
+"<code>docker compose pull &amp;&amp; docker compose up -d</code>)."
+
+msgid "Qualify interval (s)"
+msgstr "Intervalo de comprobación (s)"
+
+msgid "RFC 2136 dynamic update (BIND, Knot, ...)"
+msgstr "Actualización dinámica RFC 2136 (BIND, Knot, ...)"
+
+msgid "RTP"
+msgstr "RTP"
+
+msgid "Reach this phone via"
+msgstr "Llamar a este teléfono a través de"
+
+msgid "Reachable"
+msgstr "Accesible"
+
+msgid "Reachable from outside"
+msgstr "Accesible desde el exterior"
+
+msgid "Reachable from outside (public direct dial)"
+msgstr "Accesible desde el exterior (marcación directa pública)"
+
+msgid "Read"
+msgstr "Lectura"
+
+msgid "Read permissions"
+msgstr "Permisos de lectura"
+
+msgid "Read-only"
+msgstr "Solo lectura"
+
+msgid "Read-only tokens can only use GET requests."
+msgstr "Los tokens de solo lectura solo pueden usar solicitudes GET."
+
+msgid "Read-write"
+msgstr "Lectura y escritura"
+
+msgid "Reboot"
+msgstr "Reiniciar"
+
+msgid "Reboot into the new firmware"
+msgstr "Reiniciar con el nuevo firmware"
+
+msgid "Recipient"
+msgstr "Destinatario"
+
+msgid "Region"
+msgstr "Región"
+
+msgid "Register with the provider"
+msgstr "Registrarse en el proveedor"
+
+msgid "Registered"
+msgstr "Registrado"
+
+msgid "Registration / state"
+msgstr "Registro / estado"
+
+msgid "Registration timers"
+msgstr "Temporizadores de registro"
+
+msgid "Rejected"
+msgstr "Rechazado"
+
+#, python-format
+msgid "Reloading the web server failed: %(error)s"
+msgstr "Error al recargar el servidor web: %(error)s"
+
+msgid "Remove the password (key logins only)"
+msgstr "Eliminar la contraseña (solo inicio de sesión con clave)"
+
+msgid "Renewed daily when it expires in less than 30 days."
+msgstr "Se renueva a diario cuando caduca en menos de 30 días."
+
+msgid "Repeat new password"
+msgstr "Repetir la nueva contraseña"
+
+msgid "Replace current configuration (backup first)"
+msgstr "Sustituir la configuración actual (con copia de seguridad previa)"
+
+msgid "Report busy with this many concurrent calls."
+msgstr "Indicar ocupado con este número de llamadas simultáneas."
+
+msgid "Requesting a certificate ..."
+msgstr "Solicitando un certificado ..."
+
+msgid "Requires e-mail notifications (Services &gt; Notifications)."
+msgstr "Requiere notificaciones por correo electrónico (Servicios &gt; Notificaciones)."
+
+msgid "Reserved"
+msgstr "Reservado"
+
+msgid "Reset and reboot"
+msgstr "Restablecer y reiniciar"
+
+msgid "Reset to factory defaults"
+msgstr "Restablecer los valores de fábrica"
+
+msgid "Resource group"
+msgstr "Grupo de recursos"
+
+#, python-format
+msgid "Restarting Asterisk for SIP-TLS failed: %(error)s"
+msgstr "Error al reiniciar Asterisk para SIP-TLS: %(error)s"
+
+msgid "Restore"
+msgstr "Restaurar"
+
+msgid "Ring"
+msgstr "Llamando"
+
+msgid "Ring all at once"
+msgstr "Sonar todos a la vez"
+
+msgid "Ring strategy"
+msgstr "Estrategia de llamada"
+
+msgid "Ring time (seconds)"
+msgstr "Tiempo de llamada (segundos)"
+
+msgid "Ring+Inuse"
+msgstr "Sonando+En uso"
+
+msgid "Ringing"
+msgstr "Sonando"
+
+#, python-format
+msgid "Route %(num)s: %(error)s"
+msgstr "Ruta %(num)s: %(error)s"
+
+msgid ""
+"Route incoming calls by the dialed number (DID). Leave the pattern empty to catch all calls. Several destinations "
+"with the same pattern ring in parallel."
+msgstr ""
+"Encamina las llamadas entrantes según el número marcado (DID). Deje el patrón vacío para recibir todas las llamadas. "
+"Varios destinos con el mismo patrón suenan en paralelo."
+
+msgid "Russia"
+msgstr "Rusia"
+
+msgid "Russian"
+msgstr "Ruso"
+
+msgid "SIP"
+msgstr "SIP"
+
+msgid "SIP URI (user@host)"
+msgstr "URI SIP (usuario@host)"
+
+msgid "SIP phone"
+msgstr "Teléfono SIP"
+
+msgid ""
+"SIP phones register with the extension as username and the account password. The server address is this system's IP "
+"address."
+msgstr ""
+"Los teléfonos SIP se registran con la extensión como nombre de usuario y la contraseña de la cuenta. La dirección del"
+" servidor es la dirección IP de este sistema."
+
+msgid "SIP phones registered"
+msgstr "Teléfonos SIP registrados"
+
+msgid "SIP port (UDP/TCP)"
+msgstr "Puerto SIP (UDP/TCP)"
+
+msgid "SIP provider"
+msgstr "Proveedor SIP"
+
+msgid "SIP, IAX and RTP settings"
+msgstr "Ajustes de SIP, IAX y RTP"
+
+msgid "SMTP server"
+msgstr "Servidor SMTP"
+
+msgid "SSH root password"
+msgstr "Contraseña de root para SSH"
+
+msgid "STARTTLS (port 587)"
+msgstr "STARTTLS (puerto 587)"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Save and request certificate now"
+msgstr "Guardar y solicitar el certificado ahora"
+
+msgid "Secret"
+msgstr "Secreto"
+
+msgid "Secret API key"
+msgstr "Clave secreta de API"
+
+msgid "Secret access key"
+msgstr "Clave de acceso secreta"
+
+msgid "Secret must be 4-128 characters without spaces, quotes, ';' or backslashes"
+msgstr "El secreto debe tener de 4 a 128 caracteres sin espacios, comillas, ';' ni barras invertidas"
+
+msgid "Section"
+msgstr "Sección"
+
+msgid "See the <a href=\"https://go-acme.github.io/lego/dns/\" target=\"_blank\" rel=\"noopener\">lego DNS provider list</a>."
+msgstr ""
+"Consulte la <a href=\"https://go-acme.github.io/lego/dns/\" target=\"_blank\" rel=\"noopener\">lista de proveedores "
+"DNS de lego</a>."
+
+msgid "Select at least one codec"
+msgstr "Seleccione al menos un códec"
+
+msgid "Select at least one member"
+msgstr "Seleccione al menos un miembro"
+
+msgid "Send a test message"
+msgstr "Enviar un mensaje de prueba"
+
+msgid "Send test"
+msgstr "Enviar prueba"
+
+msgid "Send the token in the <code>Authorization: Bearer</code> header. See the <a href=\"/api/docs\">API documentation</a>."
+msgstr ""
+"Envíe el token en la cabecera <code>Authorization: Bearer</code>. Consulte la <a href=\"/api/docs\">documentación de "
+"la API</a>."
+
+msgid "Send voicemail to e-mail"
+msgstr "Enviar el buzón de voz al correo electrónico"
+
+msgid "Sender address"
+msgstr "Dirección del remitente"
+
+msgid "Sender name"
+msgstr "Nombre del remitente"
+
+#, python-format
+msgid "Sending failed (did you apply the settings?): %(detail)s"
+msgstr "Error en el envío (¿ha aplicado los ajustes?): %(detail)s"
+
+msgid "Server requires authentication"
+msgstr "El servidor requiere autenticación"
+
+msgid "Services"
+msgstr "Servicios"
+
+msgid "Settings saved."
+msgstr "Ajustes guardados."
+
+msgid "Settings saved. Apply the changes to activate them."
+msgstr "Ajustes guardados. Aplique los cambios para activarlos."
+
+msgid "Show or hide"
+msgstr "Mostrar u ocultar"
+
+msgid "Show/hide"
+msgstr "Mostrar/ocultar"
+
+msgid "Shut down"
+msgstr "Apagar"
+
+msgid "Sign in"
+msgstr "Entrar"
+
+msgid "Singapore"
+msgstr "Singapur"
+
+msgid "Size"
+msgstr "Tamaño"
+
+msgid "Something went wrong"
+msgstr "Algo ha salido mal"
+
+msgid "South Africa"
+msgstr "Sudáfrica"
+
+msgid "Spain"
+msgstr "España"
+
+msgid "Spanish"
+msgstr "Español"
+
+msgid "State"
+msgstr "Estado"
+
+msgid "Static"
+msgstr "Estática"
+
+msgid "Status"
+msgstr "Estado"
+
+msgid "Stopped"
+msgstr "Detenido"
+
+msgid "Storage"
+msgstr "Almacenamiento"
+
+msgid "Strategy"
+msgstr "Estrategia"
+
+msgid "Subject"
+msgstr "Sujeto"
+
+msgid "Subscription ID"
+msgstr "ID de suscripción"
+
+msgid "Summary"
+msgstr "Resumen"
+
+msgid "Sweden"
+msgstr "Suecia"
+
+msgid "Swedish"
+msgstr "Sueco"
+
+msgid "Switzerland"
+msgstr "Suiza"
+
+msgid "System"
+msgstr "Sistema"
+
+msgid "System information"
+msgstr "Información del sistema"
+
+#, python-format
+msgid ""
+"System prompts use the default language <strong>%(language)s</strong> (change it under <a "
+"href=\"/system/general\">General Setup</a>). The firmware ships English prompts; other languages fall back to English"
+" recordings."
+msgstr ""
+"Las locuciones del sistema usan el idioma predeterminado <strong>%(language)s</strong> (cámbielo en <a "
+"href=\"/system/general\">Configuración general</a>). El firmware incluye locuciones en inglés; los demás idiomas "
+"recurren a las grabaciones en inglés."
+
+msgid "System settings"
+msgstr "Ajustes del sistema"
+
+msgid "TLS / SMTPS (port 465)"
+msgstr "TLS / SMTPS (puerto 465)"
+
+msgid "TLS port"
+msgstr "Puerto TLS"
+
+msgid "TSIG algorithm (e.g. hmac-sha256.)"
+msgstr "Algoritmo TSIG (p. ej., hmac-sha256.)"
+
+msgid "TSIG key name"
+msgstr "Nombre de la clave TSIG"
+
+msgid "TSIG secret"
+msgstr "Secreto TSIG"
+
+msgid "Taiwan"
+msgstr "Taiwán"
+
+msgid "Telephony"
+msgstr "Telefonía"
+
+msgid "Tenant ID"
+msgstr "ID de inquilino (tenant)"
+
+#, python-format
+msgid "Test message sent to %(to)s."
+msgstr "Mensaje de prueba enviado a %(to)s."
+
+msgid "Thailand"
+msgstr "Tailandia"
+
+msgid ""
+"The Asterisk Manager Interface (TCP port 5038) lets external software (CTI, dashboards) control the PBX. Only add "
+"users you need and restrict their networks."
+msgstr ""
+"La interfaz Asterisk Manager (puerto TCP 5038) permite que software externo (CTI, paneles) controle la PBX. Añada "
+"solo los usuarios que necesite y restrinja sus redes."
+
+msgid ""
+"The CA connects to <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: the names must resolve to this PBX "
+"and port 80 must be reachable from the internet."
+msgstr ""
+"La CA se conecta a <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: los nombres deben resolverse a esta "
+"PBX y el puerto 80 debe ser accesible desde Internet."
+
+msgid "The directory URL must start with https://"
+msgstr "La URL del directorio debe empezar por https://"
+
+msgid "The end port must be greater than the start port."
+msgstr "El puerto final debe ser mayor que el puerto inicial."
+
+msgid "The file is empty"
+msgstr "El archivo está vacío"
+
+msgid "The file is too large (max. 64 MB)"
+msgstr "El archivo es demasiado grande (máx. 64 MB)"
+
+msgid ""
+"The firewall only allows the web interface from <a href=\"/advanced/firewall\">selected networks</a>, so the CA "
+"cannot reach port 80. Use DNS validation."
+msgstr ""
+"El cortafuegos solo permite la interfaz web desde <a href=\"/advanced/firewall\">redes seleccionadas</a>, por lo que "
+"la CA no puede acceder al puerto 80. Use la validación por DNS."
+
+msgid "The import has errors and cannot be applied as is."
+msgstr "La importación contiene errores y no se puede aplicar tal cual."
+
+msgid "The initial password is shown on the system console. Lost it? Use the console menu to reset it."
+msgstr ""
+"La contraseña inicial se muestra en la consola del sistema. ¿La ha perdido? Use el menú de la consola para "
+"restablecerla."
+
+msgid "The last administrator cannot be deleted"
+msgstr "No se puede eliminar el último administrador"
+
+msgid "The lego ACME client is not installed."
+msgstr "El cliente ACME lego no está instalado."
+
+msgid "The log is empty or not available."
+msgstr "El registro está vacío o no está disponible."
+
+msgid "The number used to dial this phone and the SIP/IAX username."
+msgstr "El número para llamar a este teléfono y el nombre de usuario SIP/IAX."
+
+msgid "The number used to dial this phone."
+msgstr "El número para llamar a este teléfono."
+
+msgid "The password must have at least 8 characters"
+msgstr "La contraseña debe tener al menos 8 caracteres"
+
+msgid "The system is being reset to factory defaults and reboots now."
+msgstr "El sistema se está restableciendo a los valores de fábrica y se reinicia ahora."
+
+msgid "The system is rebooting. This page reloads when it is back."
+msgstr "El sistema se está reiniciando. Esta página se recargará cuando vuelva a estar disponible."
+
+msgid "The system is shutting down."
+msgstr "El sistema se está apagando."
+
+msgid "The uploaded file expired, please upload it again."
+msgstr "El archivo subido ha caducado; vuelva a subirlo."
+
+msgid ""
+"The web interface uses a self-signed certificate. <a href=\"/advanced/certificate\">Get one from Let's Encrypt or "
+"upload your own</a> to get rid of browser warnings."
+msgstr ""
+"La interfaz web usa un certificado autofirmado. <a href=\"/advanced/certificate\">Obtenga uno de Let's Encrypt o suba"
+" el suyo propio</a> para evitar las advertencias del navegador."
+
+msgid ""
+"This erases the complete configuration, voicemail, media and backups on this system and reboots. Download a backup "
+"first."
+msgstr ""
+"Esto borra toda la configuración, el buzón de voz, los archivos multimedia y las copias de seguridad de este sistema "
+"y lo reinicia. Descargue antes una copia de seguridad."
+
+msgid "This field is required"
+msgstr "Este campo es obligatorio"
+
+msgid "This phone cannot place outgoing calls through the selected providers."
+msgstr "Este teléfono no puede realizar llamadas salientes a través de los proveedores seleccionados."
+
+msgid "This username is reserved"
+msgstr "Este nombre de usuario está reservado"
+
+msgid "Time (UTC)"
+msgstr "Hora (UTC)"
+
+msgid "Time servers"
+msgstr "Servidores de hora"
+
+msgid "Time zone"
+msgstr "Zona horaria"
+
+msgid "Toggle navigation"
+msgstr "Mostrar/ocultar navegación"
+
+msgid "Token"
+msgstr "Token"
+
+#, python-format
+msgid "Token \"%(name)s\" created"
+msgstr "Token \"%(name)s\" creado"
+
+msgid "Token not found"
+msgstr "Token no encontrado"
+
+msgid "Tokens (domain:token, comma separated)"
+msgstr "Tokens (dominio:token, separados por comas)"
+
+msgid "Tone zone"
+msgstr "Zona de tonos"
+
+msgid "Too many failed attempts. Please wait a few minutes."
+msgstr "Demasiados intentos fallidos. Espere unos minutos."
+
+msgid "Topology"
+msgstr "Topología"
+
+msgid "Transfer a call here to park it."
+msgstr "Transfiera una llamada aquí para estacionarla."
+
+msgid "Transfer digit timeout (s)"
+msgstr "Tiempo de espera entre dígitos de transferencia (s)"
+
+msgid "Transfers & Parking"
+msgstr "Transferencias y estacionamiento"
+
+msgid "Transport"
+msgstr "Transporte"
+
+msgid "Turn on automatic certificates to request one."
+msgstr "Active los certificados automáticos para solicitar uno."
+
+msgid "Type"
+msgstr "Tipo"
+
+msgid "Type RESET to confirm"
+msgstr "Escriba RESET para confirmar"
+
+msgid "Type RESET to confirm."
+msgstr "Escriba RESET para confirmar."
+
+msgid "UDP ports used for audio and video. Each call uses two ports per leg."
+msgstr "Puertos UDP usados para audio y vídeo. Cada llamada usa dos puertos por tramo."
+
+msgid "Unanswered calls go to the voicemail box of the first member (if enabled)."
+msgstr "Las llamadas no contestadas van al buzón de voz del primer miembro (si está activado)."
+
+msgid "Unanswered or busy calls go to voicemail. Dial 000086 (0000VM) to listen to messages."
+msgstr "Las llamadas no contestadas o con ocupado van al buzón de voz. Marque 000086 (0000VM) para escuchar los mensajes."
+
+msgid "Unavail"
+msgstr "No disp."
+
+msgid "Unavailable"
+msgstr "No disponible"
+
+msgid "United Kingdom"
+msgstr "Reino Unido"
+
+msgid "United States"
+msgstr "Estados Unidos"
+
+msgid "United States (old)"
+msgstr "Estados Unidos (antiguo)"
+
+msgid "Unknown"
+msgstr "Desconocido"
+
+#, python-format
+msgid "Unknown codec %(codec)r"
+msgstr "Códec desconocido %(codec)r"
+
+msgid "Unknown language"
+msgstr "Idioma desconocido"
+
+msgid "Unknown media type"
+msgstr "Tipo de archivo multimedia desconocido"
+
+#, python-format
+msgid "Unknown permission %(name)r"
+msgstr "Permiso desconocido %(name)r"
+
+msgid "Unknown phone selected"
+msgstr "Se ha seleccionado un teléfono desconocido"
+
+msgid "Unknown provider"
+msgstr "Proveedor desconocido"
+
+msgid "Unknown time zone"
+msgstr "Zona horaria desconocida"
+
+msgid "Unknown tone zone"
+msgstr "Zona de tonos desconocida"
+
+msgid "Unmatched square bracket"
+msgstr "Corchete sin cerrar"
+
+msgid "Unreachable"
+msgstr "Inaccesible"
+
+msgid "Unregistered"
+msgstr "No registrado"
+
+#, python-format
+msgid "Unsafe path in backup: %(name)s"
+msgstr "Ruta no segura en la copia de seguridad: %(name)s"
+
+msgid "Unsupported backup format"
+msgstr "Formato de copia de seguridad no compatible"
+
+msgid "Up"
+msgstr "Activo"
+
+#, python-format
+msgid "Update bundle is missing %(name)s"
+msgstr "Al paquete de actualización le falta %(name)s"
+
+#, python-format
+msgid "Update check failed: %(error)s"
+msgstr "Error al buscar actualizaciones: %(error)s"
+
+msgid "Update file is too large"
+msgstr "El archivo de actualización es demasiado grande"
+
+msgid "Update information URL"
+msgstr "URL de información de actualizaciones"
+
+#, python-format
+msgid "Update is for board %(board)s, this system is %(current)s"
+msgstr "La actualización es para la placa %(board)s, este sistema es %(current)s"
+
+#, python-format
+msgid "Update rejected: %(error)s"
+msgstr "Actualización rechazada: %(error)s"
+
+msgid "Update signature is invalid"
+msgstr "La firma de la actualización no es válida"
+
+msgid "Update signing key is not an ed25519 key"
+msgstr "La clave de firma de actualizaciones no es una clave ed25519"
+
+msgid "Updates: replace the container image"
+msgstr "Actualizaciones: sustituya la imagen del contenedor"
+
+msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). The current state is backed up first."
+msgstr ""
+"Suba una copia de seguridad de PhonixPBX (<code>.tar.zst</code>). Primero se hace una copia de seguridad del estado "
+"actual."
+
+msgid ""
+"Upload a signed <code>.update</code> bundle for this board. It is written to the inactive system slot; the "
+"configuration and data are kept. If the new firmware fails to start, the previous one is booted automatically."
+msgstr ""
+"Suba un paquete <code>.update</code> firmado para esta placa. Se escribe en la ranura del sistema inactiva; la "
+"configuración y los datos se conservan. Si el nuevo firmware no arranca, se inicia automáticamente el anterior."
+
+msgid "Upload certificate"
+msgstr "Subir certificado"
+
+msgid "Upload your own hold music. Files are converted to 8 kHz mono WAV. Without uploads the bundled music is used."
+msgstr ""
+"Suba su propia música en espera. Los archivos se convierten a WAV mono de 8 kHz. Si no se sube nada, se usa la música"
+" incluida."
+
+msgid "Uploaded"
+msgstr "Subido"
+
+msgid "Uploaded files"
+msgstr "Archivos subidos"
+
+msgid "Uptime"
+msgstr "Tiempo de actividad"
+
+msgid "Use DNS SRV lookups"
+msgstr "Usar búsquedas DNS SRV"
+
+msgid "Use lowercase letters, digits, '.', '_' or '-'"
+msgstr "Use letras minúsculas, dígitos, '.', '_' o '-'"
+
+msgid "Used by PhonixPBX (certificate, Asterisk). The host name of the container itself is set on the container host."
+msgstr ""
+"Lo usa PhonixPBX (certificado, Asterisk). El nombre de host del propio contenedor se establece en el host del "
+"contenedor."
+
+msgid "Used by the phone to register. Generated passwords are strong; keep them."
+msgstr "Lo usa el teléfono para registrarse. Las contraseñas generadas son seguras; consérvelas."
+
+msgid "Used for the web interface and SIP over TLS. Installing a certificate turns off automatic certificates."
+msgstr "Se usa para la interfaz web y SIP sobre TLS. Al instalar un certificado se desactivan los certificados automáticos."
+
+msgid "Used for voicemail-to-e-mail and missed call notifications."
+msgstr "Se usa para el envío del buzón de voz por correo electrónico y las notificaciones de llamadas perdidas."
+
+msgid "Used when this provider is unavailable or congested."
+msgstr "Se usa cuando este proveedor no está disponible o está saturado."
+
+msgid "Useful when the PBX resolves its own domain to an internal DNS server."
+msgstr "Útil cuando la PBX resuelve su propio dominio con un servidor DNS interno."
+
+msgid "User"
+msgstr "Usuario"
+
+msgid "User agent"
+msgstr "Agente de usuario"
+
+msgid "User already exists"
+msgstr "El usuario ya existe"
+
+msgid "User not found"
+msgstr "Usuario no encontrado"
+
+msgid "Username"
+msgstr "Nombre de usuario"
+
+msgid "Username already exists"
+msgstr "El nombre de usuario ya existe"
+
+msgid "Username may contain letters, digits, '_' and '-'"
+msgstr "El nombre de usuario puede contener letras, dígitos, '_' y '-'"
+
+msgid "Username may only contain letters, digits and . _ @ + -"
+msgstr "El nombre de usuario solo puede contener letras, dígitos y . _ @ + -"
+
+msgid "Uses the applied configuration &mdash; apply pending changes first."
+msgstr "Usa la configuración aplicada &mdash; aplique antes los cambios pendientes."
+
+msgid "Valid until"
+msgstr "Válido hasta"
+
+msgid "Validation"
+msgstr "Validación"
+
+msgid "Value"
+msgstr "Valor"
+
+#, python-brace-format
+msgid "Variables: ${VM_NAME}, ${VM_DUR}, ${VM_MSGNUM}, ${VM_MAILBOX}, ${VM_CALLERID}, ${VM_DATE}. Empty = default text."
+msgstr ""
+"Variables: ${VM_NAME}, ${VM_DUR}, ${VM_MSGNUM}, ${VM_MAILBOX}, ${VM_CALLERID}, ${VM_DATE}. Vacío = texto "
+"predeterminado."
+
+msgid "Venezuela"
+msgstr "Venezuela"
+
+msgid "Verify the server certificate"
+msgstr "Verificar el certificado del servidor"
+
+msgid "Version"
+msgstr "Versión"
+
+#, python-format
+msgid "Version %(latest)s is available (running %(version)s). Download: %(url)s"
+msgstr "La versión %(latest)s está disponible (versión actual: %(version)s). Descarga: %(url)s"
+
+#, python-format
+msgid "Version <strong>%(version)s</strong> has been installed into the inactive slot."
+msgstr "La versión <strong>%(version)s</strong> se ha instalado en la ranura inactiva."
+
+msgid "Voice prompts"
+msgstr "Locuciones"
+
+msgid "Voicemail"
+msgstr "Buzón de voz"
+
+msgid "Voicemail &amp; notifications"
+msgstr "Buzón de voz y notificaciones"
+
+msgid "Voicemail PIN"
+msgstr "PIN del buzón de voz"
+
+msgid ""
+"Voicemail can be read by dialing <strong>000086</strong>. Configure <a href=\"/services/email\">e-mail "
+"notifications</a> to receive messages by e-mail."
+msgstr ""
+"El buzón de voz se puede escuchar marcando <strong>000086</strong>. Configure las <a "
+"href=\"/services/email\">notificaciones por correo electrónico</a> para recibir los mensajes por correo."
+
+msgid "Voicemail greeting"
+msgstr "Saludo del buzón de voz"
+
+msgid "Voicemail, conferencing and media"
+msgstr "Buzón de voz, conferencias y multimedia"
+
+msgid "Web interface and SSH. One CIDR per line, e.g. 192.168.1.0/24. Empty = everyone."
+msgstr "Interfaz web y SSH. Un CIDR por línea, p. ej., 192.168.1.0/24. Vacío = todos."
+
+msgid "Wildcard domains need DNS validation"
+msgstr "Los dominios comodín requieren validación por DNS"
+
+msgid "Wildcards '.' and '!' are not allowed before '|'"
+msgstr "Los comodines '.' y '!' no se permiten antes de '|'"
+
+msgid "Write"
+msgstr "Escritura"
+
+msgid "Write permissions"
+msgstr "Permisos de escritura"
+
+#, python-format
+msgid "You are running the latest version (%(version)s)."
+msgstr "Está usando la versión más reciente (%(version)s)."
+
+msgid "You are still using the initial administrator password. <a href=\"/password\">Change it now</a>."
+msgstr "Todavía está usando la contraseña inicial del administrador. <a href=\"/password\">Cámbiela ahora</a>."
+
+msgid "You cannot delete yourself"
+msgstr "No puede eliminarse a sí mismo"
+
+msgid "Your main number at this provider (informational)."
+msgstr "Su número principal en este proveedor (informativo)."
+
+msgid "Your password has been changed."
+msgstr "Su contraseña se ha cambiado."
+
+msgid "Your preferences have been saved."
+msgstr "Sus preferencias se han guardado."
+
+msgid "ZeroSSL needs the EAB key ID and HMAC key from the ZeroSSL dashboard"
+msgstr "ZeroSSL necesita el ID de clave EAB y la clave HMAC del panel de ZeroSSL"
+
+msgid "a parking slot"
+msgstr "una posición de estacionamiento"
+
+msgid "a provider"
+msgstr "un proveedor"
+
+msgid "active"
+msgstr "activo"
+
+msgid "admin PIN"
+msgstr "PIN de administrador"
+
+#, python-format
+msgid "administrator %(name)s"
+msgstr "el administrador %(name)s"
+
+msgid "all"
+msgstr "todos"
+
+msgid "all numbers"
+msgstr "todos los números"
+
+#, python-format
+msgid "application %(name)s"
+msgstr "la aplicación %(name)s"
+
+#, python-format
+msgid "call group %(name)s"
+msgstr "el grupo de llamada %(name)s"
+
+msgid "call parking"
+msgstr "el estacionamiento de llamadas"
+
+msgid "changed"
+msgstr "modificado"
+
+msgid "close"
+msgstr "cerrar"
+
+#, python-format
+msgid "conference room %(name)s"
+msgstr "la sala de conferencias %(name)s"
+
+#, python-format
+msgid "config.xml version %(version)s"
+msgstr "config.xml versión %(version)s"
+
+msgid "create"
+msgstr "crear"
+
+msgid "destination"
+msgstr "destino"
+
+msgid "details"
+msgstr "detalles"
+
+msgid "disabled"
+msgstr "desactivado"
+
+msgid "e.g. monitoring"
+msgstr "p. ej., monitorización"
+
+msgid "e.g. powerdns"
+msgstr "p. ej., powerdns"
+
+msgid "enabled"
+msgstr "activado"
+
+msgid "expired"
+msgstr "caducado"
+
+msgid "external"
+msgstr "externo"
+
+msgid "first = preferred"
+msgstr "primero = preferido"
+
+msgid "fixed caller ID"
+msgstr "ID de llamante fijo"
+
+msgid "incoming number pattern"
+msgstr "patrón de número entrante"
+
+msgid "invalid token"
+msgstr "token no válido"
+
+msgid "lego output"
+msgstr "salida de lego"
+
+msgid "lego provider code"
+msgstr "código de proveedor de lego"
+
+msgid "live"
+msgstr "en vivo"
+
+msgid "manage phones"
+msgstr "gestionar teléfonos"
+
+msgid "manage providers"
+msgstr "gestionar proveedores"
+
+#, python-format
+msgid "manager user %(name)s"
+msgstr "el usuario del Manager %(name)s"
+
+msgid "memory used"
+msgstr "memoria usada"
+
+msgid "must be a phone number"
+msgstr "debe ser un número de teléfono"
+
+msgid "must change password"
+msgstr "debe cambiar la contraseña"
+
+msgid "must look like user@host"
+msgstr "debe tener el formato usuario@host"
+
+msgid "never"
+msgstr "nunca"
+
+msgid "none"
+msgstr "ninguno"
+
+msgid "none (port 25)"
+msgstr "ninguno (puerto 25)"
+
+msgid "not loaded"
+msgstr "no cargado"
+
+msgid "not registered"
+msgstr "no registrado"
+
+msgid "off"
+msgstr "desactivado"
+
+msgid "offer SRTP (SDES), fall back to RTP"
+msgstr "ofrecer SRTP (SDES), recurrir a RTP"
+
+msgid "one after another"
+msgstr "uno tras otro"
+
+msgid "open"
+msgstr "abierta"
+
+#, python-format
+msgid "phone %(callerid)s <%(extension)s>"
+msgstr "el teléfono %(callerid)s <%(extension)s>"
+
+#, python-format
+msgid "phone %(ext)s"
+msgstr "el teléfono %(ext)s"
+
+msgid "prepend text to name"
+msgstr "anteponer texto al nombre"
+
+#, python-format
+msgid "provider %(name)s"
+msgstr "el proveedor %(name)s"
+
+msgid "public"
+msgstr "acceso público"
+
+msgid "read-only"
+msgstr "solo lectura"
+
+msgid "read-write"
+msgstr "lectura y escritura"
+
+msgid "registered"
+msgstr "registrado"
+
+msgid "remove route"
+msgstr "eliminar ruta"
+
+msgid "replace name with number"
+msgstr "sustituir el nombre por el número"
+
+msgid "replace with text"
+msgstr "sustituir por texto"
+
+msgid "required for external phones"
+msgstr "obligatorio para teléfonos externos"
+
+msgid "required for missed call notifications"
+msgstr "obligatorio para las notificaciones de llamadas perdidas"
+
+msgid "required for this caller id override"
+msgstr "obligatorio para esta sustitución del ID de llamante"
+
+msgid "required when the caller id source is a fixed string"
+msgstr "obligatorio cuando el origen del ID de llamante es un texto fijo"
+
+msgid "ring all"
+msgstr "sonar todos"
+
+msgid "running"
+msgstr "en ejecución"
+
+msgid "select a provider"
+msgstr "seleccione un proveedor"
+
+msgid "self-signed"
+msgstr "autofirmado"
+
+msgid "skip"
+msgstr "omitir"
+
+#, python-format
+msgid "the configuration has been changed (%(areas)s). Apply to activate."
+msgstr "la configuración ha cambiado (%(areas)s). Aplique los cambios para activarla."
+
+#, python-format
+msgid "token %(name)s"
+msgstr "el token %(name)s"
+
+msgid "unchanged"
+msgstr "sin cambios"
+
+msgid "unchanged - leave empty to keep"
+msgstr "sin cambios: déjelo vacío para conservarlo"
+
+msgid "unknown"
+msgstr "desconocido"
+
+msgid "unlimited"
+msgstr "ilimitado"
+
+msgid "update"
+msgstr "actualizar"
+
+msgid "use provider setting"
+msgstr "usar el ajuste del proveedor"
+
+msgid "use the phone's caller ID"
+msgstr "usar el ID de llamante del teléfono"
+
+msgid "used"
+msgstr "en uso"
+
+msgid "yes"
+msgstr "sí"
+

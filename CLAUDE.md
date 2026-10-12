@@ -55,6 +55,16 @@ CI (`.github/workflows/ci.yml`) runs ruff, mypy and pytest.
   - The app is packaged as an apk (`packaging/apk/phonix/APKBUILD`; runtime deps are Alpine `py3-*` packages, so a new Python dependency must exist in Alpine 3.24). `Containerfile` and `dev/Containerfile` keep their own copies of the package lists.
   - `/data` is the persistent partition (DB, `tls/`, `acme/`, media, backups). The rootfs is a read-only squashfs.
 
+## Translations
+
+- The web UI is translated with gettext (`phonix/i18n.py`).
+  - Mark strings with `_("...")`, or `N_("...")` for module-level constants that are translated where they are displayed.
+  - Use named placeholders only: `_("Deleted %(name)s.", name=x)`. Never wrap an f-string, and never build sentences from translated fragments.
+  - In templates, `{{ _("...") }}` always %-formats its result, so a literal `%` must be written `%%`.
+- After changing UI strings, run `scripts/i18n.sh update` and translate the new entries in all 11 catalogs under `phonix/locale/`. `tests/test_i18n.py` enforces complete catalogs.
+- Don't translate: logs, audit summaries, JSON API errors, CLI/console output, generated config files.
+- The request language is a contextvar. `LanguageMiddleware` sets it from the session; the session copy comes from `User.language`.
+
 ## Conventions
 
 - Commit messages: `area: lowercase summary` (e.g. `certificate: ...`, `ui: ...`, `nginx: ...`).

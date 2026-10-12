@@ -243,8 +243,6 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 - Fax to email via `res_fax_spandsp`, if Alpine's Asterisk build includes it
 - Phone auto-provisioning; the old version was snom-only
 - DynDNS
-- Additional UI languages
-- Let's Encrypt
 - Multiple admin roles
 - A hardware plugin hook for DAHDI
 
@@ -316,7 +314,11 @@ Everything hardware-specific listed in the confirmed decisions, plus Humbug anal
 - Forms use Tabler form controls, with validation errors shown inline next to each field.
 
 **Translation**
-- i18n uses Babel/gettext. English ships first.
+- The web interface uses gettext catalogs in `phonix/locale/<lang>/LC_MESSAGES/messages.po`. They are read and compiled in memory at runtime by `phonix/i18n.py`, so there is no `.mo` build step.
+- Languages: English (source), English (UK) (uses the English text), German, French, Spanish, Italian, Dutch, Danish, Swedish, Polish, Portuguese (Brazil), Russian, Japanese. These are the languages of the legacy GUI that also exist as prompt languages.
+- Each administrator chooses a language under *Preferences* (user menu). If none is chosen, English is used.
+- The JSON API, CLI, console, logs and audit log stay English.
+- `scripts/i18n.sh update` extracts the strings marked with `_()`/`N_()` in Python and Jinja and merges them into the catalogs. `tests/test_i18n.py` fails when the template is out of date, a catalog is incomplete, or placeholders/HTML tags differ.
 - The old `.po` files under `usr/www/locale/` (18 languages) are kept in `legacy/` as translation memory.
 
 ## 6. Repository layout
@@ -475,4 +477,4 @@ Each phase ends shippable and tested.
 - PJSIP providers register with `line=yes`; several accounts on the same host share one inbound context that dispatches on the account user name (legacy behaviour).
 - The legacy "direct dial SIP URI" context (`outgoing-uri`) is not ported (toll-fraud risk, no PJSIP equivalent without a fixed domain).
 - Swagger UI at `/api/docs` loads its assets from jsDelivr and therefore needs internet access; `/api/v1/openapi.json` is always available.
-- UI translations (Babel) are not wired yet; the interface is English only.
+- The system setting `ui_language` (imported from legacy `config.xml`) is no longer shown; the interface language is a per-administrator preference.

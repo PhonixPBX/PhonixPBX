@@ -1,0 +1,2961 @@
+# Danish translations for PhonixPBX.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PhonixPBX project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PhonixPBX VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-12 21:37+0200\n"
+"PO-Revision-Date: 2026-10-12 21:37+0200\n"
+"Last-Translator: PhonixPBX contributors\n"
+"Language: da\n"
+"Language-Team: da <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#, python-format
+msgid "%(domain)s is not a public DNS name. Enter the names the PBX is reached by."
+msgstr "%(domain)s er ikke et offentligt DNS-navn. Angiv de navne, som PBX'en kan nås på."
+
+#, python-format
+msgid "%(ext)s (slots %(start)s–%(end)s)"
+msgstr "%(ext)s (pladser %(start)s–%(end)s)"
+
+#, python-format
+msgid "%(label)s (optional)"
+msgstr "%(label)s (valgfrit)"
+
+#, python-format
+msgid "%(language)s (default)"
+msgstr "%(language)s (standard)"
+
+#, python-format
+msgid "%(name)s is not a fully qualified domain name"
+msgstr "%(name)s er ikke et fuldt kvalificeret domænenavn"
+
+#, python-format
+msgid "%(name)s log"
+msgstr "%(name)s-log"
+
+#, python-format
+msgid "%(num)d CPU"
+msgid_plural "%(num)d CPUs"
+msgstr[0] "%(num)d CPU"
+msgstr[1] "%(num)d CPU'er"
+
+#, python-format
+msgid "%(num)d route"
+msgid_plural "%(num)d routes"
+msgstr[0] "%(num)d rute"
+msgstr[1] "%(num)d ruter"
+
+#, python-format
+msgid "%(number)s via %(provider)s"
+msgstr "%(number)s via %(provider)s"
+
+#, python-format
+msgid "%(used)s of %(total)s"
+msgstr "%(used)s af %(total)s"
+
+#, python-format
+msgid "%(used)s of %(total)s used"
+msgstr "%(used)s af %(total)s brugt"
+
+#, python-format
+msgid ""
+"%(used)s used of %(total)s. The data partition keeps configuration, voicemail, media and backups across firmware "
+"updates."
+msgstr ""
+"%(used)s brugt af %(total)s. Datapartitionen bevarer konfiguration, telefonsvarer, medier og backups på tværs af "
+"firmwareopdateringer."
+
+#, python-format
+msgid "%(what)s must not contain ';'"
+msgstr "%(what)s må ikke indeholde ';'"
+
+#, python-format
+msgid "%(what)s must not contain control characters or line breaks"
+msgstr "%(what)s må ikke indeholde kontroltegn eller linjeskift"
+
+#, python-format
+msgid "(%(num)d reload action)"
+msgid_plural "(%(num)d reload actions)"
+msgstr[0] "(%(num)d genindlæsning)"
+msgstr[1] "(%(num)d genindlæsninger)"
+
+#, python-format
+msgid "(missing %(type)s)"
+msgstr "(mangler %(type)s)"
+
+msgid "(nothing to reload)"
+msgstr "(intet at genindlæse)"
+
+msgid "- choose -"
+msgstr "- vælg -"
+
+msgid "- none -"
+msgstr "- ingen -"
+
+msgid "- select -"
+msgstr "- vælg -"
+
+msgid "0 disables keep-alive checks."
+msgstr "0 deaktiverer keep-alive-kontroller."
+
+msgid "01701234567 or user@example.com"
+msgstr "01701234567 eller user@example.com"
+
+#, python-format
+msgid "1 to %(max)s days. Empty: the token does not expire."
+msgstr "1 til %(max)s dage. Tom: tokenet udløber ikke."
+
+msgid "2FA shared secret"
+msgstr "Delt 2FA-hemmelighed"
+
+msgid ""
+"A TXT record is created through the DNS provider's API. Works for PBXs that are not reachable from the internet and "
+"for wildcard names."
+msgstr ""
+"En TXT-post oprettes via DNS-udbyderens API. Virker for PBX'er, der ikke kan nås fra internettet, og for wildcard-"
+"navne."
+
+msgid "A certificate request is already running."
+msgstr "En certifikatanmodning kører allerede."
+
+msgid "A custom greeting played before callers leave a message (replaces the standard \"unavailable\" message)."
+msgstr ""
+"En brugerdefineret hilsen, der afspilles, før opkaldere lægger en besked (erstatter standardbeskeden \"ikke "
+"tilgængelig\")."
+
+msgid "A new self-signed certificate was created."
+msgstr "Et nyt selvsigneret certifikat blev oprettet."
+
+msgid "A password is set. Leave empty to keep it."
+msgstr "Der er angivet en adgangskode. Lad feltet være tomt for at beholde den."
+
+msgid "A provider cannot fail over to itself"
+msgstr "En udbyder kan ikke have failover til sig selv"
+
+msgid "A secret is required"
+msgstr "En hemmelighed er påkrævet"
+
+msgid "ACME directory URL"
+msgstr "ACME-katalog-URL"
+
+msgid "AMI is only used internally."
+msgstr "AMI bruges kun internt."
+
+msgid "API key"
+msgstr "API-nøgle"
+
+msgid "API key (prefix.secret)"
+msgstr "API-nøgle (prefix.secret)"
+
+msgid "API password"
+msgstr "API-adgangskode"
+
+msgid "API secret"
+msgstr "API-hemmelighed"
+
+msgid "API token"
+msgstr "API-token"
+
+msgid "API token (Zone.DNS edit)"
+msgstr "API-token (Zone.DNS edit)"
+
+msgid "API tokens"
+msgstr "API-tokens"
+
+msgid "API user"
+msgstr "API-bruger"
+
+msgid "Accept IAX connections (firewall)"
+msgstr "Accepter IAX-forbindelser (firewall)"
+
+msgid "Access"
+msgstr "Adgang"
+
+msgid "Access denied"
+msgstr "Adgang nægtet"
+
+msgid "Access key ID"
+msgstr "Adgangsnøgle-ID"
+
+msgid "Access token"
+msgstr "Adgangstoken"
+
+msgid "Account"
+msgstr "Konto"
+
+msgid "Account e-mail address"
+msgstr "E-mailadresse til kontoen"
+
+msgid "Accounts"
+msgstr "Konti"
+
+msgid "Action"
+msgstr "Handling"
+
+msgid "Active calls"
+msgstr "Aktive opkald"
+
+msgid "Active calls are interrupted."
+msgstr "Aktive opkald afbrydes."
+
+msgid "Active channels"
+msgstr "Aktive kanaler"
+
+msgid "Add"
+msgstr "Tilføj"
+
+msgid "Add a call group"
+msgstr "Tilføj en opkaldsgruppe"
+
+msgid "Add a phone"
+msgstr "Tilføj en telefon"
+
+msgid "Add a provider"
+msgstr "Tilføj en udbyder"
+
+msgid "Add a room"
+msgstr "Tilføj et rum"
+
+msgid "Add administrator"
+msgstr "Tilføj administrator"
+
+msgid "Add an application"
+msgstr "Tilføj en applikation"
+
+msgid "Add route"
+msgstr "Tilføj rute"
+
+msgid "Add your SIP trunk or VoIP provider account to make and receive external calls."
+msgstr "Tilføj din SIP-trunk eller VoIP-udbyderkonto for at foretage og modtage eksterne opkald."
+
+msgid "Additional IAX peer options"
+msgstr "Yderligere IAX-peer-indstillinger"
+
+msgid "Additional PJSIP endpoint options"
+msgstr "Yderligere PJSIP-endpoint-indstillinger"
+
+msgid "Additional [general] options"
+msgstr "Yderligere [general]-indstillinger"
+
+msgid "Additional [global] options"
+msgstr "Yderligere [global]-indstillinger"
+
+msgid "Additional options"
+msgstr "Yderligere indstillinger"
+
+msgid "Admin PIN"
+msgstr "Administrator-PIN"
+
+msgid "Admin PIN must differ from the user PIN"
+msgstr "Administrator-PIN skal være forskellig fra bruger-PIN"
+
+msgid "Administrator"
+msgstr "Administrator"
+
+msgid "Administrator created."
+msgstr "Administrator oprettet."
+
+msgid "Administrators"
+msgstr "Administratorer"
+
+msgid "Advanced"
+msgstr "Avanceret"
+
+msgid "Advanced: key=value lines appended to the PJSIP global section."
+msgstr "Avanceret: key=value-linjer, der tilføjes til PJSIP's global-sektion."
+
+msgid "Advanced: one key=value per line, appended to the generated endpoint/peer."
+msgstr "Avanceret: én key=value pr. linje, tilføjes til det genererede endpoint/peer."
+
+msgid "Advanced: one key=value per line, appended to the generated section."
+msgstr "Avanceret: én key=value pr. linje, tilføjes til den genererede sektion."
+
+msgid "Always expand advanced sections"
+msgstr "Vis altid avancerede sektioner udfoldet"
+
+msgid "An e-mail address is required for the ACME account"
+msgstr "En e-mailadresse er påkrævet til ACME-kontoen"
+
+msgid "Application"
+msgstr "Applikation"
+
+#, python-format
+msgid "Application %(name)s <%(number)s>"
+msgstr "Applikation %(name)s <%(number)s>"
+
+msgid "Application key"
+msgstr "Applikationsnøgle"
+
+msgid "Application logic"
+msgstr "Applikationslogik"
+
+msgid "Application logic must contain at least one line"
+msgstr "Applikationslogikken skal indeholde mindst én linje"
+
+msgid "Application not found"
+msgstr "Applikation ikke fundet"
+
+msgid "Application secret"
+msgstr "Applikationshemmelighed"
+
+msgid "Applications"
+msgstr "Applikationer"
+
+msgid "Applications are small dialplan programs reachable by a number."
+msgstr "Applikationer er små dialplan-programmer, der kan nås via et nummer."
+
+msgid "Apply changes"
+msgstr "Anvend ændringer"
+
+#, python-format
+msgid "Applying failed: %(errors)s"
+msgstr "Anvendelse mislykkedes: %(errors)s"
+
+msgid "Applying the configuration failed."
+msgstr "Konfigurationen kunne ikke anvendes."
+
+msgid "Asterisk database"
+msgstr "Asterisk-database"
+
+msgid "Asterisk down"
+msgstr "Asterisk nede"
+
+#, python-format
+msgid "Asterisk is not reachable: %(error)s"
+msgstr "Asterisk kan ikke nås: %(error)s"
+
+msgid "Asterisk manager users"
+msgstr "Asterisk manager-brugere"
+
+#, python-format
+msgid "At least %(min)s characters required"
+msgstr "Mindst %(min)s tegn påkrævet"
+
+#, python-format
+msgid "At least %(min)s entries required"
+msgstr "Mindst %(min)s poster påkrævet"
+
+msgid "At least 8 characters."
+msgstr "Mindst 8 tegn."
+
+msgid "At least one permitted network is required"
+msgstr "Mindst ét tilladt netværk er påkrævet"
+
+#, python-format
+msgid "At most %(max)s characters allowed"
+msgstr "Højst %(max)s tegn tilladt"
+
+#, python-format
+msgid "At most %(max)s entries allowed"
+msgstr "Højst %(max)s poster tilladt"
+
+msgid "Attach the recording to the e-mail"
+msgstr "Vedhæft optagelsen til e-mailen"
+
+msgid "Attended transfer"
+msgstr "Overvåget viderestilling"
+
+msgid "Attended transfer no-answer timeout (s)"
+msgstr "Timeout ved intet svar for overvåget viderestilling (s)"
+
+#, python-format
+msgid "Audio: %(audio)s. Video: %(video)s"
+msgstr "Lyd: %(audio)s. Video: %(video)s"
+
+msgid "Audit Log"
+msgstr "Revisionslog"
+
+msgid "Australia"
+msgstr "Australien"
+
+msgid "Austria"
+msgstr "Østrig"
+
+msgid "Authentication"
+msgstr "Godkendelse"
+
+msgid "Authentication user"
+msgstr "Godkendelsesbruger"
+
+msgid "Auto"
+msgstr "Auto"
+
+msgid "Automatic (SLAAC)"
+msgstr "Automatisk (SLAAC)"
+
+msgid "Automatic certificate (Let's Encrypt / ACME)"
+msgstr "Automatisk certifikat (Let's Encrypt / ACME)"
+
+msgid "Automatic certificates were turned off."
+msgstr "Automatiske certifikater blev slået fra."
+
+msgid "Avail"
+msgstr "Tilg."
+
+msgid "Back to the dashboard"
+msgstr "Tilbage til oversigten"
+
+#, python-format
+msgid "Backup %(name)s created."
+msgstr "Backup %(name)s oprettet."
+
+#, python-format
+msgid "Backup from %(created)s restored. Review the configuration and apply the changes."
+msgstr "Backup fra %(created)s gendannet. Gennemgå konfigurationen, og anvend ændringerne."
+
+msgid "Backup is too large"
+msgstr "Backuppen er for stor"
+
+msgid "Backup manifest is missing"
+msgstr "Backup-manifestet mangler"
+
+msgid "Backup not found"
+msgstr "Backup ikke fundet"
+
+msgid "Backup/Restore"
+msgstr "Backup/gendannelse"
+
+msgid "Backups"
+msgstr "Backups"
+
+msgid "Belgium"
+msgstr "Belgien"
+
+msgid "Blind transfer"
+msgstr "Blind viderestilling"
+
+msgid "Block addresses after repeated authentication failures"
+msgstr "Bloker adresser efter gentagne mislykkede godkendelser"
+
+msgid "Block duration (s)"
+msgstr "Blokeringsvarighed (s)"
+
+msgid "Block providers"
+msgstr "Bloker udbydere"
+
+msgid "Board"
+msgstr "Board"
+
+msgid "Board / slot"
+msgstr "Board / slot"
+
+msgid "Boot slot"
+msgstr "Boot-slot"
+
+msgid "Brazil"
+msgstr "Brasilien"
+
+msgid "Brute force protection"
+msgstr "Beskyttelse mod brute force"
+
+msgid "Busy"
+msgstr "Optaget"
+
+msgid "Busy level"
+msgstr "Optaget-niveau"
+
+msgid "CPU load"
+msgstr "CPU-belastning"
+
+msgid "Call Groups"
+msgstr "Opkaldsgrupper"
+
+msgid "Call group"
+msgstr "Opkaldsgruppe"
+
+#, python-format
+msgid "Call group %(name)s"
+msgstr "Opkaldsgruppe %(name)s"
+
+#, python-format
+msgid "Call group %(name)s <%(number)s>"
+msgstr "Opkaldsgruppe %(name)s <%(number)s>"
+
+msgid "Call group not found"
+msgstr "Opkaldsgruppe ikke fundet"
+
+msgid "Call groups ring several phones at once or one after another."
+msgstr "Opkaldsgrupper ringer til flere telefoner på én gang eller efter hinanden."
+
+msgid "Call parking"
+msgstr "Parkering af opkald"
+
+msgid "Call pickup"
+msgstr "Overtagelse af opkald"
+
+msgid "Caller"
+msgstr "Opkalder"
+
+msgid "Caller ID"
+msgstr "Opkalds-ID"
+
+msgid "Caller ID may not be empty or contain \" < > ; \\"
+msgstr "Opkalds-ID må ikke være tomt eller indeholde \" < > ; \\"
+
+msgid "Caller ID must look like \"Name <number>\" or a number"
+msgstr "Opkalds-ID skal have formen \"Navn <nummer>\" eller være et nummer"
+
+msgid "Caller ID name"
+msgstr "Navn til opkalds-ID"
+
+msgid "Caller ID text"
+msgstr "Opkalds-ID-tekst"
+
+msgid "Callers from providers or SIP URIs may call this phone directly."
+msgstr "Opkaldere fra udbydere eller SIP-URI'er må ringe direkte til denne telefon."
+
+msgid "Calls & Registrations"
+msgstr "Opkald og registreringer"
+
+msgid "Cancel"
+msgstr "Annuller"
+
+msgid "Certificate"
+msgstr "Certifikat"
+
+msgid "Certificate (PEM, may include the chain)"
+msgstr "Certifikat (PEM, må indeholde kæden)"
+
+msgid "Certificate authority"
+msgstr "Certifikatudsteder"
+
+msgid "Certificate installed."
+msgstr "Certifikat installeret."
+
+msgid "Change password"
+msgstr "Skift adgangskode"
+
+#, python-format
+msgid "Changes saved: %(kind)s %(name)s."
+msgstr "Ændringer gemt: %(kind)s %(name)s."
+
+msgid "Changing the address interrupts the connection. Open the new address after applying."
+msgstr "Ændring af adressen afbryder forbindelsen. Åbn den nye adresse efter anvendelse."
+
+msgid "Channel"
+msgstr "Kanal"
+
+msgid "Check automatically"
+msgstr "Søg automatisk"
+
+msgid "Check for updates"
+msgstr "Søg efter opdateringer"
+
+msgid "Check now"
+msgstr "Søg nu"
+
+#, python-format
+msgid "Checksum mismatch for %(name)s"
+msgstr "Kontrolsummen passer ikke for %(name)s"
+
+msgid "Chile"
+msgstr "Chile"
+
+msgid "China"
+msgstr "Kina"
+
+#, python-format
+msgid "Choose 1 to %(max)s days"
+msgstr "Vælg 1 til %(max)s dage"
+
+msgid "Choose a DNS provider"
+msgstr "Vælg en DNS-udbyder"
+
+msgid "Choose a different password"
+msgstr "Vælg en anden adgangskode"
+
+msgid "Client ID"
+msgstr "Klient-ID"
+
+msgid "Client secret"
+msgstr "Klienthemmelighed"
+
+msgid "Cloud API token"
+msgstr "Cloud API-token"
+
+msgid "Codecs"
+msgstr "Codecs"
+
+msgid "Codecs &amp; advanced"
+msgstr "Codecs &amp; avanceret"
+
+msgid "Conference"
+msgstr "Konference"
+
+#, python-format
+msgid "Conference %(name)s <%(number)s>"
+msgstr "Konference %(name)s <%(number)s>"
+
+msgid "Conference room"
+msgstr "Konferencerum"
+
+msgid "Conference room not found"
+msgstr "Konferencerum ikke fundet"
+
+msgid "Conference rooms let several callers talk together."
+msgstr "Konferencerum lader flere opkaldere tale sammen."
+
+msgid "Conferencing"
+msgstr "Konferencer"
+
+msgid "Configuration"
+msgstr "Konfiguration"
+
+msgid "Configuration applied."
+msgstr "Konfiguration anvendt."
+
+msgid "Configuration database"
+msgstr "Konfigurationsdatabase"
+
+msgid "Configure an https:// update check URL first."
+msgstr "Konfigurer først en https://-URL til opdateringskontrol."
+
+msgid "Consumer key"
+msgstr "Consumer key"
+
+msgid "Contact"
+msgstr "Kontakt"
+
+msgid "Content"
+msgstr "Indhold"
+
+msgid "Copied"
+msgstr "Kopieret"
+
+msgid "Copy"
+msgstr "Kopier"
+
+msgid "Copy it now: it is not shown again."
+msgstr "Kopier det nu: det vises ikke igen."
+
+#, python-format
+msgid "Could not convert audio: %(error)s"
+msgstr "Kunne ikke konvertere lyd: %(error)s"
+
+#, python-format
+msgid "Could not start the certificate request: %(error)s"
+msgstr "Kunne ikke starte certifikatanmodningen: %(error)s"
+
+msgid "Country specific dial, busy and ring tones."
+msgstr "Landespecifikke klar-, optaget- og ringetoner."
+
+msgid "Create"
+msgstr "Opret"
+
+msgid "Create a SIP phone and register your desk phone or softphone with it."
+msgstr "Opret en SIP-telefon, og registrer din bordtelefon eller softphone på den."
+
+msgid ""
+"Create a new container from the new template and attach the same <code>/data</code> volume, or restore a backup "
+"(<em>System &rarr; Backup/Restore</em>) into the new container."
+msgstr ""
+"Opret en ny container fra den nye skabelon, og tilknyt den samme <code>/data</code>-volumen, eller gendan en backup "
+"(<em>System &rarr; Backup/gendannelse</em>) i den nye container."
+
+msgid "Create a token to use the REST API (/api/v1) from scripts."
+msgstr "Opret et token for at bruge REST API'et (/api/v1) fra scripts."
+
+msgid "Create backup"
+msgstr "Opret backup"
+
+msgid "Create new self-signed certificate"
+msgstr "Opret nyt selvsigneret certifikat"
+
+msgid "Create phone"
+msgstr "Opret telefon"
+
+msgid "Create provider"
+msgstr "Opret udbyder"
+
+msgid "Create token"
+msgstr "Opret token"
+
+msgid "Created"
+msgstr "Oprettet"
+
+msgid "Credentials"
+msgstr "Loginoplysninger"
+
+#, python-format
+msgid "Current address of %(interface)s: <strong>%(address)s/%(prefix)s</strong>"
+msgstr "Nuværende adresse for %(interface)s: <strong>%(address)s/%(prefix)s</strong>"
+
+msgid "Current certificate"
+msgstr "Nuværende certifikat"
+
+msgid "Current password"
+msgstr "Nuværende adgangskode"
+
+msgid "Current password is wrong"
+msgstr "Den nuværende adgangskode er forkert"
+
+msgid "Customer number"
+msgstr "Kundenummer"
+
+msgid "Czech Republic"
+msgstr "Tjekkiet"
+
+msgid "DNS provider"
+msgstr "DNS-udbyder"
+
+msgid "DNS provider API"
+msgstr "DNS-udbyder-API"
+
+msgid "DNS resolvers for the propagation check (optional)"
+msgstr "DNS-resolvere til propageringskontrollen (valgfrit)"
+
+msgid "DNS servers"
+msgstr "DNS-servere"
+
+msgid "DTMF mode"
+msgstr "DTMF-tilstand"
+
+msgid "Danish"
+msgstr "Dansk"
+
+msgid "Dark mode"
+msgstr "Mørk tilstand"
+
+msgid "Data partition"
+msgstr "Datapartition"
+
+msgid "Database in backup is corrupt"
+msgstr "Databasen i backuppen er beskadiget"
+
+msgid "Default expiry (s)"
+msgstr "Standardudløbstid (s)"
+
+msgid "Default prompt language"
+msgstr "Standardsprog for talebeskeder"
+
+msgid "Defaults to the host."
+msgstr "Standard er værten."
+
+msgid "Defaults to the notification sender address."
+msgstr "Standard er afsenderadressen for notifikationer."
+
+msgid "Delete"
+msgstr "Slet"
+
+#, python-format
+msgid "Delete %(what)s"
+msgstr "Slet %(what)s"
+
+#, python-format
+msgid "Delete %(what)s?"
+msgstr "Slet %(what)s?"
+
+msgid "Denmark"
+msgstr "Danmark"
+
+msgid "Description"
+msgstr "Beskrivelse"
+
+msgid "Destination does not exist"
+msgstr "Destinationen findes ikke"
+
+msgid "Details"
+msgstr "Detaljer"
+
+msgid "Dial alone to pick up any ringing phone, or followed by an extension."
+msgstr "Tast alene for at besvare en vilkårlig ringende telefon, eller efterfulgt af et lokalnummer."
+
+msgid "Dial pattern contains an invalid character"
+msgstr "Opkaldsmønsteret indeholder et ugyldigt tegn"
+
+msgid "Dial pattern is empty"
+msgstr "Opkaldsmønsteret er tomt"
+
+#, python-format
+msgid "Dial pattern may contain only one '%(char)s'"
+msgstr "Opkaldsmønsteret må kun indeholde ét '%(char)s'"
+
+msgid "Dial patterns"
+msgstr "Opkaldsmønstre"
+
+msgid "Dialed"
+msgstr "Kaldt nummer"
+
+msgid "Dialing"
+msgstr "Ringer op"
+
+msgid "Dialplan"
+msgstr "Dialplan"
+
+msgid "Dialplan line"
+msgstr "Dialplan-linje"
+
+msgid "Digits or an Asterisk pattern like _0XX."
+msgstr "Cifre eller et Asterisk-mønster som _0XX."
+
+msgid "Disable"
+msgstr "Deaktiver"
+
+#, python-format
+msgid "Disable %(what)s"
+msgstr "Deaktiver %(what)s"
+
+msgid "Disable for providers that authenticate by IP address."
+msgstr "Deaktiver for udbydere, der godkender via IP-adresse."
+
+msgid "Disconnect"
+msgstr "Læg på"
+
+msgid "Domain"
+msgstr "Domæne"
+
+msgid "Domain must not be empty"
+msgstr "Domænet må ikke være tomt"
+
+msgid "Domain names"
+msgstr "Domænenavne"
+
+msgid "Down"
+msgstr "Nede"
+
+#, python-format
+msgid "Download %(name)s"
+msgstr "Download %(name)s"
+
+msgid "Drop audio files here or click to upload"
+msgstr "Slip lydfiler her, eller klik for at uploade"
+
+msgid "Drop config.xml here or click to upload"
+msgstr "Slip config.xml her, eller klik for at uploade"
+
+msgid "Drop the backup here or click to upload"
+msgstr "Slip backuppen her, eller klik for at uploade"
+
+msgid "Drop the greeting here or click to upload"
+msgstr "Slip hilsenen her, eller klik for at uploade"
+
+msgid "Drop the update file here or click to upload"
+msgstr "Slip opdateringsfilen her, eller klik for at uploade"
+
+msgid "Duration"
+msgstr "Varighed"
+
+msgid "Dutch"
+msgstr "Hollandsk"
+
+msgid "E-mail notification on missed calls"
+msgstr "E-mailnotifikation ved ubesvarede opkald"
+
+msgid "E-mail notifications"
+msgstr "E-mailnotifikationer"
+
+msgid "E-mail subject"
+msgstr "E-mailemne"
+
+msgid "E-mail text"
+msgstr "E-mailtekst"
+
+msgid "E.g. a DynDNS name."
+msgstr "F.eks. et DynDNS-navn."
+
+msgid "EAB HMAC key"
+msgstr "EAB HMAC-nøgle"
+
+msgid "EAB key ID"
+msgstr "EAB-nøgle-ID"
+
+msgid "Edit"
+msgstr "Rediger"
+
+#, python-format
+msgid "Edit %(name)s"
+msgstr "Rediger %(name)s"
+
+#, python-format
+msgid "Edit %(tech)s phone %(extension)s"
+msgstr "Rediger %(tech)s-telefon %(extension)s"
+
+#, python-format
+msgid "Edit %(tech)s provider %(name)s"
+msgstr "Rediger %(tech)s-udbyder %(name)s"
+
+#, python-format
+msgid "Edit application %(name)s"
+msgstr "Rediger applikation %(name)s"
+
+#, python-format
+msgid "Edit call group %(name)s"
+msgstr "Rediger opkaldsgruppe %(name)s"
+
+#, python-format
+msgid "Edit conference room %(name)s"
+msgstr "Rediger konferencerum %(name)s"
+
+#, python-format
+msgid "Edit manager user %(name)s"
+msgstr "Rediger manager-bruger %(name)s"
+
+#, python-format
+msgid "Edit phone %(ext)s"
+msgstr "Rediger telefon %(ext)s"
+
+#, python-format
+msgid "Edit provider %(name)s"
+msgstr "Rediger udbyder %(name)s"
+
+msgid "Empty = default."
+msgstr "Tom = standard."
+
+msgid "Empty = ring until the caller hangs up."
+msgstr "Tom = ring, indtil opkalderen lægger på."
+
+msgid "Empty = until the caller hangs up (per phone for 'one after another': default 20)."
+msgstr "Tom = indtil opkalderen lægger på (pr. telefon ved 'én efter én': standard 20)."
+
+msgid "Empty square brackets"
+msgstr "Tomme firkantede parenteser"
+
+msgid "Enable"
+msgstr "Aktiver"
+
+#, python-format
+msgid "Enable %(what)s"
+msgstr "Aktiver %(what)s"
+
+msgid "Enable SSH access (key or password login for root)"
+msgstr "Aktiver SSH-adgang (login for root med nøgle eller adgangskode)"
+
+msgid "Enable TCP"
+msgstr "Aktiver TCP"
+
+msgid "Enable TLS"
+msgstr "Aktiver TLS"
+
+msgid "Enable jitter buffer"
+msgstr "Aktiver jitterbuffer"
+
+msgid "Enable the firewall"
+msgstr "Aktiver firewallen"
+
+msgid "Enable voicemail"
+msgstr "Aktiver telefonsvarer"
+
+msgid "Enabled"
+msgstr "Aktiveret"
+
+msgid "Encryption"
+msgstr "Kryptering"
+
+msgid "Endpoint (ovh-eu, ovh-ca, ...)"
+msgstr "Endpoint (ovh-eu, ovh-ca, ...)"
+
+msgid "English"
+msgstr "Engelsk"
+
+msgid "English (UK)"
+msgstr "Engelsk (UK)"
+
+msgid "Enter a name of up to 64 characters"
+msgstr "Angiv et navn på op til 64 tegn"
+
+msgid "Enter a number of days"
+msgstr "Angiv et antal dage"
+
+msgid "Enter the directory URL of the ACME server"
+msgstr "Angiv ACME-serverens katalog-URL"
+
+msgid "Error"
+msgstr "Fejl"
+
+msgid "Estonia"
+msgstr "Estland"
+
+msgid "Example:"
+msgstr "Eksempel:"
+
+#, python-format
+msgid "Expected NAME=value: %(line)s"
+msgstr "Forventede NAME=value: %(line)s"
+
+msgid "Expires in (days)"
+msgstr "Udløber om (dage)"
+
+msgid "Export config.xml"
+msgstr "Eksporter config.xml"
+
+msgid "Export the current configuration in the legacy format (best effort; contains passwords in plain text)."
+msgstr "Eksporter den aktuelle konfiguration i det gamle format (så vidt muligt; indeholder adgangskoder i klartekst)."
+
+msgid "Extension"
+msgstr "Lokalnummer"
+
+msgid "Extension must be digits or an Asterisk pattern (X, N, Z, [], ., !)"
+msgstr "Lokalnummeret skal bestå af cifre eller et Asterisk-mønster (X, N, Z, [], ., !)"
+
+msgid "Extension must consist of 1-20 digits"
+msgstr "Lokalnummeret skal bestå af 1-20 cifre"
+
+msgid "External"
+msgstr "Ekstern"
+
+msgid "External phone"
+msgstr "Ekstern telefon"
+
+msgid "Factory Defaults"
+msgstr "Fabriksindstillinger"
+
+msgid "Failover provider"
+msgstr "Failover-udbyder"
+
+msgid "Failures within 10 minutes"
+msgstr "Fejl inden for 10 minutter"
+
+msgid "Feature codes"
+msgstr "Funktionskoder"
+
+msgid "Feature codes consist of digits, '*' and '#'"
+msgstr "Funktionskoder består af cifre, '*' og '#'"
+
+msgid "Feature digit timeout (ms)"
+msgstr "Timeout for funktionscifre (ms)"
+
+msgid "Finland"
+msgstr "Finland"
+
+msgid "Firewall"
+msgstr "Firewall"
+
+msgid "Firmware"
+msgstr "Firmware"
+
+msgid "First port"
+msgstr "Første port"
+
+msgid "First slot"
+msgstr "Første plads"
+
+msgid "Fixed caller ID"
+msgstr "Fast opkalds-ID"
+
+msgid "For 'one after another', phones ring in this order."
+msgstr "Ved 'én efter én' ringer telefonerne i denne rækkefølge."
+
+msgid "For your reference only."
+msgstr "Kun til din egen reference."
+
+msgid "Force jitter buffer"
+msgstr "Gennemtving jitterbuffer"
+
+msgid "France"
+msgstr "Frankrig"
+
+msgid "French"
+msgstr "Fransk"
+
+msgid "From domain"
+msgstr "From-domæne"
+
+msgid "From user"
+msgstr "From-bruger"
+
+msgid "GUI Options"
+msgstr "GUI-indstillinger"
+
+msgid "Gateway"
+msgstr "Gateway"
+
+msgid "General"
+msgstr "Generelt"
+
+msgid "General Setup"
+msgstr "Generel opsætning"
+
+msgid "Generate"
+msgstr "Generer"
+
+msgid "German"
+msgstr "Tysk"
+
+msgid "Germany"
+msgstr "Tyskland"
+
+msgid "Graphs"
+msgstr "Grafer"
+
+msgid "Graphs are sampled while a page with graphs is open (up to the last 120 samples)."
+msgstr "Graferne samples, mens en side med grafer er åben (op til de seneste 120 målinger)."
+
+msgid "Greece"
+msgstr "Grækenland"
+
+msgid "HTTP (port 80)"
+msgstr "HTTP (port 80)"
+
+msgid "Host"
+msgstr "Vært"
+
+msgid "Hosted zone ID"
+msgstr "Hosted zone-ID"
+
+msgid "Hostname"
+msgstr "Værtsnavn"
+
+msgid "Hostname must be 1-63 letters, digits or '-'"
+msgstr "Værtsnavnet skal bestå af 1-63 bogstaver, cifre eller '-'"
+
+msgid "Hostname or IP address of the provider."
+msgstr "Udbyderens værtsnavn eller IP-adresse."
+
+msgid "Hungary"
+msgstr "Ungarn"
+
+msgid "IAX"
+msgstr "IAX"
+
+msgid "IAX URI (user@host)"
+msgstr "IAX-URI (user@host)"
+
+msgid "IAX phone"
+msgstr "IAX-telefon"
+
+msgid "IAX port"
+msgstr "IAX-port"
+
+msgid "IAX provider"
+msgstr "IAX-udbyder"
+
+msgid "IP address"
+msgstr "IP-adresse"
+
+msgid "Import"
+msgstr "Importer"
+
+msgid "Import result"
+msgstr "Importresultat"
+
+msgid ""
+"Import the <code>config.xml</code> of an AskoziaPBX 2.x system. You get a preview of what is imported, adapted (e.g. "
+"SIP to PJSIP) or dropped (analog/ISDN hardware) before anything changes."
+msgstr ""
+"Importer <code>config.xml</code> fra et AskoziaPBX 2.x-system. Du får vist en forhåndsvisning af, hvad der "
+"importeres, tilpasses (f.eks. SIP til PJSIP) eller udelades (analog/ISDN-hardware), før noget ændres."
+
+msgid "Import this configuration now?"
+msgstr "Importer denne konfiguration nu?"
+
+msgid "Imported. Review the configuration and apply the pending changes."
+msgstr "Importeret. Gennemgå konfigurationen, og anvend de ventende ændringer."
+
+msgid ""
+"In a conference press <kbd>*</kbd> for the menu, <kbd>1</kbd> to mute, <kbd>8</kbd> to leave. Admins (admin PIN) can "
+"lock the room (<kbd>2</kbd>) and kick the last caller (<kbd>3</kbd>)."
+msgstr ""
+"I en konference tryk <kbd>*</kbd> for menuen, <kbd>1</kbd> for at slå lyden fra, <kbd>8</kbd> for at forlade den. "
+"Administratorer (administrator-PIN) kan låse rummet (<kbd>2</kbd>) og smide den sidste opkalder ud (<kbd>3</kbd>)."
+
+msgid "In use"
+msgstr "I brug"
+
+msgid "In-band"
+msgstr "In-band"
+
+msgid "Incoming"
+msgstr "Indgående"
+
+msgid "Incoming caller ID"
+msgstr "Indgående opkalds-ID"
+
+msgid "Incoming calls"
+msgstr "Indgående opkald"
+
+msgid "India"
+msgstr "Indien"
+
+msgid "Initial password"
+msgstr "Startadgangskode"
+
+msgid "Install"
+msgstr "Installer"
+
+msgid "Install an update"
+msgstr "Installer en opdatering"
+
+msgid "Installed firmware"
+msgstr "Installeret firmware"
+
+msgid "Interface"
+msgstr "Interface"
+
+msgid "Internal numbers"
+msgstr "Interne numre"
+
+msgid "Invalid"
+msgstr "Ugyldig"
+
+msgid "Invalid DNS provider code"
+msgstr "Ugyldig DNS-udbyderkode"
+
+#, python-format
+msgid "Invalid PEM data: %(error)s"
+msgstr "Ugyldige PEM-data: %(error)s"
+
+#, python-format
+msgid "Invalid attribute line: %(line)r (expected key=value)"
+msgstr "Ugyldig attributlinje: %(line)r (forventet key=value)"
+
+msgid "Invalid characters"
+msgstr "Ugyldige tegn"
+
+msgid "Invalid choice"
+msgstr "Ugyldigt valg"
+
+#, python-format
+msgid "Invalid dialplan line: %(line)r (expected e.g. '1,Answer()' or 'n,Hangup()')"
+msgstr "Ugyldig dialplan-linje: %(line)r (forventet f.eks. '1,Answer()' eller 'n,Hangup()')"
+
+msgid "Invalid domain name"
+msgstr "Ugyldigt domænenavn"
+
+msgid "Invalid format"
+msgstr "Ugyldigt format"
+
+msgid "Invalid interface name"
+msgstr "Ugyldigt interfacenavn"
+
+msgid "Invalid password hash"
+msgstr "Ugyldig adgangskode-hash"
+
+#, python-format
+msgid "Invalid port in %(value)s"
+msgstr "Ugyldig port i %(value)s"
+
+msgid "Invalid username or password."
+msgstr "Ugyldigt brugernavn eller adgangskode."
+
+msgid "Invalid value"
+msgstr "Ugyldig værdi"
+
+#, python-format
+msgid "Invalid variable name %(name)r"
+msgstr "Ugyldigt variabelnavn %(name)r"
+
+msgid "Israel"
+msgstr "Israel"
+
+msgid "Issuer"
+msgstr "Udsteder"
+
+msgid "Italian"
+msgstr "Italiensk"
+
+msgid "Italy"
+msgstr "Italien"
+
+msgid "Japan"
+msgstr "Japan"
+
+msgid "Japanese"
+msgstr "Japansk"
+
+msgid "Keep messages on the PBX after e-mailing"
+msgstr "Behold beskeder på PBX'en efter afsendelse via e-mail"
+
+msgid "Kernel"
+msgstr "Kerne"
+
+msgid "LAN interface"
+msgstr "LAN-interface"
+
+msgid "LXC / Incus system container"
+msgstr "LXC / Incus-systemcontainer"
+
+msgid "Lagged"
+msgstr "Forsinket"
+
+msgid "Language"
+msgstr "Sprog"
+
+#, python-format
+msgid "Language of the web interface for %(user)s."
+msgstr "Sprog for webgrænsefladen for %(user)s."
+
+msgid "Last login"
+msgstr "Seneste login"
+
+msgid "Last port"
+msgstr "Sidste port"
+
+msgid "Last slot"
+msgstr "Sidste plads"
+
+msgid "Last used"
+msgstr "Senest brugt"
+
+msgid "Legacy AskoziaPBX"
+msgstr "Gammel AskoziaPBX"
+
+msgid "Let's Encrypt staging (testing, untrusted)"
+msgstr "Let's Encrypt staging (test, ikke betroet)"
+
+msgid "Light mode"
+msgstr "Lys tilstand"
+
+msgid "Light/dark theme: use the moon/sun icon in the top bar."
+msgstr "Lyst/mørkt tema: brug måne-/solikonet i topbjælken."
+
+msgid "Lithuania"
+msgstr "Litauen"
+
+msgid "Loading Asterisk status&hellip;"
+msgstr "Indlæser Asterisk-status&hellip;"
+
+msgid "Loading&hellip;"
+msgstr "Indlæser&hellip;"
+
+msgid "Location"
+msgstr "Placering"
+
+msgid "Log out after inactivity (minutes)"
+msgstr "Log ud efter inaktivitet (minutter)"
+
+msgid "Login"
+msgstr "Log ind"
+
+msgid "Login to your PBX"
+msgstr "Log ind på din PBX"
+
+msgid "Logout"
+msgstr "Log ud"
+
+msgid "Logs"
+msgstr "Logfiler"
+
+msgid "Make sure the network of your computer is allowed before applying restrictions."
+msgstr "Sørg for, at din computers netværk er tilladt, før du anvender begrænsninger."
+
+msgid "Malaysia"
+msgstr "Malaysia"
+
+msgid "Manager (AMI)"
+msgstr "Manager (AMI)"
+
+msgid "Manager user"
+msgstr "Manager-bruger"
+
+msgid "Manager user not found"
+msgstr "Manager-bruger ikke fundet"
+
+msgid "Max. message length (s)"
+msgstr "Maks. beskedlængde (s)"
+
+msgid "Max. registered devices"
+msgstr "Maks. registrerede enheder"
+
+msgid "Maximum expiry (s)"
+msgstr "Maksimal udløbstid (s)"
+
+msgid "Media"
+msgstr "Medier"
+
+msgid "Media (music on hold, greetings)"
+msgstr "Medier (ventemusik, hilsener)"
+
+msgid "Media encryption (SRTP)"
+msgstr "Mediekryptering (SRTP)"
+
+msgid "Media file not found"
+msgstr "Mediefil ikke fundet"
+
+msgid "Members"
+msgstr "Medlemmer"
+
+msgid "Memory"
+msgstr "Hukommelse"
+
+msgid "Merge into current configuration"
+msgstr "Flet ind i den aktuelle konfiguration"
+
+msgid "Mexico"
+msgstr "Mexico"
+
+msgid "Minimum expiry (s)"
+msgstr "Minimal udløbstid (s)"
+
+#, python-format
+msgid "Missing DNS provider credentials: %(names)s"
+msgstr "Manglende loginoplysninger til DNS-udbyder: %(names)s"
+
+msgid "Mode"
+msgstr "Tilstand"
+
+msgid "Music on hold"
+msgstr "Ventemusik"
+
+msgid "Must be a hostname or IP address"
+msgstr "Skal være et værtsnavn eller en IP-adresse"
+
+msgid "Must be a network in CIDR notation (e.g. 192.168.1.0/24)"
+msgstr "Skal være et netværk i CIDR-notation (f.eks. 192.168.1.0/24)"
+
+msgid "Must be a number"
+msgstr "Skal være et tal"
+
+msgid "Must be a valid e-mail address"
+msgstr "Skal være en gyldig e-mailadresse"
+
+msgid "Must be a whole number"
+msgstr "Skal være et heltal"
+
+msgid "Must be an IP address"
+msgstr "Skal være en IP-adresse"
+
+msgid "Must be an IPv4 address"
+msgstr "Skal være en IPv4-adresse"
+
+#, python-format
+msgid "Must be at least %(ge)s"
+msgstr "Skal være mindst %(ge)s"
+
+#, python-format
+msgid "Must be at most %(le)s"
+msgstr "Skal være højst %(le)s"
+
+#, python-format
+msgid "Must be greater than %(gt)s"
+msgstr "Skal være større end %(gt)s"
+
+#, python-format
+msgid "Must be less than %(lt)s"
+msgstr "Skal være mindre end %(lt)s"
+
+msgid "Must be yes or no"
+msgstr "Skal være ja eller nej"
+
+msgid "Must change the password at first login"
+msgstr "Skal skifte adgangskode ved første login"
+
+msgid "NAME=value per line. Stored values are not shown: leave the value empty (NAME=) to keep it."
+msgstr "NAME=value pr. linje. Gemte værdier vises ikke: lad værdien være tom (NAME=) for at beholde den."
+
+msgid "NAT / public address"
+msgstr "NAT / offentlig adresse"
+
+msgid "NAT, dynamic IP (hostname)"
+msgstr "NAT, dynamisk IP (værtsnavn)"
+
+msgid "NAT, static public IP"
+msgstr "NAT, statisk offentlig IP"
+
+msgid "Name"
+msgstr "Navn"
+
+msgid "Name is required"
+msgstr "Navn er påkrævet"
+
+msgid "Name server (host or host:port)"
+msgstr "Navneserver (host eller host:port)"
+
+msgid "Name shown to called parties."
+msgstr "Navn, der vises for den opkaldte part."
+
+msgid "Names"
+msgstr "Navne"
+
+msgid "Needed when providers or remote phones reach this PBX through a NAT router."
+msgstr "Nødvendigt, når udbydere eller eksterne telefoner når denne PBX gennem en NAT-router."
+
+msgid "Nested square brackets are not allowed"
+msgstr "Indlejrede firkantede parenteser er ikke tilladt"
+
+msgid "Netherlands"
+msgstr "Holland"
+
+msgid "Network"
+msgstr "Netværk"
+
+msgid "Network traffic"
+msgstr "Netværkstrafik"
+
+msgid "Network traffic (all interfaces)"
+msgstr "Netværkstrafik (alle interfaces)"
+
+msgid "Networks allowed to manage the PBX"
+msgstr "Netværk, der må administrere PBX'en"
+
+msgid "Networks allowed to use SIP/IAX"
+msgstr "Netværk, der må bruge SIP/IAX"
+
+#, python-format
+msgid "New %(tech)s phone"
+msgstr "Ny %(tech)s-telefon"
+
+#, python-format
+msgid "New %(tech)s provider"
+msgstr "Ny %(tech)s-udbyder"
+
+msgid "New Zealand"
+msgstr "New Zealand"
+
+msgid "New application"
+msgstr "Ny applikation"
+
+msgid "New call group"
+msgstr "Ny opkaldsgruppe"
+
+msgid "New conference room"
+msgstr "Nyt konferencerum"
+
+msgid "New manager user"
+msgstr "Ny manager-bruger"
+
+msgid "New password"
+msgstr "Ny adgangskode"
+
+msgid "Newer"
+msgstr "Nyere"
+
+msgid "No API tokens"
+msgstr "Ingen API-tokens"
+
+msgid "No active calls."
+msgstr "Ingen aktive opkald."
+
+msgid "No applications"
+msgstr "Ingen applikationer"
+
+msgid "No backups yet. Backups contain the configuration, media and the TLS certificate."
+msgstr "Ingen backups endnu. Backups indeholder konfigurationen, medier og TLS-certifikatet."
+
+msgid "No call groups"
+msgstr "Ingen opkaldsgrupper"
+
+msgid "No certificate found"
+msgstr "Intet certifikat fundet"
+
+msgid "No certificate found."
+msgstr "Intet certifikat fundet."
+
+msgid "No conference rooms"
+msgstr "Ingen konferencerum"
+
+msgid "No entries."
+msgstr "Ingen poster."
+
+msgid "No files uploaded."
+msgstr "Ingen filer uploadet."
+
+msgid "No manager users"
+msgstr "Ingen manager-brugere"
+
+msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
+msgstr "Ingen adgangskode angivet: kun login med nøgle (/data/ssh/authorized_keys) virker. Mindst 8 tegn."
+
+msgid "No phones yet"
+msgstr "Ingen telefoner endnu"
+
+msgid "No providers are configured yet."
+msgstr "Der er endnu ikke konfigureret nogen udbydere."
+
+msgid "No providers configured."
+msgstr "Ingen udbydere konfigureret."
+
+msgid "No providers yet"
+msgstr "Ingen udbydere endnu"
+
+msgid "No update signing key installed on this system"
+msgstr "Der er ikke installeret nogen signeringsnøgle til opdateringer på dette system"
+
+msgid "Norway"
+msgstr "Norge"
+
+msgid "Not a PhonixPBX update bundle"
+msgstr "Ikke en PhonixPBX-opdateringspakke"
+
+#, python-format
+msgid "Not a valid PhonixPBX backup: %(error)s"
+msgstr "Ikke en gyldig PhonixPBX-backup: %(error)s"
+
+#, python-format
+msgid "Not a valid update bundle: %(error)s"
+msgstr "Ikke en gyldig opdateringspakke: %(error)s"
+
+msgid "Not in use"
+msgstr "Ikke i brug"
+
+#, python-format
+msgid "Not supported, dropped: %(sections)s"
+msgstr "Ikke understøttet, udeladt: %(sections)s"
+
+msgid "Not used in a container: the clock comes from the container host."
+msgstr "Bruges ikke i en container: uret kommer fra containerværten."
+
+msgid "Notification address"
+msgstr "Notifikationsadresse"
+
+msgid "Notifications"
+msgstr "Notifikationer"
+
+msgid "Number"
+msgstr "Nummer"
+
+msgid "Number / URI"
+msgstr "Nummer / URI"
+
+#, python-format
+msgid "Number already used by %(owner)s"
+msgstr "Nummeret bruges allerede af %(owner)s"
+
+msgid "Number is reserved for call parking"
+msgstr "Nummeret er reserveret til parkering af opkald"
+
+msgid "OCI container (Docker / Podman)"
+msgstr "OCI-container (Docker / Podman)"
+
+msgid "Object"
+msgstr "Objekt"
+
+msgid "Obtain and renew the certificate automatically"
+msgstr "Hent og forny certifikatet automatisk"
+
+msgid "Off"
+msgstr "Fra"
+
+msgid "Off hook"
+msgstr "Røret løftet"
+
+msgid "Older"
+msgstr "Ældre"
+
+msgid "On Hold"
+msgstr "På hold"
+
+msgid "One CIDR per line, e.g. 192.168.1.0/24."
+msgstr "Én CIDR pr. linje, f.eks. 192.168.1.0/24."
+
+msgid "One after another"
+msgstr "Én efter én"
+
+msgid ""
+"One pattern per line. Phones dialing a matching number use this provider. X = any digit, N = 2-9, Z = 1-9, . = one or"
+" more, [1-5] = range. '0|X.' strips the leading 0; '49+0|X.' replaces it with 49."
+msgstr ""
+"Ét mønster pr. linje. Telefoner, der ringer til et matchende nummer, bruger denne udbyder. X = vilkårligt ciffer, N ="
+" 2-9, Z = 1-9, . = et eller flere, [1-5] = interval. '0|X.' fjerner det foranstillede 0; '49+0|X.' erstatter det med "
+"49."
+
+msgid "One per line."
+msgstr "Én pr. linje."
+
+#, python-format
+msgid "One per line. Empty: %(domain)s. The names must be public DNS names."
+msgstr "Én pr. linje. Tom: %(domain)s. Navnene skal være offentlige DNS-navne."
+
+msgid "One per line. With DHCP leave empty to use the servers from the DHCP server."
+msgstr "Én pr. linje. Ved DHCP lades feltet være tomt for at bruge serverne fra DHCP-serveren."
+
+msgid ""
+"One step per line: priority,Application(arguments), e.g. '1,Answer()', 'n,Playback(hello-world)', 'n,Hangup()'. "
+"'include => context' lines are allowed."
+msgstr ""
+"Ét trin pr. linje: prioritet,Application(argumenter), f.eks. '1,Answer()', 'n,Playback(hello-world)', 'n,Hangup()'. "
+"Linjer med 'include => context' er tilladt."
+
+msgid "Only 8 or 16 bit WAV files are supported"
+msgstr "Kun 8- eller 16-bit WAV-filer understøttes"
+
+msgid "Only PCM WAV files can be uploaded on this system (convert with: sox in.mp3 -r 8000 -c 1 out.wav)"
+msgstr "Kun PCM WAV-filer kan uploades på dette system (konverter med: sox in.mp3 -r 8000 -c 1 out.wav)"
+
+msgid "Only enable when needed. Access can additionally be limited under Advanced > Firewall."
+msgstr "Aktiver kun, når det er nødvendigt. Adgangen kan desuden begrænses under Avanceret > Firewall."
+
+msgid "Only if different from the username."
+msgstr "Kun hvis forskellig fra brugernavnet."
+
+msgid "Only web interface, SSH (if enabled), SIP/IAX and RTP are reachable."
+msgstr "Kun webgrænseflade, SSH (hvis aktiveret), SIP/IAX og RTP kan nås."
+
+msgid "Open user menu"
+msgstr "Åbn brugermenu"
+
+msgid "Optional - groups can also be used only as provider destinations."
+msgstr "Valgfrit - grupper kan også kun bruges som destinationer for udbydere."
+
+msgid "Optional alias used in the public context (e.g. 'sales' for sip:sales@pbx). Defaults to the extension."
+msgstr "Valgfrit alias, der bruges i den offentlige kontekst (f.eks. 'sales' for sip:sales@pbx). Standard er lokalnummeret."
+
+msgid "Optional. Callers must enter it to join."
+msgstr "Valgfrit. Opkaldere skal indtaste den for at deltage."
+
+msgid "Optional. Joins as moderator."
+msgstr "Valgfrit. Deltager som moderator."
+
+msgid ""
+"Optional; overrides the provider's caller ID setting for calls from this phone. Format: <code>Name "
+"&lt;number&gt;</code>."
+msgstr ""
+"Valgfrit; tilsidesætter udbyderens opkalds-ID-indstilling for opkald fra denne telefon. Format: <code>Name "
+"&lt;number&gt;</code>."
+
+msgid "Other ACME server"
+msgstr "Anden ACME-server"
+
+msgid "Other lego provider ..."
+msgstr "Anden lego-udbyder ..."
+
+msgid "Outgoing"
+msgstr "Udgående"
+
+msgid "Outgoing caller ID"
+msgstr "Udgående opkalds-ID"
+
+msgid "Outgoing caller ID per provider"
+msgstr "Udgående opkalds-ID pr. udbyder"
+
+msgid "Outgoing calls"
+msgstr "Udgående opkald"
+
+msgid "Outgoing mail server (SMTP)"
+msgstr "Udgående mailserver (SMTP)"
+
+msgid "Overview (print)"
+msgstr "Oversigt (udskrift)"
+
+msgid "Owner"
+msgstr "Ejer"
+
+msgid "PIN"
+msgstr "PIN"
+
+msgid "PIN must consist of digits only"
+msgstr "PIN må kun bestå af cifre"
+
+msgid "PIN protected"
+msgstr "PIN-beskyttet"
+
+msgid "Page not found"
+msgstr "Siden blev ikke fundet"
+
+msgid "Parking number"
+msgstr "Parkeringsnummer"
+
+msgid "Parking time (s)"
+msgstr "Parkeringstid (s)"
+
+msgid "Password"
+msgstr "Adgangskode"
+
+msgid "Password is too long"
+msgstr "Adgangskoden er for lang"
+
+#, python-format
+msgid "Password must have at least %(min)s characters"
+msgstr "Adgangskoden skal have mindst %(min)s tegn"
+
+msgid "Passwords do not match"
+msgstr "Adgangskoderne stemmer ikke overens"
+
+#, python-format
+msgid "Pattern %(pattern)s is already used by %(name)s"
+msgstr "Mønsteret %(pattern)s bruges allerede af %(name)s"
+
+msgid "Pending changes"
+msgstr "Ventende ændringer"
+
+msgid "Permitted networks"
+msgstr "Tilladte netværk"
+
+msgid "Personal access token"
+msgstr "Personligt adgangstoken"
+
+msgid "Philippines"
+msgstr "Filippinerne"
+
+#, python-format
+msgid "Phone %(extension)s created."
+msgstr "Telefon %(extension)s oprettet."
+
+#, python-format
+msgid "Phone %(extension)s saved."
+msgstr "Telefon %(extension)s gemt."
+
+#, python-format
+msgid "Phone (%(tech)s)"
+msgstr "Telefon (%(tech)s)"
+
+msgid "Phone is behind NAT (symmetric RTP, rewrite contact)"
+msgstr "Telefonen er bag NAT (symmetrisk RTP, omskriv contact)"
+
+msgid "Phone not found"
+msgstr "Telefon ikke fundet"
+
+msgid "Phones"
+msgstr "Telefoner"
+
+msgid "Phones and providers"
+msgstr "Telefoner og udbydere"
+
+msgid "Phones and providers. Empty = everyone (recommended only with strong passwords)."
+msgstr "Telefoner og udbydere. Tom = alle (anbefales kun med stærke adgangskoder)."
+
+msgid "PhonixPBX home"
+msgstr "PhonixPBX-forside"
+
+msgid "PhonixPBX runs in a container, so firmware update bundles do not apply here."
+msgstr "PhonixPBX kører i en container, så firmwareopdateringspakker gælder ikke her."
+
+msgid ""
+"PhonixPBX runs in a container: firmware update bundles do not apply. Update by replacing the container with a newer "
+"image and keeping /data."
+msgstr ""
+"PhonixPBX kører i en container: firmwareopdateringspakker gælder ikke. Opdater ved at erstatte containeren med et "
+"nyere image og beholde /data."
+
+msgid ""
+"PhonixPBX runs in a container: the address, gateway and DNS servers of the container are configured on the container "
+"host and the settings for the LAN interface below are not applied. The interface selects the address that is used for"
+" SIP; the NAT settings apply as usual."
+msgstr ""
+"PhonixPBX kører i en container: containerens adresse, gateway og DNS-servere konfigureres på containerværten, og "
+"indstillingerne for LAN-interfacet nedenfor anvendes ikke. Interfacet bestemmer den adresse, der bruges til SIP; NAT-"
+"indstillingerne gælder som normalt."
+
+msgid "Pickup"
+msgstr "Overtagelse"
+
+msgid "Plain text"
+msgstr "Klartekst"
+
+msgid "Platform"
+msgstr "Platform"
+
+msgid "Please choose your own password before continuing."
+msgstr "Vælg din egen adgangskode, før du fortsætter."
+
+msgid "Please correct the highlighted fields"
+msgstr "Ret de fremhævede felter"
+
+msgid "Poland"
+msgstr "Polen"
+
+msgid "Polish"
+msgstr "Polsk"
+
+msgid "Port"
+msgstr "Port"
+
+msgid "Portugal"
+msgstr "Portugal"
+
+msgid "Portuguese (Brazil)"
+msgstr "Portugisisk (Brasilien)"
+
+msgid "Pre-ring"
+msgstr "Før ring"
+
+msgid "Preferences"
+msgstr "Præferencer"
+
+msgid "Prefix"
+msgstr "Præfiks"
+
+msgid "Prefixes to add may only contain digits, '*' and '#'"
+msgstr "Præfikser, der tilføjes, må kun indeholde cifre, '*' og '#'"
+
+msgid "Preview"
+msgstr "Forhåndsvisning"
+
+msgid "Print"
+msgstr "Udskriv"
+
+msgid "Private key (PEM, unencrypted)"
+msgstr "Privat nøgle (PEM, ukrypteret)"
+
+msgid "Private key does not match the certificate"
+msgstr "Den private nøgle passer ikke til certifikatet"
+
+msgid "Prompts and number read-out."
+msgstr "Talebeskeder og oplæsning af numre."
+
+msgid "Protection"
+msgstr "Beskyttelse"
+
+msgid "Provider"
+msgstr "Udbyder"
+
+#, python-format
+msgid "Provider %(name)s created."
+msgstr "Udbyder %(name)s oprettet."
+
+#, python-format
+msgid "Provider %(name)s saved."
+msgstr "Udbyder %(name)s gemt."
+
+msgid "Provider is reached through NAT (symmetric RTP)"
+msgstr "Udbyderen nås gennem NAT (symmetrisk RTP)"
+
+msgid "Provider not found"
+msgstr "Udbyder ikke fundet"
+
+msgid "Providers"
+msgstr "Udbydere"
+
+msgid "Public"
+msgstr "Offentlig"
+
+msgid "Public IP address"
+msgstr "Offentlig IP-adresse"
+
+msgid "Public address / no NAT"
+msgstr "Offentlig adresse / ingen NAT"
+
+msgid "Public hostname"
+msgstr "Offentligt værtsnavn"
+
+msgid "Public name"
+msgstr "Offentligt navn"
+
+msgid "Public name may only contain letters, digits and . _ + -"
+msgstr "Det offentlige navn må kun indeholde bogstaver, cifre og . _ + -"
+
+msgid "Public number"
+msgstr "Offentligt nummer"
+
+msgid "Public number must consist of digits"
+msgstr "Det offentlige nummer skal bestå af cifre"
+
+msgid ""
+"Pull the new image and recreate the container with the same <code>/data</code> volume (for example <code>docker "
+"compose pull &amp;&amp; docker compose up -d</code>)."
+msgstr ""
+"Hent det nye image, og genopret containeren med den samme <code>/data</code>-volumen (for eksempel <code>docker "
+"compose pull &amp;&amp; docker compose up -d</code>)."
+
+msgid "Qualify interval (s)"
+msgstr "Qualify-interval (s)"
+
+msgid "RFC 2136 dynamic update (BIND, Knot, ...)"
+msgstr "RFC 2136 dynamisk opdatering (BIND, Knot, ...)"
+
+msgid "RTP"
+msgstr "RTP"
+
+msgid "Reach this phone via"
+msgstr "Nå denne telefon via"
+
+msgid "Reachable"
+msgstr "Tilgængelig"
+
+msgid "Reachable from outside"
+msgstr "Kan nås udefra"
+
+msgid "Reachable from outside (public direct dial)"
+msgstr "Kan nås udefra (offentligt direkte nummer)"
+
+msgid "Read"
+msgstr "Læse"
+
+msgid "Read permissions"
+msgstr "Læserettigheder"
+
+msgid "Read-only"
+msgstr "Skrivebeskyttet"
+
+msgid "Read-only tokens can only use GET requests."
+msgstr "Skrivebeskyttede tokens kan kun bruge GET-anmodninger."
+
+msgid "Read-write"
+msgstr "Læse/skrive"
+
+msgid "Reboot"
+msgstr "Genstart"
+
+msgid "Reboot into the new firmware"
+msgstr "Genstart med den nye firmware"
+
+msgid "Recipient"
+msgstr "Modtager"
+
+msgid "Region"
+msgstr "Region"
+
+msgid "Register with the provider"
+msgstr "Registrer hos udbyderen"
+
+msgid "Registered"
+msgstr "Registreret"
+
+msgid "Registration / state"
+msgstr "Registrering / tilstand"
+
+msgid "Registration timers"
+msgstr "Registreringstimere"
+
+msgid "Rejected"
+msgstr "Afvist"
+
+#, python-format
+msgid "Reloading the web server failed: %(error)s"
+msgstr "Genindlæsning af webserveren mislykkedes: %(error)s"
+
+msgid "Remove the password (key logins only)"
+msgstr "Fjern adgangskoden (kun login med nøgle)"
+
+msgid "Renewed daily when it expires in less than 30 days."
+msgstr "Fornyes dagligt, når det udløber om mindre end 30 dage."
+
+msgid "Repeat new password"
+msgstr "Gentag ny adgangskode"
+
+msgid "Replace current configuration (backup first)"
+msgstr "Erstat den aktuelle konfiguration (backup først)"
+
+msgid "Report busy with this many concurrent calls."
+msgstr "Meld optaget ved dette antal samtidige opkald."
+
+msgid "Requesting a certificate ..."
+msgstr "Anmoder om et certifikat ..."
+
+msgid "Requires e-mail notifications (Services &gt; Notifications)."
+msgstr "Kræver e-mailnotifikationer (Tjenester &gt; Notifikationer)."
+
+msgid "Reserved"
+msgstr "Reserveret"
+
+msgid "Reset and reboot"
+msgstr "Nulstil og genstart"
+
+msgid "Reset to factory defaults"
+msgstr "Nulstil til fabriksindstillinger"
+
+msgid "Resource group"
+msgstr "Ressourcegruppe"
+
+#, python-format
+msgid "Restarting Asterisk for SIP-TLS failed: %(error)s"
+msgstr "Genstart af Asterisk for SIP-TLS mislykkedes: %(error)s"
+
+msgid "Restore"
+msgstr "Gendan"
+
+msgid "Ring"
+msgstr "Kalder"
+
+msgid "Ring all at once"
+msgstr "Ring til alle på én gang"
+
+msgid "Ring strategy"
+msgstr "Ringestrategi"
+
+msgid "Ring time (seconds)"
+msgstr "Ringetid (sekunder)"
+
+msgid "Ring+Inuse"
+msgstr "Ringer+I brug"
+
+msgid "Ringing"
+msgstr "Ringer"
+
+#, python-format
+msgid "Route %(num)s: %(error)s"
+msgstr "Rute %(num)s: %(error)s"
+
+msgid ""
+"Route incoming calls by the dialed number (DID). Leave the pattern empty to catch all calls. Several destinations "
+"with the same pattern ring in parallel."
+msgstr ""
+"Rut indgående opkald efter det kaldte nummer (DID). Lad mønsteret være tomt for at fange alle opkald. Flere "
+"destinationer med samme mønster ringer parallelt."
+
+msgid "Russia"
+msgstr "Rusland"
+
+msgid "Russian"
+msgstr "Russisk"
+
+msgid "SIP"
+msgstr "SIP"
+
+msgid "SIP URI (user@host)"
+msgstr "SIP-URI (user@host)"
+
+msgid "SIP phone"
+msgstr "SIP-telefon"
+
+msgid ""
+"SIP phones register with the extension as username and the account password. The server address is this system's IP "
+"address."
+msgstr ""
+"SIP-telefoner registrerer sig med lokalnummeret som brugernavn og kontoens adgangskode. Serveradressen er dette "
+"systems IP-adresse."
+
+msgid "SIP phones registered"
+msgstr "Registrerede SIP-telefoner"
+
+msgid "SIP port (UDP/TCP)"
+msgstr "SIP-port (UDP/TCP)"
+
+msgid "SIP provider"
+msgstr "SIP-udbyder"
+
+msgid "SIP, IAX and RTP settings"
+msgstr "SIP-, IAX- og RTP-indstillinger"
+
+msgid "SMTP server"
+msgstr "SMTP-server"
+
+msgid "SSH root password"
+msgstr "SSH-adgangskode til root"
+
+msgid "STARTTLS (port 587)"
+msgstr "STARTTLS (port 587)"
+
+msgid "Save"
+msgstr "Gem"
+
+msgid "Save and request certificate now"
+msgstr "Gem og anmod om certifikat nu"
+
+msgid "Secret"
+msgstr "Hemmelighed"
+
+msgid "Secret API key"
+msgstr "Hemmelig API-nøgle"
+
+msgid "Secret access key"
+msgstr "Hemmelig adgangsnøgle"
+
+msgid "Secret must be 4-128 characters without spaces, quotes, ';' or backslashes"
+msgstr "Hemmeligheden skal være 4-128 tegn uden mellemrum, anførselstegn, ';' eller omvendte skråstreger"
+
+msgid "Section"
+msgstr "Sektion"
+
+msgid "See the <a href=\"https://go-acme.github.io/lego/dns/\" target=\"_blank\" rel=\"noopener\">lego DNS provider list</a>."
+msgstr ""
+"Se <a href=\"https://go-acme.github.io/lego/dns/\" target=\"_blank\" rel=\"noopener\">listen over DNS-udbydere i "
+"lego</a>."
+
+msgid "Select at least one codec"
+msgstr "Vælg mindst én codec"
+
+msgid "Select at least one member"
+msgstr "Vælg mindst ét medlem"
+
+msgid "Send a test message"
+msgstr "Send en testbesked"
+
+msgid "Send test"
+msgstr "Send test"
+
+msgid "Send the token in the <code>Authorization: Bearer</code> header. See the <a href=\"/api/docs\">API documentation</a>."
+msgstr "Send tokenet i headeren <code>Authorization: Bearer</code>. Se <a href=\"/api/docs\">API-dokumentationen</a>."
+
+msgid "Send voicemail to e-mail"
+msgstr "Send telefonsvarerbeskeder til e-mail"
+
+msgid "Sender address"
+msgstr "Afsenderadresse"
+
+msgid "Sender name"
+msgstr "Afsendernavn"
+
+#, python-format
+msgid "Sending failed (did you apply the settings?): %(detail)s"
+msgstr "Afsendelse mislykkedes (har du anvendt indstillingerne?): %(detail)s"
+
+msgid "Server requires authentication"
+msgstr "Serveren kræver godkendelse"
+
+msgid "Services"
+msgstr "Tjenester"
+
+msgid "Settings saved."
+msgstr "Indstillinger gemt."
+
+msgid "Settings saved. Apply the changes to activate them."
+msgstr "Indstillinger gemt. Anvend ændringerne for at aktivere dem."
+
+msgid "Show or hide"
+msgstr "Vis eller skjul"
+
+msgid "Show/hide"
+msgstr "Vis/skjul"
+
+msgid "Shut down"
+msgstr "Luk ned"
+
+msgid "Sign in"
+msgstr "Log ind"
+
+msgid "Singapore"
+msgstr "Singapore"
+
+msgid "Size"
+msgstr "Størrelse"
+
+msgid "Something went wrong"
+msgstr "Noget gik galt"
+
+msgid "South Africa"
+msgstr "Sydafrika"
+
+msgid "Spain"
+msgstr "Spanien"
+
+msgid "Spanish"
+msgstr "Spansk"
+
+msgid "State"
+msgstr "Tilstand"
+
+msgid "Static"
+msgstr "Statisk"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Stopped"
+msgstr "Stoppet"
+
+msgid "Storage"
+msgstr "Lager"
+
+msgid "Strategy"
+msgstr "Strategi"
+
+msgid "Subject"
+msgstr "Emne"
+
+msgid "Subscription ID"
+msgstr "Abonnements-ID"
+
+msgid "Summary"
+msgstr "Oversigt"
+
+msgid "Sweden"
+msgstr "Sverige"
+
+msgid "Swedish"
+msgstr "Svensk"
+
+msgid "Switzerland"
+msgstr "Schweiz"
+
+msgid "System"
+msgstr "System"
+
+msgid "System information"
+msgstr "Systeminformation"
+
+#, python-format
+msgid ""
+"System prompts use the default language <strong>%(language)s</strong> (change it under <a "
+"href=\"/system/general\">General Setup</a>). The firmware ships English prompts; other languages fall back to English"
+" recordings."
+msgstr ""
+"Systembeskeder bruger standardsproget <strong>%(language)s</strong> (skift det under <a "
+"href=\"/system/general\">Generel opsætning</a>). Firmwaren leveres med engelske beskeder; andre sprog falder tilbage "
+"til engelske optagelser."
+
+msgid "System settings"
+msgstr "Systemindstillinger"
+
+msgid "TLS / SMTPS (port 465)"
+msgstr "TLS / SMTPS (port 465)"
+
+msgid "TLS port"
+msgstr "TLS-port"
+
+msgid "TSIG algorithm (e.g. hmac-sha256.)"
+msgstr "TSIG-algoritme (f.eks. hmac-sha256.)"
+
+msgid "TSIG key name"
+msgstr "TSIG-nøglenavn"
+
+msgid "TSIG secret"
+msgstr "TSIG-hemmelighed"
+
+msgid "Taiwan"
+msgstr "Taiwan"
+
+msgid "Telephony"
+msgstr "Telefoni"
+
+msgid "Tenant ID"
+msgstr "Tenant-ID"
+
+#, python-format
+msgid "Test message sent to %(to)s."
+msgstr "Testbesked sendt til %(to)s."
+
+msgid "Thailand"
+msgstr "Thailand"
+
+msgid ""
+"The Asterisk Manager Interface (TCP port 5038) lets external software (CTI, dashboards) control the PBX. Only add "
+"users you need and restrict their networks."
+msgstr ""
+"Asterisk Manager Interface (TCP-port 5038) lader ekstern software (CTI, dashboards) styre PBX'en. Tilføj kun de "
+"brugere, du har brug for, og begræns deres netværk."
+
+msgid ""
+"The CA connects to <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: the names must resolve to this PBX "
+"and port 80 must be reachable from the internet."
+msgstr ""
+"CA'en forbinder til <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: navnene skal pege på denne PBX, og "
+"port 80 skal kunne nås fra internettet."
+
+msgid "The directory URL must start with https://"
+msgstr "Katalog-URL'en skal starte med https://"
+
+msgid "The end port must be greater than the start port."
+msgstr "Slutporten skal være større end startporten."
+
+msgid "The file is empty"
+msgstr "Filen er tom"
+
+msgid "The file is too large (max. 64 MB)"
+msgstr "Filen er for stor (maks. 64 MB)"
+
+msgid ""
+"The firewall only allows the web interface from <a href=\"/advanced/firewall\">selected networks</a>, so the CA "
+"cannot reach port 80. Use DNS validation."
+msgstr ""
+"Firewallen tillader kun webgrænsefladen fra <a href=\"/advanced/firewall\">udvalgte netværk</a>, så CA'en kan ikke nå"
+" port 80. Brug DNS-validering."
+
+msgid "The import has errors and cannot be applied as is."
+msgstr "Importen indeholder fejl og kan ikke anvendes, som den er."
+
+msgid "The initial password is shown on the system console. Lost it? Use the console menu to reset it."
+msgstr "Startadgangskoden vises på systemkonsollen. Har du mistet den? Brug konsolmenuen til at nulstille den."
+
+msgid "The last administrator cannot be deleted"
+msgstr "Den sidste administrator kan ikke slettes"
+
+msgid "The lego ACME client is not installed."
+msgstr "ACME-klienten lego er ikke installeret."
+
+msgid "The log is empty or not available."
+msgstr "Loggen er tom eller ikke tilgængelig."
+
+msgid "The number used to dial this phone and the SIP/IAX username."
+msgstr "Nummeret, der bruges til at ringe til denne telefon, og SIP/IAX-brugernavnet."
+
+msgid "The number used to dial this phone."
+msgstr "Nummeret, der bruges til at ringe til denne telefon."
+
+msgid "The password must have at least 8 characters"
+msgstr "Adgangskoden skal have mindst 8 tegn"
+
+msgid "The system is being reset to factory defaults and reboots now."
+msgstr "Systemet nulstilles til fabriksindstillinger og genstarter nu."
+
+msgid "The system is rebooting. This page reloads when it is back."
+msgstr "Systemet genstarter. Denne side genindlæses, når det er tilbage."
+
+msgid "The system is shutting down."
+msgstr "Systemet lukker ned."
+
+msgid "The uploaded file expired, please upload it again."
+msgstr "Den uploadede fil er udløbet, upload den igen."
+
+msgid ""
+"The web interface uses a self-signed certificate. <a href=\"/advanced/certificate\">Get one from Let's Encrypt or "
+"upload your own</a> to get rid of browser warnings."
+msgstr ""
+"Webgrænsefladen bruger et selvsigneret certifikat. <a href=\"/advanced/certificate\">Hent et fra Let's Encrypt, eller"
+" upload dit eget</a> for at slippe af med browseradvarsler."
+
+msgid ""
+"This erases the complete configuration, voicemail, media and backups on this system and reboots. Download a backup "
+"first."
+msgstr ""
+"Dette sletter hele konfigurationen, telefonsvarerbeskeder, medier og backups på dette system og genstarter. Download "
+"først en backup."
+
+msgid "This field is required"
+msgstr "Dette felt er påkrævet"
+
+msgid "This phone cannot place outgoing calls through the selected providers."
+msgstr "Denne telefon kan ikke foretage udgående opkald via de valgte udbydere."
+
+msgid "This username is reserved"
+msgstr "Dette brugernavn er reserveret"
+
+msgid "Time (UTC)"
+msgstr "Tid (UTC)"
+
+msgid "Time servers"
+msgstr "Tidsservere"
+
+msgid "Time zone"
+msgstr "Tidszone"
+
+msgid "Toggle navigation"
+msgstr "Skift navigation"
+
+msgid "Token"
+msgstr "Token"
+
+#, python-format
+msgid "Token \"%(name)s\" created"
+msgstr "Token \"%(name)s\" oprettet"
+
+msgid "Token not found"
+msgstr "Token ikke fundet"
+
+msgid "Tokens (domain:token, comma separated)"
+msgstr "Tokens (domain:token, kommasepareret)"
+
+msgid "Tone zone"
+msgstr "Tonezone"
+
+msgid "Too many failed attempts. Please wait a few minutes."
+msgstr "For mange mislykkede forsøg. Vent et par minutter."
+
+msgid "Topology"
+msgstr "Topologi"
+
+msgid "Transfer a call here to park it."
+msgstr "Viderestil et opkald hertil for at parkere det."
+
+msgid "Transfer digit timeout (s)"
+msgstr "Timeout for viderestillingscifre (s)"
+
+msgid "Transfers & Parking"
+msgstr "Viderestilling og parkering"
+
+msgid "Transport"
+msgstr "Transport"
+
+msgid "Turn on automatic certificates to request one."
+msgstr "Slå automatiske certifikater til for at anmode om et."
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Type RESET to confirm"
+msgstr "Skriv RESET for at bekræfte"
+
+msgid "Type RESET to confirm."
+msgstr "Skriv RESET for at bekræfte."
+
+msgid "UDP ports used for audio and video. Each call uses two ports per leg."
+msgstr "UDP-porte, der bruges til lyd og video. Hvert opkald bruger to porte pr. ben."
+
+msgid "Unanswered calls go to the voicemail box of the first member (if enabled)."
+msgstr "Ubesvarede opkald går til telefonsvareren for det første medlem (hvis aktiveret)."
+
+msgid "Unanswered or busy calls go to voicemail. Dial 000086 (0000VM) to listen to messages."
+msgstr "Ubesvarede eller optagne opkald går til telefonsvareren. Ring 000086 (0000VM) for at aflytte beskeder."
+
+msgid "Unavail"
+msgstr "Utilg."
+
+msgid "Unavailable"
+msgstr "Utilgængelig"
+
+msgid "United Kingdom"
+msgstr "Storbritannien"
+
+msgid "United States"
+msgstr "USA"
+
+msgid "United States (old)"
+msgstr "USA (gammel)"
+
+msgid "Unknown"
+msgstr "Ukendt"
+
+#, python-format
+msgid "Unknown codec %(codec)r"
+msgstr "Ukendt codec %(codec)r"
+
+msgid "Unknown language"
+msgstr "Ukendt sprog"
+
+msgid "Unknown media type"
+msgstr "Ukendt medietype"
+
+#, python-format
+msgid "Unknown permission %(name)r"
+msgstr "Ukendt rettighed %(name)r"
+
+msgid "Unknown phone selected"
+msgstr "Ukendt telefon valgt"
+
+msgid "Unknown provider"
+msgstr "Ukendt udbyder"
+
+msgid "Unknown time zone"
+msgstr "Ukendt tidszone"
+
+msgid "Unknown tone zone"
+msgstr "Ukendt tonezone"
+
+msgid "Unmatched square bracket"
+msgstr "Uparret firkantet parentes"
+
+msgid "Unreachable"
+msgstr "Kan ikke nås"
+
+msgid "Unregistered"
+msgstr "Ikke registreret"
+
+#, python-format
+msgid "Unsafe path in backup: %(name)s"
+msgstr "Usikker sti i backup: %(name)s"
+
+msgid "Unsupported backup format"
+msgstr "Backupformatet understøttes ikke"
+
+msgid "Up"
+msgstr "Oppe"
+
+#, python-format
+msgid "Update bundle is missing %(name)s"
+msgstr "Opdateringspakken mangler %(name)s"
+
+#, python-format
+msgid "Update check failed: %(error)s"
+msgstr "Søgning efter opdateringer mislykkedes: %(error)s"
+
+msgid "Update file is too large"
+msgstr "Opdateringsfilen er for stor"
+
+msgid "Update information URL"
+msgstr "URL til opdateringsinformation"
+
+#, python-format
+msgid "Update is for board %(board)s, this system is %(current)s"
+msgstr "Opdateringen er til boardet %(board)s, dette system er %(current)s"
+
+#, python-format
+msgid "Update rejected: %(error)s"
+msgstr "Opdatering afvist: %(error)s"
+
+msgid "Update signature is invalid"
+msgstr "Opdateringens signatur er ugyldig"
+
+msgid "Update signing key is not an ed25519 key"
+msgstr "Signeringsnøglen til opdateringer er ikke en ed25519-nøgle"
+
+msgid "Updates: replace the container image"
+msgstr "Opdateringer: udskift container-imaget"
+
+msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). The current state is backed up first."
+msgstr "Upload en PhonixPBX-backup (<code>.tar.zst</code>). Den aktuelle tilstand sikkerhedskopieres først."
+
+msgid ""
+"Upload a signed <code>.update</code> bundle for this board. It is written to the inactive system slot; the "
+"configuration and data are kept. If the new firmware fails to start, the previous one is booted automatically."
+msgstr ""
+"Upload en signeret <code>.update</code>-pakke til dette board. Den skrives til den inaktive systemplads; "
+"konfigurationen og data bevares. Hvis den nye firmware ikke starter, startes den forrige automatisk."
+
+msgid "Upload certificate"
+msgstr "Upload certifikat"
+
+msgid "Upload your own hold music. Files are converted to 8 kHz mono WAV. Without uploads the bundled music is used."
+msgstr "Upload din egen ventemusik. Filer konverteres til 8 kHz mono WAV. Uden uploads bruges den medfølgende musik."
+
+msgid "Uploaded"
+msgstr "Uploadet"
+
+msgid "Uploaded files"
+msgstr "Uploadede filer"
+
+msgid "Uptime"
+msgstr "Oppetid"
+
+msgid "Use DNS SRV lookups"
+msgstr "Brug DNS SRV-opslag"
+
+msgid "Use lowercase letters, digits, '.', '_' or '-'"
+msgstr "Brug små bogstaver, cifre, '.', '_' eller '-'"
+
+msgid "Used by PhonixPBX (certificate, Asterisk). The host name of the container itself is set on the container host."
+msgstr "Bruges af PhonixPBX (certifikat, Asterisk). Selve containerens værtsnavn angives på containerværten."
+
+msgid "Used by the phone to register. Generated passwords are strong; keep them."
+msgstr "Bruges af telefonen til registrering. Genererede adgangskoder er stærke; behold dem."
+
+msgid "Used for the web interface and SIP over TLS. Installing a certificate turns off automatic certificates."
+msgstr "Bruges til webgrænsefladen og SIP over TLS. Installation af et certifikat slår automatiske certifikater fra."
+
+msgid "Used for voicemail-to-e-mail and missed call notifications."
+msgstr "Bruges til telefonsvarer-til-e-mail og notifikationer om ubesvarede opkald."
+
+msgid "Used when this provider is unavailable or congested."
+msgstr "Bruges, når denne udbyder er utilgængelig eller overbelastet."
+
+msgid "Useful when the PBX resolves its own domain to an internal DNS server."
+msgstr "Nyttigt, når PBX'en slår sit eget domæne op på en intern DNS-server."
+
+msgid "User"
+msgstr "Bruger"
+
+msgid "User agent"
+msgstr "User agent"
+
+msgid "User already exists"
+msgstr "Brugeren findes allerede"
+
+msgid "User not found"
+msgstr "Bruger ikke fundet"
+
+msgid "Username"
+msgstr "Brugernavn"
+
+msgid "Username already exists"
+msgstr "Brugernavnet findes allerede"
+
+msgid "Username may contain letters, digits, '_' and '-'"
+msgstr "Brugernavnet må indeholde bogstaver, cifre, '_' og '-'"
+
+msgid "Username may only contain letters, digits and . _ @ + -"
+msgstr "Brugernavnet må kun indeholde bogstaver, cifre og . _ @ + -"
+
+msgid "Uses the applied configuration &mdash; apply pending changes first."
+msgstr "Bruger den anvendte konfiguration &mdash; anvend først ventende ændringer."
+
+msgid "Valid until"
+msgstr "Gyldig indtil"
+
+msgid "Validation"
+msgstr "Validering"
+
+msgid "Value"
+msgstr "Værdi"
+
+#, python-brace-format
+msgid "Variables: ${VM_NAME}, ${VM_DUR}, ${VM_MSGNUM}, ${VM_MAILBOX}, ${VM_CALLERID}, ${VM_DATE}. Empty = default text."
+msgstr "Variabler: ${VM_NAME}, ${VM_DUR}, ${VM_MSGNUM}, ${VM_MAILBOX}, ${VM_CALLERID}, ${VM_DATE}. Tom = standardtekst."
+
+msgid "Venezuela"
+msgstr "Venezuela"
+
+msgid "Verify the server certificate"
+msgstr "Verificer servercertifikatet"
+
+msgid "Version"
+msgstr "Version"
+
+#, python-format
+msgid "Version %(latest)s is available (running %(version)s). Download: %(url)s"
+msgstr "Version %(latest)s er tilgængelig (kører %(version)s). Download: %(url)s"
+
+#, python-format
+msgid "Version <strong>%(version)s</strong> has been installed into the inactive slot."
+msgstr "Version <strong>%(version)s</strong> er installeret i den inaktive plads."
+
+msgid "Voice prompts"
+msgstr "Talebeskeder"
+
+msgid "Voicemail"
+msgstr "Telefonsvarer"
+
+msgid "Voicemail &amp; notifications"
+msgstr "Telefonsvarer &amp; notifikationer"
+
+msgid "Voicemail PIN"
+msgstr "Telefonsvarer-PIN"
+
+msgid ""
+"Voicemail can be read by dialing <strong>000086</strong>. Configure <a href=\"/services/email\">e-mail "
+"notifications</a> to receive messages by e-mail."
+msgstr ""
+"Telefonsvarerbeskeder kan aflyttes ved at ringe <strong>000086</strong>. Konfigurer <a "
+"href=\"/services/email\">e-mailnotifikationer</a> for at modtage beskeder via e-mail."
+
+msgid "Voicemail greeting"
+msgstr "Telefonsvarerhilsen"
+
+msgid "Voicemail, conferencing and media"
+msgstr "Telefonsvarer, konferencer og medier"
+
+msgid "Web interface and SSH. One CIDR per line, e.g. 192.168.1.0/24. Empty = everyone."
+msgstr "Webgrænseflade og SSH. Én CIDR pr. linje, f.eks. 192.168.1.0/24. Tom = alle."
+
+msgid "Wildcard domains need DNS validation"
+msgstr "Wildcard-domæner kræver DNS-validering"
+
+msgid "Wildcards '.' and '!' are not allowed before '|'"
+msgstr "Wildcards '.' og '!' er ikke tilladt før '|'"
+
+msgid "Write"
+msgstr "Skrive"
+
+msgid "Write permissions"
+msgstr "Skriverettigheder"
+
+#, python-format
+msgid "You are running the latest version (%(version)s)."
+msgstr "Du kører den nyeste version (%(version)s)."
+
+msgid "You are still using the initial administrator password. <a href=\"/password\">Change it now</a>."
+msgstr "Du bruger stadig administratorens startadgangskode. <a href=\"/password\">Skift den nu</a>."
+
+msgid "You cannot delete yourself"
+msgstr "Du kan ikke slette dig selv"
+
+msgid "Your main number at this provider (informational)."
+msgstr "Dit hovednummer hos denne udbyder (til information)."
+
+msgid "Your password has been changed."
+msgstr "Din adgangskode er blevet ændret."
+
+msgid "Your preferences have been saved."
+msgstr "Dine præferencer er blevet gemt."
+
+msgid "ZeroSSL needs the EAB key ID and HMAC key from the ZeroSSL dashboard"
+msgstr "ZeroSSL kræver EAB-nøgle-ID og HMAC-nøgle fra ZeroSSL-dashboardet"
+
+msgid "a parking slot"
+msgstr "en parkeringsplads"
+
+msgid "a provider"
+msgstr "en udbyder"
+
+msgid "active"
+msgstr "aktiv"
+
+msgid "admin PIN"
+msgstr "administrator-PIN"
+
+#, python-format
+msgid "administrator %(name)s"
+msgstr "administrator %(name)s"
+
+msgid "all"
+msgstr "alle"
+
+msgid "all numbers"
+msgstr "alle numre"
+
+#, python-format
+msgid "application %(name)s"
+msgstr "applikation %(name)s"
+
+#, python-format
+msgid "call group %(name)s"
+msgstr "opkaldsgruppe %(name)s"
+
+msgid "call parking"
+msgstr "parkering af opkald"
+
+msgid "changed"
+msgstr "ændret"
+
+msgid "close"
+msgstr "luk"
+
+#, python-format
+msgid "conference room %(name)s"
+msgstr "konferencerum %(name)s"
+
+#, python-format
+msgid "config.xml version %(version)s"
+msgstr "config.xml version %(version)s"
+
+msgid "create"
+msgstr "opret"
+
+msgid "destination"
+msgstr "destination"
+
+msgid "details"
+msgstr "detaljer"
+
+msgid "disabled"
+msgstr "deaktiveret"
+
+msgid "e.g. monitoring"
+msgstr "f.eks. monitoring"
+
+msgid "e.g. powerdns"
+msgstr "f.eks. powerdns"
+
+msgid "enabled"
+msgstr "aktiveret"
+
+msgid "expired"
+msgstr "udløbet"
+
+msgid "external"
+msgstr "ekstern"
+
+msgid "first = preferred"
+msgstr "først = foretrukket"
+
+msgid "fixed caller ID"
+msgstr "fast opkalds-ID"
+
+msgid "incoming number pattern"
+msgstr "mønster for indgående nummer"
+
+msgid "invalid token"
+msgstr "ugyldigt token"
+
+msgid "lego output"
+msgstr "lego-output"
+
+msgid "lego provider code"
+msgstr "lego-udbyderkode"
+
+msgid "live"
+msgstr "live"
+
+msgid "manage phones"
+msgstr "administrer telefoner"
+
+msgid "manage providers"
+msgstr "administrer udbydere"
+
+#, python-format
+msgid "manager user %(name)s"
+msgstr "manager-bruger %(name)s"
+
+msgid "memory used"
+msgstr "hukommelse brugt"
+
+msgid "must be a phone number"
+msgstr "skal være et telefonnummer"
+
+msgid "must change password"
+msgstr "skal skifte adgangskode"
+
+msgid "must look like user@host"
+msgstr "skal have formen user@host"
+
+msgid "never"
+msgstr "aldrig"
+
+msgid "none"
+msgstr "ingen"
+
+msgid "none (port 25)"
+msgstr "ingen (port 25)"
+
+msgid "not loaded"
+msgstr "ikke indlæst"
+
+msgid "not registered"
+msgstr "ikke registreret"
+
+msgid "off"
+msgstr "fra"
+
+msgid "offer SRTP (SDES), fall back to RTP"
+msgstr "tilbyd SRTP (SDES), fald tilbage til RTP"
+
+msgid "one after another"
+msgstr "én efter én"
+
+msgid "open"
+msgstr "åben"
+
+#, python-format
+msgid "phone %(callerid)s <%(extension)s>"
+msgstr "telefon %(callerid)s <%(extension)s>"
+
+#, python-format
+msgid "phone %(ext)s"
+msgstr "telefon %(ext)s"
+
+msgid "prepend text to name"
+msgstr "sæt tekst foran navnet"
+
+#, python-format
+msgid "provider %(name)s"
+msgstr "udbyder %(name)s"
+
+msgid "public"
+msgstr "offentlig"
+
+msgid "read-only"
+msgstr "skrivebeskyttet"
+
+msgid "read-write"
+msgstr "læse/skrive"
+
+msgid "registered"
+msgstr "registreret"
+
+msgid "remove route"
+msgstr "fjern rute"
+
+msgid "replace name with number"
+msgstr "erstat navn med nummer"
+
+msgid "replace with text"
+msgstr "erstat med tekst"
+
+msgid "required for external phones"
+msgstr "påkrævet for eksterne telefoner"
+
+msgid "required for missed call notifications"
+msgstr "påkrævet for notifikationer om ubesvarede opkald"
+
+msgid "required for this caller id override"
+msgstr "påkrævet for denne tilsidesættelse af opkalds-ID"
+
+msgid "required when the caller id source is a fixed string"
+msgstr "påkrævet, når kilden til opkalds-ID er en fast tekst"
+
+msgid "ring all"
+msgstr "ring til alle"
+
+msgid "running"
+msgstr "kører"
+
+msgid "select a provider"
+msgstr "vælg en udbyder"
+
+msgid "self-signed"
+msgstr "selvsigneret"
+
+msgid "skip"
+msgstr "spring over"
+
+#, python-format
+msgid "the configuration has been changed (%(areas)s). Apply to activate."
+msgstr "konfigurationen er blevet ændret (%(areas)s). Anvend for at aktivere."
+
+#, python-format
+msgid "token %(name)s"
+msgstr "token %(name)s"
+
+msgid "unchanged"
+msgstr "uændret"
+
+msgid "unchanged - leave empty to keep"
+msgstr "uændret - lad feltet være tomt for at beholde"
+
+msgid "unknown"
+msgstr "ukendt"
+
+msgid "unlimited"
+msgstr "ubegrænset"
+
+msgid "update"
+msgstr "opdater"
+
+msgid "use provider setting"
+msgstr "brug udbyderens indstilling"
+
+msgid "use the phone's caller ID"
+msgstr "brug telefonens opkalds-ID"
+
+msgid "used"
+msgstr "brugt"
+
+msgid "yes"
+msgstr "ja"
+

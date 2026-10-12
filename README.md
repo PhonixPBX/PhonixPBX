@@ -96,6 +96,8 @@ export PHONIX_DATA_DIR=$PWD/dev/root/data PHONIX_ROOT=$PWD/dev/root \
 ```
 
 Front-end assets are vendored; refresh them with `scripts/vendor-update.sh`.
+After changing UI texts, run `scripts/i18n.sh update` and fill in the new entries of the
+catalogs in `phonix/locale/` (`tests/test_i18n.py` checks them).
 
 ## License
 

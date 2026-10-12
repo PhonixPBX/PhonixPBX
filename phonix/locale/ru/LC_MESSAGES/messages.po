@@ -1,0 +1,2970 @@
+# Russian translations for PhonixPBX.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PhonixPBX project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PhonixPBX VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-10-12 21:37+0200\n"
+"PO-Revision-Date: 2026-10-12 21:37+0200\n"
+"Last-Translator: PhonixPBX contributors\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#, python-format
+msgid "%(domain)s is not a public DNS name. Enter the names the PBX is reached by."
+msgstr "%(domain)s не является публичным DNS-именем. Введите имена, по которым доступна АТС."
+
+#, python-format
+msgid "%(ext)s (slots %(start)s–%(end)s)"
+msgstr "%(ext)s (места %(start)s–%(end)s)"
+
+#, python-format
+msgid "%(label)s (optional)"
+msgstr "%(label)s (необязательно)"
+
+#, python-format
+msgid "%(language)s (default)"
+msgstr "%(language)s (по умолчанию)"
+
+#, python-format
+msgid "%(name)s is not a fully qualified domain name"
+msgstr "%(name)s не является полным доменным именем"
+
+#, python-format
+msgid "%(name)s log"
+msgstr "Журнал %(name)s"
+
+#, python-format
+msgid "%(num)d CPU"
+msgid_plural "%(num)d CPUs"
+msgstr[0] "%(num)d процессор"
+msgstr[1] "%(num)d процессора"
+msgstr[2] "%(num)d процессоров"
+
+#, python-format
+msgid "%(num)d route"
+msgid_plural "%(num)d routes"
+msgstr[0] "%(num)d маршрут"
+msgstr[1] "%(num)d маршрута"
+msgstr[2] "%(num)d маршрутов"
+
+#, python-format
+msgid "%(number)s via %(provider)s"
+msgstr "%(number)s через %(provider)s"
+
+#, python-format
+msgid "%(used)s of %(total)s"
+msgstr "%(used)s из %(total)s"
+
+#, python-format
+msgid "%(used)s of %(total)s used"
+msgstr "Занято %(used)s из %(total)s"
+
+#, python-format
+msgid ""
+"%(used)s used of %(total)s. The data partition keeps configuration, voicemail, media and backups across firmware "
+"updates."
+msgstr ""
+"Занято %(used)s из %(total)s. Раздел данных сохраняет конфигурацию, голосовую почту, медиафайлы и резервные копии при"
+" обновлении прошивки."
+
+#, python-format
+msgid "%(what)s must not contain ';'"
+msgstr "%(what)s не должно содержать ';'"
+
+#, python-format
+msgid "%(what)s must not contain control characters or line breaks"
+msgstr "%(what)s не должно содержать управляющих символов и переносов строк"
+
+#, python-format
+msgid "(%(num)d reload action)"
+msgid_plural "(%(num)d reload actions)"
+msgstr[0] "(%(num)d действие перезагрузки)"
+msgstr[1] "(%(num)d действия перезагрузки)"
+msgstr[2] "(%(num)d действий перезагрузки)"
+
+#, python-format
+msgid "(missing %(type)s)"
+msgstr "(отсутствует: %(type)s)"
+
+msgid "(nothing to reload)"
+msgstr "(нечего перезагружать)"
+
+msgid "- choose -"
+msgstr "- выберите -"
+
+msgid "- none -"
+msgstr "- нет -"
+
+msgid "- select -"
+msgstr "- выберите -"
+
+msgid "0 disables keep-alive checks."
+msgstr "0 отключает проверку доступности."
+
+msgid "01701234567 or user@example.com"
+msgstr "01701234567 или user@example.com"
+
+#, python-format
+msgid "1 to %(max)s days. Empty: the token does not expire."
+msgstr "От 1 до %(max)s дней. Пусто: срок действия токена не ограничен."
+
+msgid "2FA shared secret"
+msgstr "Общий секрет 2FA"
+
+msgid ""
+"A TXT record is created through the DNS provider's API. Works for PBXs that are not reachable from the internet and "
+"for wildcard names."
+msgstr "TXT-запись создается через API DNS-провайдера. Подходит для АТС, недоступных из интернета, и для wildcard-имен."
+
+msgid "A certificate request is already running."
+msgstr "Запрос сертификата уже выполняется."
+
+msgid "A custom greeting played before callers leave a message (replaces the standard \"unavailable\" message)."
+msgstr ""
+"Собственное приветствие, которое проигрывается перед тем, как звонящий оставит сообщение (заменяет стандартное "
+"сообщение «недоступен»)."
+
+msgid "A new self-signed certificate was created."
+msgstr "Создан новый самоподписанный сертификат."
+
+msgid "A password is set. Leave empty to keep it."
+msgstr "Пароль задан. Оставьте поле пустым, чтобы сохранить его."
+
+msgid "A provider cannot fail over to itself"
+msgstr "Провайдер не может быть резервным для самого себя"
+
+msgid "A secret is required"
+msgstr "Требуется секрет"
+
+msgid "ACME directory URL"
+msgstr "URL каталога ACME"
+
+msgid "AMI is only used internally."
+msgstr "AMI используется только внутри системы."
+
+msgid "API key"
+msgstr "Ключ API"
+
+msgid "API key (prefix.secret)"
+msgstr "Ключ API (prefix.secret)"
+
+msgid "API password"
+msgstr "Пароль API"
+
+msgid "API secret"
+msgstr "Секрет API"
+
+msgid "API token"
+msgstr "Токен API"
+
+msgid "API token (Zone.DNS edit)"
+msgstr "Токен API (Zone.DNS edit)"
+
+msgid "API tokens"
+msgstr "Токены API"
+
+msgid "API user"
+msgstr "Пользователь API"
+
+msgid "Accept IAX connections (firewall)"
+msgstr "Принимать IAX-соединения (межсетевой экран)"
+
+msgid "Access"
+msgstr "Доступ"
+
+msgid "Access denied"
+msgstr "Доступ запрещен"
+
+msgid "Access key ID"
+msgstr "ID ключа доступа"
+
+msgid "Access token"
+msgstr "Токен доступа"
+
+msgid "Account"
+msgstr "Учетная запись"
+
+msgid "Account e-mail address"
+msgstr "Адрес электронной почты учетной записи"
+
+msgid "Accounts"
+msgstr "Учетные записи"
+
+msgid "Action"
+msgstr "Действие"
+
+msgid "Active calls"
+msgstr "Активные вызовы"
+
+msgid "Active calls are interrupted."
+msgstr "Активные вызовы будут прерваны."
+
+msgid "Active channels"
+msgstr "Активные каналы"
+
+msgid "Add"
+msgstr "Добавить"
+
+msgid "Add a call group"
+msgstr "Добавить группу вызова"
+
+msgid "Add a phone"
+msgstr "Добавить телефон"
+
+msgid "Add a provider"
+msgstr "Добавить провайдера"
+
+msgid "Add a room"
+msgstr "Добавить комнату"
+
+msgid "Add administrator"
+msgstr "Добавить администратора"
+
+msgid "Add an application"
+msgstr "Добавить приложение"
+
+msgid "Add route"
+msgstr "Добавить маршрут"
+
+msgid "Add your SIP trunk or VoIP provider account to make and receive external calls."
+msgstr "Добавьте SIP-транк или учетную запись VoIP-провайдера, чтобы совершать и принимать внешние вызовы."
+
+msgid "Additional IAX peer options"
+msgstr "Дополнительные параметры IAX peer"
+
+msgid "Additional PJSIP endpoint options"
+msgstr "Дополнительные параметры PJSIP endpoint"
+
+msgid "Additional [general] options"
+msgstr "Дополнительные параметры [general]"
+
+msgid "Additional [global] options"
+msgstr "Дополнительные параметры [global]"
+
+msgid "Additional options"
+msgstr "Дополнительные параметры"
+
+msgid "Admin PIN"
+msgstr "PIN администратора"
+
+msgid "Admin PIN must differ from the user PIN"
+msgstr "PIN администратора должен отличаться от PIN пользователя"
+
+msgid "Administrator"
+msgstr "Администратор"
+
+msgid "Administrator created."
+msgstr "Администратор создан."
+
+msgid "Administrators"
+msgstr "Администраторы"
+
+msgid "Advanced"
+msgstr "Расширенные"
+
+msgid "Advanced: key=value lines appended to the PJSIP global section."
+msgstr "Для опытных: строки key=value, добавляемые в секцию global PJSIP."
+
+msgid "Advanced: one key=value per line, appended to the generated endpoint/peer."
+msgstr "Для опытных: по одной паре key=value в строке, добавляются к сгенерированному endpoint/peer."
+
+msgid "Advanced: one key=value per line, appended to the generated section."
+msgstr "Для опытных: по одной паре key=value в строке, добавляются к сгенерированной секции."
+
+msgid "Always expand advanced sections"
+msgstr "Всегда раскрывать дополнительные разделы"
+
+msgid "An e-mail address is required for the ACME account"
+msgstr "Для учетной записи ACME требуется адрес электронной почты"
+
+msgid "Application"
+msgstr "Приложение"
+
+#, python-format
+msgid "Application %(name)s <%(number)s>"
+msgstr "Приложение %(name)s <%(number)s>"
+
+msgid "Application key"
+msgstr "Ключ приложения"
+
+msgid "Application logic"
+msgstr "Логика приложения"
+
+msgid "Application logic must contain at least one line"
+msgstr "Логика приложения должна содержать хотя бы одну строку"
+
+msgid "Application not found"
+msgstr "Приложение не найдено"
+
+msgid "Application secret"
+msgstr "Секрет приложения"
+
+msgid "Applications"
+msgstr "Приложения"
+
+msgid "Applications are small dialplan programs reachable by a number."
+msgstr "Приложения — это небольшие программы плана набора, доступные по номеру."
+
+msgid "Apply changes"
+msgstr "Применить изменения"
+
+#, python-format
+msgid "Applying failed: %(errors)s"
+msgstr "Ошибка применения: %(errors)s"
+
+msgid "Applying the configuration failed."
+msgstr "Не удалось применить конфигурацию."
+
+msgid "Asterisk database"
+msgstr "База данных Asterisk"
+
+msgid "Asterisk down"
+msgstr "Asterisk не работает"
+
+#, python-format
+msgid "Asterisk is not reachable: %(error)s"
+msgstr "Asterisk недоступен: %(error)s"
+
+msgid "Asterisk manager users"
+msgstr "Пользователи Asterisk Manager"
+
+#, python-format
+msgid "At least %(min)s characters required"
+msgstr "Требуется не менее %(min)s символов"
+
+#, python-format
+msgid "At least %(min)s entries required"
+msgstr "Требуется не менее %(min)s записей"
+
+msgid "At least 8 characters."
+msgstr "Не менее 8 символов."
+
+msgid "At least one permitted network is required"
+msgstr "Требуется хотя бы одна разрешенная сеть"
+
+#, python-format
+msgid "At most %(max)s characters allowed"
+msgstr "Допускается не более %(max)s символов"
+
+#, python-format
+msgid "At most %(max)s entries allowed"
+msgstr "Допускается не более %(max)s записей"
+
+msgid "Attach the recording to the e-mail"
+msgstr "Прикреплять запись к письму"
+
+msgid "Attended transfer"
+msgstr "Перевод с консультацией"
+
+msgid "Attended transfer no-answer timeout (s)"
+msgstr "Тайм-аут неответа при переводе с консультацией (с)"
+
+#, python-format
+msgid "Audio: %(audio)s. Video: %(video)s"
+msgstr "Аудио: %(audio)s. Видео: %(video)s"
+
+msgid "Audit Log"
+msgstr "Журнал аудита"
+
+msgid "Australia"
+msgstr "Австралия"
+
+msgid "Austria"
+msgstr "Австрия"
+
+msgid "Authentication"
+msgstr "Аутентификация"
+
+msgid "Authentication user"
+msgstr "Пользователь для аутентификации"
+
+msgid "Auto"
+msgstr "Авто"
+
+msgid "Automatic (SLAAC)"
+msgstr "Автоматически (SLAAC)"
+
+msgid "Automatic certificate (Let's Encrypt / ACME)"
+msgstr "Автоматический сертификат (Let's Encrypt / ACME)"
+
+msgid "Automatic certificates were turned off."
+msgstr "Автоматические сертификаты отключены."
+
+msgid "Avail"
+msgstr "Доступен"
+
+msgid "Back to the dashboard"
+msgstr "Вернуться на главную"
+
+#, python-format
+msgid "Backup %(name)s created."
+msgstr "Резервная копия %(name)s создана."
+
+#, python-format
+msgid "Backup from %(created)s restored. Review the configuration and apply the changes."
+msgstr "Резервная копия от %(created)s восстановлена. Проверьте конфигурацию и примените изменения."
+
+msgid "Backup is too large"
+msgstr "Резервная копия слишком большая"
+
+msgid "Backup manifest is missing"
+msgstr "В резервной копии отсутствует манифест"
+
+msgid "Backup not found"
+msgstr "Резервная копия не найдена"
+
+msgid "Backup/Restore"
+msgstr "Архивация/Восстановление"
+
+msgid "Backups"
+msgstr "Резервные копии"
+
+msgid "Belgium"
+msgstr "Бельгия"
+
+msgid "Blind transfer"
+msgstr "Слепой перевод"
+
+msgid "Block addresses after repeated authentication failures"
+msgstr "Блокировать адреса после повторных ошибок аутентификации"
+
+msgid "Block duration (s)"
+msgstr "Длительность блокировки (с)"
+
+msgid "Block providers"
+msgstr "Заблокировать провайдеров"
+
+msgid "Board"
+msgstr "Плата"
+
+msgid "Board / slot"
+msgstr "Плата / слот"
+
+msgid "Boot slot"
+msgstr "Загрузочный слот"
+
+msgid "Brazil"
+msgstr "Бразилия"
+
+msgid "Brute force protection"
+msgstr "Защита от перебора паролей"
+
+msgid "Busy"
+msgstr "Занят"
+
+msgid "Busy level"
+msgstr "Порог занятости"
+
+msgid "CPU load"
+msgstr "Загрузка процессора"
+
+msgid "Call Groups"
+msgstr "Группы вызова"
+
+msgid "Call group"
+msgstr "Группа вызова"
+
+#, python-format
+msgid "Call group %(name)s"
+msgstr "Группа вызова %(name)s"
+
+#, python-format
+msgid "Call group %(name)s <%(number)s>"
+msgstr "Группа вызова %(name)s <%(number)s>"
+
+msgid "Call group not found"
+msgstr "Группа вызова не найдена"
+
+msgid "Call groups ring several phones at once or one after another."
+msgstr "Группы вызова звонят на несколько телефонов одновременно или по очереди."
+
+msgid "Call parking"
+msgstr "Парковка вызовов"
+
+msgid "Call pickup"
+msgstr "Перехват вызова"
+
+msgid "Caller"
+msgstr "Звонящий"
+
+msgid "Caller ID"
+msgstr "АОН"
+
+msgid "Caller ID may not be empty or contain \" < > ; \\"
+msgstr "АОН не может быть пустым или содержать \" < > ; \\"
+
+msgid "Caller ID must look like \"Name <number>\" or a number"
+msgstr "АОН должен иметь вид \"Имя <номер>\" или быть номером"
+
+msgid "Caller ID name"
+msgstr "Имя для АОН"
+
+msgid "Caller ID text"
+msgstr "Текст АОН"
+
+msgid "Callers from providers or SIP URIs may call this phone directly."
+msgstr "Звонящие через провайдеров или по SIP URI могут звонить на этот телефон напрямую."
+
+msgid "Calls & Registrations"
+msgstr "Вызовы и регистрации"
+
+msgid "Cancel"
+msgstr "Отмена"
+
+msgid "Certificate"
+msgstr "Сертификат"
+
+msgid "Certificate (PEM, may include the chain)"
+msgstr "Сертификат (PEM, может содержать цепочку)"
+
+msgid "Certificate authority"
+msgstr "Центр сертификации"
+
+msgid "Certificate installed."
+msgstr "Сертификат установлен."
+
+msgid "Change password"
+msgstr "Изменить пароль"
+
+#, python-format
+msgid "Changes saved: %(kind)s %(name)s."
+msgstr "Изменения сохранены: %(kind)s %(name)s."
+
+msgid "Changing the address interrupts the connection. Open the new address after applying."
+msgstr "Изменение адреса прервет соединение. После применения откройте новый адрес."
+
+msgid "Channel"
+msgstr "Канал"
+
+msgid "Check automatically"
+msgstr "Проверять автоматически"
+
+msgid "Check for updates"
+msgstr "Проверка обновлений"
+
+msgid "Check now"
+msgstr "Проверить сейчас"
+
+#, python-format
+msgid "Checksum mismatch for %(name)s"
+msgstr "Несовпадение контрольной суммы для %(name)s"
+
+msgid "Chile"
+msgstr "Чили"
+
+msgid "China"
+msgstr "Китай"
+
+#, python-format
+msgid "Choose 1 to %(max)s days"
+msgstr "Выберите от 1 до %(max)s дней"
+
+msgid "Choose a DNS provider"
+msgstr "Выберите DNS-провайдера"
+
+msgid "Choose a different password"
+msgstr "Выберите другой пароль"
+
+msgid "Client ID"
+msgstr "ID клиента"
+
+msgid "Client secret"
+msgstr "Секрет клиента"
+
+msgid "Cloud API token"
+msgstr "Токен Cloud API"
+
+msgid "Codecs"
+msgstr "Кодеки"
+
+msgid "Codecs &amp; advanced"
+msgstr "Кодеки и дополнительно"
+
+msgid "Conference"
+msgstr "Конференция"
+
+#, python-format
+msgid "Conference %(name)s <%(number)s>"
+msgstr "Конференция %(name)s <%(number)s>"
+
+msgid "Conference room"
+msgstr "Конференц-комната"
+
+msgid "Conference room not found"
+msgstr "Конференц-комната не найдена"
+
+msgid "Conference rooms let several callers talk together."
+msgstr "Конференц-комнаты позволяют нескольким абонентам разговаривать вместе."
+
+msgid "Conferencing"
+msgstr "Конференц-связь"
+
+msgid "Configuration"
+msgstr "Конфигурация"
+
+msgid "Configuration applied."
+msgstr "Конфигурация применена."
+
+msgid "Configuration database"
+msgstr "База данных конфигурации"
+
+msgid "Configure an https:// update check URL first."
+msgstr "Сначала настройте URL проверки обновлений (https://)."
+
+msgid "Consumer key"
+msgstr "Consumer key"
+
+msgid "Contact"
+msgstr "Контакт"
+
+msgid "Content"
+msgstr "Содержимое"
+
+msgid "Copied"
+msgstr "Скопировано"
+
+msgid "Copy"
+msgstr "Копировать"
+
+msgid "Copy it now: it is not shown again."
+msgstr "Скопируйте его сейчас: он больше не будет показан."
+
+#, python-format
+msgid "Could not convert audio: %(error)s"
+msgstr "Не удалось преобразовать аудио: %(error)s"
+
+#, python-format
+msgid "Could not start the certificate request: %(error)s"
+msgstr "Не удалось запустить запрос сертификата: %(error)s"
+
+msgid "Country specific dial, busy and ring tones."
+msgstr "Национальные тоны готовности, занятости и вызова."
+
+msgid "Create"
+msgstr "Создать"
+
+msgid "Create a SIP phone and register your desk phone or softphone with it."
+msgstr "Создайте SIP-телефон и зарегистрируйте на нем настольный телефон или софтфон."
+
+msgid ""
+"Create a new container from the new template and attach the same <code>/data</code> volume, or restore a backup "
+"(<em>System &rarr; Backup/Restore</em>) into the new container."
+msgstr ""
+"Создайте новый контейнер из нового шаблона и подключите тот же том <code>/data</code> или восстановите резервную "
+"копию (<em>Система &rarr; Архивация/Восстановление</em>) в новом контейнере."
+
+msgid "Create a token to use the REST API (/api/v1) from scripts."
+msgstr "Создайте токен, чтобы использовать REST API (/api/v1) из скриптов."
+
+msgid "Create backup"
+msgstr "Создать резервную копию"
+
+msgid "Create new self-signed certificate"
+msgstr "Создать новый самоподписанный сертификат"
+
+msgid "Create phone"
+msgstr "Создать телефон"
+
+msgid "Create provider"
+msgstr "Создать провайдера"
+
+msgid "Create token"
+msgstr "Создать токен"
+
+msgid "Created"
+msgstr "Создан"
+
+msgid "Credentials"
+msgstr "Учетные данные"
+
+#, python-format
+msgid "Current address of %(interface)s: <strong>%(address)s/%(prefix)s</strong>"
+msgstr "Текущий адрес %(interface)s: <strong>%(address)s/%(prefix)s</strong>"
+
+msgid "Current certificate"
+msgstr "Текущий сертификат"
+
+msgid "Current password"
+msgstr "Текущий пароль"
+
+msgid "Current password is wrong"
+msgstr "Неверный текущий пароль"
+
+msgid "Customer number"
+msgstr "Номер клиента"
+
+msgid "Czech Republic"
+msgstr "Чехия"
+
+msgid "DNS provider"
+msgstr "DNS-провайдер"
+
+msgid "DNS provider API"
+msgstr "API DNS-провайдера"
+
+msgid "DNS resolvers for the propagation check (optional)"
+msgstr "DNS-серверы для проверки распространения (необязательно)"
+
+msgid "DNS servers"
+msgstr "DNS-серверы"
+
+msgid "DTMF mode"
+msgstr "Режим DTMF"
+
+msgid "Danish"
+msgstr "Датский"
+
+msgid "Dark mode"
+msgstr "Темная тема"
+
+msgid "Data partition"
+msgstr "Раздел данных"
+
+msgid "Database in backup is corrupt"
+msgstr "База данных в резервной копии повреждена"
+
+msgid "Default expiry (s)"
+msgstr "Срок регистрации по умолчанию (с)"
+
+msgid "Default prompt language"
+msgstr "Язык голосовых подсказок по умолчанию"
+
+msgid "Defaults to the host."
+msgstr "По умолчанию — хост."
+
+msgid "Defaults to the notification sender address."
+msgstr "По умолчанию — адрес отправителя уведомлений."
+
+msgid "Delete"
+msgstr "Удалить"
+
+#, python-format
+msgid "Delete %(what)s"
+msgstr "Удалить %(what)s"
+
+#, python-format
+msgid "Delete %(what)s?"
+msgstr "Удалить %(what)s?"
+
+msgid "Denmark"
+msgstr "Дания"
+
+msgid "Description"
+msgstr "Описание"
+
+msgid "Destination does not exist"
+msgstr "Назначение не существует"
+
+msgid "Details"
+msgstr "Подробности"
+
+msgid "Dial alone to pick up any ringing phone, or followed by an extension."
+msgstr "Наберите отдельно, чтобы перехватить вызов любого звонящего телефона, или вместе с внутренним номером."
+
+msgid "Dial pattern contains an invalid character"
+msgstr "Шаблон набора содержит недопустимый символ"
+
+msgid "Dial pattern is empty"
+msgstr "Шаблон набора пуст"
+
+#, python-format
+msgid "Dial pattern may contain only one '%(char)s'"
+msgstr "Шаблон набора может содержать только один символ '%(char)s'"
+
+msgid "Dial patterns"
+msgstr "Шаблоны набора"
+
+msgid "Dialed"
+msgstr "Набрано"
+
+msgid "Dialing"
+msgstr "Набор номера"
+
+msgid "Dialplan"
+msgstr "План набора"
+
+msgid "Dialplan line"
+msgstr "Строка плана набора"
+
+msgid "Digits or an Asterisk pattern like _0XX."
+msgstr "Цифры или шаблон Asterisk, например _0XX."
+
+msgid "Disable"
+msgstr "Отключить"
+
+#, python-format
+msgid "Disable %(what)s"
+msgstr "Отключить %(what)s"
+
+msgid "Disable for providers that authenticate by IP address."
+msgstr "Отключите для провайдеров с аутентификацией по IP-адресу."
+
+msgid "Disconnect"
+msgstr "Разъединение"
+
+msgid "Domain"
+msgstr "Домен"
+
+msgid "Domain must not be empty"
+msgstr "Домен не может быть пустым"
+
+msgid "Domain names"
+msgstr "Доменные имена"
+
+msgid "Down"
+msgstr "Неактивен"
+
+#, python-format
+msgid "Download %(name)s"
+msgstr "Скачать %(name)s"
+
+msgid "Drop audio files here or click to upload"
+msgstr "Перетащите аудиофайлы сюда или нажмите для загрузки"
+
+msgid "Drop config.xml here or click to upload"
+msgstr "Перетащите config.xml сюда или нажмите для загрузки"
+
+msgid "Drop the backup here or click to upload"
+msgstr "Перетащите резервную копию сюда или нажмите для загрузки"
+
+msgid "Drop the greeting here or click to upload"
+msgstr "Перетащите приветствие сюда или нажмите для загрузки"
+
+msgid "Drop the update file here or click to upload"
+msgstr "Перетащите файл обновления сюда или нажмите для загрузки"
+
+msgid "Duration"
+msgstr "Длительность"
+
+msgid "Dutch"
+msgstr "Нидерландский"
+
+msgid "E-mail notification on missed calls"
+msgstr "Уведомление о пропущенных вызовах по электронной почте"
+
+msgid "E-mail notifications"
+msgstr "Уведомления по электронной почте"
+
+msgid "E-mail subject"
+msgstr "Тема письма"
+
+msgid "E-mail text"
+msgstr "Текст письма"
+
+msgid "E.g. a DynDNS name."
+msgstr "Например, имя DynDNS."
+
+msgid "EAB HMAC key"
+msgstr "Ключ EAB HMAC"
+
+msgid "EAB key ID"
+msgstr "ID ключа EAB"
+
+msgid "Edit"
+msgstr "Изменить"
+
+#, python-format
+msgid "Edit %(name)s"
+msgstr "Изменить %(name)s"
+
+#, python-format
+msgid "Edit %(tech)s phone %(extension)s"
+msgstr "Изменить %(tech)s-телефон %(extension)s"
+
+#, python-format
+msgid "Edit %(tech)s provider %(name)s"
+msgstr "Изменить %(tech)s-провайдера %(name)s"
+
+#, python-format
+msgid "Edit application %(name)s"
+msgstr "Изменить приложение %(name)s"
+
+#, python-format
+msgid "Edit call group %(name)s"
+msgstr "Изменить группу вызова %(name)s"
+
+#, python-format
+msgid "Edit conference room %(name)s"
+msgstr "Изменить конференц-комнату %(name)s"
+
+#, python-format
+msgid "Edit manager user %(name)s"
+msgstr "Изменить пользователя AMI %(name)s"
+
+#, python-format
+msgid "Edit phone %(ext)s"
+msgstr "Изменить телефон %(ext)s"
+
+#, python-format
+msgid "Edit provider %(name)s"
+msgstr "Изменить провайдера %(name)s"
+
+msgid "Empty = default."
+msgstr "Пусто = по умолчанию."
+
+msgid "Empty = ring until the caller hangs up."
+msgstr "Пусто = звонить, пока звонящий не положит трубку."
+
+msgid "Empty = until the caller hangs up (per phone for 'one after another': default 20)."
+msgstr "Пусто = пока звонящий не положит трубку (для режима 'по очереди' — на каждый телефон, по умолчанию 20)."
+
+msgid "Empty square brackets"
+msgstr "Пустые квадратные скобки"
+
+msgid "Enable"
+msgstr "Включить"
+
+#, python-format
+msgid "Enable %(what)s"
+msgstr "Включить %(what)s"
+
+msgid "Enable SSH access (key or password login for root)"
+msgstr "Включить доступ по SSH (вход root по ключу или паролю)"
+
+msgid "Enable TCP"
+msgstr "Включить TCP"
+
+msgid "Enable TLS"
+msgstr "Включить TLS"
+
+msgid "Enable jitter buffer"
+msgstr "Включить джиттер-буфер"
+
+msgid "Enable the firewall"
+msgstr "Включить межсетевой экран"
+
+msgid "Enable voicemail"
+msgstr "Включить голосовую почту"
+
+msgid "Enabled"
+msgstr "Включено"
+
+msgid "Encryption"
+msgstr "Шифрование"
+
+msgid "Endpoint (ovh-eu, ovh-ca, ...)"
+msgstr "Endpoint (ovh-eu, ovh-ca, ...)"
+
+msgid "English"
+msgstr "Английский"
+
+msgid "English (UK)"
+msgstr "Английский (Великобритания)"
+
+msgid "Enter a name of up to 64 characters"
+msgstr "Введите имя длиной до 64 символов"
+
+msgid "Enter a number of days"
+msgstr "Введите количество дней"
+
+msgid "Enter the directory URL of the ACME server"
+msgstr "Введите URL каталога сервера ACME"
+
+msgid "Error"
+msgstr "Ошибка"
+
+msgid "Estonia"
+msgstr "Эстония"
+
+msgid "Example:"
+msgstr "Пример:"
+
+#, python-format
+msgid "Expected NAME=value: %(line)s"
+msgstr "Ожидается NAME=value: %(line)s"
+
+msgid "Expires in (days)"
+msgstr "Срок действия (дней)"
+
+msgid "Export config.xml"
+msgstr "Экспорт config.xml"
+
+msgid "Export the current configuration in the legacy format (best effort; contains passwords in plain text)."
+msgstr "Экспортировать текущую конфигурацию в старом формате (по возможности; содержит пароли в открытом виде)."
+
+msgid "Extension"
+msgstr "Внутренний номер"
+
+msgid "Extension must be digits or an Asterisk pattern (X, N, Z, [], ., !)"
+msgstr "Внутренний номер должен состоять из цифр или быть шаблоном Asterisk (X, N, Z, [], ., !)"
+
+msgid "Extension must consist of 1-20 digits"
+msgstr "Внутренний номер должен состоять из 1–20 цифр"
+
+msgid "External"
+msgstr "Внешний"
+
+msgid "External phone"
+msgstr "Внешний телефон"
+
+msgid "Factory Defaults"
+msgstr "Заводские настройки"
+
+msgid "Failover provider"
+msgstr "Резервный провайдер"
+
+msgid "Failures within 10 minutes"
+msgstr "Ошибок за 10 минут"
+
+msgid "Feature codes"
+msgstr "Сервисные коды"
+
+msgid "Feature codes consist of digits, '*' and '#'"
+msgstr "Сервисные коды состоят из цифр, '*' и '#'"
+
+msgid "Feature digit timeout (ms)"
+msgstr "Тайм-аут ввода цифр сервисного кода (мс)"
+
+msgid "Finland"
+msgstr "Финляндия"
+
+msgid "Firewall"
+msgstr "Межсетевой экран"
+
+msgid "Firmware"
+msgstr "Прошивка"
+
+msgid "First port"
+msgstr "Первый порт"
+
+msgid "First slot"
+msgstr "Первое место"
+
+msgid "Fixed caller ID"
+msgstr "Фиксированный АОН"
+
+msgid "For 'one after another', phones ring in this order."
+msgstr "В режиме 'по очереди' телефоны звонят в этом порядке."
+
+msgid "For your reference only."
+msgstr "Только для справки."
+
+msgid "Force jitter buffer"
+msgstr "Принудительный джиттер-буфер"
+
+msgid "France"
+msgstr "Франция"
+
+msgid "French"
+msgstr "Французский"
+
+msgid "From domain"
+msgstr "Домен отправителя (From)"
+
+msgid "From user"
+msgstr "Пользователь отправителя (From)"
+
+msgid "GUI Options"
+msgstr "Настройки интерфейса"
+
+msgid "Gateway"
+msgstr "Шлюз"
+
+msgid "General"
+msgstr "Общие"
+
+msgid "General Setup"
+msgstr "Общие"
+
+msgid "Generate"
+msgstr "Сгенерировать"
+
+msgid "German"
+msgstr "Немецкий"
+
+msgid "Germany"
+msgstr "Германия"
+
+msgid "Graphs"
+msgstr "Графики"
+
+msgid "Graphs are sampled while a page with graphs is open (up to the last 120 samples)."
+msgstr "Данные для графиков собираются, пока открыта страница с графиками (до 120 последних значений)."
+
+msgid "Greece"
+msgstr "Греция"
+
+msgid "HTTP (port 80)"
+msgstr "HTTP (порт 80)"
+
+msgid "Host"
+msgstr "Хост"
+
+msgid "Hosted zone ID"
+msgstr "ID размещенной зоны"
+
+msgid "Hostname"
+msgstr "Имя хоста"
+
+msgid "Hostname must be 1-63 letters, digits or '-'"
+msgstr "Имя хоста должно состоять из 1–63 букв, цифр или '-'"
+
+msgid "Hostname or IP address of the provider."
+msgstr "Имя хоста или IP-адрес провайдера."
+
+msgid "Hungary"
+msgstr "Венгрия"
+
+msgid "IAX"
+msgstr "IAX"
+
+msgid "IAX URI (user@host)"
+msgstr "IAX URI (user@host)"
+
+msgid "IAX phone"
+msgstr "IAX-телефон"
+
+msgid "IAX port"
+msgstr "Порт IAX"
+
+msgid "IAX provider"
+msgstr "IAX-провайдер"
+
+msgid "IP address"
+msgstr "IP-адрес"
+
+msgid "Import"
+msgstr "Импортировать"
+
+msgid "Import result"
+msgstr "Результат импорта"
+
+msgid ""
+"Import the <code>config.xml</code> of an AskoziaPBX 2.x system. You get a preview of what is imported, adapted (e.g. "
+"SIP to PJSIP) or dropped (analog/ISDN hardware) before anything changes."
+msgstr ""
+"Импорт <code>config.xml</code> системы AskoziaPBX 2.x. Перед внесением изменений вы увидите, что будет импортировано,"
+" адаптировано (например, SIP в PJSIP) или отброшено (аналоговое/ISDN-оборудование)."
+
+msgid "Import this configuration now?"
+msgstr "Импортировать эту конфигурацию сейчас?"
+
+msgid "Imported. Review the configuration and apply the pending changes."
+msgstr "Импортировано. Проверьте конфигурацию и примените ожидающие изменения."
+
+msgid ""
+"In a conference press <kbd>*</kbd> for the menu, <kbd>1</kbd> to mute, <kbd>8</kbd> to leave. Admins (admin PIN) can "
+"lock the room (<kbd>2</kbd>) and kick the last caller (<kbd>3</kbd>)."
+msgstr ""
+"В конференции нажмите <kbd>*</kbd> для меню, <kbd>1</kbd> — отключить микрофон, <kbd>8</kbd> — выйти. Администраторы "
+"(PIN администратора) могут заблокировать комнату (<kbd>2</kbd>) и отключить последнего подключившегося "
+"(<kbd>3</kbd>)."
+
+msgid "In use"
+msgstr "Используется"
+
+msgid "In-band"
+msgstr "In-band"
+
+msgid "Incoming"
+msgstr "Входящие"
+
+msgid "Incoming caller ID"
+msgstr "АОН входящих"
+
+msgid "Incoming calls"
+msgstr "Входящие вызовы"
+
+msgid "India"
+msgstr "Индия"
+
+msgid "Initial password"
+msgstr "Начальный пароль"
+
+msgid "Install"
+msgstr "Установить"
+
+msgid "Install an update"
+msgstr "Установить обновление"
+
+msgid "Installed firmware"
+msgstr "Установленная прошивка"
+
+msgid "Interface"
+msgstr "Интерфейс"
+
+msgid "Internal numbers"
+msgstr "Внутренние номера"
+
+msgid "Invalid"
+msgstr "Недействителен"
+
+msgid "Invalid DNS provider code"
+msgstr "Недопустимый код DNS-провайдера"
+
+#, python-format
+msgid "Invalid PEM data: %(error)s"
+msgstr "Недопустимые данные PEM: %(error)s"
+
+#, python-format
+msgid "Invalid attribute line: %(line)r (expected key=value)"
+msgstr "Недопустимая строка атрибута: %(line)r (ожидается key=value)"
+
+msgid "Invalid characters"
+msgstr "Недопустимые символы"
+
+msgid "Invalid choice"
+msgstr "Недопустимый выбор"
+
+#, python-format
+msgid "Invalid dialplan line: %(line)r (expected e.g. '1,Answer()' or 'n,Hangup()')"
+msgstr "Недопустимая строка плана набора: %(line)r (ожидается, например, '1,Answer()' или 'n,Hangup()')"
+
+msgid "Invalid domain name"
+msgstr "Недопустимое доменное имя"
+
+msgid "Invalid format"
+msgstr "Недопустимый формат"
+
+msgid "Invalid interface name"
+msgstr "Недопустимое имя интерфейса"
+
+msgid "Invalid password hash"
+msgstr "Недопустимый хеш пароля"
+
+#, python-format
+msgid "Invalid port in %(value)s"
+msgstr "Недопустимый порт в %(value)s"
+
+msgid "Invalid username or password."
+msgstr "Неверное имя пользователя или пароль."
+
+msgid "Invalid value"
+msgstr "Недопустимое значение"
+
+#, python-format
+msgid "Invalid variable name %(name)r"
+msgstr "Недопустимое имя переменной %(name)r"
+
+msgid "Israel"
+msgstr "Израиль"
+
+msgid "Issuer"
+msgstr "Издатель"
+
+msgid "Italian"
+msgstr "Итальянский"
+
+msgid "Italy"
+msgstr "Италия"
+
+msgid "Japan"
+msgstr "Япония"
+
+msgid "Japanese"
+msgstr "Японский"
+
+msgid "Keep messages on the PBX after e-mailing"
+msgstr "Сохранять сообщения на АТС после отправки по почте"
+
+msgid "Kernel"
+msgstr "Ядро"
+
+msgid "LAN interface"
+msgstr "Интерфейс LAN"
+
+msgid "LXC / Incus system container"
+msgstr "Системный контейнер LXC / Incus"
+
+msgid "Lagged"
+msgstr "Задержка"
+
+msgid "Language"
+msgstr "Язык"
+
+#, python-format
+msgid "Language of the web interface for %(user)s."
+msgstr "Язык веб-интерфейса для %(user)s."
+
+msgid "Last login"
+msgstr "Последний вход"
+
+msgid "Last port"
+msgstr "Последний порт"
+
+msgid "Last slot"
+msgstr "Последнее место"
+
+msgid "Last used"
+msgstr "Последнее использование"
+
+msgid "Legacy AskoziaPBX"
+msgstr "Старая AskoziaPBX"
+
+msgid "Let's Encrypt staging (testing, untrusted)"
+msgstr "Let's Encrypt staging (тестовый, недоверенный)"
+
+msgid "Light mode"
+msgstr "Светлая тема"
+
+msgid "Light/dark theme: use the moon/sun icon in the top bar."
+msgstr "Светлая/темная тема: используйте значок луны/солнца на верхней панели."
+
+msgid "Lithuania"
+msgstr "Литва"
+
+msgid "Loading Asterisk status&hellip;"
+msgstr "Загрузка состояния Asterisk&hellip;"
+
+msgid "Loading&hellip;"
+msgstr "Загрузка&hellip;"
+
+msgid "Location"
+msgstr "Расположение"
+
+msgid "Log out after inactivity (minutes)"
+msgstr "Выход после бездействия (минуты)"
+
+msgid "Login"
+msgstr "Вход"
+
+msgid "Login to your PBX"
+msgstr "Вход в АТС"
+
+msgid "Logout"
+msgstr "Выход"
+
+msgid "Logs"
+msgstr "Журналы"
+
+msgid "Make sure the network of your computer is allowed before applying restrictions."
+msgstr "Перед применением ограничений убедитесь, что сеть вашего компьютера разрешена."
+
+msgid "Malaysia"
+msgstr "Малайзия"
+
+msgid "Manager (AMI)"
+msgstr "Менеджер (AMI)"
+
+msgid "Manager user"
+msgstr "Пользователь AMI"
+
+msgid "Manager user not found"
+msgstr "Пользователь AMI не найден"
+
+msgid "Max. message length (s)"
+msgstr "Макс. длина сообщения (с)"
+
+msgid "Max. registered devices"
+msgstr "Макс. число зарегистрированных устройств"
+
+msgid "Maximum expiry (s)"
+msgstr "Максимальный срок регистрации (с)"
+
+msgid "Media"
+msgstr "Медиафайлы"
+
+msgid "Media (music on hold, greetings)"
+msgstr "Медиафайлы (музыка ожидания, приветствия)"
+
+msgid "Media encryption (SRTP)"
+msgstr "Шифрование медиа (SRTP)"
+
+msgid "Media file not found"
+msgstr "Медиафайл не найден"
+
+msgid "Members"
+msgstr "Участники"
+
+msgid "Memory"
+msgstr "Память"
+
+msgid "Merge into current configuration"
+msgstr "Объединить с текущей конфигурацией"
+
+msgid "Mexico"
+msgstr "Мексика"
+
+msgid "Minimum expiry (s)"
+msgstr "Минимальный срок регистрации (с)"
+
+#, python-format
+msgid "Missing DNS provider credentials: %(names)s"
+msgstr "Отсутствуют учетные данные DNS-провайдера: %(names)s"
+
+msgid "Mode"
+msgstr "Режим"
+
+msgid "Music on hold"
+msgstr "Музыка ожидания"
+
+msgid "Must be a hostname or IP address"
+msgstr "Должно быть именем хоста или IP-адресом"
+
+msgid "Must be a network in CIDR notation (e.g. 192.168.1.0/24)"
+msgstr "Должно быть сетью в нотации CIDR (например, 192.168.1.0/24)"
+
+msgid "Must be a number"
+msgstr "Должно быть числом"
+
+msgid "Must be a valid e-mail address"
+msgstr "Должно быть действительным адресом электронной почты"
+
+msgid "Must be a whole number"
+msgstr "Должно быть целым числом"
+
+msgid "Must be an IP address"
+msgstr "Должно быть IP-адресом"
+
+msgid "Must be an IPv4 address"
+msgstr "Должно быть IPv4-адресом"
+
+#, python-format
+msgid "Must be at least %(ge)s"
+msgstr "Должно быть не меньше %(ge)s"
+
+#, python-format
+msgid "Must be at most %(le)s"
+msgstr "Должно быть не больше %(le)s"
+
+#, python-format
+msgid "Must be greater than %(gt)s"
+msgstr "Должно быть больше %(gt)s"
+
+#, python-format
+msgid "Must be less than %(lt)s"
+msgstr "Должно быть меньше %(lt)s"
+
+msgid "Must be yes or no"
+msgstr "Должно быть «да» или «нет»"
+
+msgid "Must change the password at first login"
+msgstr "Сменить пароль при первом входе"
+
+msgid "NAME=value per line. Stored values are not shown: leave the value empty (NAME=) to keep it."
+msgstr ""
+"По одной паре NAME=value в строке. Сохраненные значения не отображаются: оставьте значение пустым (NAME=), чтобы "
+"сохранить его."
+
+msgid "NAT / public address"
+msgstr "NAT / публичный адрес"
+
+msgid "NAT, dynamic IP (hostname)"
+msgstr "NAT, динамический IP (имя хоста)"
+
+msgid "NAT, static public IP"
+msgstr "NAT, статический публичный IP"
+
+msgid "Name"
+msgstr "Имя"
+
+msgid "Name is required"
+msgstr "Требуется имя"
+
+msgid "Name server (host or host:port)"
+msgstr "Сервер имен (host или host:port)"
+
+msgid "Name shown to called parties."
+msgstr "Имя, отображаемое вызываемым абонентам."
+
+msgid "Names"
+msgstr "Имена"
+
+msgid "Needed when providers or remote phones reach this PBX through a NAT router."
+msgstr "Требуется, если провайдеры или удаленные телефоны обращаются к этой АТС через маршрутизатор с NAT."
+
+msgid "Nested square brackets are not allowed"
+msgstr "Вложенные квадратные скобки не допускаются"
+
+msgid "Netherlands"
+msgstr "Нидерланды"
+
+msgid "Network"
+msgstr "Сеть"
+
+msgid "Network traffic"
+msgstr "Сетевой трафик"
+
+msgid "Network traffic (all interfaces)"
+msgstr "Сетевой трафик (все интерфейсы)"
+
+msgid "Networks allowed to manage the PBX"
+msgstr "Сети, из которых разрешено управлять АТС"
+
+msgid "Networks allowed to use SIP/IAX"
+msgstr "Сети, которым разрешено использовать SIP/IAX"
+
+#, python-format
+msgid "New %(tech)s phone"
+msgstr "Новый %(tech)s-телефон"
+
+#, python-format
+msgid "New %(tech)s provider"
+msgstr "Новый %(tech)s-провайдер"
+
+msgid "New Zealand"
+msgstr "Новая Зеландия"
+
+msgid "New application"
+msgstr "Новое приложение"
+
+msgid "New call group"
+msgstr "Новая группа вызова"
+
+msgid "New conference room"
+msgstr "Новая конференц-комната"
+
+msgid "New manager user"
+msgstr "Новый пользователь AMI"
+
+msgid "New password"
+msgstr "Новый пароль"
+
+msgid "Newer"
+msgstr "Новее"
+
+msgid "No API tokens"
+msgstr "Нет токенов API"
+
+msgid "No active calls."
+msgstr "Нет активных вызовов."
+
+msgid "No applications"
+msgstr "Нет приложений"
+
+msgid "No backups yet. Backups contain the configuration, media and the TLS certificate."
+msgstr "Резервных копий пока нет. Резервные копии содержат конфигурацию, медиафайлы и TLS-сертификат."
+
+msgid "No call groups"
+msgstr "Нет групп вызова"
+
+msgid "No certificate found"
+msgstr "Сертификат не найден"
+
+msgid "No certificate found."
+msgstr "Сертификат не найден."
+
+msgid "No conference rooms"
+msgstr "Нет конференц-комнат"
+
+msgid "No entries."
+msgstr "Нет записей."
+
+msgid "No files uploaded."
+msgstr "Файлы не загружены."
+
+msgid "No manager users"
+msgstr "Нет пользователей AMI"
+
+msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
+msgstr "Пароль не задан: возможен только вход по ключу (/data/ssh/authorized_keys). Не менее 8 символов."
+
+msgid "No phones yet"
+msgstr "Телефонов пока нет"
+
+msgid "No providers are configured yet."
+msgstr "Провайдеры еще не настроены."
+
+msgid "No providers configured."
+msgstr "Провайдеры не настроены."
+
+msgid "No providers yet"
+msgstr "Провайдеров пока нет"
+
+msgid "No update signing key installed on this system"
+msgstr "В этой системе не установлен ключ подписи обновлений"
+
+msgid "Norway"
+msgstr "Норвегия"
+
+msgid "Not a PhonixPBX update bundle"
+msgstr "Это не пакет обновления PhonixPBX"
+
+#, python-format
+msgid "Not a valid PhonixPBX backup: %(error)s"
+msgstr "Недействительная резервная копия PhonixPBX: %(error)s"
+
+#, python-format
+msgid "Not a valid update bundle: %(error)s"
+msgstr "Недействительный пакет обновления: %(error)s"
+
+msgid "Not in use"
+msgstr "Не используется"
+
+#, python-format
+msgid "Not supported, dropped: %(sections)s"
+msgstr "Не поддерживается, отброшено: %(sections)s"
+
+msgid "Not used in a container: the clock comes from the container host."
+msgstr "Не используется в контейнере: время берется с хоста контейнера."
+
+msgid "Notification address"
+msgstr "Адрес для уведомлений"
+
+msgid "Notifications"
+msgstr "Уведомления"
+
+msgid "Number"
+msgstr "Номер"
+
+msgid "Number / URI"
+msgstr "Номер / URI"
+
+#, python-format
+msgid "Number already used by %(owner)s"
+msgstr "Номер уже назначен на %(owner)s"
+
+msgid "Number is reserved for call parking"
+msgstr "Номер зарезервирован для парковки вызовов"
+
+msgid "OCI container (Docker / Podman)"
+msgstr "OCI-контейнер (Docker / Podman)"
+
+msgid "Object"
+msgstr "Объект"
+
+msgid "Obtain and renew the certificate automatically"
+msgstr "Получать и продлевать сертификат автоматически"
+
+msgid "Off"
+msgstr "Выкл."
+
+msgid "Off hook"
+msgstr "Трубка снята"
+
+msgid "Older"
+msgstr "Старее"
+
+msgid "On Hold"
+msgstr "На удержании"
+
+msgid "One CIDR per line, e.g. 192.168.1.0/24."
+msgstr "По одной сети CIDR в строке, например 192.168.1.0/24."
+
+msgid "One after another"
+msgstr "По очереди"
+
+msgid ""
+"One pattern per line. Phones dialing a matching number use this provider. X = any digit, N = 2-9, Z = 1-9, . = one or"
+" more, [1-5] = range. '0|X.' strips the leading 0; '49+0|X.' replaces it with 49."
+msgstr ""
+"По одному шаблону в строке. Телефоны, набирающие подходящий номер, используют этого провайдера. X = любая цифра, N = "
+"2-9, Z = 1-9, . = одна или более, [1-5] = диапазон. '0|X.' удаляет ведущий 0; '49+0|X.' заменяет его на 49."
+
+msgid "One per line."
+msgstr "По одному в строке."
+
+#, python-format
+msgid "One per line. Empty: %(domain)s. The names must be public DNS names."
+msgstr "По одному в строке. Пусто: %(domain)s. Имена должны быть публичными DNS-именами."
+
+msgid "One per line. With DHCP leave empty to use the servers from the DHCP server."
+msgstr "По одному в строке. При DHCP оставьте пустым, чтобы использовать серверы от DHCP-сервера."
+
+msgid ""
+"One step per line: priority,Application(arguments), e.g. '1,Answer()', 'n,Playback(hello-world)', 'n,Hangup()'. "
+"'include => context' lines are allowed."
+msgstr ""
+"По одному шагу в строке: priority,Application(arguments), например '1,Answer()', 'n,Playback(hello-world)', "
+"'n,Hangup()'. Строки 'include => context' допускаются."
+
+msgid "Only 8 or 16 bit WAV files are supported"
+msgstr "Поддерживаются только 8- или 16-битные WAV-файлы"
+
+msgid "Only PCM WAV files can be uploaded on this system (convert with: sox in.mp3 -r 8000 -c 1 out.wav)"
+msgstr "В эту систему можно загружать только файлы PCM WAV (преобразование: sox in.mp3 -r 8000 -c 1 out.wav)"
+
+msgid "Only enable when needed. Access can additionally be limited under Advanced > Firewall."
+msgstr "Включайте только при необходимости. Доступ можно дополнительно ограничить в разделе Расширенные > Межсетевой экран."
+
+msgid "Only if different from the username."
+msgstr "Только если отличается от имени пользователя."
+
+msgid "Only web interface, SSH (if enabled), SIP/IAX and RTP are reachable."
+msgstr "Доступны только веб-интерфейс, SSH (если включен), SIP/IAX и RTP."
+
+msgid "Open user menu"
+msgstr "Открыть меню пользователя"
+
+msgid "Optional - groups can also be used only as provider destinations."
+msgstr "Необязательно — группы можно использовать и только как назначения для провайдеров."
+
+msgid "Optional alias used in the public context (e.g. 'sales' for sip:sales@pbx). Defaults to the extension."
+msgstr ""
+"Необязательный псевдоним для публичного контекста (например, 'sales' для sip:sales@pbx). По умолчанию — внутренний "
+"номер."
+
+msgid "Optional. Callers must enter it to join."
+msgstr "Необязательно. Звонящие должны ввести его, чтобы присоединиться."
+
+msgid "Optional. Joins as moderator."
+msgstr "Необязательно. Вход в качестве модератора."
+
+msgid ""
+"Optional; overrides the provider's caller ID setting for calls from this phone. Format: <code>Name "
+"&lt;number&gt;</code>."
+msgstr "Необязательно; заменяет настройку АОН провайдера для вызовов с этого телефона. Формат: <code>Имя &lt;номер&gt;</code>."
+
+msgid "Other ACME server"
+msgstr "Другой сервер ACME"
+
+msgid "Other lego provider ..."
+msgstr "Другой провайдер lego ..."
+
+msgid "Outgoing"
+msgstr "Исходящие"
+
+msgid "Outgoing caller ID"
+msgstr "АОН исходящих"
+
+msgid "Outgoing caller ID per provider"
+msgstr "АОН исходящих по провайдерам"
+
+msgid "Outgoing calls"
+msgstr "Исходящие вызовы"
+
+msgid "Outgoing mail server (SMTP)"
+msgstr "Сервер исходящей почты (SMTP)"
+
+msgid "Overview (print)"
+msgstr "Обзор (печать)"
+
+msgid "Owner"
+msgstr "Владелец"
+
+msgid "PIN"
+msgstr "PIN"
+
+msgid "PIN must consist of digits only"
+msgstr "PIN должен состоять только из цифр"
+
+msgid "PIN protected"
+msgstr "Защищено PIN"
+
+msgid "Page not found"
+msgstr "Страница не найдена"
+
+msgid "Parking number"
+msgstr "Номер парковки"
+
+msgid "Parking time (s)"
+msgstr "Время парковки (с)"
+
+msgid "Password"
+msgstr "Пароль"
+
+msgid "Password is too long"
+msgstr "Пароль слишком длинный"
+
+#, python-format
+msgid "Password must have at least %(min)s characters"
+msgstr "Пароль должен содержать не менее %(min)s символов"
+
+msgid "Passwords do not match"
+msgstr "Пароли не совпадают"
+
+#, python-format
+msgid "Pattern %(pattern)s is already used by %(name)s"
+msgstr "Шаблон %(pattern)s уже используется провайдером %(name)s"
+
+msgid "Pending changes"
+msgstr "Ожидающие изменения"
+
+msgid "Permitted networks"
+msgstr "Разрешенные сети"
+
+msgid "Personal access token"
+msgstr "Персональный токен доступа"
+
+msgid "Philippines"
+msgstr "Филиппины"
+
+#, python-format
+msgid "Phone %(extension)s created."
+msgstr "Телефон %(extension)s создан."
+
+#, python-format
+msgid "Phone %(extension)s saved."
+msgstr "Телефон %(extension)s сохранен."
+
+#, python-format
+msgid "Phone (%(tech)s)"
+msgstr "Телефон (%(tech)s)"
+
+msgid "Phone is behind NAT (symmetric RTP, rewrite contact)"
+msgstr "Телефон за NAT (симметричный RTP, перезапись contact)"
+
+msgid "Phone not found"
+msgstr "Телефон не найден"
+
+msgid "Phones"
+msgstr "Телефоны"
+
+msgid "Phones and providers"
+msgstr "Телефоны и провайдеры"
+
+msgid "Phones and providers. Empty = everyone (recommended only with strong passwords)."
+msgstr "Телефоны и провайдеры. Пусто = все (рекомендуется только при надежных паролях)."
+
+msgid "PhonixPBX home"
+msgstr "PhonixPBX: главная"
+
+msgid "PhonixPBX runs in a container, so firmware update bundles do not apply here."
+msgstr "PhonixPBX работает в контейнере, поэтому пакеты обновления прошивки здесь не применяются."
+
+msgid ""
+"PhonixPBX runs in a container: firmware update bundles do not apply. Update by replacing the container with a newer "
+"image and keeping /data."
+msgstr ""
+"PhonixPBX работает в контейнере: пакеты обновления прошивки не применяются. Для обновления замените контейнер более "
+"новым образом, сохранив /data."
+
+msgid ""
+"PhonixPBX runs in a container: the address, gateway and DNS servers of the container are configured on the container "
+"host and the settings for the LAN interface below are not applied. The interface selects the address that is used for"
+" SIP; the NAT settings apply as usual."
+msgstr ""
+"PhonixPBX работает в контейнере: адрес, шлюз и DNS-серверы контейнера настраиваются на хосте контейнера, и "
+"приведенные ниже настройки интерфейса LAN не применяются. Интерфейс определяет адрес, используемый для SIP; настройки"
+" NAT действуют как обычно."
+
+msgid "Pickup"
+msgstr "Перехват"
+
+msgid "Plain text"
+msgstr "Открытый текст"
+
+msgid "Platform"
+msgstr "Платформа"
+
+msgid "Please choose your own password before continuing."
+msgstr "Прежде чем продолжить, задайте собственный пароль."
+
+msgid "Please correct the highlighted fields"
+msgstr "Исправьте выделенные поля"
+
+msgid "Poland"
+msgstr "Польша"
+
+msgid "Polish"
+msgstr "Польский"
+
+msgid "Port"
+msgstr "Порт"
+
+msgid "Portugal"
+msgstr "Португалия"
+
+msgid "Portuguese (Brazil)"
+msgstr "Португальский (Бразилия)"
+
+msgid "Pre-ring"
+msgstr "Предвызов"
+
+msgid "Preferences"
+msgstr "Настройки"
+
+msgid "Prefix"
+msgstr "Префикс"
+
+msgid "Prefixes to add may only contain digits, '*' and '#'"
+msgstr "Добавляемые префиксы могут содержать только цифры, '*' и '#'"
+
+msgid "Preview"
+msgstr "Предпросмотр"
+
+msgid "Print"
+msgstr "Печать"
+
+msgid "Private key (PEM, unencrypted)"
+msgstr "Закрытый ключ (PEM, без шифрования)"
+
+msgid "Private key does not match the certificate"
+msgstr "Закрытый ключ не соответствует сертификату"
+
+msgid "Prompts and number read-out."
+msgstr "Подсказки и произношение номеров."
+
+msgid "Protection"
+msgstr "Защита"
+
+msgid "Provider"
+msgstr "Провайдер"
+
+#, python-format
+msgid "Provider %(name)s created."
+msgstr "Провайдер %(name)s создан."
+
+#, python-format
+msgid "Provider %(name)s saved."
+msgstr "Провайдер %(name)s сохранен."
+
+msgid "Provider is reached through NAT (symmetric RTP)"
+msgstr "Провайдер доступен через NAT (симметричный RTP)"
+
+msgid "Provider not found"
+msgstr "Провайдер не найден"
+
+msgid "Providers"
+msgstr "Провайдеры"
+
+msgid "Public"
+msgstr "Публичный"
+
+msgid "Public IP address"
+msgstr "Публичный IP-адрес"
+
+msgid "Public address / no NAT"
+msgstr "Публичный адрес / без NAT"
+
+msgid "Public hostname"
+msgstr "Публичное имя хоста"
+
+msgid "Public name"
+msgstr "Публичное имя"
+
+msgid "Public name may only contain letters, digits and . _ + -"
+msgstr "Публичное имя может содержать только буквы, цифры и . _ + -"
+
+msgid "Public number"
+msgstr "Публичный номер"
+
+msgid "Public number must consist of digits"
+msgstr "Публичный номер должен состоять из цифр"
+
+msgid ""
+"Pull the new image and recreate the container with the same <code>/data</code> volume (for example <code>docker "
+"compose pull &amp;&amp; docker compose up -d</code>)."
+msgstr ""
+"Загрузите новый образ и пересоздайте контейнер с тем же томом <code>/data</code> (например, <code>docker compose pull"
+" &amp;&amp; docker compose up -d</code>)."
+
+msgid "Qualify interval (s)"
+msgstr "Интервал проверки доступности (с)"
+
+msgid "RFC 2136 dynamic update (BIND, Knot, ...)"
+msgstr "Динамическое обновление RFC 2136 (BIND, Knot, ...)"
+
+msgid "RTP"
+msgstr "RTP"
+
+msgid "Reach this phone via"
+msgstr "Связь с телефоном через"
+
+msgid "Reachable"
+msgstr "Доступен"
+
+msgid "Reachable from outside"
+msgstr "Доступно извне"
+
+msgid "Reachable from outside (public direct dial)"
+msgstr "Доступен извне (публичный прямой набор)"
+
+msgid "Read"
+msgstr "Чтение"
+
+msgid "Read permissions"
+msgstr "Права на чтение"
+
+msgid "Read-only"
+msgstr "Только чтение"
+
+msgid "Read-only tokens can only use GET requests."
+msgstr "Токены только для чтения могут выполнять только запросы GET."
+
+msgid "Read-write"
+msgstr "Чтение и запись"
+
+msgid "Reboot"
+msgstr "Перезагрузка"
+
+msgid "Reboot into the new firmware"
+msgstr "Перезагрузить в новую прошивку"
+
+msgid "Recipient"
+msgstr "Получатель"
+
+msgid "Region"
+msgstr "Регион"
+
+msgid "Register with the provider"
+msgstr "Регистрироваться у провайдера"
+
+msgid "Registered"
+msgstr "Зарегистрирован"
+
+msgid "Registration / state"
+msgstr "Регистрация / состояние"
+
+msgid "Registration timers"
+msgstr "Таймеры регистрации"
+
+msgid "Rejected"
+msgstr "Отклонен"
+
+#, python-format
+msgid "Reloading the web server failed: %(error)s"
+msgstr "Не удалось перезагрузить веб-сервер: %(error)s"
+
+msgid "Remove the password (key logins only)"
+msgstr "Удалить пароль (только вход по ключу)"
+
+msgid "Renewed daily when it expires in less than 30 days."
+msgstr "Продлевается ежедневной проверкой, если до истечения осталось менее 30 дней."
+
+msgid "Repeat new password"
+msgstr "Повторите новый пароль"
+
+msgid "Replace current configuration (backup first)"
+msgstr "Заменить текущую конфигурацию (сначала создается резервная копия)"
+
+msgid "Report busy with this many concurrent calls."
+msgstr "Сообщать «занято» при таком количестве одновременных вызовов."
+
+msgid "Requesting a certificate ..."
+msgstr "Запрос сертификата ..."
+
+msgid "Requires e-mail notifications (Services &gt; Notifications)."
+msgstr "Требуются уведомления по электронной почте (Службы &gt; Уведомления)."
+
+msgid "Reserved"
+msgstr "Зарезервирован"
+
+msgid "Reset and reboot"
+msgstr "Сбросить и перезагрузить"
+
+msgid "Reset to factory defaults"
+msgstr "Сброс к заводским настройкам"
+
+msgid "Resource group"
+msgstr "Группа ресурсов"
+
+#, python-format
+msgid "Restarting Asterisk for SIP-TLS failed: %(error)s"
+msgstr "Не удалось перезапустить Asterisk для SIP-TLS: %(error)s"
+
+msgid "Restore"
+msgstr "Восстановить"
+
+msgid "Ring"
+msgstr "Вызов"
+
+msgid "Ring all at once"
+msgstr "Звонить всем одновременно"
+
+msgid "Ring strategy"
+msgstr "Стратегия вызова"
+
+msgid "Ring time (seconds)"
+msgstr "Время вызова (секунды)"
+
+msgid "Ring+Inuse"
+msgstr "Вызов+Используется"
+
+msgid "Ringing"
+msgstr "Звонит"
+
+#, python-format
+msgid "Route %(num)s: %(error)s"
+msgstr "Маршрут %(num)s: %(error)s"
+
+msgid ""
+"Route incoming calls by the dialed number (DID). Leave the pattern empty to catch all calls. Several destinations "
+"with the same pattern ring in parallel."
+msgstr ""
+"Маршрутизация входящих вызовов по набранному номеру (DID). Оставьте шаблон пустым, чтобы принимать все вызовы. "
+"Несколько назначений с одинаковым шаблоном звонят параллельно."
+
+msgid "Russia"
+msgstr "Россия"
+
+msgid "Russian"
+msgstr "Русский"
+
+msgid "SIP"
+msgstr "SIP"
+
+msgid "SIP URI (user@host)"
+msgstr "SIP URI (user@host)"
+
+msgid "SIP phone"
+msgstr "SIP-телефон"
+
+msgid ""
+"SIP phones register with the extension as username and the account password. The server address is this system's IP "
+"address."
+msgstr ""
+"SIP-телефоны регистрируются с внутренним номером в качестве имени пользователя и паролем учетной записи. Адрес "
+"сервера — IP-адрес этой системы."
+
+msgid "SIP phones registered"
+msgstr "Зарегистрировано SIP-телефонов"
+
+msgid "SIP port (UDP/TCP)"
+msgstr "Порт SIP (UDP/TCP)"
+
+msgid "SIP provider"
+msgstr "SIP-провайдер"
+
+msgid "SIP, IAX and RTP settings"
+msgstr "Настройки SIP, IAX и RTP"
+
+msgid "SMTP server"
+msgstr "Сервер SMTP"
+
+msgid "SSH root password"
+msgstr "Пароль root для SSH"
+
+msgid "STARTTLS (port 587)"
+msgstr "STARTTLS (порт 587)"
+
+msgid "Save"
+msgstr "Сохранить"
+
+msgid "Save and request certificate now"
+msgstr "Сохранить и запросить сертификат"
+
+msgid "Secret"
+msgstr "Секрет"
+
+msgid "Secret API key"
+msgstr "Секретный ключ API"
+
+msgid "Secret access key"
+msgstr "Секретный ключ доступа"
+
+msgid "Secret must be 4-128 characters without spaces, quotes, ';' or backslashes"
+msgstr "Секрет должен содержать 4–128 символов без пробелов, кавычек, ';' и обратных косых черт"
+
+msgid "Section"
+msgstr "Секция"
+
+msgid "See the <a href=\"https://go-acme.github.io/lego/dns/\" target=\"_blank\" rel=\"noopener\">lego DNS provider list</a>."
+msgstr ""
+"См. <a href=\"https://go-acme.github.io/lego/dns/\" target=\"_blank\" rel=\"noopener\">список DNS-провайдеров "
+"lego</a>."
+
+msgid "Select at least one codec"
+msgstr "Выберите хотя бы один кодек"
+
+msgid "Select at least one member"
+msgstr "Выберите хотя бы одного участника"
+
+msgid "Send a test message"
+msgstr "Отправить тестовое сообщение"
+
+msgid "Send test"
+msgstr "Отправить тест"
+
+msgid "Send the token in the <code>Authorization: Bearer</code> header. See the <a href=\"/api/docs\">API documentation</a>."
+msgstr "Передавайте токен в заголовке <code>Authorization: Bearer</code>. См. <a href=\"/api/docs\">документацию API</a>."
+
+msgid "Send voicemail to e-mail"
+msgstr "Отправлять голосовую почту на e-mail"
+
+msgid "Sender address"
+msgstr "Адрес отправителя"
+
+msgid "Sender name"
+msgstr "Имя отправителя"
+
+#, python-format
+msgid "Sending failed (did you apply the settings?): %(detail)s"
+msgstr "Ошибка отправки (вы применили настройки?): %(detail)s"
+
+msgid "Server requires authentication"
+msgstr "Сервер требует аутентификации"
+
+msgid "Services"
+msgstr "Службы"
+
+msgid "Settings saved."
+msgstr "Настройки сохранены."
+
+msgid "Settings saved. Apply the changes to activate them."
+msgstr "Настройки сохранены. Примените изменения, чтобы активировать их."
+
+msgid "Show or hide"
+msgstr "Показать или скрыть"
+
+msgid "Show/hide"
+msgstr "Показать/скрыть"
+
+msgid "Shut down"
+msgstr "Выключить"
+
+msgid "Sign in"
+msgstr "Войти"
+
+msgid "Singapore"
+msgstr "Сингапур"
+
+msgid "Size"
+msgstr "Размер"
+
+msgid "Something went wrong"
+msgstr "Что-то пошло не так"
+
+msgid "South Africa"
+msgstr "Южная Африка"
+
+msgid "Spain"
+msgstr "Испания"
+
+msgid "Spanish"
+msgstr "Испанский"
+
+msgid "State"
+msgstr "Состояние"
+
+msgid "Static"
+msgstr "Статический"
+
+msgid "Status"
+msgstr "Статус"
+
+msgid "Stopped"
+msgstr "Остановлен"
+
+msgid "Storage"
+msgstr "Хранилище"
+
+msgid "Strategy"
+msgstr "Стратегия"
+
+msgid "Subject"
+msgstr "Субъект"
+
+msgid "Subscription ID"
+msgstr "ID подписки"
+
+msgid "Summary"
+msgstr "Сводка"
+
+msgid "Sweden"
+msgstr "Швеция"
+
+msgid "Swedish"
+msgstr "Шведский"
+
+msgid "Switzerland"
+msgstr "Швейцария"
+
+msgid "System"
+msgstr "Система"
+
+msgid "System information"
+msgstr "Информация о системе"
+
+#, python-format
+msgid ""
+"System prompts use the default language <strong>%(language)s</strong> (change it under <a "
+"href=\"/system/general\">General Setup</a>). The firmware ships English prompts; other languages fall back to English"
+" recordings."
+msgstr ""
+"Системные подсказки используют язык по умолчанию <strong>%(language)s</strong> (изменить его можно в разделе <a "
+"href=\"/system/general\">Общие</a>). Прошивка содержит английские подсказки; для других языков используются "
+"английские записи."
+
+msgid "System settings"
+msgstr "Системные настройки"
+
+msgid "TLS / SMTPS (port 465)"
+msgstr "TLS / SMTPS (порт 465)"
+
+msgid "TLS port"
+msgstr "Порт TLS"
+
+msgid "TSIG algorithm (e.g. hmac-sha256.)"
+msgstr "Алгоритм TSIG (например, hmac-sha256.)"
+
+msgid "TSIG key name"
+msgstr "Имя ключа TSIG"
+
+msgid "TSIG secret"
+msgstr "Секрет TSIG"
+
+msgid "Taiwan"
+msgstr "Тайвань"
+
+msgid "Telephony"
+msgstr "Телефония"
+
+msgid "Tenant ID"
+msgstr "ID клиента (Tenant ID)"
+
+#, python-format
+msgid "Test message sent to %(to)s."
+msgstr "Тестовое сообщение отправлено на %(to)s."
+
+msgid "Thailand"
+msgstr "Таиланд"
+
+msgid ""
+"The Asterisk Manager Interface (TCP port 5038) lets external software (CTI, dashboards) control the PBX. Only add "
+"users you need and restrict their networks."
+msgstr ""
+"Asterisk Manager Interface (TCP-порт 5038) позволяет внешним программам (CTI, панели мониторинга) управлять АТС. "
+"Добавляйте только необходимых пользователей и ограничивайте их сети."
+
+msgid ""
+"The CA connects to <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: the names must resolve to this PBX "
+"and port 80 must be reachable from the internet."
+msgstr ""
+"Центр сертификации подключается к <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: имена должны "
+"разрешаться в адрес этой АТС, а порт 80 должен быть доступен из интернета."
+
+msgid "The directory URL must start with https://"
+msgstr "URL каталога должен начинаться с https://"
+
+msgid "The end port must be greater than the start port."
+msgstr "Конечный порт должен быть больше начального."
+
+msgid "The file is empty"
+msgstr "Файл пуст"
+
+msgid "The file is too large (max. 64 MB)"
+msgstr "Файл слишком большой (макс. 64 МБ)"
+
+msgid ""
+"The firewall only allows the web interface from <a href=\"/advanced/firewall\">selected networks</a>, so the CA "
+"cannot reach port 80. Use DNS validation."
+msgstr ""
+"Межсетевой экран разрешает доступ к веб-интерфейсу только из <a href=\"/advanced/firewall\">выбранных сетей</a>, "
+"поэтому центр сертификации не может подключиться к порту 80. Используйте проверку через DNS."
+
+msgid "The import has errors and cannot be applied as is."
+msgstr "Импорт содержит ошибки и не может быть применен в текущем виде."
+
+msgid "The initial password is shown on the system console. Lost it? Use the console menu to reset it."
+msgstr "Начальный пароль отображается на системной консоли. Потеряли его? Сбросьте его через меню консоли."
+
+msgid "The last administrator cannot be deleted"
+msgstr "Последнего администратора удалить нельзя"
+
+msgid "The lego ACME client is not installed."
+msgstr "ACME-клиент lego не установлен."
+
+msgid "The log is empty or not available."
+msgstr "Журнал пуст или недоступен."
+
+msgid "The number used to dial this phone and the SIP/IAX username."
+msgstr "Номер для вызова этого телефона и имя пользователя SIP/IAX."
+
+msgid "The number used to dial this phone."
+msgstr "Номер для вызова этого телефона."
+
+msgid "The password must have at least 8 characters"
+msgstr "Пароль должен содержать не менее 8 символов"
+
+msgid "The system is being reset to factory defaults and reboots now."
+msgstr "Система сбрасывается к заводским настройкам и сейчас перезагрузится."
+
+msgid "The system is rebooting. This page reloads when it is back."
+msgstr "Система перезагружается. Страница обновится, когда система снова будет доступна."
+
+msgid "The system is shutting down."
+msgstr "Система выключается."
+
+msgid "The uploaded file expired, please upload it again."
+msgstr "Срок хранения загруженного файла истек, загрузите его снова."
+
+msgid ""
+"The web interface uses a self-signed certificate. <a href=\"/advanced/certificate\">Get one from Let's Encrypt or "
+"upload your own</a> to get rid of browser warnings."
+msgstr ""
+"Веб-интерфейс использует самоподписанный сертификат. <a href=\"/advanced/certificate\">Получите сертификат от Let's "
+"Encrypt или загрузите собственный</a>, чтобы избавиться от предупреждений браузера."
+
+msgid ""
+"This erases the complete configuration, voicemail, media and backups on this system and reboots. Download a backup "
+"first."
+msgstr ""
+"Это удалит всю конфигурацию, голосовую почту, медиафайлы и резервные копии в этой системе и перезагрузит ее. Сначала "
+"скачайте резервную копию."
+
+msgid "This field is required"
+msgstr "Это поле обязательно"
+
+msgid "This phone cannot place outgoing calls through the selected providers."
+msgstr "Этот телефон не может совершать исходящие вызовы через выбранных провайдеров."
+
+msgid "This username is reserved"
+msgstr "Это имя пользователя зарезервировано"
+
+msgid "Time (UTC)"
+msgstr "Время (UTC)"
+
+msgid "Time servers"
+msgstr "Серверы времени"
+
+msgid "Time zone"
+msgstr "Часовой пояс"
+
+msgid "Toggle navigation"
+msgstr "Переключить навигацию"
+
+msgid "Token"
+msgstr "Токен"
+
+#, python-format
+msgid "Token \"%(name)s\" created"
+msgstr "Токен «%(name)s» создан"
+
+msgid "Token not found"
+msgstr "Токен не найден"
+
+msgid "Tokens (domain:token, comma separated)"
+msgstr "Токены (domain:token, через запятую)"
+
+msgid "Tone zone"
+msgstr "Тональная зона"
+
+msgid "Too many failed attempts. Please wait a few minutes."
+msgstr "Слишком много неудачных попыток. Подождите несколько минут."
+
+msgid "Topology"
+msgstr "Топология"
+
+msgid "Transfer a call here to park it."
+msgstr "Переведите вызов на этот номер, чтобы припарковать его."
+
+msgid "Transfer digit timeout (s)"
+msgstr "Тайм-аут ввода цифр при переводе (с)"
+
+msgid "Transfers & Parking"
+msgstr "Переводы и парковка"
+
+msgid "Transport"
+msgstr "Транспорт"
+
+msgid "Turn on automatic certificates to request one."
+msgstr "Включите автоматические сертификаты, чтобы запросить сертификат."
+
+msgid "Type"
+msgstr "Тип"
+
+msgid "Type RESET to confirm"
+msgstr "Введите RESET для подтверждения"
+
+msgid "Type RESET to confirm."
+msgstr "Введите RESET для подтверждения."
+
+msgid "UDP ports used for audio and video. Each call uses two ports per leg."
+msgstr "UDP-порты для аудио и видео. Каждый вызов использует два порта на каждое плечо."
+
+msgid "Unanswered calls go to the voicemail box of the first member (if enabled)."
+msgstr "Неотвеченные вызовы направляются в голосовой ящик первого участника (если включен)."
+
+msgid "Unanswered or busy calls go to voicemail. Dial 000086 (0000VM) to listen to messages."
+msgstr ""
+"Неотвеченные вызовы и вызовы при занятости направляются в голосовую почту. Наберите 000086 (0000VM), чтобы прослушать"
+" сообщения."
+
+msgid "Unavail"
+msgstr "Недоступен"
+
+msgid "Unavailable"
+msgstr "Недоступен"
+
+msgid "United Kingdom"
+msgstr "Великобритания"
+
+msgid "United States"
+msgstr "США"
+
+msgid "United States (old)"
+msgstr "США (старый)"
+
+msgid "Unknown"
+msgstr "Неизвестно"
+
+#, python-format
+msgid "Unknown codec %(codec)r"
+msgstr "Неизвестный кодек %(codec)r"
+
+msgid "Unknown language"
+msgstr "Неизвестный язык"
+
+msgid "Unknown media type"
+msgstr "Неизвестный тип медиафайла"
+
+#, python-format
+msgid "Unknown permission %(name)r"
+msgstr "Неизвестное право %(name)r"
+
+msgid "Unknown phone selected"
+msgstr "Выбран неизвестный телефон"
+
+msgid "Unknown provider"
+msgstr "Неизвестный провайдер"
+
+msgid "Unknown time zone"
+msgstr "Неизвестный часовой пояс"
+
+msgid "Unknown tone zone"
+msgstr "Неизвестная тональная зона"
+
+msgid "Unmatched square bracket"
+msgstr "Непарная квадратная скобка"
+
+msgid "Unreachable"
+msgstr "Недоступен"
+
+msgid "Unregistered"
+msgstr "Не зарегистрирован"
+
+#, python-format
+msgid "Unsafe path in backup: %(name)s"
+msgstr "Небезопасный путь в резервной копии: %(name)s"
+
+msgid "Unsupported backup format"
+msgstr "Неподдерживаемый формат резервной копии"
+
+msgid "Up"
+msgstr "Активен"
+
+#, python-format
+msgid "Update bundle is missing %(name)s"
+msgstr "В пакете обновления отсутствует %(name)s"
+
+#, python-format
+msgid "Update check failed: %(error)s"
+msgstr "Ошибка проверки обновлений: %(error)s"
+
+msgid "Update file is too large"
+msgstr "Файл обновления слишком большой"
+
+msgid "Update information URL"
+msgstr "URL информации об обновлениях"
+
+#, python-format
+msgid "Update is for board %(board)s, this system is %(current)s"
+msgstr "Обновление предназначено для платы %(board)s, а эта система — %(current)s"
+
+#, python-format
+msgid "Update rejected: %(error)s"
+msgstr "Обновление отклонено: %(error)s"
+
+msgid "Update signature is invalid"
+msgstr "Недействительная подпись обновления"
+
+msgid "Update signing key is not an ed25519 key"
+msgstr "Ключ подписи обновлений не является ключом ed25519"
+
+msgid "Updates: replace the container image"
+msgstr "Обновления: замените образ контейнера"
+
+msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). The current state is backed up first."
+msgstr "Загрузите резервную копию PhonixPBX (<code>.tar.zst</code>). Сначала создается резервная копия текущего состояния."
+
+msgid ""
+"Upload a signed <code>.update</code> bundle for this board. It is written to the inactive system slot; the "
+"configuration and data are kept. If the new firmware fails to start, the previous one is booted automatically."
+msgstr ""
+"Загрузите подписанный пакет <code>.update</code> для этой платы. Он записывается в неактивный системный слот; "
+"конфигурация и данные сохраняются. Если новая прошивка не запустится, автоматически загрузится предыдущая."
+
+msgid "Upload certificate"
+msgstr "Загрузить сертификат"
+
+msgid "Upload your own hold music. Files are converted to 8 kHz mono WAV. Without uploads the bundled music is used."
+msgstr ""
+"Загрузите собственную музыку ожидания. Файлы преобразуются в WAV 8 кГц моно. Без загруженных файлов используется "
+"встроенная музыка."
+
+msgid "Uploaded"
+msgstr "Загружено"
+
+msgid "Uploaded files"
+msgstr "Загруженные файлы"
+
+msgid "Uptime"
+msgstr "Время работы"
+
+msgid "Use DNS SRV lookups"
+msgstr "Использовать DNS SRV-запросы"
+
+msgid "Use lowercase letters, digits, '.', '_' or '-'"
+msgstr "Используйте строчные латинские буквы, цифры, '.', '_' или '-'"
+
+msgid "Used by PhonixPBX (certificate, Asterisk). The host name of the container itself is set on the container host."
+msgstr "Используется PhonixPBX (сертификат, Asterisk). Имя хоста самого контейнера задается на хосте контейнера."
+
+msgid "Used by the phone to register. Generated passwords are strong; keep them."
+msgstr "Используется телефоном для регистрации. Сгенерированные пароли надежны; сохраняйте их."
+
+msgid "Used for the web interface and SIP over TLS. Installing a certificate turns off automatic certificates."
+msgstr "Используется для веб-интерфейса и SIP через TLS. Установка сертификата отключает автоматические сертификаты."
+
+msgid "Used for voicemail-to-e-mail and missed call notifications."
+msgstr "Используется для отправки голосовой почты на e-mail и уведомлений о пропущенных вызовах."
+
+msgid "Used when this provider is unavailable or congested."
+msgstr "Используется, если этот провайдер недоступен или перегружен."
+
+msgid "Useful when the PBX resolves its own domain to an internal DNS server."
+msgstr "Полезно, если АТС разрешает собственный домен через внутренний DNS-сервер."
+
+msgid "User"
+msgstr "Пользователь"
+
+msgid "User agent"
+msgstr "User agent"
+
+msgid "User already exists"
+msgstr "Пользователь уже существует"
+
+msgid "User not found"
+msgstr "Пользователь не найден"
+
+msgid "Username"
+msgstr "Имя пользователя"
+
+msgid "Username already exists"
+msgstr "Имя пользователя уже существует"
+
+msgid "Username may contain letters, digits, '_' and '-'"
+msgstr "Имя пользователя может содержать буквы, цифры, '_' и '-'"
+
+msgid "Username may only contain letters, digits and . _ @ + -"
+msgstr "Имя пользователя может содержать только буквы, цифры и . _ @ + -"
+
+msgid "Uses the applied configuration &mdash; apply pending changes first."
+msgstr "Используется примененная конфигурация &mdash; сначала примените ожидающие изменения."
+
+msgid "Valid until"
+msgstr "Действителен до"
+
+msgid "Validation"
+msgstr "Проверка"
+
+msgid "Value"
+msgstr "Значение"
+
+#, python-brace-format
+msgid "Variables: ${VM_NAME}, ${VM_DUR}, ${VM_MSGNUM}, ${VM_MAILBOX}, ${VM_CALLERID}, ${VM_DATE}. Empty = default text."
+msgstr ""
+"Переменные: ${VM_NAME}, ${VM_DUR}, ${VM_MSGNUM}, ${VM_MAILBOX}, ${VM_CALLERID}, ${VM_DATE}. Пусто = текст по "
+"умолчанию."
+
+msgid "Venezuela"
+msgstr "Венесуэла"
+
+msgid "Verify the server certificate"
+msgstr "Проверять сертификат сервера"
+
+msgid "Version"
+msgstr "Версия"
+
+#, python-format
+msgid "Version %(latest)s is available (running %(version)s). Download: %(url)s"
+msgstr "Доступна версия %(latest)s (установлена %(version)s). Скачать: %(url)s"
+
+#, python-format
+msgid "Version <strong>%(version)s</strong> has been installed into the inactive slot."
+msgstr "Версия <strong>%(version)s</strong> установлена в неактивный слот."
+
+msgid "Voice prompts"
+msgstr "Голосовые подсказки"
+
+msgid "Voicemail"
+msgstr "Голосовая почта"
+
+msgid "Voicemail &amp; notifications"
+msgstr "Голосовая почта и уведомления"
+
+msgid "Voicemail PIN"
+msgstr "PIN голосовой почты"
+
+msgid ""
+"Voicemail can be read by dialing <strong>000086</strong>. Configure <a href=\"/services/email\">e-mail "
+"notifications</a> to receive messages by e-mail."
+msgstr ""
+"Голосовую почту можно прослушать, набрав <strong>000086</strong>. Настройте <a href=\"/services/email\">уведомления "
+"по электронной почте</a>, чтобы получать сообщения по e-mail."
+
+msgid "Voicemail greeting"
+msgstr "Приветствие голосовой почты"
+
+msgid "Voicemail, conferencing and media"
+msgstr "Голосовая почта, конференц-связь и медиафайлы"
+
+msgid "Web interface and SSH. One CIDR per line, e.g. 192.168.1.0/24. Empty = everyone."
+msgstr "Веб-интерфейс и SSH. По одной сети CIDR в строке, например 192.168.1.0/24. Пусто = все."
+
+msgid "Wildcard domains need DNS validation"
+msgstr "Для wildcard-доменов требуется проверка через DNS"
+
+msgid "Wildcards '.' and '!' are not allowed before '|'"
+msgstr "Подстановочные символы '.' и '!' не допускаются перед '|'"
+
+msgid "Write"
+msgstr "Запись"
+
+msgid "Write permissions"
+msgstr "Права на запись"
+
+#, python-format
+msgid "You are running the latest version (%(version)s)."
+msgstr "У вас установлена последняя версия (%(version)s)."
+
+msgid "You are still using the initial administrator password. <a href=\"/password\">Change it now</a>."
+msgstr "Вы все еще используете начальный пароль администратора. <a href=\"/password\">Измените его сейчас</a>."
+
+msgid "You cannot delete yourself"
+msgstr "Нельзя удалить самого себя"
+
+msgid "Your main number at this provider (informational)."
+msgstr "Ваш основной номер у этого провайдера (для информации)."
+
+msgid "Your password has been changed."
+msgstr "Ваш пароль изменен."
+
+msgid "Your preferences have been saved."
+msgstr "Ваши настройки сохранены."
+
+msgid "ZeroSSL needs the EAB key ID and HMAC key from the ZeroSSL dashboard"
+msgstr "Для ZeroSSL требуются ID ключа EAB и ключ HMAC из панели управления ZeroSSL"
+
+msgid "a parking slot"
+msgstr "место парковки"
+
+msgid "a provider"
+msgstr "провайдера"
+
+msgid "active"
+msgstr "активен"
+
+msgid "admin PIN"
+msgstr "PIN администратора"
+
+#, python-format
+msgid "administrator %(name)s"
+msgstr "администратора %(name)s"
+
+msgid "all"
+msgstr "все"
+
+msgid "all numbers"
+msgstr "все номера"
+
+#, python-format
+msgid "application %(name)s"
+msgstr "приложение %(name)s"
+
+#, python-format
+msgid "call group %(name)s"
+msgstr "группу вызова %(name)s"
+
+msgid "call parking"
+msgstr "парковку вызовов"
+
+msgid "changed"
+msgstr "изменено"
+
+msgid "close"
+msgstr "закрыть"
+
+#, python-format
+msgid "conference room %(name)s"
+msgstr "конференц-комнату %(name)s"
+
+#, python-format
+msgid "config.xml version %(version)s"
+msgstr "config.xml версии %(version)s"
+
+msgid "create"
+msgstr "создать"
+
+msgid "destination"
+msgstr "назначение"
+
+msgid "details"
+msgstr "подробнее"
+
+msgid "disabled"
+msgstr "отключено"
+
+msgid "e.g. monitoring"
+msgstr "например, monitoring"
+
+msgid "e.g. powerdns"
+msgstr "например, powerdns"
+
+msgid "enabled"
+msgstr "включено"
+
+msgid "expired"
+msgstr "истек"
+
+msgid "external"
+msgstr "внешний"
+
+msgid "first = preferred"
+msgstr "первый = предпочтительный"
+
+msgid "fixed caller ID"
+msgstr "фиксированный АОН"
+
+msgid "incoming number pattern"
+msgstr "шаблон входящего номера"
+
+msgid "invalid token"
+msgstr "недействительный токен"
+
+msgid "lego output"
+msgstr "вывод lego"
+
+msgid "lego provider code"
+msgstr "код провайдера lego"
+
+msgid "live"
+msgstr "в реальном времени"
+
+msgid "manage phones"
+msgstr "управление телефонами"
+
+msgid "manage providers"
+msgstr "управление провайдерами"
+
+#, python-format
+msgid "manager user %(name)s"
+msgstr "пользователя AMI %(name)s"
+
+msgid "memory used"
+msgstr "использование памяти"
+
+msgid "must be a phone number"
+msgstr "должен быть номером телефона"
+
+msgid "must change password"
+msgstr "должен сменить пароль"
+
+msgid "must look like user@host"
+msgstr "должен иметь вид user@host"
+
+msgid "never"
+msgstr "никогда"
+
+msgid "none"
+msgstr "нет"
+
+msgid "none (port 25)"
+msgstr "нет (порт 25)"
+
+msgid "not loaded"
+msgstr "не загружен"
+
+msgid "not registered"
+msgstr "не зарегистрирован"
+
+msgid "off"
+msgstr "выкл."
+
+msgid "offer SRTP (SDES), fall back to RTP"
+msgstr "предлагать SRTP (SDES), при отказе — RTP"
+
+msgid "one after another"
+msgstr "по очереди"
+
+msgid "open"
+msgstr "открыта"
+
+#, python-format
+msgid "phone %(callerid)s <%(extension)s>"
+msgstr "телефон %(callerid)s <%(extension)s>"
+
+#, python-format
+msgid "phone %(ext)s"
+msgstr "телефон %(ext)s"
+
+msgid "prepend text to name"
+msgstr "добавить текст перед именем"
+
+#, python-format
+msgid "provider %(name)s"
+msgstr "провайдера %(name)s"
+
+msgid "public"
+msgstr "публичный"
+
+msgid "read-only"
+msgstr "только чтение"
+
+msgid "read-write"
+msgstr "чтение и запись"
+
+msgid "registered"
+msgstr "зарегистрирован"
+
+msgid "remove route"
+msgstr "удалить маршрут"
+
+msgid "replace name with number"
+msgstr "заменить имя номером"
+
+msgid "replace with text"
+msgstr "заменить текстом"
+
+msgid "required for external phones"
+msgstr "обязательно для внешних телефонов"
+
+msgid "required for missed call notifications"
+msgstr "обязательно для уведомлений о пропущенных вызовах"
+
+msgid "required for this caller id override"
+msgstr "обязательно для этой замены АОН"
+
+msgid "required when the caller id source is a fixed string"
+msgstr "обязательно, если источник АОН — фиксированная строка"
+
+msgid "ring all"
+msgstr "все одновременно"
+
+msgid "running"
+msgstr "работает"
+
+msgid "select a provider"
+msgstr "выберите провайдера"
+
+msgid "self-signed"
+msgstr "самоподписанный"
+
+msgid "skip"
+msgstr "пропустить"
+
+#, python-format
+msgid "the configuration has been changed (%(areas)s). Apply to activate."
+msgstr "конфигурация изменена (%(areas)s). Примените, чтобы активировать."
+
+#, python-format
+msgid "token %(name)s"
+msgstr "токен %(name)s"
+
+msgid "unchanged"
+msgstr "без изменений"
+
+msgid "unchanged - leave empty to keep"
+msgstr "без изменений — оставьте пустым, чтобы сохранить"
+
+msgid "unknown"
+msgstr "неизвестно"
+
+msgid "unlimited"
+msgstr "без ограничений"
+
+msgid "update"
+msgstr "обновить"
+
+msgid "use provider setting"
+msgstr "использовать настройку провайдера"
+
+msgid "use the phone's caller ID"
+msgstr "использовать АОН телефона"
+
+msgid "used"
+msgstr "занято"
+
+msgid "yes"
+msgstr "да"
+
