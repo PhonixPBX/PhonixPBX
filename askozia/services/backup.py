@@ -9,6 +9,7 @@ import shutil
 import sqlite3
 import tarfile
 import tempfile
+from collections.abc import Iterator
 from pathlib import Path
 
 import zstandard
@@ -48,6 +49,10 @@ def create(target: Path | None = None) -> Path:
     if target is None:
         cfg.backup_dir.mkdir(parents=True, exist_ok=True)
         target = cfg.backup_dir / f"askozia-backup-{stamp}.tar.zst"
+        counter = 1
+        while target.exists():
+            counter += 1
+            target = cfg.backup_dir / f"askozia-backup-{stamp}-{counter}.tar.zst"
     with tempfile.TemporaryDirectory() as tmp:
         snap = Path(tmp) / "askozia.db"
         _db_snapshot(snap)
@@ -83,8 +88,8 @@ def list_backups() -> list[Path]:
     return sorted(config.get().backup_dir.glob("askozia-backup-*.tar.zst"), reverse=True)
 
 
-def _safe_members(tar: tarfile.TarFile) -> list[tarfile.TarInfo]:
-    members = []
+def _safe_members(tar: tarfile.TarFile) -> Iterator[tarfile.TarInfo]:
+    """Yield validated members one by one (the stream cannot seek backwards)."""
     total = 0
     for member in tar:
         name = member.name
@@ -98,8 +103,7 @@ def _safe_members(tar: tarfile.TarFile) -> list[tarfile.TarInfo]:
         total += member.size
         if total > MAX_RESTORE_BYTES:
             raise ServiceError("Backup is too large")
-        members.append(member)
-    return members
+        yield member
 
 
 def restore(source: Path) -> dict[str, object]:
@@ -111,7 +115,7 @@ def restore(source: Path) -> dict[str, object]:
                 dctx = zstandard.ZstdDecompressor()
                 with dctx.stream_reader(raw) as zfh, tarfile.open(fileobj=zfh, mode="r|") as tar:
                     for member in _safe_members(tar):
-                        tar.extract(member, tmpdir, set_attrs=False)  # noqa: S202 - members validated
+                        tar.extract(member, tmpdir, set_attrs=False)
         except (tarfile.TarError, zstandard.ZstdError, OSError) as exc:
             raise ServiceError(f"Not a valid AskoziaPBX backup: {exc}") from exc
         try:

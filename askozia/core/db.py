@@ -21,6 +21,9 @@ _session_factory: sessionmaker[Session] | None = None
 
 
 def _on_connect(dbapi_conn: Any, _record: Any) -> None:
+    # let SQLAlchemy (not the sqlite3 driver) control transactions, so that
+    # SAVEPOINTs work as documented (SQLAlchemy "pysqlite" recipe)
+    dbapi_conn.isolation_level = None
     cur = dbapi_conn.cursor()
     cur.execute("PRAGMA foreign_keys=ON")
     cur.execute("PRAGMA journal_mode=WAL")
@@ -29,9 +32,14 @@ def _on_connect(dbapi_conn: Any, _record: Any) -> None:
     cur.close()
 
 
+def _on_begin(conn: Any) -> None:
+    conn.exec_driver_sql("BEGIN")
+
+
 def make_engine(url: str) -> Engine:
     engine = create_engine(url, connect_args={"check_same_thread": False})
     event.listen(engine, "connect", _on_connect)
+    event.listen(engine, "begin", _on_begin)
     return engine
 
 

@@ -57,7 +57,7 @@ class Banner:
 
     def record(self, ip: str, now: float | None = None) -> bool:
         """Record a failure; returns True when the address must be banned now."""
-        now = now or time.monotonic()
+        now = time.monotonic() if now is None else now
         if self.whitelisted(ip) or self.banned.get(ip, 0) > now:
             return False
         q = self.failures[ip]

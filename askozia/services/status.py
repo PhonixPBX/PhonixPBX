@@ -57,10 +57,16 @@ def disk(path: str) -> dict[str, int]:
 
 
 def cpu_model() -> str:
+    info: dict[str, str] = {}
     for line in _read("/proc/cpuinfo").splitlines():
-        if line.lower().startswith(("model name", "hardware", "model")):
-            return line.split(":", 1)[1].strip()
-    return platform.machine()
+        key, _, value = line.partition(":")
+        info.setdefault(key.strip().lower(), value.strip())
+    # x86: "model name"; Raspberry Pi: "Model" (board) / "Hardware"
+    for key in ("model name", "hardware"):
+        if info.get(key):
+            return info[key]
+    model = info.get("model", "")
+    return model if model and not model.isdigit() else platform.machine()
 
 
 def system_info() -> dict[str, Any]:
@@ -176,9 +182,13 @@ def asterisk_status() -> dict[str, Any]:
             for ev in client.action_list("PJSIPShowContacts"):
                 aor = ev.get("Aor", "")
                 out["endpoints"].setdefault(aor, {}).setdefault("addresses", []).append(
-                    {"uri": ev.get("Uri", ""), "status": ev.get("Status", ""),
-                     "rtt": ev.get("RoundtripUsec", ""), "agent": ev.get("UserAgent", "")}
-                )  # fmt: skip
+                    {
+                        "uri": ev.get("Uri", ""),
+                        "status": ev.get("Status", ""),
+                        "rtt": ev.get("RoundtripUsec", ""),
+                        "agent": ev.get("UserAgent", ""),
+                    }
+                )
             for ev in client.action_list("PJSIPShowRegistrationsOutbound"):
                 out["registrations"][ev.get("ObjectName", "")] = ev.get("Status", "")
             try:
@@ -187,15 +197,17 @@ def asterisk_status() -> dict[str, Any]:
             except ami.AmiError:
                 pass
             for ev in client.action_list("CoreShowChannels"):
-                out["channels"].append({
-                    "channel": ev.get("Channel", ""),
-                    "callerid": f"{ev.get('CallerIDName', '')} <{ev.get('CallerIDNum', '')}>",
-                    "exten": ev.get("Exten", ""),
-                    "state": ev.get("ChannelStateDesc", ""),
-                    "app": ev.get("Application", ""),
-                    "duration": ev.get("Duration", ""),
-                    "bridged": ev.get("BridgeId", ""),
-                })  # fmt: skip
+                out["channels"].append(
+                    {
+                        "channel": ev.get("Channel", ""),
+                        "callerid": f"{ev.get('CallerIDName', '')} <{ev.get('CallerIDNum', '')}>",
+                        "exten": ev.get("Exten", ""),
+                        "state": ev.get("ChannelStateDesc", ""),
+                        "app": ev.get("Application", ""),
+                        "duration": ev.get("Duration", ""),
+                        "bridged": ev.get("BridgeId", ""),
+                    }
+                )
     except ami.AmiError as exc:
         out["error"] = str(exc)
     return out
