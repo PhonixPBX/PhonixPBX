@@ -40,14 +40,17 @@ for w in $(cat /proc/cmdline); do
 	fi
 done
 
-# make the terminal the menu's controlling terminal (Ctrl-C, password
-# prompts); a container console may already belong to another session, the
-# menu then runs without one
-ctty=-c
-setsid -w -c true 2>/dev/null || ctty=
+# The menu runs in this session: init started the script as a session
+# leader, so opening the terminal above made it the controlling terminal
+# (Ctrl-C, password prompts), unless it belongs to another session (a
+# container console), then the menu runs without one. Never hand the terminal
+# to a separate session (setsid -c): when that session's leader exits, the
+# kernel hangs up the terminal for everybody, this script included, and the
+# console stays dark. Ctrl-C reaches the whole foreground process group; the
+# trap keeps the script alive while the menu handles it.
+trap : INT QUIT
 started=$(cut -d. -f1 /proc/uptime)
-# shellcheck disable=SC2086
-setsid -w $ctty phonix tui
+phonix tui
 rc=$?
 now=$(cut -d. -f1 /proc/uptime)
 if [ $rc -ne 0 ] && [ $((now - started)) -lt 5 ]; then
