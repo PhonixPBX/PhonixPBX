@@ -43,8 +43,20 @@ def container_tool() -> str:
 
 def in_builder(*cmd: str) -> None:
     """Run a command in the image build container with the repository at /src."""
-    subprocess.run([container_tool(), "run", "--rm", "-v", f"{TOP}:/src:z",
-                    "-e", "MTOOLS_SKIP_CHECK=1", "askozia-imgbuild:3.24", *cmd], check=True)
+    subprocess.run(
+        [
+            container_tool(),
+            "run",
+            "--rm",
+            "-v",
+            f"{TOP}:/src:z",
+            "-e",
+            "MTOOLS_SKIP_CHECK=1",
+            "askozia-imgbuild:3.24",
+            *cmd,
+        ],
+        check=True,
+    )
 
 
 class Vm:
@@ -64,14 +76,27 @@ class Vm:
     # ------------------------------------------------------------ lifecycle
     def start(self) -> None:
         qemu = "qemu-system-x86_64" if self.arch == "x86_64" else "qemu-system-i386"
-        cmd = [qemu, "-m", "1536", "-smp", "2", "-display", "none", "-name",
-               self.name,
-               "-drive", f"file={self.disk},format=raw,if=virtio",
-               "-netdev", f"user,id=n0,hostfwd=tcp:127.0.0.1:{self.https}-:443,"
-                          f"hostfwd=udp:127.0.0.1:{self.sip}-:5060",
-               "-device", "virtio-net-pci,netdev=n0",
-               "-serial", f"unix:{self.sock_path},server=on,wait=on",
-               "-monitor", "none"]
+        cmd = [
+            qemu,
+            "-m",
+            "1536",
+            "-smp",
+            "2",
+            "-display",
+            "none",
+            "-name",
+            self.name,
+            "-drive",
+            f"file={self.disk},format=raw,if=virtio",
+            "-netdev",
+            f"user,id=n0,hostfwd=tcp:127.0.0.1:{self.https}-:443,hostfwd=udp:127.0.0.1:{self.sip}-:5060",
+            "-device",
+            "virtio-net-pci,netdev=n0",
+            "-serial",
+            f"unix:{self.sock_path},server=on,wait=on",
+            "-monitor",
+            "none",
+        ]
         if os.access("/dev/kvm", os.W_OK):
             cmd += ["-enable-kvm", "-cpu", "host"]
         if self.firmware == "uefi":
@@ -82,8 +107,12 @@ class Vm:
             else:
                 vars_copy = WORK / f"vars-{self.name}.fd"
                 shutil.copyfile(vars_src, vars_copy)
-                cmd += ["-drive", f"if=pflash,format=raw,readonly=on,file={code}",
-                        "-drive", f"if=pflash,format=raw,file={vars_copy}"]
+                cmd += [
+                    "-drive",
+                    f"if=pflash,format=raw,readonly=on,file={code}",
+                    "-drive",
+                    f"if=pflash,format=raw,file={vars_copy}",
+                ]
         log(f"starting {self.name}: https://localhost:{self.https}/ sip udp/{self.sip} ({self.firmware})")
         self.logfh = open(self.logfile, "w")  # noqa: SIM115
         self.proc = subprocess.Popen(cmd, stdin=subprocess.DEVNULL)
@@ -159,7 +188,7 @@ class Vm:
         self.send(f"{command}; echo {tag} $?\n")
         m = self.wait_for(re.escape(tag) + r" (\d+)", timeout)
         with self.lock:
-            out = self.buf[start:m.start()]
+            out = self.buf[start : m.start()]
         self.offset = m.end()
         return int(m.group(1)), out
 
@@ -178,11 +207,13 @@ class Vm:
 
     def sip_options(self) -> str | None:
         branch = f"z9hG4bK{int(time.time() * 1000)}"
-        msg = (f"OPTIONS sip:ping@127.0.0.1 SIP/2.0\r\n"
-               f"Via: SIP/2.0/UDP 127.0.0.1:5999;branch={branch};rport\r\n"
-               f"Max-Forwards: 70\r\nTo: <sip:ping@127.0.0.1>\r\n"
-               f"From: <sip:test@127.0.0.1>;tag=askozia\r\nCall-ID: {branch}@askozia-test\r\n"
-               f"CSeq: 1 OPTIONS\r\nContent-Length: 0\r\n\r\n")
+        msg = (
+            f"OPTIONS sip:ping@127.0.0.1 SIP/2.0\r\n"
+            f"Via: SIP/2.0/UDP 127.0.0.1:5999;branch={branch};rport\r\n"
+            f"Max-Forwards: 70\r\nTo: <sip:ping@127.0.0.1>\r\n"
+            f"From: <sip:test@127.0.0.1>;tag=askozia\r\nCall-ID: {branch}@askozia-test\r\n"
+            f"CSeq: 1 OPTIONS\r\nContent-Length: 0\r\n\r\n"
+        )
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
             s.settimeout(3)
             try:
@@ -229,10 +260,12 @@ def prepare_disk(image: Path, name: str, size_gb: int, service_shell: bool) -> P
         fh.truncate(size_gb * 1024**3)
     if service_shell:
         rel = disk.relative_to(TOP)
-        script = (f"set -e; img=/src/{rel}@@{BOOT_OFFSET}; "
-                  "mcopy -n -i $img ::/grub/grub.cfg /tmp/g; "
-                  "sed -i 's/askozia.trial=${t}/askozia.trial=${t} askozia.console=shell/' /tmp/g; "
-                  "grep -q askozia.console=shell /tmp/g; mcopy -o -i $img /tmp/g ::/grub/grub.cfg")
+        script = (
+            f"set -e; img=/src/{rel}@@{BOOT_OFFSET}; "
+            "mcopy -n -i $img ::/grub/grub.cfg /tmp/g; "
+            "sed -i 's/askozia.trial=${t}/askozia.trial=${t} askozia.console=shell/' /tmp/g; "
+            "grep -q askozia.console=shell /tmp/g; mcopy -o -i $img /tmp/g ::/grub/grub.cfg"
+        )
         in_builder("sh", "-c", script)
     return disk
 
@@ -247,8 +280,9 @@ def make_broken_bundle(board: str, version: str, key: Path, out: Path) -> None:
     shutil.copyfile(parts / "vmlinuz", payload / "vmlinuz")
     shutil.copyfile(parts / "initramfs", payload / "initramfs")
     (payload / "rootfs.squashfs").write_bytes(os.urandom(4 * 1024 * 1024))
-    subprocess.run([str(TOP / "image" / "mkbundle.sh"), board, f"{version}-broken", str(payload),
-                    str(key), str(out)], check=True)
+    subprocess.run(
+        [str(TOP / "image" / "mkbundle.sh"), board, f"{version}-broken", str(payload), str(key), str(out)], check=True
+    )
     shutil.rmtree(tmp, ignore_errors=True)
 
 
@@ -289,8 +323,9 @@ def update_test(image: Path, board: str, firmware: str, timeout: float, bundle: 
     serve = WORK / "serve"
     shutil.rmtree(serve, ignore_errors=True)
     serve.mkdir()
-    os.link(bundle, serve / "good.update") if bundle.stat().st_dev == serve.stat().st_dev else \
-        shutil.copyfile(bundle, serve / "good.update")
+    os.link(bundle, serve / "good.update") if bundle.stat().st_dev == serve.stat().st_dev else shutil.copyfile(
+        bundle, serve / "good.update"
+    )
     shutil.move(str(broken), serve / "broken.update")
     srv = Server(serve)
     srv.start()
@@ -351,8 +386,10 @@ def main() -> int:
     ap.add_argument("--firmware", default="both", choices=["uefi", "bios", "both"])
     ap.add_argument("--image")
     ap.add_argument("--bundle")
-    ap.add_argument("--key", default=os.environ.get("ASKOZIA_UPDATE_SIGNING_KEY",
-                                                    str(TOP / "image" / "keys" / "update-signing.pem")))
+    ap.add_argument(
+        "--key",
+        default=os.environ.get("ASKOZIA_UPDATE_SIGNING_KEY", str(TOP / "image" / "keys" / "update-signing.pem")),
+    )
     ap.add_argument("--update", action="store_true", help="also test update and rollback")
     ap.add_argument("--timeout", type=float, default=600)
     args = ap.parse_args()
