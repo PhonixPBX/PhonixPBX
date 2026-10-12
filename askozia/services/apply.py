@@ -81,9 +81,17 @@ def _write_atomic(path: Path, content: str, mode: int, group: str | None = None)
     with os.fdopen(fd, "w") as fh:
         fh.write(content)
     os.chmod(tmp, mode)
-    if group and os.geteuid() == 0:
+    if group:
+        # files Asterisk must read get group "asterisk" (the askozia user is a
+        # member, so this also works unprivileged); as root also hand them over
+        uid = gid = -1
         with contextlib.suppress(KeyError):
-            os.chown(tmp, pwd.getpwnam("askozia").pw_uid, grp.getgrnam(group).gr_gid)
+            gid = grp.getgrnam(group).gr_gid
+        if os.geteuid() == 0:
+            with contextlib.suppress(KeyError):
+                uid = pwd.getpwnam("askozia").pw_uid
+        with contextlib.suppress(PermissionError):
+            os.chown(tmp, uid, gid)
     os.replace(tmp, path)
 
 
