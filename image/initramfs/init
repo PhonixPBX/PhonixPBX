@@ -19,7 +19,17 @@ export PATH=/usr/sbin:/usr/bin:/sbin:/bin
 /bin/busybox mount -t sysfs -o nosuid,nodev,noexec sysfs /sys
 /bin/busybox mount -t devtmpfs -o nosuid,mode=0755 devtmpfs /dev 2>/dev/null
 [ -c /dev/console ] || mknod -m 600 /dev/console c 5 1
-exec </dev/console >/dev/console 2>&1
+# A failed redirection of "exec" terminates a POSIX shell, which would make
+# the kernel panic ("Attempted to kill init") and reboot in a loop. That
+# happens when /dev/console cannot be opened, e.g. if the console= device
+# from cmdline.txt does not exist on this board. Test it in a subshell first.
+if (: </dev/console >/dev/console) 2>/dev/null; then
+	exec </dev/console >/dev/console 2>&1
+elif [ -w /dev/kmsg ]; then
+	exec </dev/null >/dev/kmsg 2>&1
+else
+	exec </dev/null >/dev/null 2>&1
+fi
 
 SLOT=A
 TRIAL=0
@@ -66,6 +76,10 @@ fatal() {
 	sync
 	reboot -f
 }
+
+# never let init end by accident: that panics the kernel and reboots at once,
+# hiding the reason (switch_root replaces this process, so the trap does not fire)
+trap 'fatal "the boot script ended unexpectedly"' EXIT
 
 # ------------------------------------------------------------ drivers
 if [ -f /lib/modules/load.order ]; then
