@@ -168,7 +168,11 @@ crud(
 
 
 SETTINGS = {st.group_name(m): m for m in st.ALL_GROUPS}
-SECRET_SETTINGS = {"email": ("password",), "system": ("ssh_password_hash",)}
+SECRET_SETTINGS = {
+    "email": ("password",),
+    "system": ("ssh_password_hash",),
+    "acme": ("eab_hmac", "dns_env"),
+}
 SETTINGS_AREAS = {
     "system": ("system", "network", "telephony", "firewall"),
     "network": ("network", "telephony"),
@@ -190,7 +194,8 @@ def get_settings(group: str, user: User = Depends(api_user), db: Session = Depen
         raise HTTPException(404, "unknown settings group")
     data = st.load(db, model).model_dump()
     for name in SECRET_SETTINGS.get(group, ()):
-        data[name] = ""
+        # credential maps keep their keys so clients know what is set
+        data[name] = dict.fromkeys(data[name], "") if isinstance(data[name], dict) else ""
     return data
 
 
@@ -210,7 +215,10 @@ async def patch_settings(
         raise HTTPException(422, "expected a JSON object")
     current = st.load(db, model).model_dump()
     for name in SECRET_SETTINGS.get(group, ()):
-        if not body.get(name):
+        if isinstance(body.get(name), dict) and isinstance(current.get(name), dict):
+            stored = current[name]
+            body[name] = {k: val or stored.get(k, "") for k, val in body[name].items()}
+        elif not body.get(name):
             body.pop(name, None)  # GET returns secrets empty: keep the stored one
     current.update(body)
     try:

@@ -29,6 +29,8 @@ depend() {
 start_pre() {
 	checkpath -d -m 0711 -o phonix:phonix /run/phonix
 	checkpath -d -m 0700 -o phonix:phonix /run/phonix/staged
+	# ACME HTTP-01 challenge files, served by nginx
+	checkpath -d -m 0755 -o phonix:phonix /run/phonix/acme
 	checkpath -d -m 0755 -o root:root /var/log/phonix
 	checkpath -f -m 0640 -o phonix:phonix /var/log/phonix/web.log
 	rm -f "$socket"

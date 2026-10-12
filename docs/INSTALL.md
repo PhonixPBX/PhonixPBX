@@ -87,7 +87,7 @@ If the box has no screen, find its IP address in your router's DHCP lease list.
 ## 3. Log in
 
 1. Open `https://<ip-address>/`. Port 80 redirects to HTTPS.
-2. The certificate is self-signed, so the browser shows a warning the first time. Check that the address is right and accept the warning. You can upload your own certificate later under *System → General*.
+2. The certificate is self-signed, so the browser shows a warning the first time. Check that the address is right and accept the warning. Later you can get a free certificate from Let's Encrypt (or another ACME CA), or upload your own, under *Advanced → Certificate*.
 3. Log in as `admin` with the password from the console. You are asked to choose a new password straight away.
 
 If you lose the password, use the console menu: **Reset administrator password**.

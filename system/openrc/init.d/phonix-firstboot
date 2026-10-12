@@ -25,6 +25,7 @@ _prepare_dirs() {
 	checkpath -d -m 0750 -o phonix:asterisk "$d"
 	checkpath -d -m 0750 -o phonix:phonix "$d/state" "$d/backups" "$d/tmp"
 	checkpath -d -m 0750 -o phonix:asterisk "$d/tls"
+	checkpath -d -m 0700 -o phonix:phonix "$d/acme"
 	# setgid: new media files keep group asterisk (Asterisk reads MOH/greetings)
 	checkpath -d -m 2750 -o phonix:asterisk "$d/media"
 	checkpath -d -m 0750 -o asterisk:asterisk "$d/asterisk" "$d/spool"

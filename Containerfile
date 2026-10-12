@@ -46,7 +46,7 @@ RUN apk add --no-cache \
         python3 py3-fastapi uvicorn py3-pydantic py3-sqlalchemy py3-alembic py3-jinja2 \
         py3-argon2-cffi py3-itsdangerous py3-python-multipart py3-babel py3-defusedxml \
         py3-cryptography py3-zstandard py3-httpx \
-        nginx msmtp nftables sox doas su-exec tini logrotate \
+        nginx msmtp nftables sox doas su-exec tini logrotate lego \
         tzdata ca-certificates-bundle iproute2 curl \
     && rm -f /etc/nginx/http.d/default.conf
 
@@ -60,6 +60,7 @@ RUN set -eu; S=/tmp/system; L=/usr/libexec/phonix; \
     install -Dm400 "$S/doas.d/phonix.conf" /etc/doas.d/phonix.conf; \
     install -Dm644 "$S/nginx/phonix.conf" /usr/share/phonix/nginx-phonix.conf; \
     install -Dm644 "$S/logrotate.d/phonix" /etc/logrotate.d/phonix; \
+    install -Dm755 "$S/periodic/phonix-cert" /etc/periodic/daily/phonix-cert; \
     install -Dm644 "$S/rootfs/etc/nftables.nft" /etc/nftables.nft; \
     rm -rf "$S"; \
     pyver=$(python3 -c 'import sys; print(f"{sys.version_info[0]}.{sys.version_info[1]}")'); \

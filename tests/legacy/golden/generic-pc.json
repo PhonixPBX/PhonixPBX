@@ -88,6 +88,19 @@
       }
     ],
     "settings": {
+      "acme": {
+        "challenge": "http",
+        "dns_env": {},
+        "dns_provider": "",
+        "dns_resolvers": [],
+        "domains": [],
+        "eab_hmac": "",
+        "eab_kid": "",
+        "email": "",
+        "enabled": false,
+        "server": "letsencrypt",
+        "server_url": ""
+      },
       "email": {
         "auth": true,
         "encryption": "starttls",

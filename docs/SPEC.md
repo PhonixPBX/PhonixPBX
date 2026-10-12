@@ -260,7 +260,7 @@ Everything hardware-specific listed in the confirmed decisions, plus Humbug anal
 - Login attempts are rate-limited, by nginx and in the app.
 
 **HTTPS**
-- HTTPS is the default. A self-signed certificate is generated on first boot. Port 80 redirects to HTTPS. Users can upload their own certificate.
+- HTTPS is the default. A self-signed certificate is generated on first boot. Port 80 redirects to HTTPS (except `/.well-known/acme-challenge/`). Users can upload their own certificate or have one issued and renewed automatically by an ACME CA (Let's Encrypt, ZeroSSL or a custom directory) through the `lego` client, validated over HTTP-01 or DNS-01 with a DNS provider API. `phonix cert renew` runs daily from cron and renews 30 days before expiry.
 
 **Secrets**
 - SIP and IAX secrets are stored in the DB.

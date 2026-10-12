@@ -1,0 +1,18 @@
+{# ACME request status; polls itself while lego is running #}
+{% set state = status.get("state", "none") %}
+<div id="acme-status"{% if state != "none" %} class="mb-3"{% endif %}{% if state == "running" %} hx-get="/advanced/certificate/acme/status?was=running" hx-trigger="every 2s" hx-swap="outerHTML"{% endif %}>
+{% if state == "running" %}
+  <div class="alert alert-info mb-0"><div class="d-flex align-items-center"><span class="spinner-border spinner-border-sm me-2"></span>{{ status.message or "Requesting a certificate ..." }}</div></div>
+{% elif state == "ok" %}
+  <div class="alert alert-success mb-0">{{ icon("circle-check", "me-1") }}{{ status.message }} <span class="text-secondary small">({{ status.time }})</span></div>
+{% elif state == "error" %}
+  <div class="alert alert-danger mb-0">
+    <div>{{ icon("alert-circle", "me-1") }}{{ status.message }} <span class="text-secondary small">({{ status.time }})</span></div>
+    {% if status.log %}
+    <details class="mt-2"><summary>lego output</summary>
+      <pre class="small mt-2 mb-0 text-wrap text-break">{{ status.log | join("\n") }}</pre>
+    </details>
+    {% endif %}
+  </div>
+{% endif %}
+</div>

@@ -87,6 +87,16 @@ class RuntimeConfig:
     def tls_key_path(self) -> Path:
         return self.data_dir / "tls" / "server.key"
 
+    @property
+    def acme_dir(self) -> Path:
+        """lego state: ACME account and the issued certificates."""
+        return self.data_dir / "acme"
+
+    @property
+    def acme_webroot(self) -> Path:
+        """HTTP-01 challenge files, served by nginx below /.well-known/acme-challenge/."""
+        return self.path("/run/phonix/acme")
+
 
 def load() -> RuntimeConfig:
     root = Path(_env("ROOT", "/"))

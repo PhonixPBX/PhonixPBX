@@ -124,6 +124,7 @@ fi
 dir 0750 phonix:asterisk "$D"
 dir 0750 phonix:phonix "$D/state" "$D/backups" "$D/tmp"
 dir 0750 phonix:asterisk "$D/tls"
+dir 0700 phonix:phonix "$D/acme"
 dir 2750 phonix:asterisk "$D/media"
 dir 0750 asterisk:asterisk "$D/asterisk" "$D/spool"
 dir 0700 nginx:nginx "$D/tmp/nginx"
@@ -137,6 +138,7 @@ ln -sfn "$D/machine-id" /etc/machine-id 2>/dev/null || true
 dir 0750 phonix:asterisk /etc/asterisk /etc/phonix
 dir 0711 phonix:phonix /run/phonix
 dir 0700 phonix:phonix /run/phonix/staged
+dir 0755 phonix:phonix /run/phonix/acme
 dir 0700 root:root /run/phonix-priv /var/lib/phonix
 dir 0755 root:root /var/log/phonix
 dir 0750 asterisk:asterisk /var/run/asterisk /var/log/asterisk /var/lib/asterisk \
@@ -219,7 +221,7 @@ su-exec phonix phonix web --uds "$SOCKET" &
 WEB_PID=$!
 nginx -g 'daemon off;' &
 NGINX_PID=$!
-# log rotation (/etc/periodic/daily/logrotate); not critical
+# log rotation and certificate renewal (/etc/periodic/daily); not critical
 crond -f -l 8 &
 CROND_PID=$!
 

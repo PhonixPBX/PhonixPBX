@@ -10,7 +10,7 @@
 {% if cert and cert.self_signed == "True" %}
 <div class="alert alert-info" role="alert">
   {{ icon("certificate", "me-1") }} The web interface uses a self-signed certificate.
-  <a href="/advanced/certificate">Upload your own certificate</a> to get rid of browser warnings.
+  <a href="/advanced/certificate">Get one from Let's Encrypt or upload your own</a> to get rid of browser warnings.
 </div>
 {% endif %}
 <div class="row row-deck row-cards">

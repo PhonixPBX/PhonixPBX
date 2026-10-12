@@ -22,7 +22,7 @@ MANIFEST = "manifest.json"
 FORMAT = 1
 MAX_RESTORE_BYTES = 2 * 1024**3
 # directories below the data dir that are included as-is
-INCLUDE_DIRS = ("media", "tls", "asterisk")
+INCLUDE_DIRS = ("media", "tls", "acme", "asterisk")
 KEEP_BACKUPS = 10
 
 

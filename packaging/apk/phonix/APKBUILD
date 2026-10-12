@@ -39,6 +39,7 @@ depends="
 	chrony-openrc
 	nginx
 	nginx-openrc
+	lego
 	doas
 	tzdata
 	ca-certificates-bundle
@@ -102,6 +103,7 @@ package() {
 	# web server, log rotation, kernel settings
 	install -Dm644 "$sys/nginx/phonix.conf" "$pkgdir/etc/nginx/http.d/phonix.conf"
 	install -Dm644 "$sys/logrotate.d/phonix" "$pkgdir/etc/logrotate.d/phonix"
+	install -Dm755 "$sys/periodic/phonix-cert" "$pkgdir/etc/periodic/daily/phonix-cert"
 	install -Dm644 "$sys/sysctl.d/phonix.conf" "$pkgdir/etc/sysctl.d/phonix.conf"
 
 	# static web assets are served by nginx

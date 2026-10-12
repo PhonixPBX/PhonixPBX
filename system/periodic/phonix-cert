@@ -1,0 +1,11 @@
+#!/bin/sh
+# Renew the ACME (Let's Encrypt) certificate when it is due; does nothing
+# unless automatic certificates are enabled. Installed in /etc/periodic/daily.
+[ -r /etc/conf.d/phonix ] && . /etc/conf.d/phonix
+export PHONIX_DATA_DIR PHONIX_BOOT_DIR PHONIX_PRIVILEGED PHONIX_LIBEXEC_DIR \
+	PHONIX_AMI_HOST PHONIX_AMI_PORT
+
+# spread the requests of many PBXs over an hour
+sleep $(($(od -An -N2 -tu2 /dev/urandom) % 3600))
+
+su -s /bin/sh -c 'exec phonix cert renew' phonix 2>&1 | logger -t phonix-cert

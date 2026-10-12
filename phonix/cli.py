@@ -126,6 +126,19 @@ def cmd_backup(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_cert(args: argparse.Namespace) -> int:
+    from phonix.services import acme
+    from phonix.services.common import ServiceError
+
+    try:
+        with _session() as session:
+            print(acme.issue(session, force=args.force, user="cli"))
+    except ServiceError as exc:
+        print(f"ERROR {exc}", file=sys.stderr)
+        return 1
+    return 0
+
+
 def cmd_web(args: argparse.Namespace) -> int:
     import uvicorn
 
@@ -211,6 +224,11 @@ def build_parser() -> argparse.ArgumentParser:
     b.add_argument("action", choices=["create", "restore"])
     b.add_argument("file", nargs="?")
     b.set_defaults(func=cmd_backup)
+
+    c = sub.add_parser("cert", help="ACME certificate (Let's Encrypt)")
+    c.add_argument("action", choices=["renew"])
+    c.add_argument("--force", action="store_true", help="request a new certificate even if not due")
+    c.set_defaults(func=cmd_cert)
 
     w = sub.add_parser("web", help="run the web interface")
     w.add_argument("--uds", help="listen on a unix socket")

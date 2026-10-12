@@ -70,15 +70,29 @@ def ensure_certificate(hostname: str) -> bool:
     return True
 
 
-def certificate_info() -> dict[str, str] | None:
-    cfg = config.get()
+def current_certificate() -> x509.Certificate | None:
     try:
-        cert = x509.load_pem_x509_certificate(cfg.tls_cert_path.read_bytes())
+        return x509.load_pem_x509_certificate(config.get().tls_cert_path.read_bytes())
     except (FileNotFoundError, ValueError):
+        return None
+
+
+def dns_names(cert: x509.Certificate) -> list[str]:
+    try:
+        san = cert.extensions.get_extension_for_class(x509.SubjectAlternativeName).value
+    except x509.ExtensionNotFound:
+        return []
+    return san.get_values_for_type(x509.DNSName)
+
+
+def certificate_info() -> dict[str, str] | None:
+    cert = current_certificate()
+    if cert is None:
         return None
     return {
         "subject": cert.subject.rfc4514_string(),
         "issuer": cert.issuer.rfc4514_string(),
+        "names": ", ".join(dns_names(cert)),
         "not_after": cert.not_valid_after_utc.strftime("%Y-%m-%d"),
         "self_signed": str(cert.subject == cert.issuer),
         "sha256": cert.fingerprint(hashes.SHA256()).hex(":"),

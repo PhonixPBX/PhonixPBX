@@ -6,9 +6,10 @@ partially filled one after an upgrade) always yields a complete configuration.
 
 from __future__ import annotations
 
+import re
 from typing import Literal, TypeVar
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 from sqlalchemy.orm import Session
 
 from phonix.core import validation as v
@@ -231,6 +232,125 @@ class FirewallSettings(SettingsGroup):
         return [v.network(s) for s in value if s.strip()]
 
 
+ACME_SERVERS = {
+    "letsencrypt": "https://acme-v02.api.letsencrypt.org/directory",
+    "letsencrypt-staging": "https://acme-staging-v02.api.letsencrypt.org/directory",
+    "zerossl": "https://acme.zerossl.com/v2/DV90",
+}
+_ENV_NAME = re.compile(r"^[A-Z][A-Z0-9_]{0,63}$")
+# variables lego must not get from the provider credentials
+_ENV_RESERVED = ("PATH", "HOME", "LD_", "LEGO_", "SSL_CERT_")
+
+
+class AcmeSettings(SettingsGroup):
+    """Certificate from an ACME CA (Let's Encrypt, ZeroSSL, ...) obtained with lego."""
+
+    group: str = Field(default="acme", exclude=True)
+    enabled: bool = False
+    email: str = ""
+    server: Literal["letsencrypt", "letsencrypt-staging", "zerossl", "custom"] = "letsencrypt"
+    server_url: str = ""
+    # external account binding (ZeroSSL, some private CAs)
+    eab_kid: str = ""
+    eab_hmac: str = ""
+    # empty = hostname.domain from the system settings
+    domains: list[str] = Field(default_factory=list)
+    challenge: Literal["http", "dns"] = "http"
+    # lego DNS provider code and its credentials (environment variables)
+    dns_provider: str = ""
+    dns_env: dict[str, str] = Field(default_factory=dict)
+    dns_resolvers: list[str] = Field(default_factory=list)
+
+    @field_validator("email")
+    @classmethod
+    def _email(cls, value: str) -> str:
+        return v.email(value) if value else ""
+
+    @field_validator("server_url")
+    @classmethod
+    def _server_url(cls, value: str) -> str:
+        value = v.no_control(value.strip(), "URL")
+        if value and not value.startswith("https://"):
+            raise ValueError("The directory URL must start with https://")
+        return value
+
+    @field_validator("eab_kid", "eab_hmac")
+    @classmethod
+    def _eab(cls, value: str) -> str:
+        value = value.strip()
+        if value and not re.fullmatch(r"[A-Za-z0-9_=+/-]{1,512}", value):
+            raise ValueError("Invalid characters")
+        return value
+
+    @field_validator("domains")
+    @classmethod
+    def _domains(cls, value: list[str]) -> list[str]:
+        out: list[str] = []
+        for item in value:
+            item = item.strip().lower()
+            if not item:
+                continue
+            name = item[2:] if item.startswith("*.") else item
+            if "." not in v.domain(name):
+                raise ValueError(f"{item} is not a fully qualified domain name")
+            if item not in out:
+                out.append(item)
+        return out
+
+    @field_validator("dns_provider")
+    @classmethod
+    def _provider(cls, value: str) -> str:
+        value = value.strip()
+        if value and not re.fullmatch(r"[a-z0-9][a-z0-9._-]{0,63}", value):
+            raise ValueError("Invalid DNS provider code")
+        return value
+
+    @field_validator("dns_env")
+    @classmethod
+    def _dns_env(cls, value: dict[str, str]) -> dict[str, str]:
+        out: dict[str, str] = {}
+        for key, val in value.items():
+            key = key.strip()
+            if not _ENV_NAME.match(key) or key.startswith(_ENV_RESERVED):
+                raise ValueError(f"Invalid variable name {key!r}")
+            out[key] = v.no_control(val.strip(), key)
+        return out
+
+    @field_validator("dns_resolvers")
+    @classmethod
+    def _resolvers(cls, value: list[str]) -> list[str]:
+        out = []
+        for item in value:
+            item = item.strip()
+            if not item:
+                continue
+            host, _, port = item.rpartition(":") if item.count(":") == 1 else (item, "", "")
+            v.host(host)
+            if port and not (port.isdigit() and 0 < int(port) < 65536):
+                raise ValueError(f"Invalid port in {item}")
+            out.append(item)
+        return out
+
+    @model_validator(mode="after")
+    def _consistent(self) -> AcmeSettings:
+        if self.challenge == "http" and any(d.startswith("*.") for d in self.domains):
+            raise ValueError("Wildcard domains need DNS validation")
+        if self.enabled:
+            if not self.email:
+                raise ValueError("An e-mail address is required for the ACME account")
+            if self.server == "custom" and not self.server_url:
+                raise ValueError("Enter the directory URL of the ACME server")
+            if self.server == "zerossl" and not (self.eab_kid and self.eab_hmac):
+                raise ValueError("ZeroSSL needs the EAB key ID and HMAC key from the ZeroSSL dashboard")
+            if self.challenge == "dns" and not self.dns_provider:
+                raise ValueError("Choose a DNS provider")
+        return self
+
+    @property
+    def directory_url(self) -> str:
+        return self.server_url if self.server == "custom" else ACME_SERVERS[self.server]
+
+
 class GuiSettings(SettingsGroup):
     group: str = Field(default="gui", exclude=True)
     expand_advanced: bool = False
@@ -254,6 +374,7 @@ ALL_GROUPS: tuple[type[SettingsGroup], ...] = (
     FeatureSettings,
     MediaSettings,
     FirewallSettings,
+    AcmeSettings,
     GuiSettings,
     UpdateSettings,
 )
