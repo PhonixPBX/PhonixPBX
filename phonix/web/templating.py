@@ -17,6 +17,7 @@ from phonix.services.common import AREAS
 from phonix.web.security import csrf_token
 
 TEMPLATES_DIR = Path(__file__).parent / "templates"
+STATIC_DIR = Path(__file__).parent / "static"
 
 
 @dataclass
@@ -138,6 +139,15 @@ def _icon(name: str, cls: str = "") -> Markup:
     return Markup(f'<i class="ti ti-{name} {cls}" aria-hidden="true"></i>')  # noqa: S704
 
 
+def _asset(path: str) -> str:
+    """URL of a static file with its mtime as cache buster, so browsers pick up changes."""
+    try:
+        version = int((STATIC_DIR / path).stat().st_mtime)
+    except OSError:
+        return f"/static/{path}"
+    return f"/static/{path}?v={version}"
+
+
 def _filesize(num: float) -> str:
     for unit in ("B", "KB", "MB", "GB", "TB"):
         if abs(num) < 1024:
@@ -156,6 +166,7 @@ templates.env.globals.update(
         "MENU": MENU,
         "VERSION": __version__,
         "icon": _icon,
+        "asset": _asset,
         "options": _options,
         "LANGUAGES": v.LANGUAGES,
         "TONEZONES": v.TONEZONES,

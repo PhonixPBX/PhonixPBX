@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="/static/vendor/tabler/tabler-vendors.min.css">
   <link rel="stylesheet" href="/static/vendor/icons/tabler-icons.min.css">
   <link rel="stylesheet" href="/static/vendor/libs/tom-select/tom-select.bootstrap5.min.css">
-  <link rel="stylesheet" href="/static/phonix.css">
+  <link rel="stylesheet" href="{{ asset('phonix.css') }}">
   <script src="/static/vendor/tabler/tabler-theme.min.js"></script>
 </head>
 <body class="{% block body_class %}{% endblock %}">
@@ -24,6 +24,6 @@
 <script src="/static/vendor/libs/imask/imask.min.js" defer></script>
 <script src="/static/vendor/libs/dropzone/dropzone-min.js" defer></script>
 <script src="/static/vendor/libs/apexcharts/apexcharts.min.js" defer></script>
-<script src="/static/phonix.js" defer></script>
+<script src="{{ asset('phonix.js') }}" defer></script>
 </body>
 </html>
