@@ -10,6 +10,11 @@ PhonixPBX ships as a complete disk image for three boards:
 
 Each release also includes a signed update bundle per board, `phonix-<version>-<board>.update`, and a `SHA256SUMS` file.
 
+Downloads are on the GitHub releases page:
+
+- **Releases** (`v*` tags) are the versions to install.
+- **Nightly** (pre-release tagged `nightly`) is rebuilt from the default branch on every push. It is for testing only, and its assets are replaced each time.
+
 The image needs at least a 2 GB card or disk. Use 8 GB or more if you plan to keep voicemail and recordings. Check the download first:
 
 ```sh

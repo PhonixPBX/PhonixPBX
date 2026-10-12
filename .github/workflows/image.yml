@@ -2,7 +2,7 @@ name: image
 
 on:
   push:
-    branches: [master, main, phonix-ng]
+    branches: [master]
     tags: ["v*"]
   pull_request:
     paths:
@@ -104,3 +104,39 @@ jobs:
             out/phonix-*.img.zst
             out/phonix-*.update
             out/SHA256SUMS
+
+  # rolling pre-release with the images of the latest default branch build
+  nightly:
+    if: github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    concurrency:
+      group: nightly-release
+      cancel-in-progress: true
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: phonix-*
+          merge-multiple: true
+          path: out
+      - name: SHA256SUMS
+        run: cd out && sha256sum phonix-*.img.zst phonix-*.update > SHA256SUMS
+      - name: Publish the nightly pre-release
+        run: |
+          short=$(echo "$GITHUB_SHA" | cut -c1-8)
+          cat > notes.md <<EOF
+          Automatic build of \`${GITHUB_REF_NAME}\` at ${short} ($(date -u +%Y-%m-%d)).
+
+          Development snapshot - not for production. Images are replaced on every push to the
+          default branch. Update bundles are only accepted by systems built with the same
+          signing key. See docs/INSTALL.md for flashing instructions.
+          EOF
+          gh release delete nightly --cleanup-tag --yes 2>/dev/null || true
+          gh release create nightly --prerelease --target "$GITHUB_SHA" \
+            --title "Nightly build ${short}" --notes-file notes.md \
+            out/phonix-*.img.zst out/phonix-*.update out/SHA256SUMS

@@ -2,7 +2,7 @@ name: ci
 
 on:
   push:
-    branches: [master, main, phonix-ng]
+    branches: [master]
   pull_request:
 
 permissions:
