@@ -2,6 +2,8 @@
 # Dev container entry point: first boot, generate config, start Asterisk and
 # the web UI (auto-reload on code changes in /src).
 set -eu
+# the same variables are set on the container by dev/run.sh (for podman exec);
+# repeated here so the entrypoint also works when started differently
 export PHONIX_DATA_DIR=/data \
        PHONIX_ROOT=/srv/root \
        PHONIX_PRIVILEGED=exec \
@@ -29,6 +31,6 @@ chmod 750 /data && chgrp asterisk /data
 phonix monitor >/var/log/phonix-monitor.log 2>&1 &
 
 phonix banner | sed "s#https://\([^/]*\)/#http://\1:$WEB_PORT/#"
-echo "  Logs: podman exec -it phonix-dev asterisk -r"
+echo "  Console menu: dev/console.sh   Asterisk CLI: podman exec -it phonix-dev asterisk -r"
 echo
 exec phonix web --host 0.0.0.0 --port "$WEB_PORT" --reload

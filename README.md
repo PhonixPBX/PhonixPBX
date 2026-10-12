@@ -67,6 +67,7 @@ runs first boot, generates the configuration, starts Asterisk and serves the web
 on http://localhost:8000 with auto-reload of the mounted source. The initial `admin`
 password is printed at startup. The container uses host networking, so softphones
 on your LAN can register against your machine's IP (SIP 5060/udp, RTP 10000-20000/udp).
+The console menu (the same as on the appliance's screen) opens with `dev/console.sh`.
 Data persists in the `phonix-dev-data` volume; `podman exec -it phonix-dev asterisk -r`
 opens the Asterisk console. Network, firewall and boot-slot actions are only logged
 inside the container.
