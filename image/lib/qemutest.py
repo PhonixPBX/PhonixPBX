@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""QEMU boot / update / rollback test for AskoziaPBX PC images (see image/test-qemu.sh)."""
+"""QEMU boot / update / rollback test for PhonixPBX PC images (see image/test-qemu.sh)."""
 
 from __future__ import annotations
 
@@ -24,7 +24,7 @@ TOP = Path(__file__).resolve().parents[2]
 WORK = TOP / "image" / "work" / "qemu"
 OVMF_CODE = ["/usr/share/OVMF/OVMF_CODE_4M.fd", "/usr/share/OVMF/OVMF_CODE.fd", "/usr/share/ovmf/OVMF.fd"]
 OVMF_VARS = ["/usr/share/OVMF/OVMF_VARS_4M.fd", "/usr/share/OVMF/OVMF_VARS.fd"]
-BOOT_OFFSET = 1024 * 1024  # ASKBOOT starts at sector 2048
+BOOT_OFFSET = 1024 * 1024  # PHXBOOT starts at sector 2048
 
 
 def log(msg: str) -> None:
@@ -52,7 +52,7 @@ def in_builder(*cmd: str) -> None:
             f"{TOP}:/src:z",
             "-e",
             "MTOOLS_SKIP_CHECK=1",
-            "askozia-imgbuild:3.24",
+            "phonix-imgbuild:3.24",
             *cmd,
         ],
         check=True,
@@ -64,7 +64,7 @@ class Vm:
         self.disk, self.firmware, self.arch, self.name = disk, firmware, arch, name
         self.https = free_port()
         self.sip = free_port(socket.SOCK_DGRAM)
-        self.sock_path = Path(tempfile.mkdtemp(prefix="askozia-qemu-")) / "serial.sock"
+        self.sock_path = Path(tempfile.mkdtemp(prefix="phonix-qemu-")) / "serial.sock"
         self.logfile = WORK / f"serial-{name}.log"
         self.buf = ""
         self.offset = 0
@@ -182,7 +182,7 @@ class Vm:
     def sh(self, command: str, timeout: float = 120) -> tuple[int, str]:
         """Run a command in the service shell on the serial console."""
         Vm._n += 1
-        tag = f"__ASKOZIA_{Vm._n}__"
+        tag = f"__PHONIX_{Vm._n}__"
         self.mark()
         start = len(self.buf)
         self.send(f"{command}; echo {tag} $?\n")
@@ -211,7 +211,7 @@ class Vm:
             f"OPTIONS sip:ping@127.0.0.1 SIP/2.0\r\n"
             f"Via: SIP/2.0/UDP 127.0.0.1:5999;branch={branch};rport\r\n"
             f"Max-Forwards: 70\r\nTo: <sip:ping@127.0.0.1>\r\n"
-            f"From: <sip:test@127.0.0.1>;tag=askozia\r\nCall-ID: {branch}@askozia-test\r\n"
+            f"From: <sip:test@127.0.0.1>;tag=phonix\r\nCall-ID: {branch}@phonix-test\r\n"
             f"CSeq: 1 OPTIONS\r\nContent-Length: 0\r\n\r\n"
         )
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
@@ -241,7 +241,7 @@ class Vm:
         log(f"  SIP OPTIONS  -> {sip}")
         if web != 200 or not sip:
             raise RuntimeError(f"system did not come up (web={web}, sip={sip}); see {self.logfile}")
-        m = self.wait_for(r"askozia: boot slot ([AB]) marked good[^\n]*", max(60.0, end - time.time()))
+        m = self.wait_for(r"phonix: boot slot ([AB]) marked good[^\n]*", max(60.0, end - time.time()))
         log(f"  healthcheck  -> {m.group(0).strip()}")
         if m.group(1) != slot:
             raise RuntimeError(f"expected slot {slot}, booted {m.group(1)}")
@@ -263,15 +263,15 @@ def prepare_disk(image: Path, name: str, size_gb: int, service_shell: bool) -> P
         script = (
             f"set -e; img=/src/{rel}@@{BOOT_OFFSET}; "
             "mcopy -n -i $img ::/grub/grub.cfg /tmp/g; "
-            "sed -i 's/askozia.trial=${t}/askozia.trial=${t} askozia.console=shell/' /tmp/g; "
-            "grep -q askozia.console=shell /tmp/g; mcopy -o -i $img /tmp/g ::/grub/grub.cfg"
+            "sed -i 's/phonix.trial=${t}/phonix.trial=${t} phonix.console=shell/' /tmp/g; "
+            "grep -q phonix.console=shell /tmp/g; mcopy -o -i $img /tmp/g ::/grub/grub.cfg"
         )
         in_builder("sh", "-c", script)
     return disk
 
 
 def make_broken_bundle(board: str, version: str, key: Path, out: Path) -> None:
-    tmp = Path(tempfile.mkdtemp(prefix="askozia-broken-"))
+    tmp = Path(tempfile.mkdtemp(prefix="phonix-broken-"))
     payload = WORK / f"broken-{board}"
     shutil.rmtree(payload, ignore_errors=True)
     payload.mkdir(parents=True)
@@ -305,7 +305,7 @@ def boot_test(image: Path, board: str, firmware: str, timeout: float) -> None:
     vm = Vm(disk, firmware, arch, f"{board}-{firmware}")
     try:
         vm.start()
-        vm.wait_for(r"askozia-init: booting slot A", 120)
+        vm.wait_for(r"phonix-init: booting slot A", 120)
         log("  initramfs running")
         vm.wait_healthy(timeout, "A")
         log(f"PASS boot test {board} ({firmware})")
@@ -318,7 +318,7 @@ def update_test(image: Path, board: str, firmware: str, timeout: float, bundle: 
     name = f"{board}-{firmware}-update"
     disk = prepare_disk(image, name, 4, service_shell=True)
     broken = WORK / f"{board}-broken.update"
-    version = bundle.name.removeprefix("askozia-").removesuffix(f"-{board}.update")
+    version = bundle.name.removeprefix("phonix-").removesuffix(f"-{board}.update")
     make_broken_bundle(board, version, key, broken)
     serve = WORK / "serve"
     shutil.rmtree(serve, ignore_errors=True)
@@ -331,7 +331,7 @@ def update_test(image: Path, board: str, firmware: str, timeout: float, bundle: 
     srv.start()
 
     vm = Vm(disk, firmware, arch, name)
-    priv = "/usr/libexec/askozia/priv"
+    priv = "/usr/libexec/phonix/priv"
     try:
         vm.start()
         vm.wait_healthy(timeout, "A")
@@ -348,7 +348,7 @@ def update_test(image: Path, board: str, firmware: str, timeout: float, bundle: 
         assert "pending_trial=B" in out, out
         vm.mark()
         vm.send("rm -f /data/update.bundle; reboot\n")
-        vm.wait_for(r"askozia-init: booting slot B \(trial\)", 180)
+        vm.wait_for(r"phonix-init: booting slot B \(trial\)", 180)
         log("  rebooted into slot B (trial)")
         vm.wait_healthy(timeout, "B")
         vm.wait_for(r"update confirmed", 30)
@@ -365,10 +365,10 @@ def update_test(image: Path, board: str, firmware: str, timeout: float, bundle: 
         assert rc == 0, out
         vm.mark()
         vm.send("rm -f /data/update.bundle; reboot\n")
-        vm.wait_for(r"askozia-init: booting slot A \(trial\)", 180)
+        vm.wait_for(r"phonix-init: booting slot A \(trial\)", 180)
         vm.wait_for(r"rebooting into the previous slot", 120)
         log("  trial boot of slot A failed as expected, rolling back")
-        vm.wait_for(r"askozia-init: booting slot B\n", 180)
+        vm.wait_for(r"phonix-init: booting slot B\n", 180)
         vm.wait_healthy(timeout, "B")
         vm.send("\n")
         time.sleep(2)
@@ -388,7 +388,7 @@ def main() -> int:
     ap.add_argument("--bundle")
     ap.add_argument(
         "--key",
-        default=os.environ.get("ASKOZIA_UPDATE_SIGNING_KEY", str(TOP / "image" / "keys" / "update-signing.pem")),
+        default=os.environ.get("PHONIX_UPDATE_SIGNING_KEY", str(TOP / "image" / "keys" / "update-signing.pem")),
     )
     ap.add_argument("--update", action="store_true", help="also test update and rollback")
     ap.add_argument("--timeout", type=float, default=600)
@@ -400,14 +400,14 @@ def main() -> int:
             sys.exit(f"no {pattern} in out/ - run image/build.sh {args.board}")
         return Path(found[-1])
 
-    image = Path(args.image) if args.image else newest(f"askozia-*-{args.board}.img.zst")
+    image = Path(args.image) if args.image else newest(f"phonix-*-{args.board}.img.zst")
     firmwares = ["uefi", "bios"] if args.firmware == "both" else [args.firmware]
     if args.board == "pc-x86":
         firmwares = ["bios"]
     for fw in firmwares:
         boot_test(image, args.board, fw, args.timeout)
     if args.update:
-        bundle = Path(args.bundle) if args.bundle else newest(f"askozia-*-{args.board}.update")
+        bundle = Path(args.bundle) if args.bundle else newest(f"phonix-*-{args.board}.update")
         update_test(image, args.board, firmwares[0], args.timeout, bundle, Path(args.key))
     log("all tests passed")
     return 0

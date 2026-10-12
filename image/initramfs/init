@@ -1,17 +1,17 @@
 #!/bin/sh
-# AskoziaPBX initramfs
+# PhonixPBX initramfs
 #
-#  1. load storage/file system drivers, find the ASKBOOT partition
-#  2. grow the ASKDATA partition to the end of the disk (first boot)
-#  3. A/B trial accounting (Raspberry Pi), factory reset (wipe ASKDATA)
+#  1. load storage/file system drivers, find the PHXBOOT partition
+#  2. grow the PHXDATA partition to the end of the disk (first boot)
+#  3. A/B trial accounting (Raspberry Pi), factory reset (wipe PHXDATA)
 #  4. mount the squashfs root of the booted slot with a tmpfs overlay,
-#     ASKDATA at /data and ASKBOOT at /media/boot, then switch_root
+#     PHXDATA at /data and PHXBOOT at /media/boot, then switch_root
 #
 # Kernel parameters:
-#   askozia.slot=A|B     slot to boot (set by GRUB / cmdline.txt)
-#   askozia.trial=1      unconfirmed trial boot of an update (GRUB)
-#   askozia.debug=1      shell on errors instead of rebooting, verbose
-#   askozia.break=1      shell before switch_root
+#   phonix.slot=A|B     slot to boot (set by GRUB / cmdline.txt)
+#   phonix.trial=1      unconfirmed trial boot of an update (GRUB)
+#   phonix.debug=1      shell on errors instead of rebooting, verbose
+#   phonix.break=1      shell before switch_root
 export PATH=/usr/sbin:/usr/bin:/sbin:/bin
 
 /bin/busybox mkdir -p /proc /sys /dev /run /tmp /mnt/boot /sysroot
@@ -27,10 +27,10 @@ DEBUG=0
 BREAK=0
 for w in $(cat /proc/cmdline); do
 	case "$w" in
-	askozia.slot=B) SLOT=B ;;
-	askozia.trial=1) TRIAL=1 ;;
-	askozia.debug=1) DEBUG=1 ;;
-	askozia.break=1) BREAK=1 ;;
+	phonix.slot=B) SLOT=B ;;
+	phonix.trial=1) TRIAL=1 ;;
+	phonix.debug=1) DEBUG=1 ;;
+	phonix.break=1) BREAK=1 ;;
 	esac
 done
 
@@ -38,14 +38,14 @@ done
 # serial), not only on /dev/console
 msg() {
 	if [ -w /dev/kmsg ]; then
-		echo "<5>askozia-init: $*" >/dev/kmsg
+		echo "<5>phonix-init: $*" >/dev/kmsg
 	else
-		echo "askozia-init: $*"
+		echo "phonix-init: $*"
 	fi
 }
 
 shell() {
-	echo "askozia-init: starting a shell, exit to continue"
+	echo "phonix-init: starting a shell, exit to continue"
 	setsid -c /bin/sh -l 2>/dev/null || /bin/sh -l
 }
 
@@ -60,7 +60,7 @@ fatal() {
 	if [ "$DEBUG" = 1 ]; then
 		shell
 	else
-		msg "boot with askozia.debug=1 for a rescue shell; rebooting in 60 seconds"
+		msg "boot with phonix.debug=1 for a rescue shell; rebooting in 60 seconds"
 		sleep 60
 	fi
 	sync
@@ -79,15 +79,15 @@ msg "booting slot $SLOT$([ "$TRIAL" = 1 ] && echo ' (trial)')"
 BOOTDEV=""
 i=0
 while [ $i -lt 300 ]; do
-	BOOTDEV=$(findfs LABEL=ASKBOOT 2>/dev/null)
+	BOOTDEV=$(findfs LABEL=PHXBOOT 2>/dev/null)
 	[ -n "$BOOTDEV" ] && break
-	[ $i -eq 30 ] && msg "waiting for the ASKBOOT partition ..."
+	[ $i -eq 30 ] && msg "waiting for the PHXBOOT partition ..."
 	sleep 0.1
 	i=$((i + 1))
 done
 case "$BOOTDEV" in
 /dev/*1) BASE=${BOOTDEV%1} ;;
-'') fatal "no partition labelled ASKBOOT found" ;;
+'') fatal "no partition labelled PHXBOOT found" ;;
 *) fatal "unexpected boot partition $BOOTDEV" ;;
 esac
 # /dev/sda1 -> /dev/sda, /dev/mmcblk0p1 -> /dev/mmcblk0, /dev/nvme0n1p1 -> /dev/nvme0n1
@@ -108,7 +108,7 @@ wait_dev() {
 	[ -b "$1" ]
 }
 
-# ------------------------------------------------------------ grow ASKDATA
+# ------------------------------------------------------------ grow PHXDATA
 grow_data() {
 	dn=${DISK#/dev/}
 	pn=${DATADEV#/dev/}
@@ -133,13 +133,13 @@ grow_data() {
 }
 grow_data
 
-# ------------------------------------------------------------ ASKBOOT
+# ------------------------------------------------------------ PHXBOOT
 fsck.vfat -a -w "$BOOTDEV" >/dev/null 2>&1
 mount -t vfat -o rw,noatime,nodev,nosuid,noexec,umask=0022,iocharset=iso8859-1 "$BOOTDEV" /mnt/boot ||
 	fatal "cannot mount the boot partition $BOOTDEV"
 
 BOOT_DIR=/mnt/boot
-. /lib/askozia/bootctl.sh
+. /lib/phonix/bootctl.sh
 rc=0
 bootctl_initramfs_account || rc=$?
 if [ $rc -eq 2 ]; then
@@ -150,11 +150,11 @@ if [ $rc -eq 2 ]; then
 fi
 [ "$TRIAL" = 1 ] && msg "trial boot of slot $SLOT"
 
-# ------------------------------------------------------------ factory reset / ASKDATA
+# ------------------------------------------------------------ factory reset / PHXDATA
 wait_dev "$DATADEV" || fatal "data partition $DATADEV not found"
 if [ -f /mnt/boot/factory-reset ]; then
 	msg "factory reset: wiping the data partition"
-	mke2fs -q -F -t ext4 -L ASKDATA -m 1 "$DATADEV" || fatal "formatting $DATADEV failed"
+	mke2fs -q -F -t ext4 -L PHXDATA -m 1 "$DATADEV" || fatal "formatting $DATADEV failed"
 	rm -f /mnt/boot/factory-reset
 	sync
 fi
@@ -191,5 +191,5 @@ for d in /dev /sys /proc; do
 	mount --move "$d" "/sysroot$d" 2>/dev/null || umount -l "$d"
 done
 exec switch_root /sysroot /sbin/init
-echo "askozia-init: switch_root failed"
+echo "phonix-init: switch_root failed"
 exec /bin/sh

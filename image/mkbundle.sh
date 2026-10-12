@@ -1,5 +1,5 @@
 #!/bin/sh
-# Create a signed AskoziaPBX update bundle.
+# Create a signed PhonixPBX update bundle.
 #
 #   mkbundle.sh <board> <version> <payload-dir> <signing-key.pem> <output.update>
 #

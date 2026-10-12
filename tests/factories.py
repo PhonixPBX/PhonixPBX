@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from sqlalchemy.orm import Session
 
-from askozia.core import settings as st
-from askozia.services import dialplan, manager, phones, providers
+from phonix.core import settings as st
+from phonix.services import dialplan, manager, phones, providers
 
 
 def sample_pbx(session: Session) -> dict[str, int]:
@@ -90,7 +90,7 @@ def sample_pbx(session: Session) -> dict[str, int]:
                 "tech": "iax",
                 "name": "IAX Trunk",
                 "host": "iax.example.org",
-                "username": "askozia",
+                "username": "phonix",
                 "secret": "iaxsecret",
                 "dialpatterns": ["9|X."],
                 "failover_provider_id": trunk.id,

@@ -2,9 +2,9 @@ import pytest
 from factories import sample_pbx
 from sqlalchemy import select
 
-from askozia.core.models import ProviderIncomingRoute
-from askozia.services import dialplan, phones, providers
-from askozia.services.common import ServiceError, dirty_areas
+from phonix.core.models import ProviderIncomingRoute
+from phonix.services import dialplan, phones, providers
+from phonix.services.common import ServiceError, dirty_areas
 
 
 def test_seed_defaults(session):

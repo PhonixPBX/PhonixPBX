@@ -16,13 +16,13 @@ from typing import Any
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from askozia.core import settings as st
-from askozia.core.models import AmiUser, Application, CallGroup, ConferenceRoom, Phone, Provider
-from askozia.legacy.parse import Node, decode_b64, parse_bytes
-from askozia.services import dialplan as dp
-from askozia.services import manager as mgr
-from askozia.services import phones as ph
-from askozia.services import providers as pv
+from phonix.core import settings as st
+from phonix.core.models import AmiUser, Application, CallGroup, ConferenceRoom, Phone, Provider
+from phonix.legacy.parse import Node, decode_b64, parse_bytes
+from phonix.services import dialplan as dp
+from phonix.services import manager as mgr
+from phonix.services import phones as ph
+from phonix.services import providers as pv
 
 HERE = Path(__file__).parent
 FIXTURES = HERE / "fixtures"

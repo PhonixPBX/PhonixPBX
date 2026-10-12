@@ -1,5 +1,5 @@
 
-AskoziaPBX - the root file system is read-only and changes below /etc and
-/var are lost on reboot. Configuration lives in /data/askozia.db; use the
-web interface or the "askozia" command.
+PhonixPBX - the root file system is read-only and changes below /etc and
+/var are lost on reboot. Configuration lives in /data/phonix.db; use the
+web interface or the "phonix" command.
 

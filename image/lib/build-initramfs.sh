@@ -80,9 +80,9 @@ with open(os.path.join(dest, "load.order"), "w") as out:
 print(f"{len(order)} modules; built-in or absent: {' '.join(missing) or '-'}")
 PY
 
-mkdir -p "$IR/lib/askozia" "$IR/proc" "$IR/sys" "$IR/dev" "$IR/run" "$IR/tmp" "$IR/sysroot" "$IR/mnt/boot"
+mkdir -p "$IR/lib/phonix" "$IR/proc" "$IR/sys" "$IR/dev" "$IR/run" "$IR/tmp" "$IR/sysroot" "$IR/mnt/boot"
 install -m 0755 "$IMG/initramfs/init" "$IR/init"
-install -m 0644 "$SRC/system/libexec/bootctl.sh" "$IR/lib/askozia/bootctl.sh"
+install -m 0644 "$SRC/system/libexec/bootctl.sh" "$IR/lib/phonix/bootctl.sh"
 
 msg "[$BOARD] packing initramfs"
 find "$IR" -exec touch -h -d "@$SOURCE_DATE_EPOCH" {} +

@@ -2,7 +2,7 @@ name: image
 
 on:
   push:
-    branches: [master, main, askozia-ng]
+    branches: [master, main, phonix-ng]
     tags: ["v*"]
   pull_request:
     paths:
@@ -31,21 +31,21 @@ jobs:
           fetch-depth: 0
       - name: Signing keys
         env:
-          UPDATE_KEY: ${{ secrets.ASKOZIA_UPDATE_SIGNING_KEY }}
-          ABUILD_KEY: ${{ secrets.ASKOZIA_ABUILD_KEY }}
-          ABUILD_PUB: ${{ secrets.ASKOZIA_ABUILD_KEY_PUB }}
+          UPDATE_KEY: ${{ secrets.PHONIX_UPDATE_SIGNING_KEY }}
+          ABUILD_KEY: ${{ secrets.PHONIX_ABUILD_KEY }}
+          ABUILD_PUB: ${{ secrets.PHONIX_ABUILD_KEY_PUB }}
         run: |
           mkdir -p "$RUNNER_TEMP/keys"
           if [ -n "$UPDATE_KEY" ]; then
             printf '%s\n' "$UPDATE_KEY" > "$RUNNER_TEMP/keys/update-signing.pem"
-            echo "ASKOZIA_UPDATE_SIGNING_KEY=$RUNNER_TEMP/keys/update-signing.pem" >> "$GITHUB_ENV"
+            echo "PHONIX_UPDATE_SIGNING_KEY=$RUNNER_TEMP/keys/update-signing.pem" >> "$GITHUB_ENV"
           else
-            echo "::warning::no ASKOZIA_UPDATE_SIGNING_KEY secret - using a throwaway key (test build)"
+            echo "::warning::no PHONIX_UPDATE_SIGNING_KEY secret - using a throwaway key (test build)"
           fi
           if [ -n "$ABUILD_KEY" ]; then
-            printf '%s\n' "$ABUILD_KEY" > "$RUNNER_TEMP/keys/askozia-abuild.rsa"
-            printf '%s\n' "$ABUILD_PUB" > "$RUNNER_TEMP/keys/askozia-abuild.rsa.pub"
-            echo "ASKOZIA_ABUILD_KEY=$RUNNER_TEMP/keys/askozia-abuild.rsa" >> "$GITHUB_ENV"
+            printf '%s\n' "$ABUILD_KEY" > "$RUNNER_TEMP/keys/phonix-abuild.rsa"
+            printf '%s\n' "$ABUILD_PUB" > "$RUNNER_TEMP/keys/phonix-abuild.rsa.pub"
+            echo "PHONIX_ABUILD_KEY=$RUNNER_TEMP/keys/phonix-abuild.rsa" >> "$GITHUB_ENV"
           fi
       - name: Build apk and image
         run: image/build.sh ${{ matrix.board }}
@@ -53,7 +53,7 @@ jobs:
         run: sudo chown -R "$(id -u):$(id -g)" out image/work image/keys
       - name: Inspect image
         run: |
-          zstd -d -c out/askozia-*-${{ matrix.board }}.img.zst > disk.img
+          zstd -d -c out/phonix-*-${{ matrix.board }}.img.zst > disk.img
           sfdisk -d disk.img
           rm disk.img
       - name: Enable KVM
@@ -77,11 +77,11 @@ jobs:
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v4
         with:
-          name: askozia-${{ matrix.board }}
+          name: phonix-${{ matrix.board }}
           path: |
-            out/askozia-*-${{ matrix.board }}.img.zst
-            out/askozia-*-${{ matrix.board }}.update
-            out/askozia-*-${{ matrix.board }}.packages
+            out/phonix-*-${{ matrix.board }}.img.zst
+            out/phonix-*-${{ matrix.board }}.update
+            out/phonix-*-${{ matrix.board }}.packages
           compression-level: 0
 
   release:
@@ -93,14 +93,14 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          pattern: askozia-*
+          pattern: phonix-*
           merge-multiple: true
           path: out
       - name: SHA256SUMS
-        run: cd out && sha256sum askozia-*.img.zst askozia-*.update > SHA256SUMS
+        run: cd out && sha256sum phonix-*.img.zst phonix-*.update > SHA256SUMS
       - uses: softprops/action-gh-release@v2
         with:
           files: |
-            out/askozia-*.img.zst
-            out/askozia-*.update
+            out/phonix-*.img.zst
+            out/phonix-*.update
             out/SHA256SUMS

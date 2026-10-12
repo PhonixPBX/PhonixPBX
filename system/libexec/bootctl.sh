@@ -1,14 +1,14 @@
 # shellcheck shell=sh
-# AskoziaPBX A/B boot slot state (sourced library, POSIX sh).
+# PhonixPBX A/B boot slot state (sourced library, POSIX sh).
 #
 # Used by the privileged helper (priv), the healthcheck loop (read-only
 # queries) and the initramfs (trial accounting on the Raspberry Pi).
 #
 # Slots are "A" and "B". Partition 2 holds the root filesystem of slot A,
 # partition 3 the one of slot B. Kernel + initramfs (and on the Pi the device
-# trees/overlays) live in /slotA and /slotB on the ASKBOOT partition.
+# trees/overlays) live in /slotA and /slotB on the PHXBOOT partition.
 #
-# Boot state on ASKBOOT:
+# Boot state on PHXBOOT:
 #   grub (PC):  grub/grubenv  boot_slot=<permanent slot>  try_slot=<one-time trial>
 #               GRUB consumes try_slot (save_env) before booting it, so a
 #               failed trial falls back to boot_slot on the next boot.
@@ -17,7 +17,7 @@
 #               The Pi firmware cannot write, so the initramfs counts trial
 #               boots and restores the fallback slot when they are used up.
 #
-# The booted slot is passed on the kernel command line (askozia.slot=X).
+# The booted slot is passed on the kernel command line (phonix.slot=X).
 
 : "${BOOT_DIR:=/media/boot}"
 : "${BOOTCTL_CMDLINE:=/proc/cmdline}"
@@ -67,7 +67,7 @@ bootctl_cmdline_get() {
 }
 
 bootctl_current() {
-	_s=$(bootctl_cmdline_get askozia.slot || true)
+	_s=$(bootctl_cmdline_get phonix.slot || true)
 	bootctl_valid_slot "$_s" || _s=A
 	echo "$_s"
 }
@@ -107,7 +107,7 @@ bootctl_rpi_slot_txt() {
 }
 
 bootctl_rpi_write_slot() {
-	printf '# managed by AskoziaPBX (A/B update) - do not edit\nos_prefix=slot%s/\n' "$1" \
+	printf '# managed by PhonixPBX (A/B update) - do not edit\nos_prefix=slot%s/\n' "$1" \
 		>"$BOOT_DIR/slot.txt.new"
 	sync
 	mv -f "$BOOT_DIR/slot.txt.new" "$BOOT_DIR/slot.txt"

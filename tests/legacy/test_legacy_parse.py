@@ -7,9 +7,9 @@ import base64
 import pytest
 from legacy_helpers import fixture
 
-from askozia.legacy import mapping, upgrade
-from askozia.legacy.parse import MAX_BYTES, LegacyParseError, parse_bytes
-from askozia.legacy.report import ImportReport
+from phonix.legacy import mapping, upgrade
+from phonix.legacy.parse import MAX_BYTES, LegacyParseError, parse_bytes
+from phonix.legacy.report import ImportReport
 
 
 def test_list_tags_become_lists_and_flags() -> None:
@@ -132,7 +132,7 @@ def test_rewrite_meetme_and_friends() -> None:
     assert logic.split("\n") == [
         "1,Answer()",
         "2,ConfBridge(${EXTEN})",
-        "3,Set(X=${ASKOZIA_LAN_IP})",
+        "3,Set(X=${PHONIX_LAN_IP})",
         "4,Macro(foo)",
         "5,Dial(PJSIP/101&IAX2/x)",
     ]

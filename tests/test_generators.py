@@ -4,9 +4,9 @@ from pathlib import Path
 import pytest
 from factories import sample_pbx
 
-from askozia.core import settings as st
-from askozia.generators import Facts, Secrets, build_snapshot, generate_all
-from askozia.services import dialplan as dp
+from phonix.core import settings as st
+from phonix.generators import Facts, Secrets, build_snapshot, generate_all
+from phonix.services import dialplan as dp
 
 GOLDEN = Path(__file__).parent / "golden"
 
@@ -68,7 +68,7 @@ def test_nat_settings(session):
 
 def test_disabled_objects_are_skipped(session):
     ids = sample_pbx(session)
-    from askozia.services import phones
+    from phonix.services import phones
 
     phones.set_enabled(session, ids["alice"], False)
     files = render(session)
@@ -102,7 +102,7 @@ def test_privileged_flags(session):
     files = render(session)
     assert files["/etc/network/interfaces"].privileged
     assert not files["/etc/asterisk/pjsip.conf"].privileged
-    assert not files["/etc/askozia/msmtprc"].privileged
+    assert not files["/etc/phonix/msmtprc"].privileged
 
 
 @pytest.mark.parametrize("secret", ['p"w', "back\\slash"])
@@ -110,6 +110,6 @@ def test_msmtp_quoting(session, secret):
     st.save(
         session, st.EmailSettings(host="smtp.example.com", from_address="a@example.com", username="u", password=secret)
     )
-    rc = render(session)["/etc/askozia/msmtprc"].content
+    rc = render(session)["/etc/phonix/msmtprc"].content
     line = next(x for x in rc.splitlines() if x.startswith("password "))
     assert line.startswith('password "') and line.endswith('"')

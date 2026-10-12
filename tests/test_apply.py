@@ -1,5 +1,5 @@
-from askozia.services import apply, phones, privileged
-from askozia.services.common import dirty_areas
+from phonix.services import apply, phones, privileged
+from phonix.services.common import dirty_areas
 
 
 def test_apply_writes_and_is_idempotent(session, runtime):

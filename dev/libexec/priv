@@ -1,5 +1,5 @@
 #!/bin/sh
-# Privileged helper for the dev container (ASKOZIA_PRIVILEGED=exec).
+# Privileged helper for the dev container (PHONIX_PRIVILEGED=exec).
 # Implements what makes sense inside a container: Asterisk control. Actions
 # that would touch the host network, firewall, boot slots etc. are only logged.
 set -eu

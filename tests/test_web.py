@@ -5,13 +5,13 @@ import pytest
 from factories import sample_pbx
 from fastapi.testclient import TestClient
 
-from askozia.core.db import session_scope
-from askozia.services import users
+from phonix.core.db import session_scope
+from phonix.services import users
 
 
 @pytest.fixture
 def client(initialized):
-    from askozia.web.app import create_app
+    from phonix.web.app import create_app
 
     with session_scope() as s:
         users.create_user(s, "admin", "adminadmin")
@@ -96,7 +96,7 @@ def test_htmx_delete_and_dirty_trigger(client):
     login(client)
     token = csrf(client, "/accounts/phones")
     r = client.delete("/accounts/phones/2", headers={"HX-Request": "true", "X-CSRF-Token": token})
-    assert r.status_code == 200 and r.headers["HX-Trigger"] == "askozia:dirty"
+    assert r.status_code == 200 and r.headers["HX-Trigger"] == "phonix:dirty"
 
 
 def test_settings_page_roundtrip(client):
@@ -144,7 +144,7 @@ def test_api_basic_auth(client):
 
 
 def test_must_change_password(initialized):
-    from askozia.web.app import create_app
+    from phonix.web.app import create_app
 
     with session_scope() as s:
         users.create_user(s, "admin", "initialpw1", must_change=True)

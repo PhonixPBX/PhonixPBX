@@ -1,6 +1,6 @@
-from askozia.core.db import session_scope
-from askozia.services import backup, phones
-from askozia.services.common import dirty_areas
+from phonix.core.db import session_scope
+from phonix.services import backup, phones
+from phonix.services.common import dirty_areas
 
 
 def test_backup_restore_roundtrip(initialized):
@@ -25,7 +25,7 @@ def test_backup_restore_roundtrip(initialized):
 def test_restore_rejects_garbage(initialized, tmp_path):
     import pytest
 
-    from askozia.services.common import ServiceError
+    from phonix.services.common import ServiceError
 
     bad = tmp_path / "x.tar.zst"
     bad.write_bytes(b"not a backup")

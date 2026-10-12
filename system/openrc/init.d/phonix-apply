@@ -1,0 +1,63 @@
+#!/sbin/openrc-run
+# Regenerate all derived configuration from the database before the system
+# services start (replaces the legacy rc.bootup / pbx_configure()).
+
+description="Generate PhonixPBX system and Asterisk configuration"
+
+depend() {
+	need localmount
+	after phonix-firstboot
+	before hostname networking net nftables firewall chronyd asterisk dropbear nginx msmtp
+}
+
+_env() {
+	[ -r /etc/conf.d/phonix ] && . /etc/conf.d/phonix
+	export PHONIX_DATA_DIR PHONIX_BOOT_DIR PHONIX_PRIVILEGED PHONIX_LIBEXEC_DIR \
+		PHONIX_AMI_HOST PHONIX_AMI_PORT
+}
+
+_runtime_dirs() {
+	checkpath -d -m 0750 -o phonix:asterisk /etc/asterisk /etc/phonix
+	checkpath -d -m 0711 -o phonix:phonix /run/phonix
+	checkpath -d -m 0700 -o phonix:phonix /run/phonix/staged
+	checkpath -d -m 0755 -o root:root /var/log/phonix
+	checkpath -d -m 0750 -o asterisk:asterisk /var/run/asterisk /var/log/asterisk \
+		/var/lib/asterisk /var/lib/asterisk/keys /var/cache/asterisk
+	# the update public key is part of the image (root-owned, world readable)
+	[ -e /etc/phonix/update-key.pub ] && chmod 0644 /etc/phonix/update-key.pub
+	return 0
+}
+
+start() {
+	_env
+	_runtime_dirs
+	ebegin "Generating PhonixPBX configuration"
+	phonix apply --boot >/var/log/phonix/apply-boot.log 2>&1
+	local rc=$?
+	if [ $rc -ne 0 ]; then
+		tail -n 20 /var/log/phonix/apply-boot.log >&2
+	fi
+	eend $rc "phonix apply failed (see /var/log/phonix/apply-boot.log)"
+
+	# generated config files: phonix:asterisk, not world readable
+	chown -R phonix:asterisk /etc/asterisk
+	find /etc/asterisk -type f -exec chmod 0640 {} +
+
+	# time zone
+	local tz
+	tz=$(head -n 1 /etc/timezone 2>/dev/null | tr -d '[:space:]')
+	if [ -n "$tz" ] && [ -f "/usr/share/zoneinfo/$tz" ]; then
+		ln -sfn "/usr/share/zoneinfo/$tz" /etc/localtime
+	fi
+
+	# ssh on/off (runlevels live on the tmpfs overlay: decided on every boot)
+	if [ "$(head -n 1 /etc/phonix/ssh 2>/dev/null)" = on ]; then
+		ln -sfn /etc/init.d/dropbear /etc/runlevels/default/dropbear
+	else
+		rm -f /etc/runlevels/default/dropbear
+	fi
+
+	# a failed generator must not leave the box unreachable: keep the
+	# image defaults (DHCP on eth0, permissive firewall) in that case
+	return 0
+}

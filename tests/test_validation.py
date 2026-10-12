@@ -1,6 +1,6 @@
 import pytest
 
-from askozia.core import validation as v
+from phonix.core import validation as v
 
 
 @pytest.mark.parametrize("pattern", ["0|X.", "49+0|1XX.", "00X.", "[2-9]XXXXXX", "_X.".lstrip("_"), "*21X"])

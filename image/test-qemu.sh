@@ -2,14 +2,14 @@
 # QEMU boot smoke test for the pc-amd64 / pc-x86 images.
 #
 #   image/test-qemu.sh [--firmware uefi|bios|both] [--update] [--board pc-amd64]
-#                      [--image out/askozia-<v>-<board>.img.zst] [--timeout 600]
+#                      [--image out/phonix-<v>-<board>.img.zst] [--timeout 600]
 #
 # Boots a copy of the image (grown to 4 GiB to exercise the first-boot
 # resize) with user networking (host port -> 443 and -> 5060/udp) and waits
 # until https://localhost:<port>/login answers 200, Asterisk answers a SIP
 # OPTIONS request and the boot slot was confirmed by the health check.
 # With --update the image copy is booted in service mode
-# (askozia.console=shell, root shell on the serial console) to install the
+# (phonix.console=shell, root shell on the serial console) to install the
 # update bundle into slot B, boot it, and then to install a deliberately
 # broken (but correctly signed) bundle into slot A and verify that the
 # trial boot fails and the system rolls back to slot B.

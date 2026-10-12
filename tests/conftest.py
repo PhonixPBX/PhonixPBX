@@ -6,21 +6,21 @@ from pathlib import Path
 import pytest
 from sqlalchemy.orm import Session
 
-from askozia import config
-from askozia.core import db
+from phonix import config
+from phonix.core import db
 
 
 @pytest.fixture(autouse=True)
 def runtime(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[config.RuntimeConfig]:
     """Every test gets its own data dir and generated-files root."""
-    monkeypatch.setenv("ASKOZIA_DATA_DIR", str(tmp_path / "data"))
-    monkeypatch.setenv("ASKOZIA_ROOT", str(tmp_path / "root"))
-    monkeypatch.setenv("ASKOZIA_PRIVILEGED", "dry-run")
-    monkeypatch.setenv("ASKOZIA_BOOT_DIR", str(tmp_path / "boot"))
-    monkeypatch.setenv("ASKOZIA_DEV", "1")
+    monkeypatch.setenv("PHONIX_DATA_DIR", str(tmp_path / "data"))
+    monkeypatch.setenv("PHONIX_ROOT", str(tmp_path / "root"))
+    monkeypatch.setenv("PHONIX_PRIVILEGED", "dry-run")
+    monkeypatch.setenv("PHONIX_BOOT_DIR", str(tmp_path / "boot"))
+    monkeypatch.setenv("PHONIX_DEV", "1")
     config.reset_cache()
     db.dispose()
-    from askozia.web import security
+    from phonix.web import security
 
     security.login_limiter._hits.clear()
     yield config.get()
@@ -30,7 +30,7 @@ def runtime(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[config.
 
 @pytest.fixture
 def initialized(runtime: config.RuntimeConfig) -> config.RuntimeConfig:
-    from askozia.services import setup
+    from phonix.services import setup
 
     setup.initialize()
     return runtime
@@ -44,7 +44,7 @@ def session(initialized: config.RuntimeConfig) -> Iterator[Session]:
 
 @pytest.fixture
 def empty_session(runtime: config.RuntimeConfig) -> Iterator[Session]:
-    from askozia.core import migrate
+    from phonix.core import migrate
 
     migrate.upgrade()
     with db.session_scope() as s:

@@ -1,6 +1,6 @@
 """End-to-end tests against a real Asterisk 22 (run inside the dev container as root).
 
-    dev/test-asterisk.sh            # builds/uses askozia-dev:3.24 and runs these
+    dev/test-asterisk.sh            # builds/uses phonix-dev:3.24 and runs these
 
 The tests generate the configuration through the normal apply path, start
 Asterisk with it and use SIPp to register phones and place calls.
@@ -17,9 +17,9 @@ from pathlib import Path
 
 import pytest
 
-from askozia import ami, config
-from askozia.core import db
-from askozia.services import apply, dialplan, phones, setup
+from phonix import ami, config
+from phonix.core import db
+from phonix.services import apply, dialplan, phones, setup
 
 pytestmark = [
     pytest.mark.asterisk,
@@ -44,7 +44,7 @@ def runtime() -> Iterator[None]:
 @pytest.fixture(scope="module")
 def pbx(tmp_path_factory: pytest.TempPathFactory) -> Iterator[Path]:
     # outside pytest's 0700 temp dirs: Asterisk runs as an unprivileged user
-    base = Path("/srv/askozia-test")
+    base = Path("/srv/phonix-test")
     shutil.rmtree(base, ignore_errors=True)
     data = base / "data"
     data.mkdir(parents=True)
@@ -52,7 +52,7 @@ def pbx(tmp_path_factory: pytest.TempPathFactory) -> Iterator[Path]:
     # mounts) and link the Asterisk configuration into place
     root = base / "root"
     root.mkdir()
-    os.environ.update(ASKOZIA_DATA_DIR=str(data), ASKOZIA_ROOT=str(root), ASKOZIA_PRIVILEGED="dry-run")
+    os.environ.update(PHONIX_DATA_DIR=str(data), PHONIX_ROOT=str(root), PHONIX_PRIVILEGED="dry-run")
     config.reset_cache()
     db.dispose()
     setup.initialize()
@@ -198,7 +198,7 @@ def test_phone_to_phone_call(pbx: Path) -> None:
     except subprocess.TimeoutExpired:
         callee.kill()
         callee_out = callee.communicate()
-    log = Path("/srv/askozia-test/asterisk-console.log").read_text()[-4000:]
+    log = Path("/srv/phonix-test/asterisk-console.log").read_text()[-4000:]
     assert caller.returncode == 0, f"{caller.stdout[-1500:]}\nCALLEE:\n{callee_out[0][-2500:]!r}\nASTERISK:\n{log}"
     assert callee.returncode == 0
 

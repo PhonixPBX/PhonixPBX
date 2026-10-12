@@ -1,0 +1,31 @@
+#!/sbin/openrc-run
+# Confirms the booted A/B slot once the web interface and Asterisk are up
+# (phonix healthcheck --mark-good). An unconfirmed trial boot of an update
+# is rolled back by rebooting into the previous slot. The check loop runs
+# detached (healthcheck-loop) so it does not delay the boot; its result is in
+# /var/log/phonix/healthcheck.log and the kernel log.
+
+description="PhonixPBX boot health check / A/B slot confirmation"
+
+depend() {
+	after phonix-web nginx asterisk
+}
+
+start() {
+	[ -r /etc/conf.d/phonix ] && . /etc/conf.d/phonix
+	export PHONIX_DATA_DIR PHONIX_BOOT_DIR PHONIX_PRIVILEGED PHONIX_LIBEXEC_DIR \
+		PHONIX_AMI_HOST PHONIX_AMI_PORT PHONIX_HEALTHCHECK_TIMEOUT
+	checkpath -d -m 0755 -o root:root /var/log/phonix
+	checkpath -f -m 0640 -o phonix:phonix /var/log/phonix/healthcheck.log
+	ebegin "Starting PhonixPBX health check"
+	start-stop-daemon --start --background --user phonix:phonix --chdir / \
+		--stdout /var/log/phonix/healthcheck.log --stderr /var/log/phonix/healthcheck.log \
+		--exec /usr/libexec/phonix/healthcheck-loop
+	eend $?
+}
+
+stop() {
+	ebegin "Stopping PhonixPBX health check"
+	pkill -f /usr/libexec/phonix/healthcheck-loop 2>/dev/null
+	eend 0
+}

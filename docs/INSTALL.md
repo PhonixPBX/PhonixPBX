@@ -1,14 +1,14 @@
-# Installing AskoziaPBX
+# Installing PhonixPBX
 
-AskoziaPBX ships as a complete disk image for three boards:
+PhonixPBX ships as a complete disk image for three boards:
 
 | Board | Image | Hardware |
 |---|---|---|
-| `rpi-arm64` | `askozia-<version>-rpi-arm64.img.zst` | Raspberry Pi 3B+, 4, 400, 5, Zero 2 W (64-bit) |
-| `pc-amd64` | `askozia-<version>-pc-amd64.img.zst` | 64-bit PCs, servers and VMs; UEFI or legacy BIOS |
-| `pc-x86` | `askozia-<version>-pc-x86.img.zst` | 32-bit PCs, legacy BIOS only. Best effort. |
+| `rpi-arm64` | `phonix-<version>-rpi-arm64.img.zst` | Raspberry Pi 3B+, 4, 400, 5, Zero 2 W (64-bit) |
+| `pc-amd64` | `phonix-<version>-pc-amd64.img.zst` | 64-bit PCs, servers and VMs; UEFI or legacy BIOS |
+| `pc-x86` | `phonix-<version>-pc-x86.img.zst` | 32-bit PCs, legacy BIOS only. Best effort. |
 
-Each release also includes a signed update bundle per board, `askozia-<version>-<board>.update`, and a `SHA256SUMS` file.
+Each release also includes a signed update bundle per board, `phonix-<version>-<board>.update`, and a `SHA256SUMS` file.
 
 The image needs at least a 2 GB card or disk. Use 8 GB or more if you plan to keep voicemail and recordings. Check the download first:
 
@@ -18,14 +18,14 @@ sha256sum -c SHA256SUMS --ignore-missing
 
 ## 1. Write the image
 
-The image holds four partitions. The last one, `ASKDATA`, is enlarged to fill the whole card or disk on first boot.
+The image holds four partitions. The last one, `PHXDATA`, is enlarged to fill the whole card or disk on first boot.
 
 ### Raspberry Pi Imager (Windows, macOS, Linux)
 
 1. Open Raspberry Pi Imager and pick your Pi model.
-2. For the operating system choose **Use custom** and select `askozia-<version>-rpi-arm64.img.zst`. Imager decompresses `.zst` files itself.
+2. For the operating system choose **Use custom** and select `phonix-<version>-rpi-arm64.img.zst`. Imager decompresses `.zst` files itself.
 3. Pick the SD card or USB drive and write it.
-4. If Imager offers OS customisation (user name, Wi-Fi, SSH), choose **No**. AskoziaPBX does not use these settings.
+4. If Imager offers OS customisation (user name, Wi-Fi, SSH), choose **No**. PhonixPBX does not use these settings.
 
 You can write PC images with Imager too: choose *Use custom* and write to a USB stick or disk.
 
@@ -33,14 +33,14 @@ You can write PC images with Imager too: choose *Use custom* and write to a USB 
 
 ```sh
 # find the device first (lsblk / diskutil list) - everything on it is erased!
-zstd -dc askozia-<version>-pc-amd64.img.zst | sudo dd of=/dev/sdX bs=4M conv=fsync status=progress
+zstd -dc phonix-<version>-pc-amd64.img.zst | sudo dd of=/dev/sdX bs=4M conv=fsync status=progress
 ```
 
 On macOS, write to `/dev/rdiskN` and leave out `status=progress` and `conv=fsync`.
 
 For a virtual machine:
 - Decompress the image with `zstd -d`.
-- Attach the `.img` as a raw disk, or convert it: `qemu-img convert -O qcow2 askozia.img askozia.qcow2`.
+- Attach the `.img` as a raw disk, or convert it: `qemu-img convert -O qcow2 phonix.img phonix.qcow2`.
 - Enlarge the virtual disk to the size you want. The first boot grows the data partition into the free space.
 - Use a virtio or SATA disk and one network card. UEFI and BIOS firmware both work.
 
@@ -60,7 +60,7 @@ If a `config.xml` from an old AskoziaPBX is on the boot partition, it is importe
 The console (screen and serial port, 115200 baud) shows a menu with:
 
 ```
-  AskoziaPBX 3.0.0
+  PhonixPBX 3.0.0
 
   LAN (eth0, DHCP): 192.168.1.23
   Web interface: https://192.168.1.23/
@@ -97,13 +97,13 @@ SSH is off by default. When you switch it on under *System → General*:
 - Only public-key logins are accepted, as `root`.
 - Put your keys in `/data/ssh/authorized_keys`.
 - The root filesystem is read-only and changes to it are lost on reboot.
-- The configuration lives in the database at `/data/askozia.db` and is managed with the web interface or the `askozia` command.
+- The configuration lives in the database at `/data/phonix.db` and is managed with the web interface or the `phonix` command.
 
 ## 4. Updates and rollback
 
-AskoziaPBX uses two system slots, A and B. An update is written to the slot that is not running. Your configuration and data on `ASKDATA` are never touched.
+PhonixPBX uses two system slots, A and B. An update is written to the slot that is not running. Your configuration and data on `PHXDATA` are never touched.
 
-1. Go to *System → Firmware*. Upload `askozia-<version>-<board>.update`, or let the box download it.
+1. Go to *System → Firmware*. Upload `phonix-<version>-<board>.update`, or let the box download it.
 2. The bundle is checked before anything is written. Bundles that fail any check are refused:
    - the ed25519 signature, against the public key built into the image
    - the board type
@@ -119,12 +119,12 @@ AskoziaPBX uses two system slots, A and B. An update is written to the slot that
 The kernel log records which slot runs and whether it was confirmed:
 
 ```
-askozia: boot slot B marked good (update confirmed)
+phonix: boot slot B marked good (update confirmed)
 ```
 
 How the slots are switched:
-- **PC:** GRUB keeps `boot_slot` and `try_slot` in `ASKBOOT:/grub/grubenv`. The GRUB menu, shown for 3 seconds, also lets you start the other slot by hand.
-- **Raspberry Pi:** `ASKBOOT:/slot.txt` selects the slot directory through `os_prefix=slotA/` or `os_prefix=slotB/`. The Pi firmware cannot write files, so the initramfs counts the trial boots in `ASKBOOT:/trial.txt`.
+- **PC:** GRUB keeps `boot_slot` and `try_slot` in `PHXBOOT:/grub/grubenv`. The GRUB menu, shown for 3 seconds, also lets you start the other slot by hand.
+- **Raspberry Pi:** `PHXBOOT:/slot.txt` selects the slot directory through `os_prefix=slotA/` or `os_prefix=slotB/`. The Pi firmware cannot write files, so the initramfs counts the trial boots in `PHXBOOT:/trial.txt`.
   - If the kernel of an update hangs before the initramfs runs, power-cycling does not help. Remove the card, edit `slot.txt` on another computer to point to the previous slot, and delete `trial.txt`.
   - Updates replace the kernel, device trees and overlays of a slot. They do not replace the Pi firmware (`start*.elf`, `fixup*.dat`, `bootcode.bin`). The firmware changes only when you flash a new image.
 
@@ -138,10 +138,10 @@ Start it from the web interface (*System → Factory defaults*) or from the cons
 
 | # | Label | Type | Size | Contents |
 |---|---|---|---|---|
-| 1 | `ASKBOOT` | FAT32 | 256 MB | GRUB (`EFI/BOOT/BOOTX64.EFI`, `grub/`) or the Pi firmware and `config.txt`. Also `slotA/` and `slotB/` with kernel and initramfs. |
+| 1 | `PHXBOOT` | FAT32 | 256 MB | GRUB (`EFI/BOOT/BOOTX64.EFI`, `grub/`) or the Pi firmware and `config.txt`. Also `slotA/` and `slotB/` with kernel and initramfs. |
 | 2 | – | squashfs | 512 MB | System slot A (read-only) |
 | 3 | – | squashfs | 512 MB | System slot B (read-only) |
-| 4 | `ASKDATA` | ext4 | rest of disk | `/data`: database, media, voicemail (`/var/spool/asterisk`), TLS certificate, SSH keys |
+| 4 | `PHXDATA` | ext4 | rest of disk | `/data`: database, media, voicemail (`/var/spool/asterisk`), TLS certificate, SSH keys |
 
 How the running system is put together:
 - The root filesystem is the squashfs of the active slot with a RAM overlay on top. Changes outside `/data` are lost when the box restarts.
@@ -154,15 +154,15 @@ These options are for service work. Add them in the GRUB menu (press `e`) or in 
 
 | Option | Effect |
 |---|---|
-| `askozia.console=shell` | Root shell instead of the menu on the console(s) |
-| `askozia.debug=1` | Rescue shell when the initramfs fails, instead of a reboot |
-| `askozia.break=1` | Shell in the initramfs just before the system starts |
+| `phonix.console=shell` | Root shell instead of the menu on the console(s) |
+| `phonix.debug=1` | Rescue shell when the initramfs fails, instead of a reboot |
+| `phonix.break=1` | Shell in the initramfs just before the system starts |
 
 ## Migrating from AskoziaPBX 1.x / 2.x
 
 1. Before flashing, copy `config.xml` from the old box. Use the old web interface (*System → Backup*), or copy `conf/config.xml` from its first partition.
 2. Flash the new image.
-3. Before the first boot, copy `config.xml` to the root of the `ASKBOOT` partition.
+3. Before the first boot, copy `config.xml` to the root of the `PHXBOOT` partition.
 4. At the first boot the file is imported and renamed to `config.xml.imported`.
 5. The import report is shown at the first login. It lists the features that were not carried over, such as analog/ISDN hardware and DAHDI.
 
@@ -179,15 +179,15 @@ image/test-qemu.sh --update         # QEMU boot test (UEFI + BIOS), update and r
 
 `image/build.sh` does the following, all inside an `alpine:3.24` container:
 
-1. Builds the `askozia` apk from this repository with abuild.
+1. Builds the `phonix` apk from this repository with abuild.
 2. Installs the package lists in `image/profiles/` with `apk --root --arch`.
 3. Builds the initramfs.
-4. Assembles `out/askozia-<version>-<board>.img.zst`, the `.update` bundle, a `.packages` list with the exact package versions, and `SHA256SUMS`.
+4. Assembles `out/phonix-<version>-<board>.img.zst`, the `.update` bundle, a `.packages` list with the exact package versions, and `SHA256SUMS`.
 
 ### Signing keys
 
 - **Update signing key** (ed25519). Create it once with `image/keys.sh`; it writes to `image/keys/`, which git ignores.
-  - Keep `update-signing.pem` offline or in a CI secret, `ASKOZIA_UPDATE_SIGNING_KEY`.
-  - Every image contains the public half as `/etc/askozia/update-key.pub` and accepts only bundles signed with that private key.
+  - Keep `update-signing.pem` offline or in a CI secret, `PHONIX_UPDATE_SIGNING_KEY`.
+  - Every image contains the public half as `/etc/phonix/update-key.pub` and accepts only bundles signed with that private key.
   - If no key is present, the build makes a throwaway key and prints a warning. Images built that way can only be updated with bundles from the same build tree.
-- **Package signing key** (RSA, abuild). Pass it with `ASKOZIA_ABUILD_KEY=/path/key.rsa`, with the `.pub` file next to it. Otherwise a throwaway key is made in `image/keys/abuild/`. Its public half is installed into the image's `/etc/apk/keys`.
+- **Package signing key** (RSA, abuild). Pass it with `PHONIX_ABUILD_KEY=/path/key.rsa`, with the `.pub` file next to it. Otherwise a throwaway key is made in `image/keys/abuild/`. Its public half is installed into the image's `/etc/apk/keys`.

@@ -1,4 +1,4 @@
-"""Importing legacy config.xml files into the NG database."""
+"""Importing legacy config.xml files into the PhonixPBX database."""
 
 from __future__ import annotations
 
@@ -8,15 +8,15 @@ import pytest
 from legacy_helpers import check_golden, db_snapshot, fixture
 from sqlalchemy import select
 
-from askozia import config
-from askozia.core import db
-from askozia.core import settings as st
-from askozia.core.models import Application, AuditLog, Dirty, Phone, Provider
-from askozia.generators import build_snapshot, generate_all
-from askozia.legacy import importer
-from askozia.services import phones as ph
-from askozia.services import users
-from askozia.services.common import AREAS
+from phonix import config
+from phonix.core import db
+from phonix.core import settings as st
+from phonix.core.models import Application, AuditLog, Dirty, Phone, Provider
+from phonix.generators import build_snapshot, generate_all
+from phonix.legacy import importer
+from phonix.services import phones as ph
+from phonix.services import users
+from phonix.services.common import AREAS
 
 GOLDEN_FIXTURES = {
     "generic-pc": "generic-pc.xml",
@@ -103,10 +103,10 @@ def test_synthetic_import_details(initialized: config.RuntimeConfig) -> None:
         apps = {a["extension"]: a for a in snap["applications"]}
         assert "2702" not in apps  # PHP
         assert "ConfBridge(2664)" in apps["2700"]["logic"]
-        assert "${ASKOZIA_LAN_IP}" in apps["2701"]["logic"]
+        assert "${PHONIX_LAN_IP}" in apps["2701"]["logic"]
         assert "CHANNEL(language)=de" in apps["2701"]["logic"]
         assert apps["2701"]["enabled"] is False
-        # unmodified factory defaults use NG's built-in logic but keep the uniqid
+        # unmodified factory defaults use PhonixPBX's built-in logic but keep the uniqid
         assert "@default" in apps["000086"]["logic"]
         assert apps["000086"]["legacy_uniqid"] == "DIALPLAN-APPLICATION-7643526674dde509b64232"
         # a customised default keeps its own logic
@@ -199,7 +199,7 @@ def test_merge_mode(initialized: config.RuntimeConfig) -> None:
             session,
             ph.parse_phone({"extension": "101", "callerid": "Old Alice", "secret": "x1234"}),
         )
-        # an NG-only phone stays untouched
+        # a PhonixPBX-only phone stays untouched
         ph.create_phone(session, ph.parse_phone({"extension": "555", "callerid": "Keep me"}))
         # extension of the legacy call group (300) is taken by another kind: conflict
         ph.create_phone(session, ph.parse_phone({"extension": "300", "callerid": "Blocker"}))

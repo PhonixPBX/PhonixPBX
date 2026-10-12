@@ -76,7 +76,7 @@
         "enabled": false,
         "extension": "2701",
         "legacy_uniqid": "DIALPLAN-APPLICATION-60002",
-        "logic": "1,Answer()\n2,Set(CHANNEL(language)=de)\n3,Set(IP=${ASKOZIA_LAN_IP})\n4,SayDigits(${CUT(IP,.,4)})\n5,Macro(missedcallmail)\n6,Dial(PJSIP/101,20)\n7,Hangup()",
+        "logic": "1,Answer()\n2,Set(CHANNEL(language)=de)\n3,Set(IP=${PHONIX_LAN_IP})\n4,SayDigits(${CUT(IP,.,4)})\n5,Macro(missedcallmail)\n6,Dial(PJSIP/101,20)\n7,Hangup()",
         "name": "Say IP",
         "public_access": false,
         "public_name": ""
@@ -556,7 +556,7 @@
         "custom_body": "Hello ${VM_NAME},\nyou got a ${VM_DUR} long message from ${VM_CALLERID} on ${VM_DATE}.",
         "custom_subject": "New message in mailbox ${VM_MAILBOX}",
         "from_address": "voicemail@example.com",
-        "from_name": "AskoziaPBX Voicemail",
+        "from_name": "PhonixPBX Voicemail",
         "keep_messages": true,
         "max_message_seconds": 180
       }

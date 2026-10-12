@@ -9,7 +9,7 @@ WORK=${WORK:-$IMG/work}
 OUT=${OUT:-$SRC/out}
 ALPINE_BRANCH=${ALPINE_BRANCH:-v3.24}
 ALPINE_MIRROR=${ALPINE_MIRROR:-https://dl-cdn.alpinelinux.org/alpine}
-KEYS_DIR=${ASKOZIA_KEYS_DIR:-$IMG/keys}
+KEYS_DIR=${PHONIX_KEYS_DIR:-$IMG/keys}
 LOCAL_REPO=$OUT/repo
 SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH:-$(date +%s)}
 export SOURCE_DATE_EPOCH
@@ -24,9 +24,9 @@ die() {
 }
 
 # version of the python package (pyproject.toml), overridable
-askozia_version() {
-	if [ -n "${ASKOZIA_VERSION:-}" ]; then
-		echo "$ASKOZIA_VERSION"
+phonix_version() {
+	if [ -n "${PHONIX_VERSION:-}" ]; then
+		echo "$PHONIX_VERSION"
 		return
 	fi
 	python3 -c 'import tomllib,sys; print(tomllib.load(open(sys.argv[1],"rb"))["project"]["version"])' \
@@ -47,7 +47,7 @@ load_profile() {
 	[ -f "$IMG/profiles/$BOARD.conf" ] || die "unknown board $BOARD"
 	# shellcheck disable=SC1090
 	. "$IMG/profiles/$BOARD.conf"
-	VERSION=$(askozia_version)
+	VERSION=$(phonix_version)
 	PKGVER=$(apk_version "$VERSION")
 	BW=$WORK/$BOARD
 	mkdir -p "$BW" "$OUT" "$WORK/cache/apk-$ARCH"

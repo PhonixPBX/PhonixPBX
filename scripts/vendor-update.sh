@@ -8,7 +8,7 @@ ICONS_VERSION=3.49.0
 HTMX_VERSION=4.0.0
 
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
-DEST="$ROOT/askozia/web/static/vendor"
+DEST="$ROOT/phonix/web/static/vendor"
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK"' EXIT
 

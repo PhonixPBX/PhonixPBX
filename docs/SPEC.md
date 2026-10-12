@@ -1,4 +1,7 @@
-# AskoziaPBX NG — Revival Spec
+# PhonixPBX — Specification
+
+PhonixPBX (code name `phonix`) is the successor of AskoziaPBX. It was renamed to avoid
+trademark issues; the name AskoziaPBX below refers to the original 2007–2011 project.
 
 ## Context
 This repo is an archived AskoziaPBX tree from 2007–2011. It has three layers:
@@ -12,7 +15,7 @@ We are reviving the product on current technology:
 - Alpine Linux as the base system
 - Python 3.10 or newer with FastAPI
 - SQLite as the only configuration store; there is no XML
-- Tabler 1.6.1 for the UI, keeping the original Askozia colors and logos
+- Tabler 1.6.1 for the UI, keeping the original AskoziaPBX colors (new PhonixPBX logo)
 - Asterisk 22 LTS with PJSIP
 - Bootable images for Raspberry Pi (arm64), amd64 and, as best effort, x86
 
@@ -29,14 +32,14 @@ We are reviving the product on current technology:
 ```
 ┌─ Browser (Tabler 1.6.1 + htmx 4 + ApexCharts/Tom Select, server-rendered) ─┐
                  │ HTTPS
-           nginx (TLS, static files, rate limits)  ──unix socket──▶ uvicorn: askozia.web (FastAPI)
+           nginx (TLS, static files, rate limits)  ──unix socket──▶ uvicorn: phonix.web (FastAPI)
                                                                      │
                      ┌───────────────────────────────────────────────┤
                      │ service layer (pure Python, used by UI + /api/v1)
-                     │   ├─ SQLite /data/askozia.db  (SQLAlchemy 2 + Alembic)
+                     │   ├─ SQLite /data/phonix.db  (SQLAlchemy 2 + Alembic)
                      │   ├─ generators: Jinja2 → /etc/asterisk/*.conf (tmpfs)
                      │   ├─ AMI client (reload, status, events)
-                     │   └─ privileged ops → doas → /usr/libexec/askozia/* (fixed scripts)
+                     │   └─ privileged ops → doas → /usr/libexec/phonix/* (fixed scripts)
                      ▼
                  Asterisk 22 (PJSIP, IAX2, ConfBridge, Voicemail, MOH)
 ```
@@ -45,7 +48,7 @@ We are reviving the product on current technology:
 
 **The SQLite database is the single source of truth.**
 - All generated files (Asterisk configs, the network config, `msmtp.conf`, the timezone, etc.) are derived data.
-- At boot the `askozia-apply` service regenerates them before Asterisk starts. This replaces `rc.bootup` and `pbx_configure()`.
+- At boot the `phonix-apply` service regenerates them before Asterisk starts. This replaces `rc.bootup` and `pbx_configure()`.
 
 **Changes are staged, then applied.** This mirrors the old `*.dirty` workflow.
 - A save writes to the database and marks the affected subsystems dirty.
@@ -60,8 +63,8 @@ We are reviving the product on current technology:
 - Writing to disk is atomic: write a temporary file, then rename it.
 
 **The web process runs unprivileged.**
-- It runs as user `askozia`.
-- Anything that needs root goes through `doas`. A rule allows `askozia` to run only the fixed scripts in `/usr/libexec/askozia/`.
+- It runs as user `phonix`.
+- Anything that needs root goes through `doas`. A rule allows `phonix` to run only the fixed scripts in `/usr/libexec/phonix/`.
   - Examples: `apply-network`, `set-time`, `reboot`, `install-update`, `factory-reset`.
 - These scripts accept validated arguments only.
 - The web server is not exposed directly; it sits behind nginx.
@@ -75,8 +78,8 @@ We are reviving the product on current technology:
   - Packages: `py3-fastapi`, `uvicorn`, `py3-pydantic`, `py3-sqlalchemy`, `py3-alembic`, `py3-jinja2`, `py3-argon2-cffi`, `py3-itsdangerous`, `py3-multipart`, `py3-babel`.
   - Any library that is missing from Alpine is vendored as pure Python.
 - **Development:** `pyproject.toml` with tooling `uv`, `ruff`, `mypy` and `pytest`. A local virtualenv is fine for development.
-- **AMI client:** a small asyncio client in-tree, `askozia/ami.py`, about 200 lines, so there is no heavy dependency.
-- **Init system:** OpenRC. Services: `askozia-firstboot`, `askozia-apply`, `asterisk`, `askozia-web`, `nginx`, `chronyd`, `dropbear` (optional), `crond`.
+- **AMI client:** a small asyncio client in-tree, `phonix/ami.py`, about 200 lines, so there is no heavy dependency.
+- **Init system:** OpenRC. Services: `phonix-firstboot`, `phonix-apply`, `asterisk`, `phonix-web`, `nginx`, `chronyd`, `dropbear` (optional), `crond`.
 
 ## 2. Data model (SQLite, Alembic-migrated)
 
@@ -155,12 +158,12 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 
 ### 3a. Legacy `config.xml` import and export (v1)
 **Goals**
-- Existing AskoziaPBX boxes can migrate onto NG.
+- Existing AskoziaPBX boxes can migrate onto PhonixPBX.
 - Configs can be exported back to a box running the old firmware, for rollback or interop.
 - Import is the primary use case. Export is best-effort, for the features both systems share.
 
 **Code**
-- All of this lives in `askozia/legacy/`:
+- All of this lives in `phonix/legacy/`:
   - `parse.py`: XML to a typed intermediate model
   - `upgrade.py`: older config versions to 2.1
   - `mapping.py`: intermediate model to and from the DB
@@ -173,9 +176,9 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 - Files with `<version>` below 2.1 are upgraded first. The `convert_config()` steps relevant to the supported subset are ported from `legacy/.../etc/inc/config.inc`.
 - Files with a version newer than 2.1 are rejected with a clear error.
 
-**Mapping (import → NG)**
+**Mapping (import → PhonixPBX)**
 
-| Legacy | NG |
+| Legacy | PhonixPBX |
 |---|---|
 | `system` (hostname, domain, dnsserver[], timezone, tonezone, timeservers, webgui/language) | `settings.system.*`, `settings.network.dns` |
 | `system/username`, `password` (plaintext) | `users` row with an argon2 hash. The old password is kept, because the owner knows it, and is flagged in the report. |
@@ -208,11 +211,11 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
    - **Merge**: matches on `legacy_uniqid`, then on extension. On a conflict the item is skipped and reported.
 3. **Commit.** Everything is written in a single DB transaction, which marks all subsystems dirty. The user then reviews the changes and clicks Apply.
 
-**Export (NG → config.xml 2.1)**
+**Export (PhonixPBX → config.xml 2.1)**
 - `emit.py` performs the inverse mapping:
   - `legacy_uniqid` is reused when present; otherwise a uniqid is generated in the old format.
   - Application logic is base64-encoded again.
-- NG-only settings are left out and listed in the export report: TLS/SRTP, nftables, multiple users, and PJSIP-only options.
+- PhonixPBX-only settings are left out and listed in the export report: TLS/SRTP, nftables, multiple users, and PJSIP-only options.
 - PJSIP options that chan_sip understands, such as codecs, nat, qualify and dtmf, are mapped back.
 - The file contains plaintext secrets, as the old format requires. For that reason:
   - only admins can export
@@ -224,8 +227,8 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
   - Import uses a Dropzone upload, then shows the dry-run report in a Tabler table with warnings and errors badges, then asks for the mode and confirmation.
   - Export is a download button with its report.
 - **API:** `POST /api/v1/legacy/import?dry_run=true|false&mode=replace|merge`, `GET /api/v1/legacy/export`.
-- **CLI:** `askozia legacy import <file> [--dry-run] [--merge]` and `askozia legacy export <file>`.
-- **First-boot convenience:** if `ASKBOOT/config.xml` is present on the boot partition at first boot, it is imported automatically (Replace), the report is saved and shown on first login, and the file is renamed to `config.xml.imported`. This matches where users put the file on old boxes, under `conf/config.xml` on partition 1, which is also checked.
+- **CLI:** `phonix legacy import <file> [--dry-run] [--merge]` and `phonix legacy export <file>`.
+- **First-boot convenience:** if `PHXBOOT/config.xml` is present on the boot partition at first boot, it is imported automatically (Replace), the report is saved and shown on first login, and the file is renamed to `config.xml.imported`. This matches where users put the file on old boxes, under `conf/config.xml` on partition 1, which is also checked.
 
 **Tests**
 - **Fixtures:** every `legacy/target/*/config.xml`, plus realistic synthetic configs covering each section, older versions such as 2.0, and malformed or hostile XML.
@@ -246,7 +249,7 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 ### Dropped
 Everything hardware-specific listed in the confirmed decisions, plus Humbug analytics, Skinny, the m0n0wall captive portal leftovers, the `exec.php` web shell, and the `ajax.cgi` CGI.
 
-## 4. Security (best practice; replaces the plaintext admin/askozia)
+## 4. Security (best practice; replaces the plaintext admin/phonix)
 **First login and passwords**
 - On first boot, a random admin password is generated and shown on the console banner and TUI. If the user prefers, a factory default plus a forced change on first login can be used instead. Either way, there is no fixed known password in the image.
 - Passwords are hashed with argon2id.
@@ -262,7 +265,7 @@ Everything hardware-specific listed in the confirmed decisions, plus Humbug anal
 **Secrets**
 - SIP and IAX secrets are stored in the DB.
 - They are never rendered back in clear text in the UI. The UI offers write-only fields with a "regenerate" action.
-- Generated `.conf` files are mode 0640, owned by `asterisk:askozia`.
+- Generated `.conf` files are mode 0640, owned by `asterisk:phonix`.
 
 **Firewall and SIP**
 - An nftables ruleset is generated from settings.
@@ -272,7 +275,7 @@ Everything hardware-specific listed in the confirmed decisions, plus Humbug anal
 **Updates**
 - Update bundles are signed with ed25519. The public key is baked into the image.
 
-## 5. UI: Tabler 1.6.1 with Askozia branding
+## 5. UI: Tabler 1.6.1 with PhonixPBX branding
 **Rendering and assets**
 - Pages are server-rendered with Jinja2 and use **htmx 4.x** for partial updates: list tables, the apply banner, status polling, and the SSE log tail.
 - Code is written against htmx 4 semantics only: fetch-based requests, explicit attribute inheritance, and the htmx 4 event names and extension API. No htmx 1/2-era extensions or patterns.
@@ -283,14 +286,14 @@ Everything hardware-specific listed in the confirmed decisions, plus Humbug anal
   - **IMask**: masked inputs where useful, such as IP/netmask, port ranges and PINs.
   - **Litepicker**: date ranges for log and CDR filters, if needed.
   - **Tabler Icons** (webfont/SVG sprite): all icons.
-- Library glue lives in a single `askozia/web/static/askozia.js`. It initializes the Tabler libs on `htmx:after:swap` (the htmx 4 event), so swapped-in fragments get Tom Select, ApexCharts and similar applied. It also tears them down before swap to avoid leaks.
-- There is no Node build at runtime. Tabler 1.6.1, its libraries above, and the htmx 4 dist files are vendored into `askozia/web/static/vendor/`. The pinned version and SHA256 checksum of each are recorded in `vendor/VERSIONS`, and a `scripts/vendor-update.sh` script refreshes them.
+- Library glue lives in a single `phonix/web/static/phonix.js`. It initializes the Tabler libs on `htmx:after:swap` (the htmx 4 event), so swapped-in fragments get Tom Select, ApexCharts and similar applied. It also tears them down before swap to avoid leaks.
+- There is no Node build at runtime. Tabler 1.6.1, its libraries above, and the htmx 4 dist files are vendored into `phonix/web/static/vendor/`. The pinned version and SHA256 checksum of each are recorded in `vendor/VERSIONS`, and a `scripts/vendor-update.sh` script refreshes them.
 
 **Layout**
 - Tabler's vertical sidebar layout is used, with the menu tree from section 3.
 
 **Branding**
-- Tabler's CSS variables are overridden in `askozia/web/static/askozia.css`. Color values come from `legacy/.../usr/www/gui.css`:
+- Tabler's CSS variables are overridden in `phonix/web/static/phonix.css`. Color values come from `legacy/.../usr/www/gui.css`:
 
 | Use | Value |
 |---|---|
@@ -302,9 +305,9 @@ Everything hardware-specific listed in the confirmed decisions, plus Humbug anal
 | Links | `#0000CC` |
 | Muted / inactive | `#777777` |
 
-- Logos are reused from `usr/www/logo.png` (150×46), `logobig.png` (520×147, used on the login page) and `favicon.ico`.
-- An SVG trace of the logo is optional later; the PNGs are used as-is in v1.
-- The footer reads "AskoziaPBX" and the version.
+- New PhonixPBX logo and favicon as SVG (`phonix/web/static/img/`), drawn in the legacy colours; the original
+  Askozia artwork is not shipped (trademark).
+- The footer reads "PhonixPBX" and the version.
 
 **Usability**
 - Dark mode uses Tabler's built-in theme with the same primary color.
@@ -317,18 +320,18 @@ Everything hardware-specific listed in the confirmed decisions, plus Humbug anal
 ## 6. Repository layout
 ```
 legacy/                  # entire old tree, untouched (git mv)
-askozia/                 # Python package
+phonix/                 # Python package
   core/                  # settings, db, models, migrations (alembic/), validation
   services/              # phones, providers, dialplan, system, network, backup, update
   generators/            # one module per output; templates/ with Jinja2 .conf.j2
   ami.py
-  web/                   # FastAPI app: routes/ (ui + api/v1), templates/, static/ (askozia.css, img/, vendor/)
+  web/                   # FastAPI app: routes/ (ui + api/v1), templates/, static/ (phonix.css, img/, vendor/)
   legacy/                # config.xml import/export: parse, upgrade, mapping, emit
-  cli.py                 # `askozia` CLI: apply, migrate, user, legacy import/export, tui
+  cli.py                 # `phonix` CLI: apply, migrate, user, legacy import/export, tui
   tui.py
 tests/                   # unit, golden generator outputs, API tests, integration
 system/                  # files installed into image: openrc init.d/, nginx conf, doas.d, libexec scripts, nftables
-packaging/apk/APKBUILD   # builds askozia as an Alpine package (abuild, signed)
+packaging/apk/APKBUILD   # builds phonix as an Alpine package (abuild, signed)
 image/                   # image build: build.sh, per-board profiles (rpi-arm64, pc-amd64, pc-x86), partition layout
 dev/                     # docker compose dev env (Asterisk 22 + app, hot reload)
 docs/SPEC.md             # this spec (committed)
@@ -342,13 +345,13 @@ The layout is the same on every board. The data partition is grown to fill the d
 
 | # | Label | Filesystem | Size | Contents |
 |---|---|---|---|---|
-| 1 | `ASKBOOT` | FAT32 | 256 MB | Bootloader files and the kernel and initramfs for slot A and slot B. On the Pi, also the firmware, `config.txt` and `autoboot.txt`. |
+| 1 | `PHXBOOT` | FAT32 | 256 MB | Bootloader files and the kernel and initramfs for slot A and slot B. On the Pi, also the firmware, `config.txt` and `autoboot.txt`. |
 | 2 | `rootA` | squashfs | 512 MB | Root filesystem for slot A |
 | 3 | `rootB` | squashfs | 512 MB | Root filesystem for slot B |
-| 4 | `ASKDATA` | ext4 | rest of disk | Persistent data, see below |
+| 4 | `PHXDATA` | ext4 | rest of disk | Persistent data, see below |
 
-`ASKDATA` holds:
-- `/data/askozia.db`
+`PHXDATA` holds:
+- `/data/phonix.db`
 - voicemail, recordings and media
 - logs (optional)
 - SSH host keys and the TLS certificate
@@ -356,7 +359,7 @@ The layout is the same on every board. The data partition is grown to fill the d
 
 ### Root filesystem
 - The squashfs root is mounted read-only with an overlay (tmpfs) on top for `/etc` and `/var` runtime state. The initramfs handles this.
-- Persistent paths are bind-mounted from `/data`: `/var/spool/asterisk`, `/var/lib/asterisk/sounds/custom` and `/etc/askozia`.
+- Persistent paths are bind-mounted from `/data`: `/var/spool/asterisk`, `/var/lib/asterisk/sounds/custom` and `/etc/phonix`.
 
 This replaces the old `/cf` and `/offload` scheme and meets the goals of the `storage_system.txt` design: data survives upgrades and factory reset is detectable.
 
@@ -367,7 +370,7 @@ This replaces the old `/cf` and `/offload` scheme and meets the goals of the `st
 - Post-install scripts for foreign architectures run through qemu-user binfmt.
 
 **Our own packages**
-- The `askozia` package is built with abuild and signed with the project key.
+- The `phonix` package is built with abuild and signed with the project key.
 - It installs into the rootfs from a local repository.
 
 **Asterisk**
@@ -380,7 +383,7 @@ This replaces the old `/cf` and `/offload` scheme and meets the goals of the `st
 
 **Images and firmware**
 - Images are assembled with `sfdisk`, `mkfs.vfat` + `mtools` and `mksquashfs`. No root or loop devices are needed, so the build runs in CI.
-- Output is `askozia-<ver>-<board>.img.zst`, plus an update bundle `askozia-<ver>-<board>.update` (a signed tar of rootfs.squashfs, kernel and initramfs) and SHA256SUMS.
+- Output is `phonix-<ver>-<board>.img.zst`, plus an update bundle `phonix-<ver>-<board>.update` (a signed tar of rootfs.squashfs, kernel and initramfs) and SHA256SUMS.
 - The Pi also uses `raspberrypi-bootloader` firmware.
 
 ### Boards
@@ -401,8 +404,8 @@ This replaces the old `/cf` and `/offload` scheme and meets the goals of the `st
 
 ### Updates
 - The UI uploads a bundle or downloads it from a URL. The ed25519 signature is verified in Python with `cryptography`, using `py3-cryptography`.
-- `/usr/libexec/askozia/install-update` writes the squashfs and kernel to the inactive slot and sets the next boot to try that slot.
-- After boot, `askozia-healthcheck` confirms the web app and Asterisk are up and then marks the slot good. If that fails, the bootloader rolls back.
+- `/usr/libexec/phonix/install-update` writes the squashfs and kernel to the inactive slot and sets the next boot to try that slot.
+- After boot, `phonix-healthcheck` confirms the web app and Asterisk are up and then marks the slot good. If that fails, the bootloader rolls back.
 - RAUC was considered and rejected for v1 to keep the image small. The scheme above is roughly 150 lines and fully under our control.
 
 ### First boot
@@ -415,12 +418,12 @@ Each phase ends shippable and tested.
 1. **Repo reset:** `git mv` everything into `legacy/` and add the new skeleton: pyproject, ruff/mypy/pytest, CI lint+test, and `docs/SPEC.md` with this content.
 2. **Core:**
    - DB models, Alembic, settings models, and validation ported from `legacy/.../etc/inc/verify.inc`
-   - Service layer and `askozia` CLI (migrate, user, apply)
+   - Service layer and `phonix` CLI (migrate, user, apply)
 3. **Generators:**
    - Jinja2 templates producing `pjsip.conf`, `iax.conf`, `extensions.conf` (ported logic from `legacy/.../etc/inc/extensions.inc`), `voicemail.conf`, `confbridge.conf`, `musiconhold.conf`, `features.conf`, `rtp.conf`, `manager.conf`, `logger.conf`, `modules.conf` (explicit noload/minimal) and `indications.conf`
    - Non-Asterisk outputs: `msmtp.conf`, `/etc/network/interfaces`, nftables, `chrony.conf`, `TZ`
    - Golden-file tests
-   - **Legacy import/export (section 3a):** `askozia/legacy/` with the parser, the version upgrade, the mapping and the emitter, plus the CLI commands. Covered by fixture, round-trip and "imported config loads in Asterisk" tests.
+   - **Legacy import/export (section 3a):** `phonix/legacy/` with the parser, the version upgrade, the mapping and the emitter, plus the CLI commands. Covered by fixture, round-trip and "imported config loads in Asterisk" tests.
 4. **Web:**
    - FastAPI app, auth, the Tabler base layout with branding, and CRUD pages per menu section
    - The apply workflow, the AMI client, status pages and the `/api/v1` OpenAPI

@@ -8,11 +8,11 @@ from factories import sample_pbx
 from legacy_helpers import db_snapshot, fixture, legacy_view, view_diff
 from sqlalchemy import select
 
-from askozia import config
-from askozia.core import db
-from askozia.core.models import AuditLog
-from askozia.legacy import exporter, importer
-from askozia.legacy.parse import parse_bytes
+from phonix import config
+from phonix.core import db
+from phonix.core.models import AuditLog
+from phonix.legacy import exporter, importer
+from phonix.legacy.parse import parse_bytes
 
 # Differences between the synthetic fixture and export(import(fixture)). Each
 # one is a documented, reported loss (see the import report), not a bug.
@@ -35,13 +35,13 @@ EXPECTED_SYNTHETIC_LOSSES = {
     # invalid dial pattern, and one already used by another provider
     "/providers/SIP-PROVIDER-20001/dialpattern",
     "/providers/SIP-PROVIDER-20002/dialpattern",
-    # factory default applications are replaced by NG's Asterisk 22 versions,
+    # factory default applications are replaced by PhonixPBX's Asterisk 22 versions,
     # MeetMe / parseip / language rewrites are intentional
     "/applications/DIALPLAN-APPLICATION-14520268874c62d16c931be/descr",
     "/applications/DIALPLAN-APPLICATION-7643526674dde509b64232/logic",
     "/applications/DIALPLAN-APPLICATION-60001/logic",
     "/applications/DIALPLAN-APPLICATION-60002/logic",
-    # NG writes every feature/parking value explicitly (legacy left defaults out)
+    # PhonixPBX writes every feature/parking value explicitly (legacy left defaults out)
     "+/settings/featuremap/pickupexten",
     "+/settings/featuremap/atxfernoanswertimeout",
     "+/settings/featuremap/transferdigittimeout",
@@ -130,7 +130,7 @@ def test_import_export_db_round_trip(initialized: config.RuntimeConfig) -> None:
     with db.session_scope() as session:
         after = db_snapshot(session)
     assert _ng_subset(after) == _ng_subset(before)
-    # objects created in NG got generated legacy uniqids on the way
+    # objects created in PhonixPBX got generated legacy uniqids on the way
     assert all(p["legacy_uniqid"].startswith("SIP-PHONE-") for p in after["phones"] if p["tech"] == "pjsip")
 
     # exporting again yields the same uniqids (stable references)

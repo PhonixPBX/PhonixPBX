@@ -27,7 +27,7 @@
         "enabled": true,
         "extension": "000047",
         "legacy_uniqid": "DIALPLAN-APPLICATION-16151900034c62d16c92eba",
-        "logic": "1,Answer()\n2,Set(IPOUTPUT=${ASKOZIA_LAN_IP})\n3,NoOp(IPOUTPUT: ${IPOUTPUT})\n4,Playback(beep)\nn,SayDigits(${CUT(IPOUTPUT,.,1)})\nn,Playback(silence/1)\nn,SayDigits(${CUT(IPOUTPUT,.,2)})\nn,Playback(silence/1)\nn,SayDigits(${CUT(IPOUTPUT,.,3)})\nn,Playback(silence/1)\nn,SayDigits(${CUT(IPOUTPUT,.,4)})\nn,Playback(silence/1)\nn,Playback(silence/1)\nn,Goto(4)",
+        "logic": "1,Answer()\n2,Set(IPOUTPUT=${PHONIX_LAN_IP})\n3,NoOp(IPOUTPUT: ${IPOUTPUT})\n4,Playback(beep)\nn,SayDigits(${CUT(IPOUTPUT,.,1)})\nn,Playback(silence/1)\nn,SayDigits(${CUT(IPOUTPUT,.,2)})\nn,Playback(silence/1)\nn,SayDigits(${CUT(IPOUTPUT,.,3)})\nn,Playback(silence/1)\nn,SayDigits(${CUT(IPOUTPUT,.,4)})\nn,Playback(silence/1)\nn,Playback(silence/1)\nn,Goto(4)",
         "name": "Read IP",
         "public_access": false,
         "public_name": ""
@@ -185,7 +185,7 @@
         "custom_body": "",
         "custom_subject": "",
         "from_address": "",
-        "from_name": "AskoziaPBX Voicemail",
+        "from_name": "PhonixPBX Voicemail",
         "keep_messages": true,
         "max_message_seconds": 180
       }
