@@ -51,8 +51,15 @@ echo "ok: health check"
 echo "ok: web process runs as phonix"
 "$ENGINE" exec "$name" cat /etc/phonix/board | grep -q '^oci-' || fail "board is not oci-*"
 
-pw=$("$ENGINE" logs "$name" 2>&1 | sed -n 's/.*Initial login: admin \/ \([^ ]*\).*/\1/p' | tail -n 1)
-[ -n "$pw" ] || fail "no initial admin password in the container log"
+# the entrypoint prints the banner only after the web socket is up, so the
+# web interface can answer before the password is in the log
+t=0
+until pw=$("$ENGINE" logs "$name" 2>&1 | sed -n 's/.*Initial login: admin \/ \([^ ]*\).*/\1/p' | tail -n 1) &&
+	[ -n "$pw" ]; do
+	t=$((t + 1))
+	[ $t -lt 60 ] || fail "no initial admin password in the container log"
+	sleep 1
+done
 echo "ok: initial admin password in the log"
 code=$(curl -sk -o /dev/null -w '%{http_code}' -u "admin:$pw" -H 'Content-Type: application/json' \
 	-d '{"extension":"777","callerid":"OCI test"}' "https://127.0.0.1:$PORT/api/v1/phones")
