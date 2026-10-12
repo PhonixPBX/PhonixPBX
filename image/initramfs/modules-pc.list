@@ -1,0 +1,37 @@
+# initramfs drivers for PCs / VMs (names; dependencies are added automatically,
+# modules missing from the kernel are skipped)
+# file systems
+squashfs
+overlay
+ext4
+crc32c_generic
+crc32c_intel
+vfat
+nls_cp437
+nls_iso8859_1
+nls_utf8
+# disks
+sd_mod
+ahci
+ata_piix
+ata_generic
+pata_acpi
+nvme
+virtio_pci
+virtio_blk
+virtio_scsi
+vmw_pvscsi
+mptspi
+xen_blkfront
+mmc_block
+sdhci_pci
+sdhci_acpi
+# usb sticks / keyboards (rescue shell)
+xhci_pci
+ehci_pci
+ohci_pci
+uhci_hcd
+usb_storage
+uas
+usbhid
+hid_generic

@@ -1,0 +1,22 @@
+# AskoziaPBX - Raspberry Pi boot configuration (ASKBOOT:/config.txt)
+#
+# Do not edit: the A/B updater selects the system slot in slot.txt
+# (os_prefix=slotA/ or slotB/: kernel, initramfs, cmdline.txt, device trees
+# and overlays are loaded from that directory). Put local additions such as
+# dtoverlay= lines into usercfg.txt.
+[all]
+arm_64bit=1
+kernel=vmlinuz
+initramfs initramfs followkernel
+cmdline=cmdline.txt
+enable_uart=1
+disable_splash=1
+boot_delay=0
+avoid_warnings=1
+
+[pi4]
+enable_gic=1
+
+[all]
+include slot.txt
+include usercfg.txt

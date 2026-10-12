@@ -1,0 +1,3 @@
+linux-lts
+# NIC firmware for common Realtek chips (also satisfies linux-firmware-any)
+linux-firmware-rtl_nic
