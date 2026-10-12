@@ -1,0 +1,20 @@
+{{ header() }}
+[general]
+transferdigittimeout={{ f.transfer_digit_timeout_s }}
+xfersound=beep
+xferfailsound=beeperr
+pickupexten={{ f.pickup }}
+pickupsound=beep
+pickupfailsound=beeperr
+featuredigittimeout={{ f.feature_digit_timeout_ms }}
+atxfernoanswertimeout={{ f.atxfer_noanswer_timeout_s }}
+atxferdropcall=no
+atxferloopdelay=10
+atxfercallbackretries=2
+
+[featuremap]
+blindxfer={{ f.blind_transfer }}
+atxfer={{ f.attended_transfer }}
+disconnect={{ f.disconnect }}
+
+[applicationmap]
