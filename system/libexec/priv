@@ -37,6 +37,14 @@ kmsg() {
 	printf '<5>phonix: %s\n' "$*" >/dev/kmsg 2>/dev/null || true
 }
 
+# same at info level: kernel log only with the default loglevel=6. The boot
+# is confirmed after the console menu is up; a notice would be printed below
+# its prompt and make the console look stuck. The QEMU tests boot with
+# loglevel=7 to see it.
+kmsg_info() {
+	printf '<6>phonix: %s\n' "$*" >/dev/kmsg 2>/dev/null || true
+}
+
 usage() {
 	die "usage: priv <action> [args] (see phonix/services/privileged.py)"
 }
@@ -354,10 +362,10 @@ do_mark_good() {
 		bootctl_mark_good
 		boot_ro
 		log "slot $_cur confirmed"
-		kmsg "boot slot $_cur marked good (update confirmed)"
+		kmsg_info "boot slot $_cur marked good (update confirmed)"
 		echo "slot $_cur marked good"
 	else
-		kmsg "boot slot $_cur marked good"
+		kmsg_info "boot slot $_cur marked good"
 		echo "slot $_cur is already permanent"
 	fi
 }

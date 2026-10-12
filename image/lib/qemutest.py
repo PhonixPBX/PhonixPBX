@@ -258,15 +258,22 @@ def prepare_disk(image: Path, name: str, size_gb: int, service_shell: bool) -> P
         shutil.copyfile(image, disk)
     with open(disk, "r+b") as fh:
         fh.truncate(size_gb * 1024**3)
+    # loglevel=7: the "marked good" boot marker is logged at info level (kept
+    # off the console of a production box), the tests wait for it on the
+    # serial console
+    rel = disk.relative_to(TOP)
+    script = (
+        f"set -e; img=/src/{rel}@@{BOOT_OFFSET}; "
+        "mcopy -n -i $img ::/grub/grub.cfg /tmp/g; "
+        "sed -i 's/loglevel=6/loglevel=7/' /tmp/g; grep -q loglevel=7 /tmp/g; "
+    )
     if service_shell:
-        rel = disk.relative_to(TOP)
-        script = (
-            f"set -e; img=/src/{rel}@@{BOOT_OFFSET}; "
-            "mcopy -n -i $img ::/grub/grub.cfg /tmp/g; "
+        script += (
             "sed -i 's/phonix.trial=${t}/phonix.trial=${t} phonix.console=shell/' /tmp/g; "
-            "grep -q phonix.console=shell /tmp/g; mcopy -o -i $img /tmp/g ::/grub/grub.cfg"
+            "grep -q phonix.console=shell /tmp/g; "
         )
-        in_builder("sh", "-c", script)
+    script += "mcopy -o -i $img /tmp/g ::/grub/grub.cfg"
+    in_builder("sh", "-c", script)
     return disk
 
 
