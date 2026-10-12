@@ -19,8 +19,11 @@ from phonix import config
 APP_USER = "phonix"
 # sub directories of the data dir that Asterisk reads
 ASTERISK_READABLE = ("media", "tls")
-# owned by Asterisk itself (astdb) - never touched here
-SKIP = ("asterisk",)
+# never touched here: owned by Asterisk (astdb, voicemail spool), root (SSH
+# host and authorized keys, logs) or prepared by the init scripts
+SKIP = ("asterisk", "spool", "ssh", "log", "lost+found")
+# only the directory itself (it holds nginx' and the root helper's temp dirs)
+SHALLOW = ("tmp",)
 
 
 def _ids() -> tuple[int, int, int] | None:
@@ -51,6 +54,10 @@ def fix_data_ownership() -> None:
         return
     uid, gid, asterisk_gid = ids
     for entry in data.iterdir():
-        if entry.name in SKIP or entry.name == "lost+found":
+        if entry.name in SKIP:
+            continue
+        if entry.name in SHALLOW:
+            with contextlib.suppress(OSError):
+                os.chown(entry, uid, gid, follow_symlinks=False)
             continue
         _chown_tree(entry, uid, asterisk_gid if entry.name in ASTERISK_READABLE else gid)

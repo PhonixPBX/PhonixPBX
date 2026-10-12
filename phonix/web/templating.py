@@ -12,6 +12,7 @@ from markupsafe import Markup
 
 from phonix import __version__
 from phonix.core import validation as v
+from phonix.services import platform
 from phonix.services.common import AREAS
 from phonix.web.security import csrf_token
 
@@ -179,6 +180,8 @@ def render(request: Request, name: str, ctx: dict[str, Any] | None = None, statu
         "dirty": [AREAS.get(a, a) for a in getattr(request.state, "dirty", [])],
         "is_htmx": request.headers.get("hx-request") == "true",
         "errors": {},
+        # "appliance", "lxc", "oci" or "dev" (containers: host-managed network)
+        "platform": platform.kind(),
     }
     context.update(ctx or {})
     return templates.TemplateResponse(request, name, context, status_code=status_code)

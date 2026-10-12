@@ -1,0 +1,11 @@
+# Build context of the OCI image (Containerfile): only what it copies.
+# Podman/buildah and docker both read this file.
+*
+!pyproject.toml
+!README.md
+!LICENSE
+!NOTICE
+!phonix/
+!system/
+**/__pycache__
+**/*.pyc

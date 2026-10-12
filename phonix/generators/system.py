@@ -61,7 +61,8 @@ def generate(snap: Snapshot) -> list[GeneratedFile]:
         _priv("/etc/hosts", render("system/hosts.j2", net=net, fqdn=fqdn, hostname=sysset.hostname), "system:hostname"),
         _priv("/etc/chrony/chrony.conf", render("system/chrony.conf.j2", servers=sysset.ntp_servers), "system:time"),
         _priv("/etc/timezone", sysset.timezone + "\n", "system:time"),
-        _priv("/etc/nftables.nft", nftables(snap), "system:firewall", mode=0o600),
+        # root:phonix 0640 - the web process compares it before staging changes
+        _priv("/etc/nftables.nft", nftables(snap), "system:firewall", mode=0o640),
         _priv("/etc/phonix/ssh", ("on" if sysset.ssh_enabled else "off") + "\n", "system:ssh"),
         GeneratedFile(
             path="/etc/phonix/msmtprc",

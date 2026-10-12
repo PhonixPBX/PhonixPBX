@@ -20,7 +20,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
 from phonix import __version__, config
-from phonix.services import privileged
+from phonix.services import platform, privileged
 from phonix.services.common import ServiceError
 
 MAX_BUNDLE = 1024**3
@@ -34,11 +34,7 @@ class BundleInfo:
 
 
 def current_board() -> str:
-    path = config.get().path("/etc/phonix/board")
-    try:
-        return path.read_text().strip()
-    except FileNotFoundError:
-        return "dev"
+    return platform.board()
 
 
 def current_slot() -> str:
@@ -64,6 +60,8 @@ def _public_key() -> Ed25519PublicKey:
 
 
 def verify_bundle(path: Path) -> BundleInfo:
+    if platform.is_container():
+        raise ServiceError(platform.CONTAINER_UPDATE_HINT)
     if path.stat().st_size > MAX_BUNDLE:
         raise ServiceError("Update file is too large")
     try:
@@ -104,4 +102,10 @@ def install(path: Path) -> BundleInfo:
 
 
 def status() -> dict[str, str]:
-    return {"version": __version__, "board": current_board(), "slot": current_slot()}
+    board = current_board()
+    return {
+        "version": __version__,
+        "board": board,
+        "slot": "-" if platform.is_container(board) else current_slot(),
+        "platform": platform.kind(board),
+    }

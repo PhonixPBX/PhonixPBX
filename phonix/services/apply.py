@@ -23,7 +23,7 @@ from phonix import ami, config
 from phonix.core import settings as st
 from phonix.generators import GeneratedFile, Secrets, build_snapshot, generate_all
 from phonix.services import facts as facts_mod
-from phonix.services import privileged, secrets
+from phonix.services import platform, privileged, secrets
 from phonix.services.common import audit, clear_dirty
 
 log = logging.getLogger(__name__)
@@ -74,7 +74,7 @@ class ApplyResult:
         return not self.errors
 
 
-def _write_atomic(path: Path, content: str, mode: int, group: str | None = None) -> None:
+def _write_atomic(path: Path, content: str, mode: int, group: str | None = None, hand_over: bool = True) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_name(f".{path.name}.tmp")
     fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, mode)
@@ -87,7 +87,7 @@ def _write_atomic(path: Path, content: str, mode: int, group: str | None = None)
         uid = gid = -1
         with contextlib.suppress(KeyError):
             gid = grp.getgrnam(group).gr_gid
-        if os.geteuid() == 0:
+        if os.geteuid() == 0 and hand_over:
             with contextlib.suppress(KeyError):
                 uid = pwd.getpwnam("phonix").pw_uid
         with contextlib.suppress(PermissionError):
@@ -98,7 +98,7 @@ def _write_atomic(path: Path, content: str, mode: int, group: str | None = None)
 def _read(path: Path) -> str | None:
     try:
         return path.read_text()
-    except (FileNotFoundError, UnicodeDecodeError):
+    except (FileNotFoundError, PermissionError, UnicodeDecodeError):
         return None
 
 
@@ -113,9 +113,12 @@ def write_files(files: list[GeneratedFile], direct_privileged: bool, force: bool
         changed.append(f)
         if f.privileged and not direct_privileged:
             _write_atomic(cfg.staged_dir / f.path.lstrip("/"), f.content, 0o640)
+        elif f.path.startswith(("/etc/asterisk/", "/etc/phonix/msmtprc")):
+            _write_atomic(target, f.content, f.mode, "asterisk")
         else:
-            group = "asterisk" if f.path.startswith(("/etc/asterisk/", "/etc/phonix/msmtprc")) else None
-            _write_atomic(target, f.content, f.mode, group)
+            # system files written as root at boot: root keeps them, the web
+            # process (group phonix) may read them to detect changes
+            _write_atomic(target, f.content, f.mode, "phonix" if f.privileged else None, hand_over=False)
     return changed
 
 
@@ -125,7 +128,12 @@ def generate(session: Session) -> list[GeneratedFile]:
         facts=facts_mod.collect(st.load(session, st.NetworkSettings)),
         secrets=Secrets(ami_internal=secrets.get("ami_internal")),
     )
-    return generate_all(snap)
+    files = generate_all(snap)
+    if platform.is_container():
+        # the container host owns the network configuration and the host name
+        # (/etc/hostname, /etc/hosts and /etc/resolv.conf are often bind mounts)
+        files = [f for f in files if f.component not in platform.HOST_MANAGED_COMPONENTS]
+    return files
 
 
 def apply(session: Session, user: str = "", boot: bool = False, force: bool = False) -> ApplyResult:

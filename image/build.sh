@@ -1,11 +1,13 @@
 #!/bin/sh
 # Build PhonixPBX images (rootless, inside a podman/docker container).
 #
-#   image/build.sh [board...]        boards: pc-amd64 rpi-arm64 pc-x86 (default: pc-amd64)
+#   image/build.sh [board...]        boards: pc-amd64 rpi-arm64 pc-x86
+#                                    lxc-amd64 lxc-arm64 (default: pc-amd64)
 #   image/build.sh all
 #
 # Steps: builder image -> phonix apk (abuild) -> per board: rootfs,
-# initramfs, disk image + signed update bundle in out/.
+# initramfs, disk image + signed update bundle in out/. Container boards
+# (lxc-*) get rootfs + LXC/Incus image tarballs instead.
 #
 # Environment:
 #   PHONIX_VERSION              image version (default: pyproject.toml)
@@ -22,7 +24,7 @@ CONTAINER=${CONTAINER:-podman}
 BUILDER=phonix-imgbuild:3.24
 
 boards=${*:-pc-amd64}
-[ "$boards" = all ] && boards="pc-amd64 rpi-arm64 pc-x86"
+[ "$boards" = all ] && boards="pc-amd64 rpi-arm64 pc-x86 lxc-amd64 lxc-arm64"
 for b in $boards; do
 	[ -f "image/profiles/$b.conf" ] || { echo "unknown board $b" >&2; exit 1; }
 done
@@ -57,7 +59,11 @@ run() {
 [ "${SKIP_APK:-0}" = 1 ] || run /src/image/lib/build-apk.sh
 for b in $boards; do
 	run /src/image/lib/build-rootfs.sh "$b"
-	run /src/image/lib/build-initramfs.sh "$b"
-	run /src/image/lib/assemble.sh "$b"
+	if grep -q '^CONTAINER=1' "image/profiles/$b.conf"; then
+		run /src/image/lib/assemble-container.sh "$b"
+	else
+		run /src/image/lib/build-initramfs.sh "$b"
+		run /src/image/lib/assemble.sh "$b"
+	fi
 done
 ls -l out/

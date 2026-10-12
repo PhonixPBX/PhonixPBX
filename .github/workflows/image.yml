@@ -24,7 +24,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        board: [pc-amd64, rpi-arm64, pc-x86]
+        board: [pc-amd64, rpi-arm64, pc-x86, lxc-amd64, lxc-arm64]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -52,12 +52,31 @@ jobs:
       - name: Fix ownership of build output
         run: sudo chown -R "$(id -u):$(id -g)" out image/work image/keys
       - name: Inspect image
+        if: ${{ !startsWith(matrix.board, 'lxc-') }}
         run: |
           zstd -d -c out/phonix-*-${{ matrix.board }}.img.zst > disk.img
           sfdisk -d disk.img
           rm disk.img
+      - name: Inspect container tarballs
+        if: startsWith(matrix.board, 'lxc-')
+        run: |
+          suffix=${BOARD#lxc-}
+          tar -tvJf out/phonix-*-"$BOARD".tar.xz > rootfs.lst
+          grep -E ' \./(sbin/init|etc/phonix/board|usr/bin/doas|var/spool/asterisk)( |$)' rootfs.lst
+          grep -q ' 200/102 .* \./etc/asterisk/$' rootfs.lst
+          if grep -E ' \./(boot/.+|lib/modules/.+)' rootfs.lst; then echo "kernel files in a container image"; exit 1; fi
+          tar -xJOf out/phonix-*-"$BOARD".tar.xz ./etc/phonix/board | grep -qx "$BOARD"
+          tar -tJf out/phonix-*-incus-"$suffix".tar.xz | grep -E '^(metadata.yaml|templates/|rootfs/sbin/init)$'
+          tar -xJOf out/phonix-*-incus-"$suffix".tar.xz metadata.yaml
+          tar -tvJf out/phonix-*-"$BOARD".meta.tar.xz
+          rm rootfs.lst
+        env:
+          BOARD: ${{ matrix.board }}
+      - name: Boot test of the rootfs as a system container (docker)
+        if: matrix.board == 'lxc-amd64'
+        run: CONTAINER=docker image/test-lxc.sh out/phonix-*-lxc-amd64.tar.xz
       - name: Enable KVM
-        if: matrix.board != 'rpi-arm64'
+        if: matrix.board == 'pc-amd64' || matrix.board == 'pc-x86'
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm.rules
           sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
@@ -69,19 +88,29 @@ jobs:
         if: matrix.board == 'pc-x86'
         run: image/test-qemu.sh --board pc-x86 --firmware bios --timeout 900
       - name: Upload serial logs
-        if: always() && matrix.board != 'rpi-arm64'
+        if: always() && (matrix.board == 'pc-amd64' || matrix.board == 'pc-x86')
         uses: actions/upload-artifact@v4
         with:
           name: serial-logs-${{ matrix.board }}
           path: image/work/qemu/*.log
           if-no-files-found: ignore
+      - name: Artifact name suffix
+        id: names
+        run: echo "incus=incus-${BOARD#lxc-}" >> "$GITHUB_OUTPUT"
+        env:
+          BOARD: ${{ matrix.board }}
       - uses: actions/upload-artifact@v4
         with:
           name: phonix-${{ matrix.board }}
+          # disk image + update bundle, or (lxc-*) rootfs, lxc metadata and Incus image
           path: |
             out/phonix-*-${{ matrix.board }}.img.zst
             out/phonix-*-${{ matrix.board }}.update
+            out/phonix-*-${{ matrix.board }}.tar.xz
+            out/phonix-*-${{ matrix.board }}.meta.tar.xz
+            out/phonix-*-${{ steps.names.outputs.incus }}.tar.xz
             out/phonix-*-${{ matrix.board }}.packages
+          if-no-files-found: error
           compression-level: 0
 
   release:
@@ -97,12 +126,13 @@ jobs:
           merge-multiple: true
           path: out
       - name: SHA256SUMS
-        run: cd out && sha256sum phonix-*.img.zst phonix-*.update > SHA256SUMS
+        run: cd out && sha256sum phonix-*.img.zst phonix-*.update phonix-*.tar.xz > SHA256SUMS
       - uses: softprops/action-gh-release@v2
         with:
           files: |
             out/phonix-*.img.zst
             out/phonix-*.update
+            out/phonix-*.tar.xz
             out/SHA256SUMS
 
   # rolling pre-release with the images of the latest default branch build
@@ -125,7 +155,7 @@ jobs:
           merge-multiple: true
           path: out
       - name: SHA256SUMS
-        run: cd out && sha256sum phonix-*.img.zst phonix-*.update > SHA256SUMS
+        run: cd out && sha256sum phonix-*.img.zst phonix-*.update phonix-*.tar.xz > SHA256SUMS
       - name: Publish the nightly pre-release
         run: |
           short=$(echo "$GITHUB_SHA" | cut -c1-8)
@@ -134,9 +164,11 @@ jobs:
 
           Development snapshot - not for production. Images are replaced on every push to the
           default branch. Update bundles are only accepted by systems built with the same
-          signing key. See docs/INSTALL.md for flashing instructions.
+          signing key. The \`lxc\`/\`incus\` tarballs are system container images (Proxmox VE,
+          LXC, Incus); the OCI image is
+          \`ghcr.io/$(echo "$GITHUB_REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')/phonix:edge\`. See docs/INSTALL.md.
           EOF
           gh release delete nightly --cleanup-tag --yes 2>/dev/null || true
           gh release create nightly --prerelease --target "$GITHUB_SHA" \
             --title "Nightly build ${short}" --notes-file notes.md \
-            out/phonix-*.img.zst out/phonix-*.update out/SHA256SUMS
+            out/phonix-*.img.zst out/phonix-*.update out/phonix-*.tar.xz out/SHA256SUMS
