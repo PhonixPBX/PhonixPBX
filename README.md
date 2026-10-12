@@ -49,5 +49,5 @@ Front-end assets are vendored; refresh them with `scripts/vendor-update.sh`.
 
 ## License
 
-Not decided yet for the new code: `pyproject.toml` declares GPL-2.0-or-later as a placeholder.
-The legacy tree keeps its original licenses.
+New code is licensed under the [Apache License 2.0](LICENSE). Third-party and legacy parts
+keep their own licenses, see [NOTICE](NOTICE).

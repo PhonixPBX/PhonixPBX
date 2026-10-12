@@ -1,0 +1,16 @@
+AskoziaPBX NG
+Copyright 2026 The AskoziaPBX NG contributors
+
+Licensed under the Apache License, Version 2.0 (see LICENSE), except for the
+following parts which keep their own licenses:
+
+- legacy/                                    original AskoziaPBX tree (2007-2011), see legacy/COPYING
+                                             and the license headers of the individual files
+- askozia/web/static/img/                    AskoziaPBX logos and favicon taken from the legacy tree;
+                                             "Askozia" is a registered trademark of its owner
+- askozia/generators/data/indications_zones.conf
+                                             tone zone definitions from Asterisk's
+                                             indications.conf.sample (GPL-2.0, Sangoma/Digium)
+- askozia/web/static/vendor/                 Tabler and Tabler Icons (MIT), ApexCharts (MIT),
+                                             Tom Select (Apache-2.0), Dropzone (MIT), IMask (MIT),
+                                             Autosize (MIT), htmx (0BSD); see vendor/VERSIONS

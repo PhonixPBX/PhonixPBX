@@ -37,7 +37,7 @@ tar -C "$SRC" \
 	--exclude=__pycache__ --exclude='*.pyc' --exclude='*.egg-info' \
 	--sort=name --mtime="@$SOURCE_DATE_EPOCH" --owner=0 --group=0 --numeric-owner \
 	--transform "s,^,askozia-$PKGVER/," \
-	-czf "$B/askozia-$PKGVER.tar.gz" pyproject.toml README.md askozia system
+	-czf "$B/askozia-$PKGVER.tar.gz" pyproject.toml README.md LICENSE NOTICE askozia system
 
 # --- build ------------------------------------------------------------------
 cd "$B" || exit 1

@@ -9,7 +9,7 @@ pkgrel=0
 pkgdesc="AskoziaPBX NG - Asterisk PBX appliance: web interface and system integration"
 url="https://github.com/resmo/AskoziaPBX"
 arch="noarch"
-license="GPL-2.0-or-later"
+license="Apache-2.0"
 depends="
 	python3
 	py3-fastapi
@@ -66,6 +66,8 @@ build() {
 
 package() {
 	python3 -m installer -d "$pkgdir" .dist/*.whl
+	install -Dm644 "$builddir/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+	install -Dm644 "$builddir/NOTICE" "$pkgdir/usr/share/licenses/$pkgname/NOTICE"
 
 	local sys="$builddir/system"
 	local pyver
