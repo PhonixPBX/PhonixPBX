@@ -1,4 +1,4 @@
-from askozia.services.monitor import Banner, remote_ip
+from phonix.services.monitor import Banner, remote_ip
 
 
 def test_remote_ip():

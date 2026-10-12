@@ -1,0 +1,35 @@
+#!/sbin/openrc-run
+# PhonixPBX web interface (FastAPI/uvicorn on a unix socket behind nginx).
+
+description="PhonixPBX web interface"
+
+: "${socket:=/run/phonix/web.sock}"
+
+[ -r /etc/conf.d/phonix ] && . /etc/conf.d/phonix
+export PHONIX_DATA_DIR PHONIX_BOOT_DIR PHONIX_PRIVILEGED PHONIX_LIBEXEC_DIR \
+	PHONIX_AMI_HOST PHONIX_AMI_PORT
+
+supervisor=supervise-daemon
+command=/usr/bin/phonix
+command_args="web --uds $socket"
+command_user="phonix:phonix"
+directory=/
+output_log=/var/log/phonix/web.log
+error_log=/var/log/phonix/web.log
+respawn_delay=3
+respawn_max=0
+
+depend() {
+	need localmount
+	after phonix-apply asterisk
+	before nginx
+	use logger
+}
+
+start_pre() {
+	checkpath -d -m 0711 -o phonix:phonix /run/phonix
+	checkpath -d -m 0700 -o phonix:phonix /run/phonix/staged
+	checkpath -d -m 0755 -o root:root /var/log/phonix
+	checkpath -f -m 0640 -o phonix:phonix /var/log/phonix/web.log
+	rm -f "$socket"
+}

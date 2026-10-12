@@ -1,0 +1,115 @@
+# Contributor: PhonixPBX <dev@phonix.invalid>
+# Maintainer: PhonixPBX <dev@phonix.invalid>
+#
+# Builds the "phonix" package from a source tarball of this repository
+# (image/lib/build-apk.sh creates phonix-$pkgver.tar.gz next to this file).
+pkgname=phonix
+pkgver=${PHONIX_PKGVER:-3.0.0_pre0}
+pkgrel=0
+pkgdesc="PhonixPBX - Asterisk PBX appliance: web interface and system integration"
+url="https://github.com/resmo/AskoziaPBX"
+arch="noarch"
+license="Apache-2.0"
+depends="
+	python3
+	py3-fastapi
+	uvicorn
+	py3-pydantic
+	py3-sqlalchemy
+	py3-alembic
+	py3-jinja2
+	py3-argon2-cffi
+	py3-itsdangerous
+	py3-python-multipart
+	py3-babel
+	py3-defusedxml
+	py3-cryptography
+	py3-zstandard
+	py3-httpx
+	asterisk
+	asterisk-sounds-en
+	asterisk-sounds-moh
+	asterisk-srtp
+	asterisk-opus
+	asterisk-speex
+	msmtp
+	nftables
+	nftables-openrc
+	chrony
+	chrony-openrc
+	nginx
+	nginx-openrc
+	doas
+	tzdata
+	ca-certificates-bundle
+	iproute2
+	dropbear
+	dropbear-openrc
+	e2fsprogs
+	dosfstools
+	logrotate
+	openrc
+	"
+makedepends="py3-gpep517 py3-setuptools py3-wheel py3-installer"
+install="$pkgname.pre-install"
+subpackages="$pkgname-pyc"
+source="$pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$pkgver"
+# the test suite runs in CI (.github/workflows/ci.yml) against the dev image
+options="!check"
+
+build() {
+	gpep517 build-wheel \
+		--wheel-dir .dist \
+		--output-fd 3 3>&1 >&2
+}
+
+package() {
+	python3 -m installer -d "$pkgdir" .dist/*.whl
+	install -Dm644 "$builddir/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+	install -Dm644 "$builddir/NOTICE" "$pkgdir/usr/share/licenses/$pkgname/NOTICE"
+
+	local sys="$builddir/system"
+	local pyver
+	pyver=$(python3 -c 'import sys; print(f"{sys.version_info[0]}.{sys.version_info[1]}")')
+
+	# safety net: data files missing from [tool.setuptools.package-data]
+	local site="$pkgdir/usr/lib/python$pyver/site-packages" f
+	( cd "$builddir" && find phonix -type f ! -name '*.py' ! -name '*.pyc' ! -path '*/__pycache__/*' ) |
+	while read -r f; do
+		if [ ! -e "$site/$f" ]; then
+			warning "package data missing from the wheel, copied: $f"
+			install -Dm644 "$builddir/$f" "$site/$f"
+		fi
+	done
+
+	# OpenRC services
+	local svc
+	for svc in phonix-firstboot phonix-apply phonix-web phonix-monitor phonix-healthcheck; do
+		install -Dm755 "$sys/openrc/init.d/$svc" "$pkgdir/etc/init.d/$svc"
+	done
+	install -Dm644 "$sys/openrc/conf.d/phonix" "$pkgdir/etc/conf.d/phonix"
+
+	# privileged helper and other scripts
+	install -Dm755 "$sys/libexec/priv" "$pkgdir/usr/libexec/phonix/priv"
+	install -Dm644 "$sys/libexec/bootctl.sh" "$pkgdir/usr/libexec/phonix/bootctl.sh"
+	local f
+	for f in verify-manifest notify-missed-call healthcheck-loop console; do
+		install -Dm755 "$sys/libexec/$f" "$pkgdir/usr/libexec/phonix/$f"
+	done
+	install -Dm400 "$sys/doas.d/phonix.conf" "$pkgdir/etc/doas.d/phonix.conf"
+
+	# web server, log rotation, kernel settings
+	install -Dm644 "$sys/nginx/phonix.conf" "$pkgdir/etc/nginx/http.d/phonix.conf"
+	install -Dm644 "$sys/logrotate.d/phonix" "$pkgdir/etc/logrotate.d/phonix"
+	install -Dm644 "$sys/sysctl.d/phonix.conf" "$pkgdir/etc/sysctl.d/phonix.conf"
+
+	# static web assets are served by nginx
+	mkdir -p "$pkgdir/usr/share/phonix"
+	ln -s "../../lib/python$pyver/site-packages/phonix/web/static" \
+		"$pkgdir/usr/share/phonix/static"
+
+	install -d -m750 "$pkgdir/etc/phonix"
+}
+
+sha512sums=""

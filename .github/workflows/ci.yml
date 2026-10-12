@@ -2,7 +2,7 @@ name: ci
 
 on:
   push:
-    branches: [master, main, askozia-ng]
+    branches: [master]
   pull_request:
 
 permissions:
@@ -27,7 +27,7 @@ jobs:
       - name: ruff
         run: ruff check . && ruff format --check .
       - name: mypy
-        run: mypy askozia
+        run: mypy phonix
       - name: pytest
         run: pytest -q
 
@@ -55,8 +55,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build dev image (Alpine 3.24, Asterisk 22)
-        run: docker build -t askozia-dev:3.24 -f dev/Containerfile dev
+        run: docker build -t phonix-dev:3.24 -f dev/Containerfile dev
       - name: Asterisk / SIPp integration tests
         run: >
-          docker run --rm -v "$PWD:/src" -w /src askozia-dev:3.24
+          docker run --rm -v "$PWD:/src" -w /src phonix-dev:3.24
           python3 -m pytest -p no:cacheprovider -m asterisk tests/integration -v

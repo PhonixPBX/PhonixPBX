@@ -1,5 +1,5 @@
 #!/usr/bin/python3 -I
-"""Verify an AskoziaPBX update bundle manifest (used by priv install-update).
+"""Verify a PhonixPBX update bundle manifest (used by priv install-update).
 
 usage: verify-manifest <dir with manifest.json + manifest.sig> <board> <pubkey.pem>
 

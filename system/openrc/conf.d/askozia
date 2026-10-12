@@ -1,8 +1,0 @@
-# Runtime settings shared by all AskoziaPBX services (sourced by the init
-# scripts and the console). See askozia/config.py.
-ASKOZIA_DATA_DIR="/data"
-ASKOZIA_BOOT_DIR="/media/boot"
-ASKOZIA_PRIVILEGED="doas"
-ASKOZIA_LIBEXEC_DIR="/usr/libexec/askozia"
-ASKOZIA_AMI_HOST="127.0.0.1"
-ASKOZIA_AMI_PORT="5038"

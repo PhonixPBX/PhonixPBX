@@ -1,0 +1,21 @@
+<div id="apply-banner" hx-get="/apply/banner" hx-trigger="phonix:dirty from:body" hx-swap="outerHTML">
+  {% if result.ok %}
+  <div class="alert alert-success alert-dismissible mb-0 rounded-0 border-0" role="alert">
+    <div class="container-xl d-flex align-items-center gap-2">
+      {{ icon("circle-check") }}
+      <div>Configuration applied.
+        {% if result.actions %}<span class="text-secondary">({{ result.actions | length }} reload actions)</span>{% else %}<span class="text-secondary">(nothing to reload)</span>{% endif %}
+      </div>
+      <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
+    </div>
+  </div>
+  {% else %}
+  <div class="alert alert-danger mb-0 rounded-0 border-0" role="alert">
+    <div class="container-xl">
+      <strong>Applying the configuration failed.</strong>
+      <ul class="mb-0">{% for e in result.errors %}<li>{{ e }}</li>{% endfor %}</ul>
+    </div>
+  </div>
+  {% include "partials/apply_banner.html" %}
+  {% endif %}
+</div>

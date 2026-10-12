@@ -1,7 +1,7 @@
 import io
 import wave
 
-from askozia.services import media
+from phonix.services import media
 
 
 def _wav(rate=44100, channels=2, seconds=0.2):
@@ -24,7 +24,7 @@ def test_python_conversion(tmp_path):
 
 
 def test_upload_sets_custom_moh(session, monkeypatch):
-    from askozia.core import settings as st
+    from phonix.core import settings as st
 
     monkeypatch.setattr(media.shutil, "which", lambda _name: None)
     item = media.add_media(session, "moh", "My Song!.wav", _wav())

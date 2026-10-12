@@ -6,7 +6,7 @@
 # untrusted data here (never evaluated, control characters stripped).
 set -eu
 PATH=/usr/sbin:/usr/bin:/sbin:/bin
-MSMTPRC=/etc/askozia/msmtprc
+MSMTPRC=/etc/phonix/msmtprc
 
 [ $# -eq 3 ] || { echo "usage: notify-missed-call <email> <cause> <callerid>" >&2; exit 64; }
 
@@ -25,7 +25,7 @@ case "$to" in
 esac
 [ -r "$MSMTPRC" ] || { echo "notify-missed-call: e-mail is not configured" >&2; exit 69; }
 
-host=$(hostname 2>/dev/null || echo askozia)
+host=$(hostname 2>/dev/null || echo phonix)
 date=$(date -R)
 
 # send in the background so the dialplan is not blocked by a slow relay
@@ -40,6 +40,6 @@ date=$(date -R)
 	printf 'Caller:  %s\n' "${callerid:-unknown}"
 	printf 'Reason:  %s\n' "$cause"
 	printf 'Time:    %s\n' "$date"
-	printf '\n-- \nAskoziaPBX on %s\n' "$host"
+	printf '\n-- \nPhonixPBX on %s\n' "$host"
 ) | setsid msmtp -C "$MSMTPRC" -t >/dev/null 2>&1 </dev/null &
 exit 0

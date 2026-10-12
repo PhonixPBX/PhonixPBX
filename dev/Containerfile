@@ -9,14 +9,14 @@ RUN apk add --no-cache \
         py3-cryptography py3-zstandard py3-httpx py3-pytest \
         msmtp nftables chrony sipp tzdata ca-certificates openssl iproute2 bash
 
-ENV ASKOZIA_DATA_DIR=/data \
-    ASKOZIA_PRIVILEGED=dry-run \
-    ASKOZIA_DEV=1 \
+ENV PHONIX_DATA_DIR=/data \
+    PHONIX_PRIVILEGED=dry-run \
+    PHONIX_DEV=1 \
     PYTHONPATH=/src \
     PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /src
 
-# "askozia" command running the code mounted at /src
-RUN printf '#!/bin/sh\nexec python3 -m askozia.cli "$@"\n' > /usr/local/bin/askozia \
-    && chmod 755 /usr/local/bin/askozia
+# "phonix" command running the code mounted at /src
+RUN printf '#!/bin/sh\nexec python3 -m phonix.cli "$@"\n' > /usr/local/bin/phonix \
+    && chmod 755 /usr/local/bin/phonix

@@ -1,0 +1,8 @@
+# Runtime settings shared by all PhonixPBX services (sourced by the init
+# scripts and the console). See phonix/config.py.
+PHONIX_DATA_DIR="/data"
+PHONIX_BOOT_DIR="/media/boot"
+PHONIX_PRIVILEGED="doas"
+PHONIX_LIBEXEC_DIR="/usr/libexec/phonix"
+PHONIX_AMI_HOST="127.0.0.1"
+PHONIX_AMI_PORT="5038"

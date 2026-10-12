@@ -1,15 +1,15 @@
 #!/bin/sh
-# Create the ed25519 key pair that signs AskoziaPBX update bundles.
+# Create the ed25519 key pair that signs PhonixPBX update bundles.
 #
-#   image/keys.sh [directory]      (default: image/keys, or $ASKOZIA_KEYS_DIR)
+#   image/keys.sh [directory]      (default: image/keys, or $PHONIX_KEYS_DIR)
 #
 # Writes update-signing.pem (private, PKCS#8 - keep it offline / in a CI
 # secret, never commit it) and update-key.pub (SubjectPublicKeyInfo PEM).
-# The public key is baked into every image as /etc/askozia/update-key.pub;
+# The public key is baked into every image as /etc/phonix/update-key.pub;
 # images only accept bundles signed with the matching private key.
 # Needs OpenSSL >= 1.1.1 (host or the build container).
 set -eu
-dir=${1:-${ASKOZIA_KEYS_DIR:-$(cd "$(dirname "$0")" && pwd)/keys}}
+dir=${1:-${PHONIX_KEYS_DIR:-$(cd "$(dirname "$0")" && pwd)/keys}}
 mkdir -p "$dir"
 if [ -e "$dir/update-signing.pem" ]; then
 	echo "keys.sh: $dir/update-signing.pem exists, not overwriting" >&2

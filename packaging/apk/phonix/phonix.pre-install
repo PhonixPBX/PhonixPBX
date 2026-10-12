@@ -1,0 +1,7 @@
+#!/bin/sh
+
+addgroup -S phonix 2>/dev/null
+adduser -S -D -H -h /data -s /sbin/nologin -G phonix -g phonix phonix 2>/dev/null
+addgroup phonix asterisk 2>/dev/null
+
+exit 0

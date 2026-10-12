@@ -1,4 +1,4 @@
-# AskoziaPBX - Raspberry Pi boot configuration (ASKBOOT:/config.txt)
+# PhonixPBX - Raspberry Pi boot configuration (PHXBOOT:/config.txt)
 #
 # Do not edit: the A/B updater selects the system slot in slot.txt
 # (os_prefix=slotA/ or slotB/: kernel, initramfs, cmdline.txt, device trees

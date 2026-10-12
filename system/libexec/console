@@ -1,8 +1,8 @@
 #!/bin/sh
 # Console front end (spawned by init on tty1 and the serial console):
 #   console <tty>
-# Runs the AskoziaPBX console menu (askozia tui). Booting with
-# "askozia.console=shell" on the kernel command line (needs physical access
+# Runs the PhonixPBX console menu (phonix tui). Booting with
+# "phonix.console=shell" on the kernel command line (needs physical access
 # to the boot loader) gives a root shell instead, for service and tests.
 PATH=/usr/sbin:/usr/bin:/sbin:/bin
 export PATH
@@ -24,24 +24,24 @@ tty[0-9]*) TERM=linux ;;
 	;;
 esac
 export TERM
-[ -r /etc/conf.d/askozia ] && . /etc/conf.d/askozia
-export ASKOZIA_DATA_DIR ASKOZIA_BOOT_DIR ASKOZIA_PRIVILEGED 2>/dev/null
+[ -r /etc/conf.d/phonix ] && . /etc/conf.d/phonix
+export PHONIX_DATA_DIR PHONIX_BOOT_DIR PHONIX_PRIVILEGED 2>/dev/null
 cd /
 
 for w in $(cat /proc/cmdline); do
-	if [ "$w" = askozia.console=shell ]; then
-		printf '\nAskoziaPBX service shell on %s (askozia.console=shell)\n' "$tty"
+	if [ "$w" = phonix.console=shell ]; then
+		printf '\nPhonixPBX service shell on %s (phonix.console=shell)\n' "$tty"
 		exec setsid -w -c /bin/sh -l
 	fi
 done
 
 started=$(cut -d. -f1 /proc/uptime)
-setsid -w -c askozia tui
+setsid -w -c phonix tui
 rc=$?
 now=$(cut -d. -f1 /proc/uptime)
 if [ $rc -ne 0 ] && [ $((now - started)) -lt 5 ]; then
 	# the menu is unavailable: show the banner and avoid a respawn loop
 	clear 2>/dev/null
-	askozia banner 2>/dev/null || cat /etc/issue
+	phonix banner 2>/dev/null || cat /etc/issue
 	sleep 60
 fi

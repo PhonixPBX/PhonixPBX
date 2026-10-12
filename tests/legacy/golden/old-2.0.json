@@ -232,7 +232,7 @@
         "custom_body": "",
         "custom_subject": "",
         "from_address": "",
-        "from_name": "AskoziaPBX Voicemail",
+        "from_name": "PhonixPBX Voicemail",
         "keep_messages": true,
         "max_message_seconds": 180
       }

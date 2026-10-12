@@ -39,9 +39,9 @@ add_user chrony 102 103 /dev/null /sbin/nologin
 add_group nginx 104
 add_user nginx 103 104 /var/lib/nginx /sbin/nologin
 add_member www-data nginx
-add_group askozia 200
-add_user askozia 200 200 /data /sbin/nologin
-add_member asterisk askozia
+add_group phonix 200
+add_user phonix 200 200 /data /sbin/nologin
+add_member asterisk phonix
 # root: no password (console menu / service shell / ssh keys only)
 sed -i 's/^root:[^:]*:/root:*:/' "$R/etc/shadow"
 
@@ -70,35 +70,35 @@ KVER=$(kernel_version "$R")
 rm -f "$R/etc/nginx/http.d/default.conf"
 mkdir -p "$R/run/nginx"
 
-# --- AskoziaPBX image integration --------------------------------------------
+# --- PhonixPBX image integration --------------------------------------------
 msg "[$BOARD] system integration"
 cp -a "$SYS/rootfs/." "$R/"
 chmod 644 "$R/etc/inittab" "$R/etc/fstab"
 for t in $SERIAL_TTYS; do
-	sed -i "/^::ctrlaltdel/i ::respawn:/usr/libexec/askozia/console $t" "$R/etc/inittab"
+	sed -i "/^::ctrlaltdel/i ::respawn:/usr/libexec/phonix/console $t" "$R/etc/inittab"
 done
 
-# Asterisk: the configuration is generated at boot (askozia apply)
+# Asterisk: the configuration is generated at boot (phonix apply)
 rm -rf "$R/etc/asterisk"
 install -d -m 0750 "$R/etc/asterisk"
 chown 200:102 "$R/etc/asterisk"
-install -d -m 0750 -o 200 -g 102 "$R/etc/askozia"
+install -d -m 0750 -o 200 -g 102 "$R/etc/phonix"
 mkdir -p "$R/var/lib/asterisk/keys"
 chown -R 101:102 "$R/var/lib/asterisk" "$R/var/spool/asterisk" "$R/var/log/asterisk" 2>/dev/null || true
 
 # board, version, update key
-echo "$BOARD" >"$R/etc/askozia/board"
-cp "$KEYS_DIR/update-key.pub" "$R/etc/askozia/update-key.pub"
-chmod 644 "$R/etc/askozia/board" "$R/etc/askozia/update-key.pub"
-mkdir -p "$R/usr/share/askozia"
-cat >"$R/usr/share/askozia/image-info" <<INFO
-ASKOZIA_VERSION="$VERSION"
-ASKOZIA_BOARD="$BOARD"
-ASKOZIA_ARCH="$ARCH"
-ASKOZIA_KERNEL="$KVER"
-ASKOZIA_BUILD_DATE="$(date -u -d "@$SOURCE_DATE_EPOCH" +%Y-%m-%dT%H:%M:%SZ)"
+echo "$BOARD" >"$R/etc/phonix/board"
+cp "$KEYS_DIR/update-key.pub" "$R/etc/phonix/update-key.pub"
+chmod 644 "$R/etc/phonix/board" "$R/etc/phonix/update-key.pub"
+mkdir -p "$R/usr/share/phonix"
+cat >"$R/usr/share/phonix/image-info" <<INFO
+PHONIX_VERSION="$VERSION"
+PHONIX_BOARD="$BOARD"
+PHONIX_ARCH="$ARCH"
+PHONIX_KERNEL="$KVER"
+PHONIX_BUILD_DATE="$(date -u -d "@$SOURCE_DATE_EPOCH" +%Y-%m-%dT%H:%M:%SZ)"
 INFO
-sed -i "s/^PRETTY_NAME=.*/PRETTY_NAME=\"AskoziaPBX $VERSION (Alpine Linux $(cat "$R/etc/alpine-release"))\"/" \
+sed -i "s/^PRETTY_NAME=.*/PRETTY_NAME=\"PhonixPBX $VERSION (Alpine Linux $(cat "$R/etc/alpine-release"))\"/" \
 	"$R/etc/os-release"
 
 # persistent state on /data
@@ -125,8 +125,8 @@ rl() { # runlevel service...
 rm -rf "$R/etc/runlevels"
 rl sysinit devfs dmesg mdev hwdrivers
 rl boot modules sysctl hostname bootmisc syslog klogd seedrng "$CLOCK_SERVICE" \
-	askozia-firstboot askozia-apply nftables networking
-rl default acpid crond chronyd asterisk askozia-web nginx askozia-monitor askozia-healthcheck
+	phonix-firstboot phonix-apply nftables networking
+rl default acpid crond chronyd asterisk phonix-web nginx phonix-monitor phonix-healthcheck
 rl shutdown killprocs savecache mount-ro
 mkdir -p "$R/etc/runlevels/nonetwork"
 

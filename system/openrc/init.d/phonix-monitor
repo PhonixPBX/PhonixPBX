@@ -1,0 +1,29 @@
+#!/sbin/openrc-run
+# Watches Asterisk security events over AMI and bans offending addresses.
+
+description="PhonixPBX security event monitor"
+
+[ -r /etc/conf.d/phonix ] && . /etc/conf.d/phonix
+export PHONIX_DATA_DIR PHONIX_BOOT_DIR PHONIX_PRIVILEGED PHONIX_LIBEXEC_DIR \
+	PHONIX_AMI_HOST PHONIX_AMI_PORT
+
+supervisor=supervise-daemon
+command=/usr/bin/phonix
+command_args="monitor"
+command_user="phonix:phonix"
+directory=/
+output_log=/var/log/phonix/monitor.log
+error_log=/var/log/phonix/monitor.log
+respawn_delay=10
+respawn_max=0
+
+depend() {
+	need asterisk
+	after phonix-apply nftables
+	use logger
+}
+
+start_pre() {
+	checkpath -d -m 0755 -o root:root /var/log/phonix
+	checkpath -f -m 0640 -o phonix:phonix /var/log/phonix/monitor.log
+}

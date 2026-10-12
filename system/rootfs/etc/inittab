@@ -1,12 +1,12 @@
-# /etc/inittab - AskoziaPBX appliance
+# /etc/inittab - PhonixPBX appliance
 
 ::sysinit:/sbin/openrc sysinit
 ::sysinit:/sbin/openrc boot
 ::wait:/sbin/openrc default
 
-# console menu (askozia tui) on the local screen and the serial console(s);
+# console menu (phonix tui) on the local screen and the serial console(s);
 # the serial lines are appended per board by the image build
-::respawn:/usr/libexec/askozia/console tty1
+::respawn:/usr/libexec/phonix/console tty1
 
 ::ctrlaltdel:/sbin/reboot
 ::shutdown:/sbin/openrc shutdown

@@ -1,0 +1,42 @@
+# /var/log is RAM backed on the appliance: keep the logs small.
+/var/log/asterisk/messages /var/log/asterisk/security /var/log/asterisk/full /var/log/asterisk/queue_log {
+	size 2M
+	rotate 2
+	missingok
+	notifempty
+	compress
+	sharedscripts
+	postrotate
+		/usr/sbin/asterisk -rx 'logger reload' >/dev/null 2>&1 || true
+	endscript
+}
+
+/var/log/asterisk/cdr-csv/*.csv {
+	size 2M
+	rotate 2
+	missingok
+	notifempty
+	compress
+	copytruncate
+}
+
+/var/log/phonix/*.log {
+	size 1M
+	rotate 2
+	missingok
+	notifempty
+	compress
+	copytruncate
+}
+
+/var/log/nginx/*.log {
+	size 1M
+	rotate 2
+	missingok
+	notifempty
+	compress
+	sharedscripts
+	postrotate
+		[ -s /run/nginx/nginx.pid ] && kill -USR1 "$(cat /run/nginx/nginx.pid)" 2>/dev/null || true
+	endscript
+}

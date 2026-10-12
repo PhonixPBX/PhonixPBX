@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 92" width="340" height="92" role="img" aria-label="PhonixPBX">
+  <title>PhonixPBX</title>
+  <circle cx="46" cy="46" r="40" fill="none" stroke="#435370" stroke-width="5"/>
+  <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"
+        transform="translate(19 19) scale(2.25)" fill="#435370" stroke="#435370" stroke-width="1.6"
+        stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M60 18c7 4 11 10 12 17" fill="none" stroke="#687BA4" stroke-width="4" stroke-linecap="round"/>
+  <path d="M58 28c4 2.5 6.5 6 7 10" fill="none" stroke="#687BA4" stroke-width="4" stroke-linecap="round"/>
+  <text x="100" y="61" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="46" font-weight="600"
+        fill="#435370" textLength="232" lengthAdjust="spacingAndGlyphs">Phonix<tspan fill="#687BA4" font-weight="700">PBX</tspan></text>
+</svg>

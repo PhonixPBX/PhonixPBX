@@ -1,6 +1,6 @@
-# Packages installed into every AskoziaPBX root file system (Alpine 3.24).
+# Packages installed into every PhonixPBX root file system (Alpine 3.24).
 # One package per line; "name=version" pins an exact version. The versions
-# actually installed are recorded in out/askozia-<version>-<board>.packages.
+# actually installed are recorded in out/phonix-<version>-<board>.packages.
 alpine-baselayout
 alpine-baselayout-data
 alpine-keys
@@ -32,7 +32,7 @@ dropbear-openrc
 logrotate
 python3
 pyc
-askozia
+phonix
 asterisk
 asterisk-sounds-en
 asterisk-sounds-moh
