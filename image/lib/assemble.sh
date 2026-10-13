@@ -98,6 +98,12 @@ rpi)
 	mkdir -p "$P/dtb"
 	cp "$KB"/*.dtb "$P/dtb/"
 	cp -r "$KB/overlays" "$P/dtb/"
+	# the firmware loads overlays from <os_prefix>overlays/ only if a README
+	# exists there (otherwise from /overlays/, which we do not have). Without
+	# it, Pi 5/CM5 boards with a D0 stepping SoC miss the automatic
+	# bcm2712d0.dtbo and the kernel dies with an SError in the pin control
+	[ -f "$P/dtb/overlays/README" ] ||
+		echo "Device tree overlays of this PhonixPBX slot (os_prefix marker)" >"$P/dtb/overlays/README"
 	(cd "$P/dtb" && tar --format=ustar --owner=0 --group=0 --numeric-owner --sort=name \
 		--mtime="@$SOURCE_DATE_EPOCH" -cf "$P/payload/boot.tar" .)
 	tar -xf "$P/payload/boot.tar" -C "$P/bootfs/slotA"
