@@ -239,7 +239,7 @@
       },
       "update": {
         "auto_check": false,
-        "check_url": ""
+        "check_url": "https://api.github.com/repos/PhonixPBX/PhonixPBX/releases/latest"
       },
       "voicemail": {
         "attach_audio": true,

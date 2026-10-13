@@ -1,4 +1,4 @@
-# PhonixPBX OCI container image (ghcr.io/resmo/phonix), linux/amd64 + linux/arm64.
+# PhonixPBX OCI container image (ghcr.io/phonixpbx/phonix), linux/amd64 + linux/arm64.
 #
 #   podman build -t phonix .        (or: docker build -f Containerfile -t phonix .)
 #   podman run -d --name phonix --network host -v phonix-data:/data phonix
@@ -94,4 +94,4 @@ ENTRYPOINT ["/sbin/tini", "--", "/usr/libexec/phonix/entrypoint"]
 LABEL org.opencontainers.image.title="PhonixPBX" \
       org.opencontainers.image.description="Asterisk 22 PBX with web interface (successor of AskoziaPBX)" \
       org.opencontainers.image.licenses="Apache-2.0" \
-      org.opencontainers.image.source="https://github.com/resmo/AskoziaPBX"
+      org.opencontainers.image.source="https://github.com/PhonixPBX/PhonixPBX"

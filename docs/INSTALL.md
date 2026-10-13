@@ -16,7 +16,7 @@ PhonixPBX also runs in containers, with the same system inside:
 |---|---|---|
 | `lxc-amd64`, `lxc-arm64` | `phonix-<version>-lxc-<arch>.tar.xz` (+ `.meta.tar.xz` for `lxc-create`) | Proxmox VE, LXC: [system container](#lxc-incus-and-proxmox-ve-system-containers) |
 | | `phonix-<version>-incus-<arch>.tar.xz` | Incus / LXD (unified image) |
-| OCI image | `ghcr.io/resmo/phonix` (linux/amd64, linux/arm64) | Docker, Podman, Kubernetes: [container image](#container-image-docker-podman) |
+| OCI image | `ghcr.io/phonixpbx/phonix` (linux/amd64, linux/arm64) | Docker, Podman, Kubernetes: [container image](#container-image-docker-podman) |
 
 Downloads are on the GitHub releases page:
 
@@ -191,7 +191,7 @@ The containers run unprivileged. Give them at least 512 MB RAM (1 GB recommended
 
    ```sh
    wget -P /var/lib/vz/template/cache/ \
-     https://github.com/resmo/AskoziaPBX/releases/download/<tag>/phonix-<version>-lxc-amd64.tar.xz
+     https://github.com/PhonixPBX/PhonixPBX/releases/download/<tag>/phonix-<version>-lxc-amd64.tar.xz
    ```
 
 2. Create and start the container. The OS type is detected as Alpine; `/data` gets its own volume (`mp0`):
@@ -250,7 +250,7 @@ The metadata includes `alpine.common.conf`, the LXC configuration that Proxmox V
 
 ## Container image (Docker, Podman)
 
-`ghcr.io/resmo/phonix` is a multi-arch (linux/amd64, linux/arm64) application container. It has the same Alpine release, packages and file layout as the appliance, but no init system. The entry point does the following:
+`ghcr.io/phonixpbx/phonix` is a multi-arch (linux/amd64, linux/arm64) application container. It has the same Alpine release, packages and file layout as the appliance, but no init system. The entry point does the following:
 
 - prepares `/data`
 - runs first boot (the initial admin password appears in the container log)
@@ -272,7 +272,7 @@ Host networking is recommended. SIP and RTP then work without NAT between the co
 
 ```sh
 docker run -d --name phonix --restart unless-stopped --network host \
-  -v phonix-data:/data ghcr.io/resmo/phonix:latest
+  -v phonix-data:/data ghcr.io/phonixpbx/phonix:latest
 docker logs phonix               # shows the web address and the initial admin password
 ```
 
@@ -285,7 +285,7 @@ docker run -d --name phonix --restart unless-stopped \
   -p 80:80 -p 443:443 \
   -p 5060:5060/udp -p 5060:5060/tcp -p 5061:5061/tcp -p 4569:4569/udp \
   -p 10000-10100:10000-10100/udp \
-  -v phonix-data:/data ghcr.io/resmo/phonix:latest
+  -v phonix-data:/data ghcr.io/phonixpbx/phonix:latest
 ```
 
 When you publish ports, two settings matter:
@@ -298,7 +298,7 @@ Docker compose:
 ```yaml
 services:
   phonix:
-    image: ghcr.io/resmo/phonix:latest
+    image: ghcr.io/phonixpbx/phonix:latest
     restart: unless-stopped
     network_mode: host
     volumes:
@@ -313,7 +313,7 @@ Rootless Podman cannot bind ports below 1024 on the host network. Move the web i
 
 ```sh
 podman run -d --name phonix --network host -e PHONIX_HTTP_PORT=8080 -e PHONIX_HTTPS_PORT=8443 \
-  -v phonix-data:/data ghcr.io/resmo/phonix:latest
+  -v phonix-data:/data ghcr.io/phonixpbx/phonix:latest
 ```
 
 ### Options
@@ -327,11 +327,11 @@ podman run -d --name phonix --network host -e PHONIX_HTTP_PORT=8080 -e PHONIX_HT
 Notes:
 
 - **Network, host name, DNS and clock** come from the container engine. PhonixPBX does not change them, as in the LXC images.
-- **Updates.** Pull the new image and recreate the container with the same volume: `docker pull ghcr.io/resmo/phonix:latest && docker rm -f phonix && docker run ...`, or `docker compose pull && docker compose up -d`. *System → Firmware* refuses update bundles.
+- **Updates.** Pull the new image and recreate the container with the same volume: `docker pull ghcr.io/phonixpbx/phonix:latest && docker rm -f phonix && docker run ...`, or `docker compose pull && docker compose up -d`. *System → Firmware* refuses update bundles.
 - **Reboot and shut down** in the web interface stop the container. With `--restart unless-stopped`, *Reboot* starts it again.
 - **Factory reset** stops the container and erases `/data` when the same container starts again.
 - **Console menu:** `docker exec -it phonix phonix tui`. Asterisk console: `docker exec -it phonix asterisk -r`.
-- **One-off commands** against the volume while the PBX is stopped, e.g. to reset a password: `docker run --rm -it -v phonix-data:/data ghcr.io/resmo/phonix:latest phonix user passwd admin`.
+- **One-off commands** against the volume while the PBX is stopped, e.g. to reset a password: `docker run --rm -it -v phonix-data:/data ghcr.io/phonixpbx/phonix:latest phonix user passwd admin`.
 - **AskoziaPBX `config.xml`.** Place it at `import/config.xml` in the data volume before the first start, or import it later in the web interface.
 - **Privileges.** The web process runs as user `phonix` and reaches its few root actions (reload Asterisk/nginx, time zone, firewall) through `doas`. Do not run the container with `--security-opt no-new-privileges`, which disables doas.
 

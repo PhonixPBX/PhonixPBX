@@ -190,11 +190,19 @@ def firmware_check(request: Request, user: User = Depends(ui_user), db: Session 
     url = st.load(db, st.UpdateSettings).check_url
     if not url.startswith("https://"):
         return _alert(request, "warning", _("Configure an https:// update check URL first."))
+    req = urllib.request.Request(  # noqa: S310 - https only, admin configured
+        url, headers={"User-Agent": f"phonix/{__version__}", "Accept": "application/vnd.github+json, application/json"}
+    )
     try:
-        with urllib.request.urlopen(url, timeout=15) as resp:  # noqa: S310 - https only, admin configured
-            data = json.loads(resp.read(65536))
-        latest = str(data.get("version", "?"))
-    except (OSError, ValueError) as exc:
+        with urllib.request.urlopen(req, timeout=15) as resp:  # noqa: S310 - https only, admin configured
+            data = json.loads(resp.read(1024 * 1024))
+        if "tag_name" in data:  # GitHub release (api.github.com/repos/<owner>/<repo>/releases/latest)
+            latest = str(data["tag_name"]).removeprefix("v")
+            download = data.get("html_url", "")
+        else:  # plain {"version": ..., "url": ...}
+            latest = str(data.get("version", "?"))
+            download = data.get("url", "")
+    except (OSError, ValueError, AttributeError) as exc:
         return _alert(request, "danger", _("Update check failed: %(error)s", error=exc))
     if latest == __version__:
         return _alert(request, "success", _("You are running the latest version (%(version)s).", version=latest))
@@ -205,7 +213,7 @@ def firmware_check(request: Request, user: User = Depends(ui_user), db: Session 
             "Version %(latest)s is available (running %(version)s). Download: %(url)s",
             latest=latest,
             version=__version__,
-            url=data.get("url", ""),
+            url=download,
         ),
     )
 

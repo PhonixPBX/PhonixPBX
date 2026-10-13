@@ -412,7 +412,7 @@ This replaces the old `/cf` and `/offload` scheme and meets the goals of the `st
 - `/data` is a directory or volume in the container. `/var/spool/asterisk` is a symlink to `/data/spool`.
 - Network, host name and DNS belong to the container host, and `phonix apply` skips `system:network` and `system:hostname` (`phonix.services.platform`). Updates replace the container. `priv install-update`/`mark-good` refuse, and factory reset empties `/data` at the next start.
 
-**OCI image (`ghcr.io/resmo/phonix`)**
+**OCI image (`ghcr.io/phonixpbx/phonix`)**
 - Multi-arch application container from `Containerfile`: Alpine packages, the `phonix` wheel and the same file layout, with board `oci-<arch>`.
 - No init system. `system/container/entrypoint` runs under tini and supervises Asterisk, the web interface (user `phonix`, unix socket), the monitor and nginx.
 - Root actions go through doas to `system/container/priv`, which only does what belongs inside a container.

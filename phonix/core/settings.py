@@ -360,9 +360,13 @@ class GuiSettings(SettingsGroup):
     session_minutes: int = Field(default=60, ge=5, le=24 * 60)
 
 
+# latest non-pre-release of the project (the rolling "nightly" is a pre-release)
+DEFAULT_UPDATE_CHECK_URL = "https://api.github.com/repos/PhonixPBX/PhonixPBX/releases/latest"
+
+
 class UpdateSettings(SettingsGroup):
     group: str = Field(default="update", exclude=True)
-    check_url: str = ""
+    check_url: str = DEFAULT_UPDATE_CHECK_URL
     auto_check: bool = False
 
 

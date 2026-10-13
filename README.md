@@ -13,9 +13,9 @@ can be imported.
   - [Raspberry Pi, PC and VM disk images](docs/INSTALL.md#1-write-the-image)
   - [Proxmox VE, Incus and LXC system containers](docs/INSTALL.md#lxc-incus-and-proxmox-ve-system-containers)
   - [Container image](docs/INSTALL.md#container-image-docker-podman):
-    `docker run -d --network host -v phonix-data:/data ghcr.io/resmo/phonix:latest`
-- Downloads: [releases](https://github.com/resmo/AskoziaPBX/releases) (nightly builds:
-  the `nightly` pre-release and `ghcr.io/resmo/phonix:edge`)
+    `docker run -d --network host -v phonix-data:/data ghcr.io/phonixpbx/phonix:latest`
+- Downloads: [releases](https://github.com/PhonixPBX/PhonixPBX/releases) (nightly builds:
+  the `nightly` pre-release and `ghcr.io/phonixpbx/phonix:edge`)
 - The original AskoziaPBX tree (T2 SDE, PHP web GUI) is preserved in [legacy/](legacy/).
 
 ## Why "Phonix"?
@@ -52,7 +52,7 @@ search EUIPO/USPTO (Nice classes 9 and 38) and check the domain and package name
 | `phonix/web` | FastAPI app, Jinja templates, static assets (vendored Tabler/htmx) |
 | `phonix/cli.py` | `phonix` command (apply, firstboot, user, legacy, backup, web, …) |
 | `system/`, `packaging/`, `image/` | files installed into the image, the APKBUILD and the image builder |
-| `Containerfile`, `system/container/` | OCI image (`ghcr.io/resmo/phonix`): entry point, root helper, health check |
+| `Containerfile`, `system/container/` | OCI image (`ghcr.io/phonixpbx/phonix`): entry point, root helper, health check |
 | `tests/` | unit, web and golden-file tests; `tests/integration` runs against real Asterisk |
 
 ## Quick start: run it locally in a container

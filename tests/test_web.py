@@ -302,3 +302,34 @@ def test_deleting_admin_removes_tokens(client):
         users.delete_user(s, "ops")
     with session_scope() as s:
         assert s.query(ApiToken).count() == 0
+
+
+def test_firmware_check_github_release(client, monkeypatch):
+    import io
+    import json
+
+    from phonix.core import settings as st
+    from phonix.web.routes.ui import system as system_routes
+
+    requests = []
+
+    def fake_urlopen(req, timeout):
+        requests.append(req)
+        return io.BytesIO(json.dumps(payload).encode())
+
+    monkeypatch.setattr(system_routes.urllib.request, "urlopen", fake_urlopen)
+    login(client)
+    token = csrf(client, "/system/firmware")
+    headers = {"HX-Request": "true", "X-CSRF-Token": token}
+
+    payload = {"tag_name": "v9.9.9", "html_url": "https://github.com/PhonixPBX/PhonixPBX/releases/tag/v9.9.9"}
+    r = client.post("/system/firmware/check", headers=headers)
+    assert "Version 9.9.9 is available" in r.text
+    assert "releases/tag/v9.9.9" in r.text
+    assert requests[0].full_url == st.DEFAULT_UPDATE_CHECK_URL
+    assert requests[0].get_header("User-agent").startswith("phonix/")
+
+    payload = {"version": "9.9.8", "url": "https://updates.example.com/phonix-9.9.8.update"}
+    r = client.post("/system/firmware/check", headers=headers)
+    assert "Version 9.9.8 is available" in r.text
+    assert "phonix-9.9.8.update" in r.text
