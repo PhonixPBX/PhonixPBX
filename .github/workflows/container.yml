@@ -6,7 +6,7 @@ name: container
 #   pull request:               amd64 build + smoke test, nothing is pushed
 on:
   push:
-    branches: [master]
+    branches: [main]
     tags: ["v*"]
   pull_request:
     paths:
