@@ -35,13 +35,6 @@ Old AskoziaPBX configurations can still be imported. The spelling *Phonix* inste
 - **PhonixPBX** is the product name for the UI, logo, documentation and domain. The "PBX"
   suffix says what it is and continues the AskoziaPBX naming.
 
-It is short, easy to say in English and German, works as a command, and together with the
-original AskoziaPBX colours stays recognisable for users of the old system. Other
-candidates were Hookswitch, Ringhaus, Sipora, Relaya and Lynea.
-
-The name has not been checked against trademark registers yet. Before a public release,
-search EUIPO/USPTO (Nice classes 9 and 38) and check the domain and package names.
-
 ## Layout
 
 | Path | Contents |
