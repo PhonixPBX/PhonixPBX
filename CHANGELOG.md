@@ -4,6 +4,10 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] - 2026-10-14
+
+This is just a dummy release to test upgrades.
+
 ## [1.0.0] - 2026-10-13
 
 First release of PhonixPBX, the successor of AskoziaPBX, rebuilt on Alpine Linux 3.24,
@@ -47,4 +51,5 @@ The pre-release database migrations were squashed into a single initial revision
 Nightly installs at the latest pre-release schema are upgraded automatically; older
 nightly databases must be recreated (factory reset).
 
+[1.0.1]: https://github.com/PhonixPBX/PhonixPBX/releases/tag/v1.0.1
 [1.0.0]: https://github.com/PhonixPBX/PhonixPBX/releases/tag/v1.0.0
