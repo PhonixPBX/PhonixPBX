@@ -18,6 +18,9 @@ WEB_PORT=${WEB_PORT:-8000}
 mkdir -p /srv/root/etc/asterisk /data/boot /data/asterisk /var/lib/asterisk/keys \
          /var/log/asterisk /var/run/asterisk /var/spool/asterisk
 phonix firstboot
+if [ "${PHONIX_DEMO:-0}" = 1 ]; then
+	python3 /src/dev/demo-data.py
+fi
 # /etc/hostname etc. are bind mounts in containers: generate below /srv/root
 # and only link the Asterisk configuration into place
 if [ ! -L /etc/asterisk ]; then
