@@ -402,8 +402,6 @@ image/test-lxc.sh                   # boot test of the lxc-amd64 rootfs as a pod
 3. Builds the initramfs.
 4. Assembles `out/phonix-<version>-<board>.img.zst`, the `.update` bundle, a `.packages` list with the exact package versions, and `SHA256SUMS`.
 
-With `PHONIX_DEBUG_ROOT_PASSWORD=<password>`, the build makes a troubleshooting image instead, `phonix-<version>-<board>-debug.img.zst`, for boards whose local console doesn't work. It has no update bundle. At boot it enables SSH root login with that password and opens port 22, and `ssh root@<address> debug-report` collects the hardware, console and boot diagnostics. CI builds one for `rpi-arm64` on every pull request and for the nightly. Never use a debug image in production.
-
 For the container boards (`lxc-*`), step 3 is skipped. Step 4 writes the rootfs tarball, the `lxc-create` metadata and the Incus image. All tarballs keep numeric file ownership; they are created inside the build container, where the files have their real owners.
 
 ### Signing keys

@@ -113,26 +113,6 @@ jobs:
           if-no-files-found: error
           compression-level: 0
 
-  # Raspberry Pi image with SSH root login and a preset password, for
-  # testers of boards whose local console does not work (never released)
-  debug-rpi:
-    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-    runs-on: ubuntu-24.04
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Build apk and debug image
-        env:
-          PHONIX_DEBUG_ROOT_PASSWORD: ${{ vars.PHONIX_DEBUG_ROOT_PASSWORD || 'phonix-debug' }}
-        run: image/build.sh rpi-arm64
-      - uses: actions/upload-artifact@v4
-        with:
-          name: debug-rpi-arm64
-          path: out/phonix-*-rpi-arm64-debug.img.zst
-          if-no-files-found: error
-          compression-level: 0
-
   release:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: build
@@ -158,7 +138,7 @@ jobs:
   # rolling pre-release with the images of the latest default branch build
   nightly:
     if: github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
-    needs: [build, debug-rpi]
+    needs: build
     runs-on: ubuntu-24.04
     permissions:
       contents: write
@@ -174,10 +154,6 @@ jobs:
           pattern: phonix-*
           merge-multiple: true
           path: out
-      - uses: actions/download-artifact@v4
-        with:
-          name: debug-rpi-arm64
-          path: out
       - name: SHA256SUMS
         run: cd out && sha256sum phonix-*.img.zst phonix-*.update phonix-*.tar.xz > SHA256SUMS
       - name: Publish the nightly pre-release
@@ -191,10 +167,6 @@ jobs:
           signing key. The \`lxc\`/\`incus\` tarballs are system container images (Proxmox VE,
           LXC, Incus); the OCI image is
           \`ghcr.io/$(echo "$GITHUB_REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')/phonix:edge\`. See docs/INSTALL.md.
-
-          \`*-rpi-arm64-debug.img.zst\` is a troubleshooting image: SSH root login is enabled with a
-          preset password (ask the developers), and \`debug-report\` collects the diagnostics. It
-          gets no updates. Never use it in production.
           EOF
           gh release delete nightly --cleanup-tag --yes 2>/dev/null || true
           gh release create nightly --prerelease --target "$GITHUB_SHA" \

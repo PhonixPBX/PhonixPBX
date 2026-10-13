@@ -19,9 +19,6 @@
 #   ALPINE_MIRROR                Alpine mirror URL
 #   CONTAINER                    podman (default) or docker
 #   SKIP_APK=1                   reuse the packages already in out/repo
-#   PHONIX_DEBUG_ROOT_PASSWORD   debug image (disk boards): SSH root login with
-#                                this password, out/phonix-<version>-<board>-debug.img.zst,
-#                                no update bundle - for troubleshooting only
 set -eu
 cd "$(dirname "$0")/.."
 TOP=$(pwd)
@@ -57,7 +54,6 @@ run() {
 		$( [ -n "${PHONIX_ABUILD_KEY:-}" ] && echo "-v $PHONIX_ABUILD_KEY:/run/abuild.rsa:ro,z -v $PHONIX_ABUILD_KEY.pub:/run/abuild.rsa.pub:ro,z -e PHONIX_ABUILD_KEY=/run/abuild.rsa" ) \
 		-e SOURCE_DATE_EPOCH="$SOURCE_DATE_EPOCH" \
 		-e PHONIX_VERSION="${PHONIX_VERSION:-}" \
-		-e PHONIX_DEBUG_ROOT_PASSWORD="${PHONIX_DEBUG_ROOT_PASSWORD:-}" \
 		-e ALPINE_MIRROR="${ALPINE_MIRROR:-https://dl-cdn.alpinelinux.org/alpine}" \
 		"$BUILDER" "$@"
 }
