@@ -73,7 +73,7 @@ If a `config.xml` from an old AskoziaPBX is on the boot partition, it is importe
 The console (screen and serial port, 115200 baud) shows a menu with:
 
 ```
-  PhonixPBX 3.0.0
+  PhonixPBX 1.0.0
 
   LAN (eth0, DHCP): 192.168.1.23
   Web interface: https://192.168.1.23/

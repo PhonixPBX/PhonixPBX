@@ -16,6 +16,7 @@ can be imported.
     `docker run -d --network host -v phonix-data:/data ghcr.io/phonixpbx/phonix:latest`
 - Downloads: [releases](https://github.com/PhonixPBX/PhonixPBX/releases) (nightly builds:
   the `nightly` pre-release and `ghcr.io/phonixpbx/phonix:edge`)
+- Changes: [CHANGELOG.md](CHANGELOG.md), release process: [docs/RELEASING.md](docs/RELEASING.md)
 - The original AskoziaPBX tree (T2 SDE, PHP web GUI) is preserved in [legacy/](legacy/).
 
 ## Why "Phonix"?

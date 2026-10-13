@@ -35,7 +35,7 @@ phonix_version() {
 		"$SRC/pyproject.toml"
 }
 
-# PEP 440 -> apk version (3.0.0.dev0 -> 3.0.0_pre0, 3.0.0rc1 -> 3.0.0_rc1)
+# PEP 440 -> apk version (1.1.0.dev0 -> 1.1.0_pre0, 1.0.0rc1 -> 1.0.0_rc1)
 apk_version() {
 	echo "$1" | sed -E \
 		-e 's/\.?dev([0-9]*)$/_pre\1/' \

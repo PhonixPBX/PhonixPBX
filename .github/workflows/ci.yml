@@ -46,7 +46,8 @@ jobs:
             image/lib/build-initramfs.sh image/lib/assemble.sh image/lib/assemble-container.sh \
             image/test-lxc.sh image/test-oci.sh \
             system/container/entrypoint system/container/priv system/container/healthcheck \
-            dev/run.sh dev/entrypoint.sh dev/console.sh dev/test-asterisk.sh dev/libexec/priv
+            dev/run.sh dev/entrypoint.sh dev/console.sh dev/test-asterisk.sh dev/libexec/priv \
+            scripts/release.sh
           for f in system/openrc/init.d/*; do shellcheck -s sh -S warning -e SC1091,SC2034,SC2154,SC2317,SC3043 "$f"; done
       - name: python helpers
         run: python3 -m py_compile system/libexec/verify-manifest image/lib/qemutest.py

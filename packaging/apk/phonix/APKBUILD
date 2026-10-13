@@ -1,10 +1,10 @@
-# Contributor: PhonixPBX <dev@phonix.invalid>
-# Maintainer: PhonixPBX <dev@phonix.invalid>
+# Contributor: Rene Moser <mail@renemoser.net>
+# Maintainer: Rene Moser <mail@renemoser.net>
 #
 # Builds the "phonix" package from a source tarball of this repository
 # (image/lib/build-apk.sh creates phonix-$pkgver.tar.gz next to this file).
 pkgname=phonix
-pkgver=${PHONIX_PKGVER:-3.0.0_pre0}
+pkgver=${PHONIX_PKGVER:-1.0.0}
 pkgrel=0
 pkgdesc="PhonixPBX - Asterisk PBX appliance: web interface and system integration"
 url="https://github.com/PhonixPBX/PhonixPBX"

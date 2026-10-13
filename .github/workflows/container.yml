@@ -35,6 +35,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Tag matches the version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: scripts/release.sh check "$GITHUB_REF_NAME"
+
       - name: Image name
         id: image
         # registry paths must be lower case
