@@ -18,7 +18,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from phonix import __version__, config
 from phonix.core import migrate
 from phonix.services import secrets, setup
-from phonix.web.routes import api, ui
+from phonix.web.routes import api, mcp, ui
 from phonix.web.security import LanguageMiddleware, LoginRequired, PasswordChangeRequired, SecurityHeaders
 from phonix.web.templating import render
 
@@ -68,6 +68,7 @@ def create_app() -> FastAPI:
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
     app.include_router(ui.router)
     app.include_router(api.router)
+    app.include_router(mcp.router)
 
     @app.get("/healthz", include_in_schema=False)
     def healthz() -> PlainTextResponse:

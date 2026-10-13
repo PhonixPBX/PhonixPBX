@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-12 21:37+0200\n"
+"POT-Creation-Date: 2026-10-13 22:46+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: fr\n"
@@ -146,6 +146,10 @@ msgstr "Un secret est requis"
 
 msgid "ACME directory URL"
 msgstr "URL du répertoire ACME"
+
+#, python-format
+msgid "AI assistants connect over the Model Context Protocol (MCP) to <code>%(url)s</code> with the same header."
+msgstr "Les assistants IA se connectent via le Model Context Protocol (MCP) à <code>%(url)s</code> avec le même en-tête."
 
 msgid "AMI is only used internally."
 msgstr "AMI n'est utilisé qu'en interne."
@@ -1337,6 +1341,9 @@ msgstr "Déconnexion"
 msgid "Logs"
 msgstr "Journaux"
 
+msgid "MCP clients:"
+msgstr "Clients MCP :"
+
 msgid "Make sure the network of your computer is allowed before applying restrictions."
 msgstr "Assurez-vous que le réseau de votre ordinateur est autorisé avant d'appliquer des restrictions."
 
@@ -1972,8 +1979,8 @@ msgstr "Droits de lecture"
 msgid "Read-only"
 msgstr "Lecture seule"
 
-msgid "Read-only tokens can only use GET requests."
-msgstr "Les jetons en lecture seule ne peuvent utiliser que des requêtes GET."
+msgid "Read-only tokens can only use GET requests and the read-only MCP tools."
+msgstr "Les jetons en lecture seule ne peuvent utiliser que des requêtes GET et les outils MCP en lecture seule."
 
 msgid "Read-write"
 msgstr "Lecture/écriture"

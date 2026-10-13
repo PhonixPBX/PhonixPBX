@@ -1,0 +1,116 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
+"""The entities the REST API and MCP expose with list/get/create/update/delete."""
+
+from __future__ import annotations
+
+from collections.abc import Callable
+from dataclasses import dataclass
+from typing import Any
+
+from pydantic import BaseModel
+
+from phonix.services import dialplan as dp
+from phonix.services import manager as ami_svc
+from phonix.services import phones as phone_svc
+from phonix.services import providers as provider_svc
+from phonix.services.common import parse
+
+
+@dataclass(frozen=True)
+class Resource:
+    path: str  # REST collection path below /api/v1
+    tag: str  # plural, human readable
+    name: str  # singular identifier for MCP tool names
+    schema: type[BaseModel]
+    list_fn: Callable[..., Any]
+    get_fn: Callable[..., Any]
+    create_fn: Callable[..., Any]
+    update_fn: Callable[..., Any]
+    delete_fn: Callable[..., Any]
+    to_dict: Callable[..., dict[str, Any]]
+    parse_fn: Callable[[dict[str, Any]], Any] | None = None
+    enable_fn: Callable[..., Any] | None = None
+
+    def parse(self, data: dict[str, Any]) -> Any:
+        return self.parse_fn(data) if self.parse_fn else parse(self.schema, data)
+
+
+RESOURCES = (
+    Resource(
+        "/phones",
+        "phones",
+        "phone",
+        phone_svc.PhoneIn,
+        phone_svc.list_phones,
+        phone_svc.get_phone,
+        phone_svc.create_phone,
+        phone_svc.update_phone,
+        phone_svc.delete_phone,
+        phone_svc.to_dict,
+        phone_svc.parse_phone,
+        phone_svc.set_enabled,
+    ),
+    Resource(
+        "/providers",
+        "providers",
+        "provider",
+        provider_svc.ProviderIn,
+        provider_svc.list_providers,
+        provider_svc.get_provider,
+        provider_svc.create_provider,
+        provider_svc.update_provider,
+        provider_svc.delete_provider,
+        provider_svc.to_dict,
+        provider_svc.parse_provider,
+        provider_svc.set_enabled,
+    ),
+    Resource(
+        "/callgroups",
+        "call groups",
+        "callgroup",
+        dp.CallGroupIn,
+        dp.list_callgroups,
+        dp.get_callgroup,
+        dp.create_callgroup,
+        dp.update_callgroup,
+        dp.delete_callgroup,
+        dp.callgroup_to_dict,
+    ),
+    Resource(
+        "/conferences",
+        "conference rooms",
+        "conference",
+        dp.ConferenceRoomIn,
+        dp.list_rooms,
+        dp.get_room,
+        dp.create_room,
+        dp.update_room,
+        dp.delete_room,
+        dp.room_to_dict,
+    ),
+    Resource(
+        "/applications",
+        "applications",
+        "application",
+        dp.ApplicationIn,
+        dp.list_applications,
+        dp.get_application,
+        dp.create_application,
+        dp.update_application,
+        dp.delete_application,
+        dp.application_to_dict,
+    ),
+    Resource(
+        "/ami-users",
+        "manager users",
+        "ami_user",
+        ami_svc.AmiUserIn,
+        ami_svc.list_ami_users,
+        ami_svc.get_ami_user,
+        ami_svc.create_ami_user,
+        ami_svc.update_ami_user,
+        ami_svc.delete_ami_user,
+        ami_svc.to_dict,
+    ),
+)

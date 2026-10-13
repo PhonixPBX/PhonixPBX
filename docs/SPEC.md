@@ -75,6 +75,12 @@ We are reviving the product on current technology:
 - `/api/v1/metrics` serves Prometheus metrics (text format 0.0.4, any valid token). Every scrape computes them fresh from the database, `/proc`, the data partition and one AMI connection; no `prometheus_client` dependency.
 - The HTML UI and the API call the same service layer.
 
+**MCP for AI assistants.**
+- `POST /api/mcp` is a Model Context Protocol server (streamable HTTP, protocol versions 2025-03-26 to 2025-11-25). It is stateless and answers with JSON only: no SSE stream and no `Mcp-Session-Id`, so `GET` and `DELETE` return 405. The protocol is implemented in `phonix/mcp.py`, not with the `mcp` SDK, so it adds no runtime dependency.
+- Clients authenticate with the same bearer tokens; the session cookie is not accepted. Every MCP request is a POST, so a read-only token is enforced per tool: it gets only the read tools in `tools/list`, and write tools return a tool error. Requests with an `Origin` header for another host are rejected (DNS rebinding).
+- Tools: `list_*`, `get_*`, `create_*`, `update_*` (partial: only the given fields change), `delete_*` for phones, providers, call groups, conferences, applications and AMI users, plus `set_phone_enabled` / `set_provider_enabled`; `list_settings_groups`, `get_settings`, `update_settings`; `get_status`, `get_pending_changes`, `preview_apply` (paths and components only, never file content), `apply_changes`; `tail_log` (`asterisk` or `system`, at most 1000 lines).
+- Secrets are never returned, and an empty secret keeps the stored one, as in the REST API. Changes are audited as `<user> (mcp)`.
+
 ### Tech choices
 - **Python libraries:** installed from Alpine `apk` packages wherever available, rather than pip wheels. This avoids Rust and musl build problems on arm64 and x86.
   - Packages: `py3-fastapi`, `uvicorn`, `py3-pydantic`, `py3-sqlalchemy`, `py3-alembic`, `py3-jinja2`, `py3-argon2-cffi`, `py3-itsdangerous`, `py3-multipart`, `py3-babel`.

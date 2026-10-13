@@ -14,7 +14,7 @@ from starlette.datastructures import FormData
 
 from phonix.core import settings as st
 from phonix.core.db import session_factory
-from phonix.core.models import User
+from phonix.core.models import ApiToken, User
 from phonix.services import tokens as tokens_service
 from phonix.services.common import dirty_areas
 from phonix.web.security import SAFE_METHODS, LoginRequired, PasswordChangeRequired, current_user, verify_csrf
@@ -56,6 +56,21 @@ async def ui_user(request: Request, user: User = Depends(require_user)) -> User:
 BEARER = {"WWW-Authenticate": "Bearer"}
 
 
+def _bearer_token(request: Request, db: Session, credentials: str) -> ApiToken:
+    from phonix.web.security import client_ip, login_limiter
+
+    key = f"api:{client_ip(request)}"
+    if login_limiter.blocked(key):
+        raise HTTPException(429, "too many failed logins")
+    token = tokens_service.authenticate(db, credentials.strip())
+    if token is None:
+        login_limiter.hit(key)
+        raise HTTPException(401, "invalid, disabled or expired token", headers=BEARER)
+    request.state.user = token.user
+    request.state.api_token = token
+    return token
+
+
 async def api_user(request: Request, db: Session = Depends(get_db)) -> User:
     """API auth: bearer token (scripts) or the UI session cookie + X-CSRF-Token header."""
     auth = request.headers.get("authorization", "")
@@ -63,19 +78,9 @@ async def api_user(request: Request, db: Session = Depends(get_db)) -> User:
         scheme, _, credentials = auth.partition(" ")
         if scheme.lower() != "bearer":
             raise HTTPException(401, "use a bearer token (Advanced > API tokens)", headers=BEARER)
-        from phonix.web.security import client_ip, login_limiter
-
-        key = f"api:{client_ip(request)}"
-        if login_limiter.blocked(key):
-            raise HTTPException(429, "too many failed logins")
-        token = tokens_service.authenticate(db, credentials.strip())
-        if token is None:
-            login_limiter.hit(key)
-            raise HTTPException(401, "invalid, disabled or expired token", headers=BEARER)
+        token = _bearer_token(request, db, credentials)
         if token.read_only and request.method not in SAFE_METHODS:
             raise HTTPException(403, "token is read-only")
-        request.state.user = token.user
-        request.state.api_token = token
         return token.user
     user = current_user(request, db, _session_minutes(db))
     if user is None:
@@ -83,6 +88,15 @@ async def api_user(request: Request, db: Session = Depends(get_db)) -> User:
     await verify_csrf(request)
     request.state.user = user
     return user
+
+
+async def mcp_token(request: Request, db: Session = Depends(get_db)) -> ApiToken:
+    """MCP auth: bearer token only. Every MCP request is a POST, so read-only
+    tokens are checked per tool instead of per HTTP method."""
+    scheme, _, credentials = request.headers.get("authorization", "").partition(" ")
+    if scheme.lower() != "bearer" or not credentials.strip():
+        raise HTTPException(401, "use a bearer token (Advanced > API tokens)", headers=BEARER)
+    return _bearer_token(request, db, credentials)
 
 
 # --- form parsing ------------------------------------------------------------

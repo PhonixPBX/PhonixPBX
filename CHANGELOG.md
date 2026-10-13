@@ -6,6 +6,14 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- MCP (Model Context Protocol) server at `/api/mcp` for AI assistants such as Claude. It uses
+  the API bearer tokens; read-only tokens can only use the read tools. The tools cover phones,
+  providers, call groups, conferences, applications, AMI users, settings, system and Asterisk
+  status, logs, and previewing and applying pending changes. The API tokens page shows an
+  example client command.
+
 ## [1.0.0] - 2026-10-13
 
 First release of PhonixPBX, the successor of AskoziaPBX, rebuilt on Alpine Linux 3.24,

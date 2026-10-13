@@ -47,6 +47,7 @@ CI (`.github/workflows/ci.yml`) runs ruff, mypy and pytest.
   - The menu is in `templating.py`. Form macros (`input`, `secret`, `select`, `checkbox`, `radios`, `textarea`) are in `templates/macros/forms.html`, and `data-show-if="field=value"` toggles conditional fields.
   - Settings pages use `save_settings_form()` (`routes/ui/common.py`). Secrets are never echoed back to the browser; an empty secret field keeps the stored value.
   - UI auth is a session cookie plus a CSRF token on every unsafe request, enforced by `ui_user`/`verify_csrf`. API auth is bearer tokens (`phonix/services/tokens.py`) or the UI session.
+  - MCP (`POST /api/mcp`): the JSON-RPC methods and tools are in `phonix/mcp.py`, the HTTP transport in `routes/mcp.py`. Bearer tokens only (`mcp_token`); read-only is checked per tool. Entity tools and the REST CRUD endpoints are both generated from `RESOURCES` in `phonix/services/resources.py`, and settings go through `phonix/services/settings_api.py`.
   - The CSP forbids inline scripts, so behaviour goes in `static/phonix.js` through `data-*` attributes.
   - Front-end assets are vendored; refresh them with `scripts/vendor-update.sh`.
 - **System integration.**

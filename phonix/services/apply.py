@@ -138,6 +138,12 @@ def generate(session: Session) -> list[GeneratedFile]:
     return files
 
 
+def preview(session: Session) -> list[GeneratedFile]:
+    """Files an apply would change; nothing is written."""
+    cfg = config.get()
+    return [f for f in generate(session) if _read(cfg.path(f.path)) != f.content]
+
+
 def apply(session: Session, user: str = "", boot: bool = False, force: bool = False) -> ApplyResult:
     """Generate and activate the configuration.
 
