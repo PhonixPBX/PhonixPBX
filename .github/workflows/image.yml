@@ -216,3 +216,19 @@ jobs:
           gh release create nightly --prerelease --target "$GITHUB_SHA" \
             --title "Nightly build ${short}" --notes-file notes.md \
             out/phonix-*.img.zst out/phonix-*.update out/phonix-*.tar.xz out/SHA256SUMS
+
+  # rebuild phonixpbx.org so its download section shows the new release or nightly
+  website:
+    needs: [release, nightly]
+    if: always() && (needs.release.result == 'success' || needs.nightly.result == 'success')
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Trigger the website rebuild
+        env:
+          GH_TOKEN: ${{ secrets.WEBSITE_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::warning::no WEBSITE_DISPATCH_TOKEN secret - website not rebuilt"
+            exit 0
+          fi
+          gh api repos/PhonixPBX/website/dispatches -f event_type=release
