@@ -21,7 +21,7 @@ PhonixPBX also runs in containers, with the same system inside:
 Downloads are on the GitHub releases page:
 
 - **Releases** (`v*` tags) are the versions to install.
-- **Nightly** (pre-release tagged `nightly`) is rebuilt from the default branch on every push. It is for testing only, and its assets are replaced each time.
+- **Nightly** (pre-release tagged `nightly`) is rebuilt every night when the default branch has new commits (maintainers can also start a build by hand). It is for testing only, and its assets are replaced each time.
 
 The image needs at least a 2 GB card or disk. Use 8 GB or more if you plan to keep voicemail and recordings. Check the download first:
 
@@ -264,7 +264,7 @@ Tags:
 | Tag | Content |
 |---|---|
 | `latest`, `<version>` | releases (`v*` tags) |
-| `edge`, `sha-<commit>` | latest build of the default branch (testing only) |
+| `edge`, `sha-<commit>` | latest nightly build of the default branch (testing only) |
 
 ### Run it
 

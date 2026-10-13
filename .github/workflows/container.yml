@@ -1,12 +1,14 @@
 name: container
 
 # OCI image ghcr.io/<owner>/phonix (Containerfile) for linux/amd64 and linux/arm64.
-#   push to the default branch: edge, sha-<short>
+#   nightly (default branch):   edge, sha-<short>; only with new commits since the last nightly
+#   manual run:                 always builds; edge, sha-<short> on the default branch
 #   v* tag:                     <version> (v stripped), latest (not for pre-releases)
 #   pull request:               amd64 build + smoke test, nothing is pushed
 on:
+  schedule:
+    - cron: "17 2 * * *"
   push:
-    branches: [main]
     tags: ["v*"]
   pull_request:
     paths:
@@ -27,7 +29,35 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  changes:
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+    outputs:
+      build: ${{ steps.check.outputs.build }}
+    steps:
+      - name: New commits since the last nightly build
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          WORKFLOW: container.yml
+        run: |
+          build=true
+          if [ "$GITHUB_EVENT_NAME" = schedule ]; then
+            # last successful nightly, scheduled or started by hand
+            last=$(gh run list -w "$WORKFLOW" -s success -b "$GITHUB_REF_NAME" -L 50 --json headSha,event \
+              -q '[.[] | select(.event == "schedule" or .event == "workflow_dispatch")][0].headSha')
+            if [ "$last" = "$GITHUB_SHA" ]; then
+              build=false
+              echo "::notice::no commits since the last nightly build ($last)"
+            fi
+          fi
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+
   image:
+    needs: changes
+    if: needs.changes.outputs.build == 'true'
     runs-on: ubuntu-24.04
     permissions:
       contents: read

@@ -1,8 +1,14 @@
 name: image
 
+# Disk images, update bundles and system container tarballs for every board.
+#   nightly (default branch):  only with new commits since the last nightly, publishes the `nightly` pre-release
+#   manual run:                always builds; on the default branch also publishes the `nightly` pre-release
+#   v* tag:                    release with the images
+#   pull request:              build and test, nothing is published
 on:
+  schedule:
+    - cron: "17 2 * * *"
   push:
-    branches: [main]
     tags: ["v*"]
   pull_request:
     paths:
@@ -19,7 +25,35 @@ env:
   CONTAINER: docker
 
 jobs:
+  changes:
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+    outputs:
+      build: ${{ steps.check.outputs.build }}
+    steps:
+      - name: New commits since the last nightly build
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          WORKFLOW: image.yml
+        run: |
+          build=true
+          if [ "$GITHUB_EVENT_NAME" = schedule ]; then
+            # last successful nightly, scheduled or started by hand
+            last=$(gh run list -w "$WORKFLOW" -s success -b "$GITHUB_REF_NAME" -L 50 --json headSha,event \
+              -q '[.[] | select(.event == "schedule" or .event == "workflow_dispatch")][0].headSha')
+            if [ "$last" = "$GITHUB_SHA" ]; then
+              build=false
+              echo "::notice::no commits since the last nightly build ($last)"
+            fi
+          fi
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+
   build:
+    needs: changes
+    if: needs.changes.outputs.build == 'true'
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -143,9 +177,11 @@ jobs:
             out/phonix-*.packages
             out/SHA256SUMS
 
-  # rolling pre-release with the images of the latest default branch build
+  # rolling pre-release with the images of the latest nightly (or manual) default branch build
   nightly:
-    if: github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    if: >-
+      (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+      && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
     needs: build
     runs-on: ubuntu-24.04
     permissions:
@@ -170,8 +206,8 @@ jobs:
           cat > notes.md <<EOF
           Automatic build of \`${GITHUB_REF_NAME}\` at ${short} ($(date -u +%Y-%m-%d)).
 
-          Development snapshot - not for production. Images are replaced on every push to the
-          default branch. Update bundles are only accepted by systems built with the same
+          Development snapshot - not for production. Images are rebuilt every night when the
+          default branch has new commits. Update bundles are only accepted by systems built with the same
           signing key. The \`lxc\`/\`incus\` tarballs are system container images (Proxmox VE,
           LXC, Incus); the OCI image is
           \`ghcr.io/$(echo "$GITHUB_REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')/phonix:edge\`. See docs/INSTALL.md.
