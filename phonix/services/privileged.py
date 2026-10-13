@@ -5,14 +5,16 @@
 The web process runs as the unprivileged ``phonix`` user. Everything that
 needs root goes through this single entry point; the helper accepts a fixed
 set of actions (see ``system/libexec/priv``). ``exec`` runs the helper without
-doas (the dev container uses ``dev/libexec/priv``). In ``dry-run`` mode (tests)
-calls are only recorded, and staged files are copied below ``PHONIX_ROOT`` so
-the result can still be inspected.
+doas (the dev container uses ``dev/libexec/priv``); so does a caller that is
+already root (the console menu), which the doas rule does not cover. In
+``dry-run`` mode (tests) calls are only recorded, and staged files are copied
+below ``PHONIX_ROOT`` so the result can still be inspected.
 """
 
 from __future__ import annotations
 
 import logging
+import os
 import re
 import shutil
 import subprocess
@@ -75,10 +77,14 @@ def run(action: str, *args: str, timeout: int = 120) -> str:
             _dry_install(args[0])
         return ""
     helper = str(cfg.libexec_dir / "priv")
+    cmd = [helper, action, *args]
+    # "exec" (dev container) or already root (console menu): run the helper directly;
+    # the doas rule only permits user phonix, so doas would refuse root
+    if cfg.privileged_mode != "exec" and os.geteuid() != 0:
+        cmd = ["doas", "-n", *cmd]
     try:
         proc = subprocess.run(
-            # "exec": already root (dev container), run the helper directly
-            [helper, action, *args] if cfg.privileged_mode == "exec" else ["doas", "-n", helper, action, *args],
+            cmd,
             capture_output=True,
             text=True,
             timeout=timeout,

@@ -2,9 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 """Container boards (LXC/Incus, OCI): host-managed network, no firmware updates."""
 
+import subprocess
+
 import pytest
 from test_web import client, login  # noqa: F401 - fixture
 
+from phonix import config
 from phonix.services import apply, platform, privileged, update
 from phonix.services.common import ServiceError
 
@@ -89,3 +92,21 @@ def test_fix_data_ownership_leaves_root_and_asterisk_dirs_alone(runtime, monkeyp
     assert {"phonix.db", "state", "media", "tmp"} <= set(chowned)
     for untouched in ("ssh", "ssh/dropbear", "spool", "spool/voicemail", "log", "tmp/nginx"):
         assert untouched not in chowned
+
+
+@pytest.mark.parametrize(("euid", "via_doas"), [(1000, True), (0, False)])
+def test_privileged_root_caller_skips_doas(runtime, monkeypatch, euid, via_doas):
+    # the console menu runs as root; the doas rule only permits user phonix
+    monkeypatch.setenv("PHONIX_PRIVILEGED", "doas")
+    config.reset_cache()
+    monkeypatch.setattr(privileged.os, "geteuid", lambda: euid)
+    seen = []
+
+    def fake_run(cmd, **kwargs):
+        seen.append(cmd)
+        return subprocess.CompletedProcess(cmd, 0, "", "")
+
+    monkeypatch.setattr(privileged.subprocess, "run", fake_run)
+    privileged.run("reboot")
+    helper = str(config.get().libexec_dir / "priv")
+    assert seen == [(["doas", "-n"] if via_doas else []) + [helper, "reboot"]]
