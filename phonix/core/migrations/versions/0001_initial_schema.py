@@ -151,9 +151,29 @@ def upgrade() -> None:
         sa.Column("must_change_pw", sa.Boolean(), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=False),
         sa.Column("last_login", sa.DateTime(), nullable=True),
+        sa.Column("language", sa.String(length=8), nullable=True),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("username"),
     )
+    op.create_table(
+        "api_tokens",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("name", sa.String(length=64), nullable=False),
+        sa.Column("token_hash", sa.String(length=64), nullable=False),
+        sa.Column("prefix", sa.String(length=16), nullable=False),
+        sa.Column("read_only", sa.Boolean(), nullable=False),
+        sa.Column("enabled", sa.Boolean(), nullable=False),
+        sa.Column("user_id", sa.Integer(), nullable=False),
+        sa.Column("created_at", sa.DateTime(), nullable=False),
+        sa.Column("last_used_at", sa.DateTime(), nullable=True),
+        sa.Column("expires_at", sa.DateTime(), nullable=True),
+        sa.ForeignKeyConstraint(["user_id"], ["users.id"], ondelete="CASCADE"),
+        sa.PrimaryKeyConstraint("id"),
+        sa.UniqueConstraint("token_hash"),
+    )
+    with op.batch_alter_table("api_tokens", schema=None) as batch_op:
+        batch_op.create_index(batch_op.f("ix_api_tokens_user_id"), ["user_id"], unique=False)
+
     op.create_table(
         "phones",
         sa.Column("id", sa.Integer(), nullable=False),
@@ -246,6 +266,10 @@ def downgrade() -> None:
     op.drop_table("provider_incoming_routes")
     op.drop_table("provider_dialpatterns")
     op.drop_table("phones")
+    with op.batch_alter_table("api_tokens", schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f("ix_api_tokens_user_id"))
+
+    op.drop_table("api_tokens")
     op.drop_table("users")
     op.drop_table("settings")
     op.drop_table("providers")
