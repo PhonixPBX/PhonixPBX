@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Shared service-layer plumbing: errors, audit trail, dirty tracking."""
 
 from __future__ import annotations

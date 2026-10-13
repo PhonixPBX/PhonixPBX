@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Container boards (LXC/Incus, OCI): host-managed network, no firmware updates."""
 
 import pytest

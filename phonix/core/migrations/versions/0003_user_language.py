@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """web interface language per administrator
 
 Revision ID: 0003

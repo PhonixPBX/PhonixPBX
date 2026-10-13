@@ -1,4 +1,6 @@
 #!/sbin/openrc-run
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Watches Asterisk security events over AMI and bans offending addresses.
 
 description="PhonixPBX security event monitor"

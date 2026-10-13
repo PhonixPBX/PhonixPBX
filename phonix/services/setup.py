@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Database initialisation and default content for fresh installations."""
 
 from __future__ import annotations

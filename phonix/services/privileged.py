@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Calls into the root helper ``/usr/libexec/phonix/priv`` via doas.
 
 The web process runs as the unprivileged ``phonix`` user. Everything that

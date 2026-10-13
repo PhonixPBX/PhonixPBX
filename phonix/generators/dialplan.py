@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """extensions.conf generator - port of legacy etc/inc/extensions.inc to Asterisk 22.
 
 Context layout

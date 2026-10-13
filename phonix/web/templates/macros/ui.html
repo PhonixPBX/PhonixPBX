@@ -1,3 +1,4 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% macro flash_messages(flashes) %}
 {% for f in flashes %}
 <div class="alert alert-{{ 'danger' if f.level == 'error' else f.level }} alert-dismissible" role="alert">

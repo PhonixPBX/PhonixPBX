@@ -1,3 +1,4 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% from "macros/ui.html" import delete_button, toggle_button with context %}
 <tr id="phone-{{ p.id }}"{% if not p.enabled %} class="text-secondary"{% endif %}>
   <td><a href="/accounts/phones/{{ p.id }}" class="fw-bold">{{ p.extension }}</a></td>

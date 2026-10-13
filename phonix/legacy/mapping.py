@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Field mapping between the legacy ``config.xml`` model and PhonixPBX.
 
 Import direction: functions named ``*_in`` turn a legacy :class:`Node` into a

@@ -1,4 +1,6 @@
 #!/usr/bin/python3 -I
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Verify a PhonixPBX update bundle manifest (used by priv install-update).
 
 usage: verify-manifest <dir with manifest.json + manifest.sig> <board> <pubkey.pem>

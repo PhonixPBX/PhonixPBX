@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Runs as user phonix after boot (started by /etc/init.d/phonix-healthcheck).
 # Retries "phonix healthcheck --mark-good" until it succeeds. If this boot is
 # an unconfirmed trial of a freshly installed update and the system does not

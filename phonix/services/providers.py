@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Providers (trunks): PJSIP and IAX, with outgoing dial patterns and incoming routes."""
 
 from __future__ import annotations

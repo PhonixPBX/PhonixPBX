@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Input validation shared by settings, services, the API and the legacy importer.
 
 Validators raise ``ValueError`` with a human readable message (pydantic turns

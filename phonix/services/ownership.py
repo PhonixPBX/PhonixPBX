@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Keep /data owned by the unprivileged web user after root-run CLI commands.
 
 ``phonix firstboot``, ``apply --boot`` and the console menu run as root and may

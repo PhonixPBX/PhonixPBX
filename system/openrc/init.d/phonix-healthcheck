@@ -1,4 +1,6 @@
 #!/sbin/openrc-run
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Confirms the booted A/B slot once the web interface and Asterisk are up
 # (phonix healthcheck --mark-good). An unconfirmed trial boot of an update
 # is rolled back by rebooting into the previous slot. The check loop runs

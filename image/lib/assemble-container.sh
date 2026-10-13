@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Package the root file system of a container board (CONTAINER=1, lxc-*).
 #   assemble-container.sh <board>
 # -> out/phonix-<version>-lxc-<arch>.tar.xz       rootfs tarball: Proxmox VE CT

@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """JSON REST API (``/api/v1``) - same service layer as the UI.
 
 Authentication: HTTP Basic with an administrator account, or the UI session

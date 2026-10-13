@@ -1,3 +1,4 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
 {% from "macros/forms.html" import csrf, input, secret, textarea, select, form_errors, submit with context %}
 {% block page_title %}{{ _("New manager user") if is_new else _("Edit manager user %(name)s", name=values.username) }}{% endblock %}

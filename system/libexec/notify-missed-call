@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Mail a missed call notification. Called by Asterisk (user asterisk) from the
 # sub-missed-call hangup handler:
 #   notify-missed-call <email> <cause> <callerid>

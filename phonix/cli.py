@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """``phonix`` command line interface (used by init scripts, the console and admins)."""
 
 from __future__ import annotations

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """QEMU boot / update / rollback test for PhonixPBX PC images (see image/test-qemu.sh)."""
 
 from __future__ import annotations

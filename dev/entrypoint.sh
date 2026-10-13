@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Dev container entry point: first boot, generate config, start Asterisk and
 # the web UI (auto-reload on code changes in /src).
 set -eu

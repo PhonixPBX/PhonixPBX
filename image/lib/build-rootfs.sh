@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Build the root file system of a board into image/work/<board>/rootfs.
 #   build-rootfs.sh <board>
 #

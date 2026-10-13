@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Console menu on tty1 (replaces the legacy rc.initial menu).
 
 Deliberately plain ``input()`` based so it works on any serial or VGA console.

@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Shared helpers for the legacy import/export tests.
 
 ``db_snapshot`` renders the importable part of the database as plain JSON with

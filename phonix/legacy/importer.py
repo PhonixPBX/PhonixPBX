@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Import a legacy AskoziaPBX ``config.xml`` into the PhonixPBX database.
 
 Flow: parse (:mod:`.parse`) -> upgrade to 2.1 (:mod:`.upgrade`) -> map every

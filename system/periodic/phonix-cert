@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Renew the ACME (Let's Encrypt) certificate when it is due; does nothing
 # unless automatic certificates are enabled. Installed in /etc/periodic/daily.
 [ -r /etc/conf.d/phonix ] && . /etc/conf.d/phonix

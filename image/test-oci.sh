@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Smoke test of the OCI container image (Containerfile).
 #
 #   image/test-oci.sh [image]          (default: localhost/phonix:test)

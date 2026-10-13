@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 from phonix.core.db import session_scope
 from phonix.services import backup, phones
 from phonix.services.common import dirty_areas

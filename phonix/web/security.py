@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Authentication, CSRF protection, login rate limiting and security headers."""
 
 from __future__ import annotations

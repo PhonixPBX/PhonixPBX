@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Create the ed25519 key pair that signs PhonixPBX update bundles.
 #
 #   image/keys.sh [directory]      (default: image/keys, or $PHONIX_KEYS_DIR)

@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Build the initramfs of a board (needs build-rootfs.sh first).
 #   build-initramfs.sh <board>   -> image/work/<board>/initramfs
 #

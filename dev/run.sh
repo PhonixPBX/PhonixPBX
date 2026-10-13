@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Run PhonixPBX locally in the Alpine dev container (podman or docker).
 #
 #   dev/run.sh            start (web UI on http://<host>:8000, SIP on 5060/udp)

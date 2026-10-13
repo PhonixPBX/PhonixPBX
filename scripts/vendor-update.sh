@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Refresh vendored front-end assets (Tabler + Tabler-supported libraries + htmx 4).
 # Only the files the UI uses are copied; versions + SHA256 go to vendor/VERSIONS.
 set -eu

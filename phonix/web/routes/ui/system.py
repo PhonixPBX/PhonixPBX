@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """System: general setup, network, storage, firmware, backup/restore, defaults, reboot."""
 
 from __future__ import annotations

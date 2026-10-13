@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Ban hosts that repeatedly fail SIP/IAX/AMI authentication (fail2ban equivalent).
 
 Listens to Asterisk security events over AMI and asks the root helper to put

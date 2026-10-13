@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Dialplan: applications, call groups, transfers/parking and the printable overview."""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Minimal synchronous Asterisk Manager Interface client.
 
 Used for reloads, status queries and (in a background thread) security events.

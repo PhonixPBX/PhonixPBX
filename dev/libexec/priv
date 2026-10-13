@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Privileged helper for the dev container (PHONIX_PRIVILEGED=exec).
 # Implements what makes sense inside a container: Asterisk control. Actions
 # that would touch the host network, firewall, boot slots etc. are only logged.

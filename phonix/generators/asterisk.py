@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Asterisk configuration files (everything except extensions.conf)."""
 
 from __future__ import annotations

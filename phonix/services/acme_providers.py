@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """DNS providers offered in the ACME form, with the lego environment variables they need.
 
 Variable names follow lego 4.35 (``providers/dns/<code>/<code>.toml``). Any other

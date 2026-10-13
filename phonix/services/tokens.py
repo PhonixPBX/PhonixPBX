@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """API bearer tokens: random ``phx_...`` strings, stored as sha256 only."""
 
 from __future__ import annotations

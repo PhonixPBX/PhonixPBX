@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Run the Asterisk/SIPp integration tests inside the Alpine dev container.
 set -eu
 ROOT=$(cd "$(dirname "$0")/.." && pwd)

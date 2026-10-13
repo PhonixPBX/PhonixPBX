@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Build PhonixPBX images (rootless, inside a podman/docker container).
 #
 #   image/build.sh [board...]        boards: pc-amd64 rpi-arm64 pc-x86

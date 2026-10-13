@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Import and export of legacy AskoziaPBX (2011, PHP) ``config.xml`` files.
 
 * :mod:`.parse` - XML (defusedxml) to the intermediate :class:`~.parse.Node` model

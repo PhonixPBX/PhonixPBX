@@ -1,3 +1,4 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
 {% from "macros/forms.html" import csrf, input, checkbox, select, radios, form_errors, submit with context %}
 {% block page_title %}{{ _("New call group") if is_new else _("Edit call group %(name)s", name=values.name) }}{% endblock %}

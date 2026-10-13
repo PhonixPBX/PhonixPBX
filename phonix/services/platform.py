@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """What PhonixPBX runs on: an appliance board or a container.
 
 The image build writes the board name to ``/etc/phonix/board``:

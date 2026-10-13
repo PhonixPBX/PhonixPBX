@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Console front end (spawned by init on tty1 and the serial console, in
 # system containers on /dev/console):
 #   console <tty>

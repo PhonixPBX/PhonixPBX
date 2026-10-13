@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # shellcheck shell=sh
 # Shared settings for the in-container build steps. Sourced with the board
 # name in $BOARD.

@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Health check of the PhonixPBX OCI container (HEALTHCHECK in Containerfile):
 # the web interface answers through nginx and Asterisk is running.
 PATH=/usr/sbin:/usr/bin:/sbin:/bin

@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Typed settings groups stored as JSON rows in the ``settings`` table.
 
 Each group is a pydantic model with sane defaults, so a fresh database (or a

@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Bring older ``config.xml`` versions up to 2.1 (port of ``convert_config()``).
 
 Only the steps relevant for the subset PhonixPBX imports are ported:

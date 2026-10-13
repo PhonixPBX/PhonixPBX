@@ -1,3 +1,4 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {# ACME request status; polls itself while lego is running #}
 {% set state = status.get("state", "none") %}
 <div id="acme-status"{% if state != "none" %} class="mb-3"{% endif %}{% if state == "running" %} hx-get="/advanced/certificate/acme/status?was=running" hx-trigger="every 2s" hx-swap="outerHTML"{% endif %}>

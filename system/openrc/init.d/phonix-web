@@ -1,4 +1,6 @@
 #!/sbin/openrc-run
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # PhonixPBX web interface (FastAPI/uvicorn on a unix socket behind nginx).
 
 description="PhonixPBX web interface"

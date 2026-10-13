@@ -1,3 +1,4 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% from "macros/ui.html" import status_dot with context %}
 {% if not ast.running %}
 <div class="alert alert-danger mb-0">{{ icon("alert-circle", "me-1") }} {{ _("Asterisk is not reachable: %(error)s", error=ast.error) }}</div>

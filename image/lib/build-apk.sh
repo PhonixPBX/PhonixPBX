@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Build the "phonix" apk from the working tree and publish it, signed, in the
 # local repository out/repo/<arch>/ for every architecture (noarch package).
 . /src/image/lib/common.sh

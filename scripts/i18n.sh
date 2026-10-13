@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Web interface translations (phonix/locale/<lang>/LC_MESSAGES/messages.po).
 #
 #   scripts/i18n.sh extract   collect the marked strings into phonix/locale/messages.pot

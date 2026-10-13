@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Assemble the disk image and the update bundle of a board.
 #   assemble.sh <board>
 # -> out/phonix-<version>-<board>.img.zst, .update, .packages

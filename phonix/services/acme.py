@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Certificates from an ACME CA (Let's Encrypt, ZeroSSL, ...) obtained with lego.
 
 lego does the ACME protocol, HTTP-01 (webroot served by nginx) and DNS-01

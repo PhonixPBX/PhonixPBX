@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """HTTPS / SIP-TLS certificate handling (self-signed on first boot, uploadable)."""
 
 from __future__ import annotations

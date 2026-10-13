@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Phones: PJSIP and IAX accounts plus "external" phones (forward to a number)."""
 
 from __future__ import annotations

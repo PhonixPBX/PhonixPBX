@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 
 addgroup -S phonix 2>/dev/null
 adduser -S -D -H -h /data -s /sbin/nologin -G phonix -g phonix phonix 2>/dev/null

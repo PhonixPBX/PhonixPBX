@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """SQLAlchemy ORM models - the single source of truth for the PBX configuration.
 
 Naming follows the legacy config.xml concepts (phones, providers, call groups,

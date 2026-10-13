@@ -1,3 +1,4 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% from "macros/ui.html" import status_dot with context %}
 {% for p in phones if p.enabled and p.tech != "external" %}
 <hx-partial hx-target="#phone-status-{{ p.id }}" hx-swap="innerHTML">

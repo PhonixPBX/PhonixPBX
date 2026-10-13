@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Parsing, hostile input and version upgrades of legacy config.xml files."""
 
 from __future__ import annotations

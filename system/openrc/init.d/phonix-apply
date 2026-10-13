@@ -1,4 +1,6 @@
 #!/sbin/openrc-run
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Regenerate all derived configuration from the database before the system
 # services start (replaces the legacy rc.bootup / pbx_configure()).
 

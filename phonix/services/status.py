@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Live status: system resources and Asterisk state (via AMI)."""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Reports produced by the legacy ``config.xml`` importer and exporter.
 
 The import report is shown after a dry run (so the administrator can decide

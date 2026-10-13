@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Boot test of the LXC/Incus root file system tarball as a podman/docker
 # system container (no LXC needed).
 #

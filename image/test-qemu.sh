@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # QEMU boot smoke test for the pc-amd64 / pc-x86 images.
 #
 #   image/test-qemu.sh [--firmware uefi|bios|both] [--update] [--board pc-amd64]

@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Alembic environment: uses the connection handed over by phonix.core.migrate."""
 
 from __future__ import annotations

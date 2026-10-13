@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Apply the database configuration to the running system.
 
 1. build a snapshot and run all generators (pure)

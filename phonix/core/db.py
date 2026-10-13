@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Database engine and session handling (SQLite, WAL, foreign keys on)."""
 
 from __future__ import annotations

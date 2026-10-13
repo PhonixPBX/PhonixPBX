@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Export to config.xml 2.1 and the two round trips required by the spec."""
 
 from __future__ import annotations

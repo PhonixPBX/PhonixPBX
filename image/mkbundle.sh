@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # Create a signed PhonixPBX update bundle.
 #
 #   mkbundle.sh <board> <version> <payload-dir> <signing-key.pem> <output.update>

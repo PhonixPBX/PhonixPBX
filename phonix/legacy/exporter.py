@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Export the PhonixPBX configuration as a legacy ``config.xml`` (version 2.1).
 
 The inverse of the importer, for rolling back to the old firmware or for

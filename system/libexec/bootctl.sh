@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # shellcheck shell=sh
 # PhonixPBX A/B boot slot state (sourced library, POSIX sh).
 #

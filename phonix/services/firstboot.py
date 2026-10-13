@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """First boot initialisation of the data partition (idempotent)."""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """SHA-512 crypt ("$6$", Ulrich Drepper's SHA-crypt) for /etc/shadow.
 
 The ``crypt`` module is gone since Python 3.13; this is the reference

@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Prometheus metrics (text exposition format 0.0.4) for ``GET /api/v1/metrics``.
 
 Written by hand instead of with prometheus_client: everything is computed per

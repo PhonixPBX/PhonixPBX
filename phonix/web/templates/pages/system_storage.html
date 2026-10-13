@@ -1,3 +1,4 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
 {% block content %}
 {% set pct = (100 * disk.used / disk.total) | round | int if disk.total else 0 %}

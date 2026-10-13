@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Runtime configuration: filesystem locations and process-level options.
 
 Everything is overridable through ``PHONIX_*`` environment variables so the

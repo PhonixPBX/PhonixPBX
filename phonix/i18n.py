@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Translations of the web interface.
 
 Catalogs are ``phonix/locale/<lang>/LC_MESSAGES/messages.po``, read (and

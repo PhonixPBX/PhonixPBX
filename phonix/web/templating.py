@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Jinja2 templates, navigation menu and flash messages."""
 
 from __future__ import annotations

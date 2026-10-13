@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Parse a legacy AskoziaPBX ``config.xml`` into an intermediate model.
 
 The legacy PHP code (``etc/inc/xmlparse.inc``) turned the XML into nested PHP

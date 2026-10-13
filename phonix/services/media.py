@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Uploaded audio: music on hold and the custom voicemail greeting.
 
 Asterisk plays 8 kHz mono 16-bit WAV directly. Uploads are converted with

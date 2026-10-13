@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """End-to-end tests against a real Asterisk 22 (run inside the dev container as root).
 
     dev/test-asterisk.sh            # builds/uses phonix-dev:3.24 and runs these

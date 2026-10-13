@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Pure configuration generators: ``Snapshot`` in, list of ``GeneratedFile`` out."""
 
 from __future__ import annotations

@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Generator primitives: the immutable input snapshot and generated file records."""
 
 from __future__ import annotations

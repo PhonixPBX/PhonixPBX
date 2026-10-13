@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Asterisk Manager Interface (AMI) users configured by the administrator."""
 
 from __future__ import annotations

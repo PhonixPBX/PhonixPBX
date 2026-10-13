@@ -1,4 +1,6 @@
 #!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 # PhonixPBX privileged helper for the OCI container image (no OpenRC).
 #
 # Installed as /usr/libexec/phonix/priv; the web process (user "phonix")

@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
 """Run Alembic migrations without an alembic.ini on disk."""
 
 from __future__ import annotations
