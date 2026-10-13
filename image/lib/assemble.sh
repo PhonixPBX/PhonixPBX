@@ -20,7 +20,7 @@ KB=$BW/boot
 P=$BW/parts
 rm -rf "$P"
 mkdir -p "$P/bootfs" "$P/payload"
-NAME=phonix-$VERSION-$BOARD
+NAME=phonix-$VERSION-$BOARD${PHONIX_DEBUG_ROOT_PASSWORD:+-debug}
 
 SECT=512
 BOOT_START=2048
@@ -151,6 +151,13 @@ msg "[$BOARD] compressing"
 rm -f "$OUT/$NAME.img.zst"
 zstd -q -T0 -19 "$IMGF" -o "$OUT/$NAME.img.zst"
 cp "$BW/packages.txt" "$OUT/$NAME.packages"
+
+if [ -n "${PHONIX_DEBUG_ROOT_PASSWORD:-}" ]; then
+	# no update bundle: a debug system must never be installed as an update
+	write_sha256sums
+	msg "[$BOARD] done: $OUT/$NAME.img.zst ($(du -h "$OUT/$NAME.img.zst" | cut -f1)), DEBUG image"
+	exit 0
+fi
 
 msg "[$BOARD] update bundle"
 SIGNKEY=${PHONIX_UPDATE_SIGNING_KEY:-$KEYS_DIR/update-signing.pem}

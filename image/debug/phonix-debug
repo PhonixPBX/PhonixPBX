@@ -1,0 +1,23 @@
+#!/sbin/openrc-run
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
+# Debug images only (image/build.sh with PHONIX_DEBUG_ROOT_PASSWORD): SSH
+# root login with the preset password, independent of the web interface
+# settings, for boards whose local console does not work. Applying the SSH or
+# firewall settings in the web interface undoes it until the next boot.
+
+description="PhonixPBX debug image: SSH root login with a preset password"
+
+depend() {
+	need dropbear
+	after phonix-apply nftables networking
+}
+
+start() {
+	ebegin "Enabling SSH root login (debug image)"
+	PHONIX_SSH_CONF=/etc/phonix/debug-ssh /usr/libexec/phonix/ssh-root-password &&
+		nft insert rule inet phonix input tcp dport 22 accept
+	eend $? || return 1
+	printf '<5>phonix: DEBUG IMAGE - SSH root login with a preset password is enabled\n' >/dev/kmsg 2>/dev/null
+	return 0
+}

@@ -191,6 +191,21 @@ else
 fi
 mkdir -p "$R/etc/runlevels/nonetwork"
 
+# --- debug image ---------------------------------------------------------------
+# SSH root login with a preset password and debug-report, for boards whose
+# local console does not work (never released, see image/debug/)
+if [ -n "${PHONIX_DEBUG_ROOT_PASSWORD:-}" ]; then
+	[ "${CONTAINER:-0}" != 1 ] || die "debug images are for disk image boards only"
+	msg "[$BOARD] DEBUG image: SSH root login with a preset password"
+	printf 'on\n%s\n' "$(openssl passwd -6 -salt phonixdebug "$PHONIX_DEBUG_ROOT_PASSWORD")" \
+		>"$R/etc/phonix/debug-ssh"
+	chmod 600 "$R/etc/phonix/debug-ssh"
+	install -m 755 "$IMG/debug/phonix-debug" "$R/etc/init.d/phonix-debug"
+	install -m 755 "$IMG/debug/debug-report" "$R/usr/sbin/debug-report"
+	echo 'PHONIX_DEBUG="1"' >>"$R/usr/share/phonix/image-info"
+	rl default phonix-debug
+fi
+
 # --- trim ---------------------------------------------------------------------
 # kernel, device trees and firmware blobs go to the boot partition
 mkdir -p "$BW/boot"
