@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-14 13:12+0200\n"
+"POT-Creation-Date: 2026-10-14 17:18+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ru\n"
@@ -1079,6 +1079,9 @@ msgstr "Фиксированный АОН"
 msgid "For 'one after another', phones ring in this order."
 msgstr "В режиме 'по очереди' телефоны звонят в этом порядке."
 
+msgid "For example when the backup comes from a system with another host name."
+msgstr "Например, если резервная копия сделана на системе с другим именем хоста."
+
 msgid "For your reference only."
 msgstr "Только для справки."
 
@@ -1299,6 +1302,15 @@ msgstr "Японский"
 
 msgid "Keep messages on the PBX after e-mailing"
 msgstr "Сохранять сообщения на АТС после отправки по почте"
+
+msgid "Keep the current TLS certificate and ACME settings"
+msgstr "Сохранить текущий TLS-сертификат и настройки ACME"
+
+msgid "Keep the current network, firewall and SSH settings"
+msgstr "Сохранить текущие настройки сети, межсетевого экрана и SSH"
+
+msgid "Keep the current web users and API tokens"
+msgstr "Сохранить текущих веб-пользователей и токены API"
 
 msgid "Kernel"
 msgstr "Ядро"
@@ -1757,6 +1769,13 @@ msgstr "Другой сервер ACME"
 msgid "Other lego provider ..."
 msgstr "Другой провайдер lego ..."
 
+msgid ""
+"Otherwise the users, passwords and API tokens of the backup replace them, and you log in again with the password from"
+" the backup."
+msgstr ""
+"Иначе пользователи, пароли и токены API из резервной копии заменят текущие, и вы снова войдете с паролем из резервной"
+" копии."
+
 msgid "Outgoing"
 msgstr "Исходящие"
 
@@ -2030,6 +2049,13 @@ msgstr "Перезагрузить в новую прошивку"
 msgid "Recipient"
 msgstr "Получатель"
 
+msgid ""
+"Recommended when the backup comes from another system or network: its IP address, firewall rules or SSH settings "
+"could lock you out."
+msgstr ""
+"Рекомендуется, если резервная копия сделана на другой системе или в другой сети: ее IP-адрес, правила межсетевого "
+"экрана или настройки SSH могут закрыть вам доступ."
+
 msgid "Region"
 msgstr "Регион"
 
@@ -2100,11 +2126,15 @@ msgid "Restore this backup now?"
 msgstr "Восстановить эту резервную копию сейчас?"
 
 msgid ""
-"Restoring replaces the whole configuration, including web users, passwords and API tokens, and applies it right away."
-" The current state is backed up first."
+"Restoring replaces the configuration, except for the parts kept below, and applies it right away. The current state "
+"is backed up first."
 msgstr ""
-"Восстановление заменяет всю конфигурацию, включая веб-пользователей, пароли и токены API, и сразу применяет ее. Перед"
-" этим создается резервная копия текущего состояния."
+"Восстановление заменяет конфигурацию, кроме частей, сохраняемых ниже, и сразу применяет ее. Перед этим создается "
+"резервная копия текущего состояния."
+
+#, python-format
+msgid "Restoring the files failed, nothing was changed: %(error)s"
+msgstr "Не удалось восстановить файлы, ничего не изменено: %(error)s"
 
 msgid "Ring"
 msgstr "Вызов"

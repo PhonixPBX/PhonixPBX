@@ -219,6 +219,29 @@ def test_must_change_password(initialized):
         assert c.get("/").status_code == 200
 
 
+def test_password_change_ends_other_sessions(client):
+    from phonix.web.app import create_app
+
+    login(client)
+    with TestClient(client.app) as other:
+        login(other)
+        token = csrf(client, "/password")
+        r = client.post(
+            "/password",
+            data={"csrf_token": token, "current": "adminadmin", "password": "newpassword1", "confirm": "newpassword1"},
+            follow_redirects=False,
+        )
+        assert r.status_code == 303
+        assert client.get("/", follow_redirects=False).status_code == 200
+        assert other.get("/", follow_redirects=False).headers["location"].startswith("/login")
+    # a reset on the console (or a restored backup with another password) ends this one too
+    with session_scope() as s:
+        users.set_password(s, "admin", "consolepw1", actor="console")
+    assert client.get("/", follow_redirects=False).headers["location"].startswith("/login")
+    with TestClient(create_app()) as fresh:
+        assert login(fresh, "consolepw1").status_code == 303
+
+
 def test_api_token_states(client):
     from phonix.core.models import ApiToken, utcnow
     from phonix.services import tokens
@@ -304,6 +327,31 @@ def test_deleting_admin_removes_tokens(client):
         assert s.query(ApiToken).count() == 0
 
 
+def test_firmware_upload_removes_bundle(client, monkeypatch, runtime):
+    from phonix.services import update
+    from phonix.services.common import ServiceError
+
+    seen = []
+
+    def fake_install(path):
+        seen.append((path, path.read_bytes()))
+        if len(seen) == 1:
+            raise ServiceError("Update signature is invalid")
+        return update.BundleInfo("9.9.9", "pc-amd64", {})
+
+    monkeypatch.setattr(update, "install", fake_install)
+    login(client)
+    headers = {"HX-Request": "true", "X-CSRF-Token": csrf(client, "/system/firmware")}
+    files = {"file": ("x.update", b"bundle", "application/octet-stream")}
+    r = client.post("/system/firmware/upload", headers=headers, files=files)
+    assert r.status_code == 422 and "Update signature is invalid" in r.text
+    r = client.post("/system/firmware/upload", headers=headers, files=files)
+    assert r.status_code == 200
+    assert [content for _, content in seen] == [b"bundle", b"bundle"]
+    assert seen[0][0] != seen[1][0]  # unique per upload
+    assert not list(runtime.data_dir.glob("update*"))
+
+
 def test_firmware_check_github_release(client, monkeypatch):
     import io
     import json
@@ -344,6 +392,10 @@ def test_firmware_check_github_release(client, monkeypatch):
     r = client.post("/system/firmware/check", headers=headers)
     assert "Version 1.1.0 is available" in r.text
 
+    payload = {"url": "https://updates.example.com/phonix.update"}
+    r = client.post("/system/firmware/check", headers=headers)
+    assert "Update check failed: the response contains no version" in r.text
+
 
 @pytest.mark.parametrize(
     "latest,current,newer",
@@ -354,8 +406,15 @@ def test_firmware_check_github_release(client, monkeypatch):
         ("1.1.0", "1.1.0-rc.1", True),
         ("1.1.0-rc.2", "1.1.0-rc.10", False),
         ("1.1.0-alpha", "1.1.0-alpha.1", False),
-        ("1.1.0-alpha.1", "1.1.0-alpha.beta", False),
-        ("1.1.0-beta", "1.1.0-alpha.beta", True),
+        ("1.1.0-beta", "1.1.0-alpha.1", True),
+        ("1.1.0", "1.2.0rc1", False),
+        ("1.2.0", "1.2.0rc1", True),
+        ("1.2.0rc1", "1.2.0b2", True),
+        ("1.2.0a1", "1.2.0.dev0", True),
+        ("1.2.0.dev1", "1.2.0.dev0", True),
+        ("1.2.0.post1", "1.2.0", True),
+        ("1.2.0", "1.2.0.post1", False),
+        ("1.2", "1.2.0", False),
         ("v1.0.0+build.5", "1.0.0", False),
         ("v2.0.0", "1.9.9", True),
         ("1.10.0", "1.9.0", True),

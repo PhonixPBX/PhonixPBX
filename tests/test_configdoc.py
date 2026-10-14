@@ -133,13 +133,16 @@ def test_upgrade_chain(session, monkeypatch):
     assert doc["phones"][0]["description"] == ""  # the input is not modified
 
 
-def test_missing_settings_groups_get_defaults(session, initialized):
+def test_missing_settings_groups_keep_current_values(session, initialized):
     doc = _populated(session)
+    st.save(session, st.EmailSettings(host="mail.example.com", from_address="pbx@example.com"))
+    session.commit()
     session.close()
     del doc["settings"]["email"]
-    _import(doc, initialized.media_dir)
+    counts = _import(doc, initialized.media_dir)
+    assert counts["settings"] == len(st.ALL_GROUPS) - 1
     with db.session_scope() as s:
-        assert st.load(s, st.EmailSettings) == st.EmailSettings()
+        assert st.load(s, st.EmailSettings).host == "mail.example.com"
 
 
 def test_media_must_match(session, initialized):
@@ -160,3 +163,9 @@ def test_media_path_cannot_escape(session):
     doc["media"] = [{"kind": "moh", "name": "x", "path": "moh/../../etc.wav", "size": 1, "sha256": "0" * 64}]
     with pytest.raises(ServiceError, match=r"media\.0\.path"):
         configdoc.parse_document(doc)
+
+
+def test_unknown_keep_part(session, initialized):
+    doc = configdoc.parse_document(_populated(session))
+    with pytest.raises(ValueError, match="unknown parts"):
+        configdoc.import_document(session, doc, initialized.media_dir, keep=["everything"])

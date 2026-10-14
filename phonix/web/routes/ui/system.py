@@ -8,6 +8,8 @@ import contextlib
 import json
 import os
 import secrets
+import shutil
+import tempfile
 import time
 import urllib.request
 from pathlib import Path
@@ -25,7 +27,7 @@ from phonix.core.models import User
 from phonix.core.shacrypt import sha512_crypt
 from phonix.i18n import _
 from phonix.services import backup as backup_svc
-from phonix.services import privileged, status, update
+from phonix.services import configdoc, privileged, status, update
 from phonix.services.common import ServiceError, audit
 from phonix.web.deps import form_to_dict, get_db, ui_user
 from phonix.web.routes.ui.common import page, redirect, save_settings_form
@@ -201,8 +203,10 @@ def firmware_check(request: Request, user: User = Depends(ui_user), db: Session 
             latest = str(data["tag_name"]).removeprefix("v")
             download = data.get("html_url", "")
         else:  # plain {"version": ..., "url": ...}
-            latest = str(data.get("version", "?"))
+            latest = str(data.get("version") or "")
             download = data.get("url", "")
+        if not latest:
+            raise ValueError("the response contains no version")
     except (OSError, ValueError, AttributeError) as exc:
         return _alert(request, "danger", _("Update check failed: %(error)s", error=exc))
     if not update.is_newer(latest, __version__):
@@ -223,21 +227,22 @@ def firmware_check(request: Request, user: User = Depends(ui_user), db: Session 
 async def firmware_upload(
     request: Request, file: UploadFile, user: User = Depends(ui_user), db: Session = Depends(get_db)
 ) -> Response:
-    cfg = config.get()
-    target = cfg.data_dir / "update.bundle"
-    with target.open("wb") as fh:
-        while chunk := await file.read(1024 * 1024):
-            fh.write(chunk)
-            if fh.tell() > update.MAX_BUNDLE:
-                break
+    if (file.size or 0) > update.MAX_BUNDLE:
+        return _alert(request, "danger", _("Update file is too large"), status_code=422)
+    # a unique name per upload, removed whatever happens (a bundle can be 1 GiB)
+    fd, name = tempfile.mkstemp(prefix="update-", suffix=".bundle", dir=config.get().data_dir)
+    target = Path(name)
     try:
+        with os.fdopen(fd, "wb") as fh:
+            await file.seek(0)
+            await run_in_threadpool(shutil.copyfileobj, file.file, fh, 1024 * 1024)
         # hashing and writing the slot takes minutes on an SD card: keep the event loop free
         info = await run_in_threadpool(update.install, target)
-    except (ServiceError, privileged.PrivilegedError) as exc:
-        target.unlink(missing_ok=True)
+    except (ServiceError, privileged.PrivilegedError, OSError) as exc:
         return _alert(request, "danger", _("Update rejected: %(error)s", error=exc), status_code=422)
+    finally:
+        target.unlink(missing_ok=True)
     audit(db, user.username, "firmware", summary=f"installed {info.version}")
-    target.unlink(missing_ok=True)
     return render(request, "partials/firmware_done.html", {"info": info})
 
 
@@ -337,7 +342,8 @@ async def backup_restore(request: Request, user: User = Depends(ui_user)) -> Res
     form = await request.form()
     try:
         source = _restore_source(form)
-        result = await run_in_threadpool(backup_svc.restore, source, user.username)
+        keep = [part for part in configdoc.KEEP_PARTS if form.get(f"keep_{part}") == "true"]
+        result = await run_in_threadpool(backup_svc.restore, source, user.username, keep)
     except ServiceError as exc:
         return _alert(request, "danger", str(exc), status_code=422)
     if form.get("token"):

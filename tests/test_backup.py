@@ -132,11 +132,11 @@ def test_failed_restore_changes_nothing(pbx, monkeypatch):
     real = configdoc.import_document
     calls = []
 
-    def flaky(session, doc, media_root, user=""):
+    def flaky(session, doc, media_root, user="", keep=()):
         calls.append(1)
         if len(calls) > 1:  # the dry run passes, the real import fails
             raise ServiceError("boom")
-        return real(session, doc, media_root, user)
+        return real(session, doc, media_root, user, keep)
 
     monkeypatch.setattr(configdoc, "import_document", flaky)
     with pytest.raises(ServiceError, match="boom"):
@@ -261,3 +261,112 @@ def test_session_of_replaced_user_ends(client, pbx):
         configdoc.import_document(s, configdoc.parse_document(doc), pbx.media_dir)
     r = client.get("/system/backup", follow_redirects=False)
     assert r.status_code == 303 and r.headers["location"].startswith("/login")
+
+
+def test_prune_keeps_the_newest(pbx):
+    directory = pbx.data_dir / "backups"
+    directory.mkdir(exist_ok=True)
+    names = [f"phonix-backup-20261014-1200{i:02d}.tar.zst" for i in range(backup.KEEP_BACKUPS)]
+    names.append("phonix-backup-20261014-120009-2.tar.zst")  # second one within the same second
+    for name in names:
+        (directory / name).write_bytes(b"")
+    backup._prune(directory)
+    kept = [p.name for p in backup.list_backups()]
+    assert kept[0] == "phonix-backup-20261014-120009-2.tar.zst"
+    assert names[0] not in kept and len(kept) == backup.KEEP_BACKUPS
+
+
+def test_failed_file_swap_is_reported(pbx, monkeypatch):
+    path = backup.create()
+    with session_scope() as s:
+        phones.create_phone(s, phones.parse_phone({"extension": "102", "callerid": "After"}))
+
+    def full_disk(tmpdir, names):
+        raise OSError(28, "No space left on device")
+
+    monkeypatch.setattr(backup, "_swap", full_disk)
+    with pytest.raises(ServiceError, match=r"nothing was changed: .*No space left"):
+        backup.restore(path)
+    with session_scope() as s:
+        assert len(phones.list_phones(s)) == 2
+
+
+def test_restore_keeps_selected_parts(pbx):
+    from phonix.core import settings as st
+    from phonix.core.shacrypt import sha512_crypt
+    from phonix.services import tokens
+
+    with session_scope() as s:
+        st.save(s, st.NetworkSettings(mode="static", address="10.0.0.5"))
+        st.save(s, st.AcmeSettings(email="old@example.com"))
+    path = backup.create()
+    with session_scope() as s:
+        st.save(s, st.NetworkSettings(mode="static", address="10.0.0.9"))
+        st.save(s, st.FirewallSettings(admin_allowed_networks=["10.0.0.0/8"]))
+        system = st.load(s, st.SystemSettings)
+        st.save(
+            s,
+            system.model_copy(
+                update={"timezone": "Europe/Zurich", "ssh_enabled": True, "ssh_password_hash": sha512_crypt("rootroot")}
+            ),
+        )
+        st.save(s, st.AcmeSettings(email="new@example.com"))
+        tokens.create(s, users.create_user(s, "later", "laterlater"), "script")
+    (pbx.data_dir / "tls" / "server.crt").write_text("CERT-2")
+    privileged.recorder.calls.clear()
+
+    result = backup.restore(path, user="admin", keep=["network", "users", "certificate"])
+
+    assert result.kept == ["certificate", "network", "users"] and result.files == ["media"]
+    with session_scope() as s:
+        assert st.load(s, st.NetworkSettings).address == "10.0.0.9"
+        assert st.load(s, st.FirewallSettings).admin_allowed_networks == ["10.0.0.0/8"]
+        system = st.load(s, st.SystemSettings)
+        assert system.ssh_enabled and system.ssh_password_hash
+        assert system.timezone == "UTC"  # the rest of the system settings comes from the backup
+        assert st.load(s, st.AcmeSettings).email == "new@example.com"
+        assert sorted(u.username for u in users.list_users(s)) == ["admin", "later"]
+        assert len(users.get_by_name(s, "later").api_tokens) == 1
+    assert (pbx.data_dir / "tls" / "server.crt").read_text() == "CERT-2"
+    assert ("nginx-reload",) not in privileged.recorder.calls
+
+    result = backup.restore(path, user="admin")
+    with session_scope() as s:
+        assert st.load(s, st.NetworkSettings).address == "10.0.0.5"
+        assert not st.load(s, st.SystemSettings).ssh_enabled
+        assert st.load(s, st.AcmeSettings).email == "old@example.com"
+        assert [u.username for u in users.list_users(s)] == ["admin"]
+    assert (pbx.data_dir / "tls" / "server.crt").read_text() == "CERT-1"
+
+
+def test_web_restore_keep_choices(client):
+    path = backup.create()
+    with session_scope() as s:
+        users.create_user(s, "later", "laterlater")
+    r = client.post(f"/system/backup/preview/{path.name}")
+    assert re.search(r'name="keep_network" value="true" checked', r.text)
+    assert re.search(r'name="keep_users" value="true" >', r.text)
+    r = client.post(
+        "/system/backup/restore", data={"name": path.name, "keep_users": "true"}, headers={"HX-Request": "true"}
+    )
+    assert r.status_code == 204
+    with session_scope() as s:
+        assert sorted(u.username for u in users.list_users(s)) == ["admin", "later"]
+    assert client.get("/system/backup", follow_redirects=False).status_code == 200  # still logged in
+
+
+def test_cli_restore_keep_flags(pbx, monkeypatch):
+    from phonix import cli
+
+    path = backup.create()
+    seen = []
+    real = backup.restore
+
+    def spy(source, user="", keep=()):
+        seen.append(list(keep))
+        return real(source, user, keep)
+
+    monkeypatch.setattr(backup, "restore", spy)
+    assert cli.main(["backup", "restore", str(path)]) == 0
+    assert cli.main(["backup", "restore", str(path), "--restore-network", "--keep-users", "--keep-certificate"]) == 0
+    assert seen == [["network"], ["users", "certificate"]]

@@ -30,24 +30,37 @@ from phonix.services.common import ServiceError
 
 MAX_BUNDLE = 1024**3
 
-# semver: v1.2.3, 1.2.3-rc.1, 1.2.3+build; "1.2.3.dev0" (Python style) counts as pre-release "dev0"
+# PEP 440 (1.2.0, 1.2.0rc1, 1.2.0.post1, 1.3.0.dev0), with an optional "v" prefix; the
+# semver spellings 1.2.0-rc.1 and 1.2.0-alpha normalise the same way. Local versions (+build) are ignored.
 _VERSION_RE = re.compile(
-    r"v?(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)"
-    r"(?:[-.](?P<pre>[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z.-]+)?"
+    r"v?(?P<release>\d+(?:\.\d+)*)"
+    r"(?:[-_.]?(?P<pre_l>alpha|beta|preview|pre|rc|a|b|c)[-_.]?(?P<pre_n>\d+)?)?"
+    r"(?:-(?P<post_n1>\d+)|[-_.]?(?P<post_l>post|rev|r)[-_.]?(?P<post_n2>\d+)?)?"
+    r"(?:[-_.]?(?P<dev_l>dev)[-_.]?(?P<dev_n>\d+)?)?"
+    r"(?:\+[a-z0-9]+(?:[-_.][a-z0-9]+)*)?",
+    re.IGNORECASE,
 )
+_PRE_RANK = {"a": 0, "alpha": 0, "b": 1, "beta": 1, "c": 2, "rc": 2, "pre": 2, "preview": 2}
 
 
 def version_key(value: str) -> tuple[Any, ...] | None:
-    """Semver precedence sort key, or None if ``value`` isn't a semver version."""
+    """PEP 440 sort key, or None if ``value`` isn't a version."""
     m = _VERSION_RE.fullmatch(value.strip())
     if not m:
         return None
-    release = (int(m["major"]), int(m["minor"]), int(m["patch"]))
-    if m["pre"] is None:
-        return (release, (1,))  # a release sorts after all of its pre-releases
-    # numeric identifiers sort numerically and before alphanumeric ones
-    ids = tuple((0, int(x), "") if x.isdigit() else (1, 0, x) for x in m["pre"].split("."))
-    return (release, (0, *ids))
+    release = tuple(int(x) for x in m["release"].split("."))
+    while len(release) > 1 and release[-1] == 0:
+        release = release[:-1]
+    has_post = m["post_n1"] is not None or m["post_l"] is not None
+    if m["pre_l"]:
+        pre: tuple[int, ...] = (1, _PRE_RANK[m["pre_l"].lower()], int(m["pre_n"] or 0))
+    elif m["dev_l"] and not has_post:
+        pre = (0,)  # 1.2.0.dev0 sorts before 1.2.0a1
+    else:
+        pre = (2,)  # a release sorts after its pre-releases
+    post = (int(m["post_n1"] or m["post_n2"] or 0),) if has_post else (-1,)
+    dev = (0, int(m["dev_n"] or 0)) if m["dev_l"] else (1,)
+    return (release, pre, post, dev)
 
 
 def is_newer(latest: str, current: str) -> bool:

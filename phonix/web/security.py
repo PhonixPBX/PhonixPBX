@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import hmac
 import secrets
 import time
@@ -22,6 +23,8 @@ from phonix.core.models import User
 SESSION_USER = "uid"
 # the user id alone could name another user after a backup was restored
 SESSION_USERNAME = "uname"
+# digest of the password hash: a password change (or a restored one) ends the other sessions
+SESSION_PW_STAMP = "pw"
 SESSION_CSRF = "csrf"
 SESSION_LOGIN_AT = "at"
 # web interface language of the logged in user (read by LanguageMiddleware)
@@ -61,10 +64,16 @@ async def verify_csrf(request: Request) -> None:
         raise HTTPException(status_code=403, detail="CSRF token missing or invalid")
 
 
+def password_stamp(user: User) -> str:
+    """Short digest of the password hash; the session cookie is signed, not encrypted."""
+    return hashlib.sha256(user.password_hash.encode()).hexdigest()[:16]
+
+
 def login(request: Request, user: User) -> None:
     request.session.clear()
     request.session[SESSION_USER] = user.id
     request.session[SESSION_USERNAME] = user.username
+    request.session[SESSION_PW_STAMP] = password_stamp(user)
     request.session[SESSION_LOGIN_AT] = int(time.time())
     request.session[SESSION_CSRF] = secrets.token_urlsafe(32)
     request.session[SESSION_LANGUAGE] = i18n.normalize(user.language)
@@ -83,7 +92,11 @@ def current_user(request: Request, session: Session, max_age_minutes: int) -> Us
         request.session.clear()
         return None
     user = session.get(User, uid)
-    if user is None or user.username != request.session.get(SESSION_USERNAME):
+    if (
+        user is None
+        or user.username != request.session.get(SESSION_USERNAME)
+        or not hmac.compare_digest(password_stamp(user), str(request.session.get(SESSION_PW_STAMP, "")))
+    ):
         request.session.clear()
         return None
     # sliding expiration

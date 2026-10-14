@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-14 13:12+0200\n"
+"POT-Creation-Date: 2026-10-14 17:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1084,6 +1084,9 @@ msgstr ""
 msgid "For 'one after another', phones ring in this order."
 msgstr ""
 
+msgid "For example when the backup comes from a system with another host name."
+msgstr ""
+
 msgid "For your reference only."
 msgstr ""
 
@@ -1304,6 +1307,15 @@ msgid "Japanese"
 msgstr ""
 
 msgid "Keep messages on the PBX after e-mailing"
+msgstr ""
+
+msgid "Keep the current TLS certificate and ACME settings"
+msgstr ""
+
+msgid "Keep the current network, firewall and SSH settings"
+msgstr ""
+
+msgid "Keep the current web users and API tokens"
 msgstr ""
 
 msgid "Kernel"
@@ -1775,6 +1787,11 @@ msgstr ""
 msgid "Other lego provider ..."
 msgstr ""
 
+msgid ""
+"Otherwise the users, passwords and API tokens of the backup replace them,"
+" and you log in again with the password from the backup."
+msgstr ""
+
 msgid "Outgoing"
 msgstr ""
 
@@ -2047,6 +2064,11 @@ msgstr ""
 msgid "Recipient"
 msgstr ""
 
+msgid ""
+"Recommended when the backup comes from another system or network: its IP "
+"address, firewall rules or SSH settings could lock you out."
+msgstr ""
+
 msgid "Region"
 msgstr ""
 
@@ -2117,9 +2139,12 @@ msgid "Restore this backup now?"
 msgstr ""
 
 msgid ""
-"Restoring replaces the whole configuration, including web users, "
-"passwords and API tokens, and applies it right away. The current state is"
-" backed up first."
+"Restoring replaces the configuration, except for the parts kept below, "
+"and applies it right away. The current state is backed up first."
+msgstr ""
+
+#, python-format
+msgid "Restoring the files failed, nothing was changed: %(error)s"
 msgstr ""
 
 msgid "Ring"

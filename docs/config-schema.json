@@ -1465,6 +1465,19 @@
           "default": null,
           "title": "Expires At"
         },
+        "last_used_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Used At"
+        },
         "name": {
           "maxLength": 64,
           "minLength": 1,
@@ -1539,6 +1552,19 @@
           ],
           "default": null,
           "title": "Language"
+        },
+        "last_login": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Login"
         },
         "must_change_pw": {
           "default": false,

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-14 13:12+0200\n"
+"POT-Creation-Date: 2026-10-14 17:18+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: da\n"
@@ -1078,6 +1078,9 @@ msgstr "Fast opkalds-ID"
 msgid "For 'one after another', phones ring in this order."
 msgstr "Ved 'én efter én' ringer telefonerne i denne rækkefølge."
 
+msgid "For example when the backup comes from a system with another host name."
+msgstr "For eksempel når backuppen stammer fra et system med et andet værtsnavn."
+
 msgid "For your reference only."
 msgstr "Kun til din egen reference."
 
@@ -1297,6 +1300,15 @@ msgstr "Japansk"
 
 msgid "Keep messages on the PBX after e-mailing"
 msgstr "Behold beskeder på PBX'en efter afsendelse via e-mail"
+
+msgid "Keep the current TLS certificate and ACME settings"
+msgstr "Behold det nuværende TLS-certifikat og ACME-indstillinger"
+
+msgid "Keep the current network, firewall and SSH settings"
+msgstr "Behold de nuværende netværks-, firewall- og SSH-indstillinger"
+
+msgid "Keep the current web users and API tokens"
+msgstr "Behold de nuværende webbrugere og API-tokens"
 
 msgid "Kernel"
 msgstr "Kerne"
@@ -1754,6 +1766,13 @@ msgstr "Anden ACME-server"
 msgid "Other lego provider ..."
 msgstr "Anden lego-udbyder ..."
 
+msgid ""
+"Otherwise the users, passwords and API tokens of the backup replace them, and you log in again with the password from"
+" the backup."
+msgstr ""
+"Ellers erstatter backuppens brugere, adgangskoder og API-tokens de nuværende, og du logger ind igen med adgangskoden "
+"fra backuppen."
+
 msgid "Outgoing"
 msgstr "Udgående"
 
@@ -2027,6 +2046,13 @@ msgstr "Genstart med den nye firmware"
 msgid "Recipient"
 msgstr "Modtager"
 
+msgid ""
+"Recommended when the backup comes from another system or network: its IP address, firewall rules or SSH settings "
+"could lock you out."
+msgstr ""
+"Anbefales, når backuppen stammer fra et andet system eller netværk: dens IP-adresse, firewallregler eller SSH-"
+"indstillinger kan låse dig ude."
+
 msgid "Region"
 msgstr "Region"
 
@@ -2097,11 +2123,15 @@ msgid "Restore this backup now?"
 msgstr "Gendan denne backup nu?"
 
 msgid ""
-"Restoring replaces the whole configuration, including web users, passwords and API tokens, and applies it right away."
-" The current state is backed up first."
+"Restoring replaces the configuration, except for the parts kept below, and applies it right away. The current state "
+"is backed up first."
 msgstr ""
-"Gendannelse erstatter hele konfigurationen, inklusive webbrugere, adgangskoder og API-tokens, og anvender den med det"
-" samme. Den nuværende tilstand sikkerhedskopieres først."
+"Gendannelse erstatter konfigurationen, bortset fra de dele, der beholdes nedenfor, og anvender den med det samme. Den"
+" nuværende tilstand sikkerhedskopieres først."
+
+#, python-format
+msgid "Restoring the files failed, nothing was changed: %(error)s"
+msgstr "Gendannelsen af filerne mislykkedes, intet blev ændret: %(error)s"
 
 msgid "Ring"
 msgstr "Kalder"

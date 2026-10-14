@@ -110,3 +110,16 @@ def test_privileged_root_caller_skips_doas(runtime, monkeypatch, euid, via_doas)
     privileged.run("reboot")
     helper = str(config.get().libexec_dir / "priv")
     assert seen == [(["doas", "-n"] if via_doas else []) + [helper, "reboot"]]
+
+
+def test_tui_going_down_returns_after_timeout(capsys):
+    import signal
+
+    from phonix import tui
+
+    before = signal.getsignal(signal.SIGINT)
+    tui._going_down("Rebooting", timeout=0.3)
+    out = capsys.readouterr().out
+    assert "Rebooting |" in out
+    assert "Rebooting did not finish within 0 minutes; back to the menu." in out
+    assert signal.getsignal(signal.SIGINT) is before

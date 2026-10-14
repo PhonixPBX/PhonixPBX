@@ -31,9 +31,18 @@ class Resource:
     to_dict: Callable[..., dict[str, Any]]
     parse_fn: Callable[[dict[str, Any]], Any] | None = None
     enable_fn: Callable[..., Any] | None = None
+    # PINs: left out for read-only tokens (a token that may write could change them anyway)
+    pins: tuple[str, ...] = ()
 
     def parse(self, data: dict[str, Any]) -> Any:
         return self.parse_fn(data) if self.parse_fn else parse(self.schema, data)
+
+    def public(self, obj: Any, read_only: bool) -> dict[str, Any]:
+        data = self.to_dict(obj)
+        if read_only:
+            for key in self.pins:
+                data.pop(key, None)
+        return data
 
 
 RESOURCES = (
@@ -50,6 +59,7 @@ RESOURCES = (
         phone_svc.to_dict,
         phone_svc.parse_phone,
         phone_svc.set_enabled,
+        pins=("vm_pin",),
     ),
     Resource(
         "/providers",
@@ -88,6 +98,7 @@ RESOURCES = (
         dp.update_room,
         dp.delete_room,
         dp.room_to_dict,
+        pins=("pin", "admin_pin"),
     ),
     Resource(
         "/applications",

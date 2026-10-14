@@ -65,6 +65,8 @@ def test_http_rules(client):
     auth = bearer()
     assert rpc(client, "ping", headers={**auth, "Origin": "https://evil.example"}).status_code == 403
     assert rpc(client, "ping", headers={**auth, "Origin": "http://testserver"}).status_code == 200
+    assert rpc(client, "ping", headers={**auth, "Origin": "https://testserver:8443"}).status_code == 200
+    assert rpc(client, "ping", headers={**auth, "Origin": "https://testserver.evil.example"}).status_code == 403
     assert rpc(client, "ping", headers={**auth, "MCP-Protocol-Version": "1999-01-01"}).status_code == 400
     assert rpc(client, "ping", headers={**auth, "MCP-Protocol-Version": "2025-06-18"}).status_code == 200
     r = client.get("/api/mcp", headers=auth)
@@ -159,3 +161,31 @@ def test_tail_log(client, runtime, tmp_path):
     assert r["lines"] == ["line 7", "line 8", "line 9"]
     assert call(client, "tail_log", log="/etc/shadow")["isError"] is True
     assert call(client, "tail_log", log="asterisk", lines=5000)["isError"] is True
+
+
+def test_unexpected_tool_error_is_a_jsonrpc_error(client, monkeypatch):
+    from phonix import mcp
+
+    def boom(ctx, args):
+        raise RuntimeError("boom")
+
+    import dataclasses
+
+    broken = dataclasses.replace(mcp.tools()["get_pending_changes"], handler=boom)
+    monkeypatch.setattr(mcp, "_TOOLS", {**mcp.tools(), broken.name: broken})
+    r = rpc(client, "tools/call", {"name": "get_pending_changes", "arguments": {}})
+    assert r.status_code == 200
+    assert r.json()["error"] == {"code": -32603, "message": "internal error in tool get_pending_changes"}
+
+
+def test_read_only_tokens_get_no_pins(client):
+    ro = bearer(read_only=True, name="ro")
+    phones = call(client, "list_phones", ro)["structuredContent"]["items"]
+    assert phones and all("vm_pin" not in p for p in phones)
+    rooms = call(client, "list_conferences", ro)["structuredContent"]["items"]
+    assert rooms and all("pin" not in r and "admin_pin" not in r for r in rooms)
+    assert "vm_pin" in call(client, "get_phone", None, id=phones[0]["id"])["structuredContent"]
+
+    assert all("vm_pin" not in p for p in client.get("/api/v1/phones", headers=ro).json())
+    assert "pin" not in client.get(f"/api/v1/conferences/{rooms[0]['id']}", headers=ro).json()
+    assert "pin" in client.get(f"/api/v1/conferences/{rooms[0]['id']}", headers=bearer()).json()

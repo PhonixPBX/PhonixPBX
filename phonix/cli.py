@@ -128,7 +128,16 @@ def cmd_backup(args: argparse.Namespace) -> int:
             print("error: the backup file is required", file=sys.stderr)
             return 2
         path = Path(args.file)
-        preview = backup.inspect(path) if args.dry_run else backup.restore(path, user="cli")
+        keep = [
+            part
+            for part, wanted in (
+                ("network", not args.restore_network),
+                ("users", args.keep_users),
+                ("certificate", args.keep_certificate),
+            )
+            if wanted
+        ]
+        preview = backup.inspect(path) if args.dry_run else backup.restore(path, user="cli", keep=keep)
     except ServiceError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
@@ -141,6 +150,8 @@ def cmd_backup(args: argparse.Namespace) -> int:
         print("dry run: nothing was changed")
         return 0
     errors = preview.apply_errors if isinstance(preview, backup.RestoreResult) else []
+    if isinstance(preview, backup.RestoreResult) and preview.kept:
+        print(f"kept the current: {', '.join(preview.kept)}")
     for err in errors:
         print(f"ERROR {err}", file=sys.stderr)
     print("restored and applied" if not errors else "restored; applying failed - run 'phonix apply'")
@@ -168,7 +179,7 @@ def cmd_config(args: argparse.Namespace) -> int:
         print("error: the configuration file is required", file=sys.stderr)
         return 2
     try:
-        data = json.loads(sys.stdin.read() if args.file == "-" else Path(args.file).read_text())
+        data = json.loads(sys.stdin.read() if args.file == "-" else Path(args.file).read_text(encoding="utf-8"))
         doc = configdoc.parse_document(data)
         with _session() as session:
             counts = configdoc.import_document(session, doc, config.get().media_dir, user="cli")
@@ -327,6 +338,15 @@ def build_parser() -> argparse.ArgumentParser:
     b.add_argument("action", choices=["create", "restore"])
     b.add_argument("file", nargs="?")
     b.add_argument("--dry-run", action="store_true", help="restore: only validate and show the contents")
+    b.add_argument(
+        "--restore-network",
+        action="store_true",
+        help="restore: also take the network, firewall and SSH settings from the backup (default: keep the current)",
+    )
+    b.add_argument("--keep-users", action="store_true", help="restore: keep the current web users and API tokens")
+    b.add_argument(
+        "--keep-certificate", action="store_true", help="restore: keep the current TLS certificate and ACME settings"
+    )
     b.set_defaults(func=cmd_backup)
 
     cf = sub.add_parser("config", help="export/import the configuration as JSON (config.json)")

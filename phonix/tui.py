@@ -119,23 +119,42 @@ def _priv(action: str) -> bool:
     return True
 
 
-def _going_down(message: str) -> None:
-    """Show a spinner instead of the prompt until init stops the menu; input is ignored."""
-    for sig in (signal.SIGINT, signal.SIGQUIT, signal.SIGTSTP):
-        signal.signal(sig, signal.SIG_IGN)
+# if init hasn't stopped the menu by then, the reboot or shutdown failed
+GOING_DOWN_TIMEOUT = 300
+
+
+def _going_down(message: str, timeout: float = GOING_DOWN_TIMEOUT) -> None:
+    """Show a spinner instead of the prompt until init stops the menu; input is ignored.
+
+    Returns to the menu after ``timeout`` seconds."""
+    handlers = {sig: signal.signal(sig, signal.SIG_IGN) for sig in (signal.SIGINT, signal.SIGQUIT, signal.SIGTSTP)}
     fd = sys.stdin.fileno() if sys.stdin.isatty() else None
+    saved = None
     if fd is not None:
+        saved = termios.tcgetattr(fd)
         attrs = termios.tcgetattr(fd)
         attrs[3] &= ~(termios.ECHO | termios.ICANON | termios.ISIG)
         termios.tcsetattr(fd, termios.TCSAFLUSH, attrs)
     out = sys.stdout
     out.write("\033[?25l")  # hide the cursor
-    for frame in itertools.cycle("|/-\\"):
-        out.write(f"\r  {message} {frame} ")
+    deadline = time.monotonic() + timeout
+    try:
+        for frame in itertools.cycle("|/-\\"):
+            if time.monotonic() >= deadline:
+                break
+            out.write(f"\r  {message} {frame} ")
+            out.flush()
+            if fd is not None:
+                termios.tcflush(fd, termios.TCIFLUSH)
+            time.sleep(0.2)
+    finally:
+        out.write("\033[?25h\n")
         out.flush()
-        if fd is not None:
-            termios.tcflush(fd, termios.TCIFLUSH)
-        time.sleep(0.2)
+        if fd is not None and saved is not None:
+            termios.tcsetattr(fd, termios.TCSAFLUSH, saved)
+        for sig, handler in handlers.items():
+            signal.signal(sig, handler)
+    print(f"{message} did not finish within {round(timeout / 60)} minutes; back to the menu.")
 
 
 def _power(action: str, question: str, message: str) -> None:

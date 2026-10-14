@@ -27,7 +27,7 @@ import copy
 import datetime as dt
 import hashlib
 import types
-from collections.abc import Callable, Iterator
+from collections.abc import Callable, Collection, Iterator
 from pathlib import Path
 from typing import Any, Literal
 
@@ -52,7 +52,6 @@ from phonix.core.models import (
     Provider,
     ProviderDialPattern,
     ProviderIncomingRoute,
-    Setting,
     User,
 )
 from phonix.i18n import _
@@ -119,6 +118,7 @@ class TokenDoc(BaseModel):
     enabled: bool = True
     created_at: dt.datetime | None = None
     expires_at: dt.datetime | None = None
+    last_used_at: dt.datetime | None = None
 
 
 class UserDoc(BaseModel):
@@ -130,6 +130,7 @@ class UserDoc(BaseModel):
     must_change_pw: bool = False
     language: str | None = None
     created_at: dt.datetime | None = None
+    last_login: dt.datetime | None = None
     tokens: list[TokenDoc] = Field(default_factory=list)
 
     @field_validator("language")
@@ -237,6 +238,7 @@ def export(session: Session) -> dict[str, Any]:
                 "enabled": t.enabled,
                 "created_at": _ts(t.created_at),
                 "expires_at": _ts(t.expires_at),
+                "last_used_at": _ts(t.last_used_at),
             }
             for t in sorted(user.api_tokens, key=lambda t: t.id)
         ]
@@ -248,6 +250,7 @@ def export(session: Session) -> dict[str, Any]:
                 "must_change_pw": user.must_change_pw,
                 "language": user.language,
                 "created_at": _ts(user.created_at),
+                "last_login": _ts(user.last_login),
                 "tokens": tokens,
             }
         )
@@ -362,11 +365,23 @@ def check_media(doc: ConfigDocument, media_root: Path) -> None:
             raise ServiceError(_("The media file %(path)s is missing or damaged", path=m.path))
 
 
+# parts of the current configuration a restore can keep instead of taking them from the document
+KEEP_PARTS = ("network", "users", "certificate")
+# settings groups each part keeps (the certificate files themselves are handled by the backup)
+KEEP_GROUPS = {"network": ("network", "firewall"), "certificate": ("acme",)}
+# SSH access belongs to the "network" part, but lives in the system group
+KEEP_SYSTEM_FIELDS = ("ssh_enabled", "ssh_password_hash")
+
+
 class _Importer:
-    def __init__(self, session: Session, doc: ConfigDocument, user: str) -> None:
+    def __init__(self, session: Session, doc: ConfigDocument, user: str, keep: Collection[str] = ()) -> None:
+        unknown = set(keep) - set(KEEP_PARTS)
+        if unknown:
+            raise ValueError(f"unknown parts to keep: {sorted(unknown)}")
         self.session = session
         self.doc = doc
         self.user = user
+        self.keep = frozenset(keep)
         # document id -> database id, per object type
         kinds = ("provider", "phone", "callgroup", "conference", "application")
         self.ids: dict[str, dict[int, int]] = {kind: {} for kind in kinds}
@@ -399,12 +414,13 @@ class _Importer:
         session, doc, user = self.session, self.doc, self.user
         delete_pbx_objects(session)
         session.execute(delete(MediaFile))
-        session.execute(delete(ApiToken))
-        session.execute(delete(User))
-        session.execute(delete(Setting))
+        if "users" not in self.keep:
+            session.execute(delete(ApiToken))
+            session.execute(delete(User))
         session.flush()
         self.settings()
-        self.users()
+        if "users" not in self.keep:
+            self.users()
         # providers first without routes and failover: those may point to anything
         for p in doc.providers:
             data = p.model_dump(exclude={"id", "legacy_uniqid"})
@@ -462,7 +478,7 @@ class _Importer:
         session.flush()
         mark_dirty(session, *AREAS)
         self.counts = {
-            "settings": len(SETTINGS_DOCS),
+            "settings": sum(getattr(doc.settings, name) is not None for name in SETTINGS_DOCS),
             "users": len(doc.users),
             "api_tokens": sum(len(u.tokens) for u in doc.users),
             "providers": len(doc.providers),
@@ -476,9 +492,19 @@ class _Importer:
         return self.counts
 
     def settings(self) -> None:
+        # a group missing from the document (hand-written, or older than the group) keeps its
+        # current values: a config.json without "network" must not reset the LAN address
+        kept = {group for part in self.keep for group in KEEP_GROUPS.get(part, ())}
         for model in st.ALL_GROUPS:
-            value = getattr(self.doc.settings, st.group_name(model))
-            st.save(self.session, model.model_validate(value.model_dump() if value is not None else {}))
+            name = st.group_name(model)
+            value = getattr(self.doc.settings, name)
+            if value is None or name in kept:
+                continue
+            data = value.model_dump()
+            if model is st.SystemSettings and "network" in self.keep:
+                current = st.load(self.session, st.SystemSettings)
+                data.update({f: getattr(current, f) for f in KEEP_SYSTEM_FIELDS})
+            st.save(self.session, model.model_validate(data))
 
     def users(self) -> None:
         seen: set[str] = set()
@@ -495,6 +521,8 @@ class _Importer:
             )
             if u.created_at:
                 user.created_at = _naive_utc(u.created_at)
+            if u.last_login:
+                user.last_login = _naive_utc(u.last_login)
             for t in u.tokens:
                 token = ApiToken(
                     name=t.name,
@@ -506,6 +534,8 @@ class _Importer:
                 )
                 if t.created_at:
                     token.created_at = _naive_utc(t.created_at)
+                if t.last_used_at:
+                    token.last_used_at = _naive_utc(t.last_used_at)
                 user.api_tokens.append(token)
             self.session.add(user)
         self.session.flush()
@@ -518,11 +548,14 @@ def _naive_utc(value: dt.datetime) -> dt.datetime:
     return value
 
 
-def import_document(session: Session, doc: ConfigDocument, media_root: Path, user: str = "") -> dict[str, int]:
+def import_document(
+    session: Session, doc: ConfigDocument, media_root: Path, user: str = "", keep: Collection[str] = ()
+) -> dict[str, int]:
     """Replace the whole configuration with ``doc``; returns object counts.
 
-    Runs in the caller's transaction and does not commit. Media rows are
-    created for the files below ``media_root`` (checked, not copied).
+    ``keep`` names parts of the current configuration (``KEEP_PARTS``) that stay
+    as they are. Runs in the caller's transaction and does not commit. Media rows
+    are created for the files below ``media_root`` (checked, not copied).
     """
     check_media(doc, media_root)
-    return _Importer(session, doc, user or "restore").run()
+    return _Importer(session, doc, user or "restore", keep).run()

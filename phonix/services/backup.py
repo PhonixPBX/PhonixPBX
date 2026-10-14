@@ -24,10 +24,11 @@ import io
 import json
 import logging
 import os
+import re
 import shutil
 import tarfile
 import tempfile
-from collections.abc import Iterator
+from collections.abc import Collection, Iterator
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -69,6 +70,8 @@ class Preview:
 @dataclass
 class RestoreResult(Preview):
     apply_errors: list[str] = field(default_factory=list)
+    # parts of the previous configuration that were kept (configdoc.KEEP_PARTS)
+    kept: list[str] = field(default_factory=list)
 
 
 def _add_bytes(tar: tarfile.TarFile, name: str, data: bytes) -> None:
@@ -120,14 +123,23 @@ def create(target: Path | None = None) -> Path:
     return target
 
 
+_NAME_RE = re.compile(r"phonix-backup-(\d{8}-\d{6})(?:-(\d+))?\.tar\.zst")
+
+
+def _age_key(path: Path) -> tuple[str, int]:
+    """Oldest first; "-2" (second backup in the same second) sorts after the first one."""
+    m = _NAME_RE.fullmatch(path.name)
+    return (m[1], int(m[2] or 1)) if m else (path.name, 0)
+
+
 def _prune(directory: Path) -> None:
-    backups = sorted(directory.glob("phonix-backup-*.tar.zst"))
+    backups = sorted(directory.glob("phonix-backup-*.tar.zst"), key=_age_key)
     for old in backups[:-KEEP_BACKUPS]:
         old.unlink()
 
 
 def list_backups() -> list[Path]:
-    return sorted(config.get().backup_dir.glob("phonix-backup-*.tar.zst"), reverse=True)
+    return sorted(config.get().backup_dir.glob("phonix-backup-*.tar.zst"), key=_age_key, reverse=True)
 
 
 # --- restore --------------------------------------------------------------------------
@@ -161,7 +173,7 @@ def _extract(source: Path, tmpdir: Path) -> tuple[dict[str, Any], configdoc.Conf
     except (tarfile.TarError, zstandard.ZstdError, OSError) as exc:
         raise ServiceError(_("Not a valid PhonixPBX backup: %(error)s", error=exc)) from exc
     try:
-        manifest = json.loads((tmpdir / MANIFEST).read_text())
+        manifest = json.loads((tmpdir / MANIFEST).read_text(encoding="utf-8"))
     except (FileNotFoundError, ValueError) as exc:
         raise ServiceError(_("Backup manifest is missing")) from exc
     if not isinstance(manifest, dict) or manifest.get("format") != FORMAT:
@@ -169,7 +181,7 @@ def _extract(source: Path, tmpdir: Path) -> tuple[dict[str, Any], configdoc.Conf
             _("This backup was made by an older PhonixPBX release in a format that can no longer be restored.")
         )
     try:
-        data = json.loads((tmpdir / CONFIG).read_text())
+        data = json.loads((tmpdir / CONFIG).read_text(encoding="utf-8"))
     except (FileNotFoundError, ValueError) as exc:
         raise ServiceError(_("The configuration in the backup is missing or damaged")) from exc
     doc = configdoc.parse_document(data)
@@ -238,8 +250,10 @@ def _unswap(done: list[tuple[Path, Path | None]]) -> None:
                 old.rename(live)
 
 
-def restore(source: Path, user: str = "") -> RestoreResult:
-    """Replace the configuration and files with the backup and apply it."""
+def restore(source: Path, user: str = "", keep: Collection[str] = ()) -> RestoreResult:
+    """Replace the configuration and files with the backup and apply it.
+
+    ``keep`` names parts of the current configuration that stay (``configdoc.KEEP_PARTS``)."""
     from phonix.services import apply as apply_mod
 
     cfg = config.get()
@@ -252,13 +266,21 @@ def restore(source: Path, user: str = "") -> RestoreResult:
 
         (tmpdir / "media").mkdir(exist_ok=True)  # media is always replaced
         names = _contained(tmpdir)
+        if "certificate" in keep:
+            names = [name for name in names if name not in ("tls", "acme")]
         for name in names:
             _prepare(tmpdir / name, cfg.data_dir / name, FILE_DIRS[name])
         session = db.session_factory()()
         try:
-            counts = configdoc.import_document(session, doc, tmpdir / "media", user=user)
-            audit(session, user, "restore", summary=f"restored backup from {manifest.get('created')}")
-            swapped = _swap(tmpdir, names)
+            counts = configdoc.import_document(session, doc, tmpdir / "media", user=user, keep=keep)
+            summary = f"restored backup from {manifest.get('created')}"
+            if keep:
+                summary += f", kept {', '.join(sorted(keep))}"
+            audit(session, user, "restore", summary=summary)
+            try:
+                swapped = _swap(tmpdir, names)
+            except OSError as exc:  # e.g. a full disk; _swap has put the old files back
+                raise ServiceError(_("Restoring the files failed, nothing was changed: %(error)s", error=exc)) from exc
             try:
                 session.commit()
             except BaseException:
@@ -270,7 +292,7 @@ def restore(source: Path, user: str = "") -> RestoreResult:
             if old is not None:
                 shutil.rmtree(old, ignore_errors=True)
 
-    result = RestoreResult(manifest=manifest, counts=counts, files=names)
+    result = RestoreResult(manifest=manifest, counts=counts, files=names, kept=sorted(keep))
     try:
         with db.session_scope() as session:
             result.apply_errors.extend(apply_mod.apply(session, user=user or "restore").errors)

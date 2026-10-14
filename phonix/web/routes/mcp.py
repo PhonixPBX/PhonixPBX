@@ -23,8 +23,9 @@ ALLOW = {"Allow": "POST"}
 
 def _check_headers(request: Request) -> None:
     # DNS rebinding protection: a browser page of another site must not reach us
+    # (host names only: nginx passes Host without the port, e.g. a container published on :8443)
     origin = request.headers.get("origin")
-    if origin and urlsplit(origin).netloc != request.headers.get("host", ""):
+    if origin and urlsplit(origin).hostname != urlsplit("//" + request.headers.get("host", "")).hostname:
         raise HTTPException(403, "origin not allowed")
     version = request.headers.get("mcp-protocol-version")
     if version and version not in mcp.SUPPORTED_VERSIONS:

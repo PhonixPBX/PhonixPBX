@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-14 13:12+0200\n"
+"POT-Creation-Date: 2026-10-14 17:18+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: pl\n"
@@ -1079,6 +1079,9 @@ msgstr "Stały Caller ID"
 msgid "For 'one after another', phones ring in this order."
 msgstr "Przy strategii „po kolei” telefony dzwonią w tej kolejności."
 
+msgid "For example when the backup comes from a system with another host name."
+msgstr "Na przykład gdy kopia zapasowa pochodzi z systemu o innej nazwie hosta."
+
 msgid "For your reference only."
 msgstr "Wyłącznie informacyjnie."
 
@@ -1299,6 +1302,15 @@ msgstr "Japoński"
 
 msgid "Keep messages on the PBX after e-mailing"
 msgstr "Zachowaj wiadomości na PBX po wysłaniu e-mailem"
+
+msgid "Keep the current TLS certificate and ACME settings"
+msgstr "Zachowaj bieżący certyfikat TLS i ustawienia ACME"
+
+msgid "Keep the current network, firewall and SSH settings"
+msgstr "Zachowaj bieżące ustawienia sieci, zapory i SSH"
+
+msgid "Keep the current web users and API tokens"
+msgstr "Zachowaj bieżących użytkowników WWW i tokeny API"
 
 msgid "Kernel"
 msgstr "Jądro"
@@ -1759,6 +1771,13 @@ msgstr "Inny serwer ACME"
 msgid "Other lego provider ..."
 msgstr "Inny dostawca lego ..."
 
+msgid ""
+"Otherwise the users, passwords and API tokens of the backup replace them, and you log in again with the password from"
+" the backup."
+msgstr ""
+"W przeciwnym razie użytkownicy, hasła i tokeny API z kopii zapasowej zastąpią bieżące, a zalogujesz się ponownie "
+"hasłem z kopii zapasowej."
+
 msgid "Outgoing"
 msgstr "Wychodzące"
 
@@ -2032,6 +2051,13 @@ msgstr "Uruchom ponownie z nowym firmware"
 msgid "Recipient"
 msgstr "Odbiorca"
 
+msgid ""
+"Recommended when the backup comes from another system or network: its IP address, firewall rules or SSH settings "
+"could lock you out."
+msgstr ""
+"Zalecane, gdy kopia zapasowa pochodzi z innego systemu lub sieci: jej adres IP, reguły zapory lub ustawienia SSH mogą"
+" odciąć Ci dostęp."
+
 msgid "Region"
 msgstr "Region"
 
@@ -2102,11 +2128,15 @@ msgid "Restore this backup now?"
 msgstr "Przywrócić teraz tę kopię zapasową?"
 
 msgid ""
-"Restoring replaces the whole configuration, including web users, passwords and API tokens, and applies it right away."
-" The current state is backed up first."
+"Restoring replaces the configuration, except for the parts kept below, and applies it right away. The current state "
+"is backed up first."
 msgstr ""
-"Przywrócenie zastępuje całą konfigurację, w tym użytkowników WWW, hasła i tokeny API, i od razu ją stosuje. Bieżący "
-"stan jest najpierw zapisywany w kopii zapasowej."
+"Przywrócenie zastępuje konfigurację, z wyjątkiem części zachowanych poniżej, i od razu ją stosuje. Bieżący stan jest "
+"najpierw zapisywany w kopii zapasowej."
+
+#, python-format
+msgid "Restoring the files failed, nothing was changed: %(error)s"
+msgstr "Nie udało się przywrócić plików, nic nie zostało zmienione: %(error)s"
 
 msgid "Ring"
 msgstr "Dzwoni"

@@ -32,17 +32,26 @@ def _error(exc: ServiceError) -> HTTPException:
     return HTTPException(422, {"message": exc.message, "fields": exc.fields})
 
 
+def _read_only(request: Request) -> bool:
+    token = getattr(request.state, "api_token", None)
+    return bool(token and token.read_only)
+
+
 def crud(res: Resource) -> None:
     path, tag, schema, to_dict = res.path, res.tag, res.schema, res.to_dict
 
     @router.get(path, tags=[tag], summary=f"List {tag}")
-    def list_items(user: User = Depends(api_user), db: Session = Depends(get_db)) -> list[dict[str, Any]]:
-        return [to_dict(o) for o in res.list_fn(db)]
+    def list_items(
+        request: Request, user: User = Depends(api_user), db: Session = Depends(get_db)
+    ) -> list[dict[str, Any]]:
+        return [res.public(o, _read_only(request)) for o in res.list_fn(db)]
 
     @router.get(path + "/{item_id}", tags=[tag], summary=f"Get one of {tag}")
-    def get_item(item_id: int, user: User = Depends(api_user), db: Session = Depends(get_db)) -> dict[str, Any]:
+    def get_item(
+        item_id: int, request: Request, user: User = Depends(api_user), db: Session = Depends(get_db)
+    ) -> dict[str, Any]:
         try:
-            return to_dict(res.get_fn(db, item_id))
+            return res.public(res.get_fn(db, item_id), _read_only(request))
         except ServiceError as exc:
             raise _error(exc) from None
 

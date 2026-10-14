@@ -10,6 +10,7 @@ streamable HTTP in stateless, JSON-only mode.
 from __future__ import annotations
 
 import json
+import logging
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any
@@ -40,6 +41,9 @@ PARSE_ERROR = -32700
 INVALID_REQUEST = -32600
 METHOD_NOT_FOUND = -32601
 INVALID_PARAMS = -32602
+INTERNAL_ERROR = -32603
+
+log = logging.getLogger(__name__)
 
 
 @dataclass
@@ -130,10 +134,10 @@ def _resource_tools(res: Resource) -> list[Tool]:
     name, tag = res.name, res.tag
 
     def list_items(ctx: Context, args: dict[str, Any]) -> Any:
-        return [res.to_dict(o) for o in res.list_fn(ctx.db)]
+        return [res.public(o, ctx.read_only) for o in res.list_fn(ctx.db)]
 
     def get_item(ctx: Context, args: dict[str, Any]) -> Any:
-        return res.to_dict(res.get_fn(ctx.db, _int(args, "id")))
+        return res.public(res.get_fn(ctx.db, _int(args, "id")), ctx.read_only)
 
     def create_item(ctx: Context, args: dict[str, Any]) -> Any:
         return res.to_dict(res.create_fn(ctx.db, res.parse(args), ctx.actor))
@@ -354,6 +358,10 @@ def _call(ctx: Context, params: dict[str, Any], msg_id: Any) -> dict[str, Any]:
     except ServiceError as exc:
         ctx.db.rollback()
         return _result(msg_id, _content({"error": str(exc), "fields": exc.fields}, is_error=True))
+    except Exception:
+        ctx.db.rollback()
+        log.exception("MCP tool %s failed", tool.name)
+        return error(msg_id, INTERNAL_ERROR, f"internal error in tool {tool.name}")
     return _result(msg_id, _content(data))
 
 

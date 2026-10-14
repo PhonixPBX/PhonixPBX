@@ -71,13 +71,13 @@ We are reviving the product on current technology:
 
 **The REST API comes first.**
 - `/api/v1/...` is a JSON API with an OpenAPI schema.
-- Scripts authenticate with bearer tokens (`Authorization: Bearer phx_...`). Tokens are managed under *Advanced → API tokens* or with `phonix token`. Each token is read-only (GET only) or read-write, can be disabled, and expires after 1–3653 days or never (no expiry set). Only a SHA-256 hash is stored, and the last use is recorded. HTTP basic auth is not accepted. The web interface's own requests use the session cookie plus the CSRF header.
+- Scripts authenticate with bearer tokens (`Authorization: Bearer phx_...`). Tokens are managed under *Advanced → API tokens* or with `phonix token`. Each token is read-only (GET only, without the voicemail and conference PINs) or read-write, can be disabled, and expires after 1–3653 days or never (no expiry set). Only a SHA-256 hash is stored, and the last use is recorded. HTTP basic auth is not accepted. The web interface's own requests use the session cookie plus the CSRF header.
 - `/api/v1/metrics` serves Prometheus metrics (text format 0.0.4, any valid token). Every scrape computes them fresh from the database, `/proc`, the data partition and one AMI connection; no `prometheus_client` dependency.
 - The HTML UI and the API call the same service layer.
 
 **MCP for AI assistants.**
 - `POST /api/mcp` is a Model Context Protocol server (streamable HTTP, protocol versions 2025-03-26 to 2025-11-25). It is stateless and answers with JSON only: no SSE stream and no `Mcp-Session-Id`, so `GET` and `DELETE` return 405. The protocol is implemented in `phonix/mcp.py`, not with the `mcp` SDK, so it adds no runtime dependency.
-- Clients authenticate with the same bearer tokens; the session cookie is not accepted. Every MCP request is a POST, so a read-only token is enforced per tool: it gets only the read tools in `tools/list`, and write tools return a tool error. Requests with an `Origin` header for another host are rejected (DNS rebinding).
+- Clients authenticate with the same bearer tokens; the session cookie is not accepted. Every MCP request is a POST, so a read-only token is enforced per tool: it gets only the read tools in `tools/list`, and write tools return a tool error. Requests with an `Origin` header for another host name are rejected (DNS rebinding); the port is not compared, because nginx passes `Host` without it.
 - Tools: `list_*`, `get_*`, `create_*`, `update_*` (partial: only the given fields change), `delete_*` for phones, providers, call groups, conferences, applications and AMI users, plus `set_phone_enabled` / `set_provider_enabled`; `list_settings_groups`, `get_settings`, `update_settings`; `get_status`, `get_pending_changes`, `preview_apply` (paths and components only, never file content), `apply_changes`; `tail_log` (`asterisk` or `system`, at most 1000 lines).
 - Secrets are never returned, and an empty secret keeps the stored one, as in the REST API. Changes are audited as `<user> (mcp)`.
 
@@ -259,7 +259,7 @@ A backup holds the configuration as a document, not as a database file. This kee
 **config.json** (`phonix/services/configdoc.py`, schema in `docs/config-schema.json`)
 - `{"format": "phonix-config", "version": 1, "phonix_version", "created", "settings", "users", "providers", "phones", "callgroups", "conferences", "applications", "ami_users", "media"}`.
 - Contains every secret: SIP/IAX passwords, voicemail PINs, manager secrets, the e-mail password, the argon2 hashes of the web users and the sha256 hashes of their API tokens.
-- Objects have document-local `id`s that references use (`dial_provider_id`, `member_ids`, `incoming_routes[].dest_id`, …); the field names are those of the REST API. Settings groups that are missing get their defaults.
+- Objects have document-local `id`s that references use (`dial_provider_id`, `member_ids`, `incoming_routes[].dest_id`, …); the field names are those of the REST API. Settings groups that are missing keep their current values.
 - Unknown keys are errors. `version` is bumped whenever the document changes incompatibly; older documents are upgraded step by step (`UPGRADES`), newer ones are refused with the release that made them. A test keeps the checked-in schema current.
 
 **Restore** (`phonix/services/backup.py`)
@@ -267,14 +267,18 @@ A backup holds the configuration as a document, not as a database file. This kee
 2. Dry run the import and show a preview (counts, files). Nothing has changed so far.
 3. Take a safety backup of the current state.
 4. In one transaction, wipe all configuration tables (not the audit log) and create every object through the service layer, so the same validation as in the UI applies. The first error aborts the restore.
+   The admin can keep parts of the current system (`configdoc.KEEP_PARTS`):
+   - `network` (default on): the `network` and `firewall` groups plus `ssh_enabled`/`ssh_password_hash` of the `system` group, so a backup from another system or network cannot lock the admin out.
+   - `users`: web users and their API tokens.
+   - `certificate`: the `tls`/`acme` directories and the `acme` group.
 5. Swap in the `media`, `tls` and `acme` directories (with the modes and group from first boot), then commit. If the commit fails, the directories are swapped back.
 6. Apply the configuration and reload nginx when a certificate was restored.
 
 Sessions store the user name next to the user id, so a session whose id now belongs to another user ends.
 
 **Interfaces**
-- **UI:** System → Backup/Restore. An upload or a stored backup first shows the preview; Restore needs a confirmation.
-- **CLI:** `phonix backup create [file]`, `phonix backup restore <file> [--dry-run]`, and `phonix config export|import|schema` for the bare `config.json` (an import checks the media files in place and leaves the apply to the user).
+- **UI:** System → Backup/Restore. An upload or a stored backup first shows the preview with the parts to keep; Restore needs a confirmation.
+- **CLI:** `phonix backup create [file]`, `phonix backup restore <file> [--dry-run] [--restore-network] [--keep-users] [--keep-certificate]`, and `phonix config export|import|schema` for the bare `config.json` (an import checks the media files in place and leaves the apply to the user).
 
 ### Later phases (not v1)
 - Fax to email via `res_fax_spandsp`, if Alpine's Asterisk build includes it

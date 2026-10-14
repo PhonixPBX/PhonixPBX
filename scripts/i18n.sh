@@ -32,9 +32,9 @@ update)
 	for lang in $langs; do
 		po=phonix/locale/$lang/LC_MESSAGES/messages.po
 		if [ -f "$po" ]; then
-			"$PYBABEL" update -i "$POT" -d phonix/locale -l "$lang" --no-fuzzy-matching --ignore-obsolete
+			"$PYBABEL" update -i "$POT" -d phonix/locale -l "$lang" --no-fuzzy-matching --ignore-obsolete --width 120
 		else
-			"$PYBABEL" init -i "$POT" -d phonix/locale -l "$lang"
+			"$PYBABEL" init -i "$POT" -d phonix/locale -l "$lang" --width 120
 		fi
 	done
 	;;

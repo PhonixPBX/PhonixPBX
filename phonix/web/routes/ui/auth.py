@@ -122,5 +122,7 @@ async def password_change(
     except ServiceError as exc:
         return page(request, "password.html", status_code=422, errors=service_errors(exc))
     firstboot.forget_initial_password()
+    # keep this session; the others of this user end
+    request.session[security.SESSION_PW_STAMP] = security.password_stamp(user)
     flash(request, _("Your password has been changed."))
     return RedirectResponse("/", status_code=303)

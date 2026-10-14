@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-14 13:12+0200\n"
+"POT-Creation-Date: 2026-10-14 17:18+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: nl\n"
@@ -1078,6 +1078,9 @@ msgstr "Vaste beller-ID"
 msgid "For 'one after another', phones ring in this order."
 msgstr "Bij 'na elkaar' gaan de telefoons in deze volgorde over."
 
+msgid "For example when the backup comes from a system with another host name."
+msgstr "Bijvoorbeeld als de back-up van een systeem met een andere hostnaam komt."
+
 msgid "For your reference only."
 msgstr "Alleen ter informatie."
 
@@ -1298,6 +1301,15 @@ msgstr "Japans"
 
 msgid "Keep messages on the PBX after e-mailing"
 msgstr "Berichten na het e-mailen op de PBX bewaren"
+
+msgid "Keep the current TLS certificate and ACME settings"
+msgstr "Huidig TLS-certificaat en ACME-instellingen behouden"
+
+msgid "Keep the current network, firewall and SSH settings"
+msgstr "Huidige netwerk-, firewall- en SSH-instellingen behouden"
+
+msgid "Keep the current web users and API tokens"
+msgstr "Huidige webgebruikers en API-tokens behouden"
 
 msgid "Kernel"
 msgstr "Kernel"
@@ -1755,6 +1767,13 @@ msgstr "Andere ACME-server"
 msgid "Other lego provider ..."
 msgstr "Andere lego-provider ..."
 
+msgid ""
+"Otherwise the users, passwords and API tokens of the backup replace them, and you log in again with the password from"
+" the backup."
+msgstr ""
+"Anders vervangen de gebruikers, wachtwoorden en API-tokens uit de back-up de huidige, en logt u opnieuw in met het "
+"wachtwoord uit de back-up."
+
 msgid "Outgoing"
 msgstr "Uitgaand"
 
@@ -2028,6 +2047,13 @@ msgstr "Herstarten met de nieuwe firmware"
 msgid "Recipient"
 msgstr "Ontvanger"
 
+msgid ""
+"Recommended when the backup comes from another system or network: its IP address, firewall rules or SSH settings "
+"could lock you out."
+msgstr ""
+"Aanbevolen als de back-up van een ander systeem of netwerk komt: het IP-adres, de firewallregels of de SSH-"
+"instellingen daarvan kunnen u buitensluiten."
+
 msgid "Region"
 msgstr "Regio"
 
@@ -2098,11 +2124,15 @@ msgid "Restore this backup now?"
 msgstr "Deze back-up nu herstellen?"
 
 msgid ""
-"Restoring replaces the whole configuration, including web users, passwords and API tokens, and applies it right away."
-" The current state is backed up first."
+"Restoring replaces the configuration, except for the parts kept below, and applies it right away. The current state "
+"is backed up first."
 msgstr ""
-"Herstellen vervangt de hele configuratie, inclusief webgebruikers, wachtwoorden en API-tokens, en past deze direct "
-"toe. Van de huidige toestand wordt eerst een back-up gemaakt."
+"Herstellen vervangt de configuratie, behalve de hieronder behouden onderdelen, en past deze direct toe. Van de "
+"huidige toestand wordt eerst een back-up gemaakt."
+
+#, python-format
+msgid "Restoring the files failed, nothing was changed: %(error)s"
+msgstr "Het terugzetten van de bestanden is mislukt, er is niets gewijzigd: %(error)s"
 
 msgid "Ring"
 msgstr "Overgaan"

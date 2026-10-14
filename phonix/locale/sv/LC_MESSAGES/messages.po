@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-14 13:12+0200\n"
+"POT-Creation-Date: 2026-10-14 17:18+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: sv\n"
@@ -1078,6 +1078,9 @@ msgstr "Fast nummerpresentation"
 msgid "For 'one after another', phones ring in this order."
 msgstr "För ”en i taget” ringer telefonerna i den här ordningen."
 
+msgid "For example when the backup comes from a system with another host name."
+msgstr "Till exempel när säkerhetskopian kommer från ett system med ett annat värdnamn."
+
 msgid "For your reference only."
 msgstr "Endast för din egen information."
 
@@ -1298,6 +1301,15 @@ msgstr "Japanska"
 
 msgid "Keep messages on the PBX after e-mailing"
 msgstr "Behåll meddelandena på växeln efter e-postutskick"
+
+msgid "Keep the current TLS certificate and ACME settings"
+msgstr "Behåll nuvarande TLS-certifikat och ACME-inställningar"
+
+msgid "Keep the current network, firewall and SSH settings"
+msgstr "Behåll nuvarande nätverks-, brandväggs- och SSH-inställningar"
+
+msgid "Keep the current web users and API tokens"
+msgstr "Behåll nuvarande webbanvändare och API-token"
 
 msgid "Kernel"
 msgstr "Kärna"
@@ -1757,6 +1769,13 @@ msgstr "Annan ACME-server"
 msgid "Other lego provider ..."
 msgstr "Annan lego-leverantör ..."
 
+msgid ""
+"Otherwise the users, passwords and API tokens of the backup replace them, and you log in again with the password from"
+" the backup."
+msgstr ""
+"Annars ersätter säkerhetskopians användare, lösenord och API-token de nuvarande, och du loggar in igen med lösenordet"
+" från säkerhetskopian."
+
 msgid "Outgoing"
 msgstr "Utgående"
 
@@ -2030,6 +2049,13 @@ msgstr "Starta om med den nya firmwaren"
 msgid "Recipient"
 msgstr "Mottagare"
 
+msgid ""
+"Recommended when the backup comes from another system or network: its IP address, firewall rules or SSH settings "
+"could lock you out."
+msgstr ""
+"Rekommenderas när säkerhetskopian kommer från ett annat system eller nätverk: dess IP-adress, brandväggsregler eller "
+"SSH-inställningar kan låsa ute dig."
+
 msgid "Region"
 msgstr "Region"
 
@@ -2100,11 +2126,15 @@ msgid "Restore this backup now?"
 msgstr "Återställa den här säkerhetskopian nu?"
 
 msgid ""
-"Restoring replaces the whole configuration, including web users, passwords and API tokens, and applies it right away."
-" The current state is backed up first."
+"Restoring replaces the configuration, except for the parts kept below, and applies it right away. The current state "
+"is backed up first."
 msgstr ""
-"Återställningen ersätter hela konfigurationen, inklusive webbanvändare, lösenord och API-token, och tillämpar den "
-"direkt. Det aktuella läget säkerhetskopieras först."
+"Återställningen ersätter konfigurationen, utom de delar som behålls nedan, och tillämpar den direkt. Det aktuella "
+"läget säkerhetskopieras först."
+
+#, python-format
+msgid "Restoring the files failed, nothing was changed: %(error)s"
+msgstr "Det gick inte att återställa filerna, inget ändrades: %(error)s"
 
 msgid "Ring"
 msgstr "Signalerar"
