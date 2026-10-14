@@ -8,7 +8,11 @@ Deliberately plain ``input()`` based so it works on any serial or VGA console.
 from __future__ import annotations
 
 import getpass
+import itertools
+import signal
 import sys
+import termios
+import time
 
 from phonix import __version__
 from phonix.core import settings as st
@@ -115,13 +119,41 @@ def _priv(action: str) -> bool:
     return True
 
 
+def _going_down(message: str) -> None:
+    """Show a spinner instead of the prompt until init stops the menu; input is ignored."""
+    for sig in (signal.SIGINT, signal.SIGQUIT, signal.SIGTSTP):
+        signal.signal(sig, signal.SIG_IGN)
+    fd = sys.stdin.fileno() if sys.stdin.isatty() else None
+    if fd is not None:
+        attrs = termios.tcgetattr(fd)
+        attrs[3] &= ~(termios.ECHO | termios.ICANON | termios.ISIG)
+        termios.tcsetattr(fd, termios.TCSAFLUSH, attrs)
+    out = sys.stdout
+    out.write("\033[?25l")  # hide the cursor
+    for frame in itertools.cycle("|/-\\"):
+        out.write(f"\r  {message} {frame} ")
+        out.flush()
+        if fd is not None:
+            termios.tcflush(fd, termios.TCIFLUSH)
+        time.sleep(0.2)
+
+
+def _power(action: str, question: str, message: str) -> None:
+    if _confirm(question) and _priv(action):
+        print()
+        _going_down(message)
+
+
 MENU = [
     ("Show status", lambda: print(banner())),
     ("Set LAN IP address", set_lan),
     ("Reset administrator password", reset_password),
-    ("Reboot", lambda: _confirm("Reboot now?") and _priv("reboot")),
-    ("Shut down", lambda: _confirm("Shut down now?") and _priv("shutdown")),
-    ("Reset to factory defaults", lambda: _confirm("ERASE all configuration and data?") and _priv("factory-reset")),
+    ("Reboot", lambda: _power("reboot", "Reboot now?", "Rebooting")),
+    ("Shut down", lambda: _power("shutdown", "Shut down now?", "Shutting down")),
+    (
+        "Reset to factory defaults",
+        lambda: _power("factory-reset", "ERASE all configuration and data?", "Factory reset, rebooting"),
+    ),
 ]
 
 

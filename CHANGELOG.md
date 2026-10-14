@@ -28,6 +28,8 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   the `phonix` user.
 - Web sessions end if their user was replaced, e.g. by a restore. All users are logged out
   once after updating.
+- The console menu shows a spinner instead of the prompt while the system reboots or shuts
+  down, and ignores further input.
 
 ### Fixed
 
