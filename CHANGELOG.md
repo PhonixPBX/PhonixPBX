@@ -40,6 +40,9 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 - Restoring a backup could leave the system broken: the database was replaced under
   running processes, a backup from a newer release failed halfway through, and media,
   TLS and ACME directories lost their permissions.
+- The online update check offered any release that differed from the running version, even
+  an older one (e.g. 1.0.1 on a 1.1.0 development build). Versions are now compared by
+  semantic versioning and only newer releases are offered.
 
 ## [1.0.0] - 2026-10-13
 

@@ -333,3 +333,37 @@ def test_firmware_check_github_release(client, monkeypatch):
     r = client.post("/system/firmware/check", headers=headers)
     assert "Version 9.9.8 is available" in r.text
     assert "phonix-9.9.8.update" in r.text
+
+    monkeypatch.setattr(system_routes, "__version__", "1.1.0.dev0")
+    payload = {"tag_name": "v1.0.1", "html_url": "https://github.com/PhonixPBX/PhonixPBX/releases/tag/v1.0.1"}
+    r = client.post("/system/firmware/check", headers=headers)
+    assert "is available" not in r.text
+    assert "running the latest version (1.1.0.dev0)" in r.text
+
+    payload = {"tag_name": "v1.1.0", "html_url": "https://github.com/PhonixPBX/PhonixPBX/releases/tag/v1.1.0"}
+    r = client.post("/system/firmware/check", headers=headers)
+    assert "Version 1.1.0 is available" in r.text
+
+
+@pytest.mark.parametrize(
+    "latest,current,newer",
+    [
+        ("1.0.1", "1.1.0.dev0", False),
+        ("1.1.0", "1.1.0.dev0", True),
+        ("1.1.0-rc.1", "1.1.0.dev0", True),
+        ("1.1.0", "1.1.0-rc.1", True),
+        ("1.1.0-rc.2", "1.1.0-rc.10", False),
+        ("1.1.0-alpha", "1.1.0-alpha.1", False),
+        ("1.1.0-alpha.1", "1.1.0-alpha.beta", False),
+        ("1.1.0-beta", "1.1.0-alpha.beta", True),
+        ("v1.0.0+build.5", "1.0.0", False),
+        ("v2.0.0", "1.9.9", True),
+        ("1.10.0", "1.9.0", True),
+        ("nightly", "1.0.0", True),
+        ("nightly", "nightly", False),
+    ],
+)
+def test_update_is_newer(latest, current, newer):
+    from phonix.services import update
+
+    assert update.is_newer(latest, current) is newer

@@ -13,9 +13,11 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import tarfile
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
 
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives import serialization
@@ -27,6 +29,33 @@ from phonix.services import platform, privileged
 from phonix.services.common import ServiceError
 
 MAX_BUNDLE = 1024**3
+
+# semver: v1.2.3, 1.2.3-rc.1, 1.2.3+build; "1.2.3.dev0" (Python style) counts as pre-release "dev0"
+_VERSION_RE = re.compile(
+    r"v?(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)"
+    r"(?:[-.](?P<pre>[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+[0-9A-Za-z.-]+)?"
+)
+
+
+def version_key(value: str) -> tuple[Any, ...] | None:
+    """Semver precedence sort key, or None if ``value`` isn't a semver version."""
+    m = _VERSION_RE.fullmatch(value.strip())
+    if not m:
+        return None
+    release = (int(m["major"]), int(m["minor"]), int(m["patch"]))
+    if m["pre"] is None:
+        return (release, (1,))  # a release sorts after all of its pre-releases
+    # numeric identifiers sort numerically and before alphanumeric ones
+    ids = tuple((0, int(x), "") if x.isdigit() else (1, 0, x) for x in m["pre"].split("."))
+    return (release, (0, *ids))
+
+
+def is_newer(latest: str, current: str) -> bool:
+    """True if ``latest`` is a newer release than ``current``; falls back to inequality for unknown formats."""
+    a, b = version_key(latest), version_key(current)
+    if a is None or b is None:
+        return latest.removeprefix("v") != current.removeprefix("v")
+    return a > b
 
 
 @dataclass

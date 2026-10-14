@@ -205,8 +205,8 @@ def firmware_check(request: Request, user: User = Depends(ui_user), db: Session 
             download = data.get("url", "")
     except (OSError, ValueError, AttributeError) as exc:
         return _alert(request, "danger", _("Update check failed: %(error)s", error=exc))
-    if latest == __version__:
-        return _alert(request, "success", _("You are running the latest version (%(version)s).", version=latest))
+    if not update.is_newer(latest, __version__):
+        return _alert(request, "success", _("You are running the latest version (%(version)s).", version=__version__))
     return _alert(
         request,
         "info",
