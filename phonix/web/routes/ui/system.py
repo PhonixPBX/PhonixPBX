@@ -8,14 +8,15 @@ import contextlib
 import json
 import os
 import secrets
-import shutil
-import tempfile
+import time
 import urllib.request
 from pathlib import Path
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse, Response
 from sqlalchemy.orm import Session
+from starlette.concurrency import run_in_threadpool
 
 from phonix import __version__, config
 from phonix.core import settings as st
@@ -275,26 +276,81 @@ def backup_delete(name: str, user: User = Depends(ui_user)) -> Response:
     return Response("")
 
 
-@router.post("/backup/restore")
-async def backup_restore(request: Request, file: UploadFile, user: User = Depends(ui_user)) -> Response:
-    cfg = config.get()
-    with tempfile.NamedTemporaryFile(dir=cfg.data_dir, suffix=".tar.zst", delete=False) as tmp:
-        shutil.copyfileobj(file.file, tmp)
-        tmp_path = Path(tmp.name)
+def _restore_dir() -> Path:
+    path = config.get().state_dir / "restore-uploads"
+    path.mkdir(parents=True, exist_ok=True)
+    # forgotten uploads (the preview was never confirmed)
+    cutoff = time.time() - 24 * 3600
+    for old in path.glob("*.tar.zst"):
+        if old.stat().st_mtime < cutoff:
+            old.unlink(missing_ok=True)
+    return path
+
+
+def _restore_source(form: Any) -> Path:
+    """The backup a preview/restore form refers to: an upload token or a stored backup."""
+    token = str(form.get("token", ""))
+    if token:
+        if not token.isalnum():
+            raise HTTPException(400, _("invalid token"))
+        path = _restore_dir() / f"{token}.tar.zst"
+        if not path.exists():
+            raise ServiceError(_("The uploaded file expired, please upload it again."))
+        return path
+    return _backup_file(str(form.get("name", "")))
+
+
+def _preview(request: Request, source: Path, token: str = "", name: str = "") -> Response:
     try:
-        manifest = backup_svc.restore(tmp_path)
+        preview = backup_svc.inspect(source)
+    except ServiceError as exc:
+        if token:
+            source.unlink(missing_ok=True)
+        return _alert(request, "danger", str(exc), status_code=422)
+    return render(request, "partials/backup_preview.html", {"preview": preview, "token": token, "name": name})
+
+
+@router.post("/backup/upload")
+def backup_upload(request: Request, file: UploadFile, user: User = Depends(ui_user)) -> Response:
+    token = secrets.token_hex(16)
+    target = _restore_dir() / f"{token}.tar.zst"
+    size = 0
+    with target.open("wb") as out:
+        while chunk := file.file.read(1 << 20):
+            size += len(chunk)
+            if size > backup_svc.MAX_RESTORE_BYTES:
+                out.close()
+                target.unlink(missing_ok=True)
+                return _alert(request, "danger", _("Backup is too large"), status_code=413)
+            out.write(chunk)
+    return _preview(request, target, token=token)
+
+
+@router.post("/backup/preview/{name}")
+def backup_preview(request: Request, name: str, user: User = Depends(ui_user)) -> Response:
+    return _preview(request, _backup_file(name), name=name)
+
+
+@router.post("/backup/restore")
+async def backup_restore(request: Request, user: User = Depends(ui_user)) -> Response:
+    form = await request.form()
+    try:
+        source = _restore_source(form)
+        result = await run_in_threadpool(backup_svc.restore, source, user.username)
     except ServiceError as exc:
         return _alert(request, "danger", str(exc), status_code=422)
-    finally:
-        tmp_path.unlink(missing_ok=True)
-    return _alert(
-        request,
-        "success",
-        _(
-            "Backup from %(created)s restored. Review the configuration and apply the changes.",
-            created=manifest.get("created", "?"),
-        ),
-    )
+    if form.get("token"):
+        source.unlink(missing_ok=True)
+    if result.apply_errors:
+        flash(
+            request,
+            _("Backup restored, but applying it failed: %(errors)s", errors="; ".join(result.apply_errors)),
+            "danger",
+        )
+    else:
+        flash(request, _("Backup from %(created)s restored and applied.", created=result.manifest.get("created", "?")))
+    # the restored web users may differ: a full page load logs out a stale session
+    return Response(status_code=204, headers={"HX-Redirect": "/"})
 
 
 def _legacy_dir() -> Path:

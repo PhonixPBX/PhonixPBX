@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
 # SPDX-License-Identifier: Apache-2.0
-"""Machine-local secrets kept on the data partition (never in backups' DB rows)."""
+"""Machine-local secrets kept on the data partition (not part of backups)."""
 
 from __future__ import annotations
 

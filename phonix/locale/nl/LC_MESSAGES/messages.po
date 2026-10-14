@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-13 22:46+0200\n"
+"POT-Creation-Date: 2026-10-14 13:12+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: nl\n"
@@ -57,6 +57,14 @@ msgstr[1] "%(num)d routes"
 #, python-format
 msgid "%(number)s via %(provider)s"
 msgstr "%(number)s via %(provider)s"
+
+#, python-format
+msgid "%(object)s: %(error)s"
+msgstr "%(object)s: %(error)s"
+
+#, python-format
+msgid "%(object)s: reference to unknown %(type)s %(id)s"
+msgstr "%(object)s: verwijzing naar onbekend %(type)s %(id)s"
 
 #, python-format
 msgid "%(used)s of %(total)s"
@@ -143,6 +151,9 @@ msgstr "Een provider kan niet naar zichzelf uitwijken"
 
 msgid "A secret is required"
 msgstr "Een geheim is vereist"
+
+msgid "ACME account"
+msgstr "ACME-account"
 
 msgid "ACME directory URL"
 msgstr "ACME-directory-URL"
@@ -413,8 +424,12 @@ msgid "Backup %(name)s created."
 msgstr "Back-up %(name)s aangemaakt."
 
 #, python-format
-msgid "Backup from %(created)s restored. Review the configuration and apply the changes."
-msgstr "Back-up van %(created)s hersteld. Controleer de configuratie en pas de wijzigingen toe."
+msgid "Backup from %(created)s"
+msgstr "Back-up van %(created)s"
+
+#, python-format
+msgid "Backup from %(created)s restored and applied."
+msgstr "Back-up van %(created)s hersteld en toegepast."
 
 msgid "Backup is too large"
 msgstr "Back-up is te groot"
@@ -424,6 +439,10 @@ msgstr "Het back-upmanifest ontbreekt"
 
 msgid "Backup not found"
 msgstr "Back-up niet gevonden"
+
+#, python-format
+msgid "Backup restored, but applying it failed: %(errors)s"
+msgstr "Back-up hersteld, maar toepassen is mislukt: %(errors)s"
 
 msgid "Backup/Restore"
 msgstr "Back-up/herstel"
@@ -486,6 +505,9 @@ msgstr "Belgroep %(name)s <%(number)s>"
 
 msgid "Call group not found"
 msgstr "Belgroep niet gevonden"
+
+msgid "Call groups"
+msgstr "Belgroepen"
 
 msgid "Call groups ring several phones at once or one after another."
 msgstr "Belgroepen laten meerdere telefoons tegelijk of na elkaar overgaan."
@@ -604,6 +626,9 @@ msgstr "Vergaderruimte"
 
 msgid "Conference room not found"
 msgstr "Vergaderruimte niet gevonden"
+
+msgid "Conference rooms"
+msgstr "Vergaderruimtes"
 
 msgid "Conference rooms let several callers talk together."
 msgstr "In vergaderruimtes kunnen meerdere bellers met elkaar praten."
@@ -732,9 +757,6 @@ msgstr "Donkere modus"
 msgid "Data partition"
 msgstr "Datapartitie"
 
-msgid "Database in backup is corrupt"
-msgstr "De database in de back-up is beschadigd"
-
 msgid "Default expiry (s)"
 msgstr "Standaard verlooptijd (s)"
 
@@ -844,6 +866,14 @@ msgstr "Sleep de begroeting hierheen of klik om te uploaden"
 
 msgid "Drop the update file here or click to upload"
 msgstr "Sleep het updatebestand hierheen of klik om te uploaden"
+
+#, python-format
+msgid "Duplicate %(type)s id %(id)s"
+msgstr "Dubbele ID %(id)s voor %(type)s"
+
+#, python-format
+msgid "Duplicate user %(name)s"
+msgstr "Dubbele gebruiker %(name)s"
 
 msgid "Duration"
 msgstr "Duur"
@@ -1342,6 +1372,10 @@ msgstr "Logs"
 msgid "MCP clients:"
 msgstr "MCP-clients:"
 
+#, python-format
+msgid "Made by PhonixPBX %(version)s."
+msgstr "Gemaakt met PhonixPBX %(version)s."
+
 msgid "Make sure the network of your computer is allowed before applying restrictions."
 msgstr "Zorg ervoor dat het netwerk van uw computer is toegestaan voordat u beperkingen toepast."
 
@@ -1356,6 +1390,9 @@ msgstr "Managergebruiker"
 
 msgid "Manager user not found"
 msgstr "Managergebruiker niet gevonden"
+
+msgid "Manager users"
+msgstr "Managergebruikers"
 
 msgid "Max. message length (s)"
 msgstr "Max. berichtlengte (s)"
@@ -1377,6 +1414,9 @@ msgstr "Mediaversleuteling (SRTP)"
 
 msgid "Media file not found"
 msgstr "Mediabestand niet gevonden"
+
+msgid "Media files"
+msgstr "Mediabestanden"
 
 msgid "Members"
 msgstr "Leden"
@@ -1535,8 +1575,8 @@ msgstr "Geen actieve gesprekken."
 msgid "No applications"
 msgstr "Geen applicaties"
 
-msgid "No backups yet. Backups contain the configuration, media and the TLS certificate."
-msgstr "Nog geen back-ups. Back-ups bevatten de configuratie, media en het TLS-certificaat."
+msgid "No backups yet. Backups contain the configuration with all passwords, the media files and the TLS certificate."
+msgstr "Nog geen back-ups. Back-ups bevatten de configuratie met alle wachtwoorden, de mediabestanden en het TLS-certificaat."
 
 msgid "No call groups"
 msgstr "Geen belgroepen"
@@ -2050,6 +2090,20 @@ msgstr "Herstarten van Asterisk voor SIP-TLS mislukt: %(error)s"
 msgid "Restore"
 msgstr "Herstellen"
 
+#, python-format
+msgid "Restore %(name)s"
+msgstr "%(name)s herstellen"
+
+msgid "Restore this backup now?"
+msgstr "Deze back-up nu herstellen?"
+
+msgid ""
+"Restoring replaces the whole configuration, including web users, passwords and API tokens, and applies it right away."
+" The current state is backed up first."
+msgstr ""
+"Herstellen vervangt de hele configuratie, inclusief webgebruikers, wachtwoorden en API-tokens, en past deze direct "
+"toe. Van de huidige toestand wordt eerst een back-up gemaakt."
+
 msgid "Ring"
 msgstr "Overgaan"
 
@@ -2182,6 +2236,9 @@ msgstr "Server vereist authenticatie"
 msgid "Services"
 msgstr "Diensten"
 
+msgid "Settings groups"
+msgstr "Instellingsgroepen"
+
 msgid "Settings saved."
 msgstr "Instellingen opgeslagen."
 
@@ -2276,6 +2333,9 @@ msgstr "Systeeminstellingen"
 msgid "TLS / SMTPS (port 465)"
 msgstr "TLS / SMTPS (poort 465)"
 
+msgid "TLS certificate and key"
+msgstr "TLS-certificaat en sleutel"
+
 msgid "TLS port"
 msgstr "TLS-poort"
 
@@ -2318,6 +2378,21 @@ msgstr ""
 "De CA maakt verbinding met <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: de namen moeten naar deze "
 "PBX verwijzen en poort 80 moet vanaf internet bereikbaar zijn."
 
+msgid "The configuration in the backup is missing or damaged"
+msgstr "De configuratie in de back-up ontbreekt of is beschadigd"
+
+#, python-format
+msgid "The configuration is invalid: %(errors)s"
+msgstr "De configuratie is ongeldig: %(errors)s"
+
+#, python-format
+msgid ""
+"The configuration was created by PhonixPBX %(release)s and is newer than this system supports. Update this system "
+"first."
+msgstr ""
+"De configuratie is gemaakt met PhonixPBX %(release)s en is nieuwer dan dit systeem ondersteunt. Werk eerst dit "
+"systeem bij."
+
 msgid "The directory URL must start with https://"
 msgstr "De directory-URL moet met https:// beginnen"
 
@@ -2352,6 +2427,10 @@ msgstr "De lego-ACME-client is niet geïnstalleerd."
 msgid "The log is empty or not available."
 msgstr "Het log is leeg of niet beschikbaar."
 
+#, python-format
+msgid "The media file %(path)s is missing or damaged"
+msgstr "Het mediabestand %(path)s ontbreekt of is beschadigd"
+
 msgid "The number used to dial this phone and the SIP/IAX username."
 msgstr "Het nummer waarmee deze telefoon wordt gebeld en de SIP/IAX-gebruikersnaam."
 
@@ -2380,6 +2459,9 @@ msgstr ""
 "De webinterface gebruikt een zelfondertekend certificaat. <a href=\"/advanced/certificate\">Vraag er een aan bij "
 "Let's Encrypt of upload uw eigen certificaat</a> om browserwaarschuwingen te voorkomen."
 
+msgid "This backup was made by an older PhonixPBX release in a format that can no longer be restored."
+msgstr "Deze back-up is gemaakt met een oudere PhonixPBX-versie in een formaat dat niet meer kan worden hersteld."
+
 msgid ""
 "This erases the complete configuration, voicemail, media and backups on this system and reboots. Download a backup "
 "first."
@@ -2389,6 +2471,9 @@ msgstr ""
 
 msgid "This field is required"
 msgstr "Dit veld is verplicht"
+
+msgid "This is not a PhonixPBX configuration file"
+msgstr "Dit is geen PhonixPBX-configuratiebestand"
 
 msgid "This phone cannot place outgoing calls through the selected providers."
 msgstr "Deze telefoon kan via de geselecteerde providers geen uitgaande gesprekken voeren."
@@ -2487,6 +2572,10 @@ msgstr "Onbekend"
 msgid "Unknown codec %(codec)r"
 msgstr "Onbekende codec %(codec)r"
 
+#, python-format
+msgid "Unknown configuration version %(version)s"
+msgstr "Onbekende configuratieversie %(version)s"
+
 msgid "Unknown language"
 msgstr "Onbekende taal"
 
@@ -2522,9 +2611,6 @@ msgstr "Niet geregistreerd"
 msgid "Unsafe path in backup: %(name)s"
 msgstr "Onveilig pad in back-up: %(name)s"
 
-msgid "Unsupported backup format"
-msgstr "Niet-ondersteund back-upformaat"
-
 msgid "Up"
 msgstr "Actief"
 
@@ -2559,8 +2645,8 @@ msgstr "Ondertekeningssleutel voor updates is geen ed25519-sleutel"
 msgid "Updates: replace the container image"
 msgstr "Updates: vervang de container-image"
 
-msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). The current state is backed up first."
-msgstr "Upload een PhonixPBX-back-up (<code>.tar.zst</code>). Van de huidige toestand wordt eerst een back-up gemaakt."
+msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). You get a preview before anything changes."
+msgstr "Upload een PhonixPBX-back-up (<code>.tar.zst</code>). U krijgt een voorbeeld te zien voordat er iets verandert."
 
 msgid ""
 "Upload a signed <code>.update</code> bundle for this board. It is written to the inactive system slot; the "
@@ -2699,6 +2785,9 @@ msgstr "Voicemail, vergaderingen en media"
 
 msgid "Web interface and SSH. One CIDR per line, e.g. 192.168.1.0/24. Empty = everyone."
 msgstr "Webinterface en SSH. Eén CIDR per regel, bijv. 192.168.1.0/24. Leeg = iedereen."
+
+msgid "Web users"
+msgstr "Webgebruikers"
 
 msgid "Wildcard domains need DNS validation"
 msgstr "Wildcarddomeinen vereisen DNS-validatie"

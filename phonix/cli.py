@@ -118,13 +118,71 @@ def cmd_legacy(args: argparse.Namespace) -> int:
 
 def cmd_backup(args: argparse.Namespace) -> int:
     from phonix.services import backup
+    from phonix.services.common import ServiceError
 
-    if args.action == "create":
-        path = backup.create(Path(args.file) if args.file else None)
-        print(path)
+    try:
+        if args.action == "create":
+            print(backup.create(Path(args.file) if args.file else None))
+            return 0
+        if not args.file:
+            print("error: the backup file is required", file=sys.stderr)
+            return 2
+        path = Path(args.file)
+        preview = backup.inspect(path) if args.dry_run else backup.restore(path, user="cli")
+    except ServiceError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+    print(f"backup from {preview.manifest.get('created')} (PhonixPBX {preview.manifest.get('version')})")
+    for section, count in preview.counts.items():
+        print(f"  {section:<14}{count:>5}")
+    if preview.files:
+        print(f"  files: {', '.join(preview.files)}")
+    if args.dry_run:
+        print("dry run: nothing was changed")
         return 0
-    backup.restore(Path(args.file))
-    print("backup restored - run 'phonix apply' or reboot")
+    errors = preview.apply_errors if isinstance(preview, backup.RestoreResult) else []
+    for err in errors:
+        print(f"ERROR {err}", file=sys.stderr)
+    print("restored and applied" if not errors else "restored; applying failed - run 'phonix apply'")
+    return 1 if errors else 0
+
+
+def cmd_config(args: argparse.Namespace) -> int:
+    from phonix.services import configdoc
+    from phonix.services.common import ServiceError
+
+    if args.action == "schema":
+        print(json.dumps(configdoc.json_schema(), indent=2, sort_keys=True))
+        return 0
+    if args.action == "export":
+        with _session() as session:
+            text = json.dumps(configdoc.export(session), indent=2, ensure_ascii=False) + "\n"
+        if args.file and args.file != "-":
+            path = Path(args.file)
+            path.touch(mode=0o600)
+            path.write_text(text)
+        else:
+            sys.stdout.write(text)
+        return 0
+    if not args.file:
+        print("error: the configuration file is required", file=sys.stderr)
+        return 2
+    try:
+        data = json.loads(sys.stdin.read() if args.file == "-" else Path(args.file).read_text())
+        doc = configdoc.parse_document(data)
+        with _session() as session:
+            counts = configdoc.import_document(session, doc, config.get().media_dir, user="cli")
+            if args.dry_run:
+                session.rollback()
+    except ValueError as exc:
+        print(f"error: not a JSON file: {exc}", file=sys.stderr)
+        return 1
+    except ServiceError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+    for section, count in counts.items():
+        print(f"  {section:<14}{count:>5}")
+    print("dry run: nothing was changed" if args.dry_run else "configuration imported - run 'phonix apply'")
     return 0
 
 
@@ -268,7 +326,14 @@ def build_parser() -> argparse.ArgumentParser:
     b = sub.add_parser("backup", help="create or restore a backup")
     b.add_argument("action", choices=["create", "restore"])
     b.add_argument("file", nargs="?")
+    b.add_argument("--dry-run", action="store_true", help="restore: only validate and show the contents")
     b.set_defaults(func=cmd_backup)
+
+    cf = sub.add_parser("config", help="export/import the configuration as JSON (config.json)")
+    cf.add_argument("action", choices=["export", "import", "schema"])
+    cf.add_argument("file", nargs="?", help="'-' or empty for stdout (export); '-' for stdin (import)")
+    cf.add_argument("--dry-run", action="store_true", help="import: only validate")
+    cf.set_defaults(func=cmd_config)
 
     t = sub.add_parser("token", help="manage API bearer tokens")
     t.add_argument("action", choices=["create", "list", "enable", "disable", "delete"])

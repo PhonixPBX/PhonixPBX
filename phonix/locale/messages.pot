@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-13 22:46+0200\n"
+"POT-Creation-Date: 2026-10-14 13:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -57,6 +57,14 @@ msgstr[1] ""
 
 #, python-format
 msgid "%(number)s via %(provider)s"
+msgstr ""
+
+#, python-format
+msgid "%(object)s: %(error)s"
+msgstr ""
+
+#, python-format
+msgid "%(object)s: reference to unknown %(type)s %(id)s"
 msgstr ""
 
 #, python-format
@@ -139,6 +147,9 @@ msgid "A provider cannot fail over to itself"
 msgstr ""
 
 msgid "A secret is required"
+msgstr ""
+
+msgid "ACME account"
 msgstr ""
 
 msgid "ACME directory URL"
@@ -414,9 +425,11 @@ msgid "Backup %(name)s created."
 msgstr ""
 
 #, python-format
-msgid ""
-"Backup from %(created)s restored. Review the configuration and apply the "
-"changes."
+msgid "Backup from %(created)s"
+msgstr ""
+
+#, python-format
+msgid "Backup from %(created)s restored and applied."
 msgstr ""
 
 msgid "Backup is too large"
@@ -426,6 +439,10 @@ msgid "Backup manifest is missing"
 msgstr ""
 
 msgid "Backup not found"
+msgstr ""
+
+#, python-format
+msgid "Backup restored, but applying it failed: %(errors)s"
 msgstr ""
 
 msgid "Backup/Restore"
@@ -488,6 +505,9 @@ msgid "Call group %(name)s <%(number)s>"
 msgstr ""
 
 msgid "Call group not found"
+msgstr ""
+
+msgid "Call groups"
 msgstr ""
 
 msgid "Call groups ring several phones at once or one after another."
@@ -608,6 +628,9 @@ msgid "Conference room"
 msgstr ""
 
 msgid "Conference room not found"
+msgstr ""
+
+msgid "Conference rooms"
 msgstr ""
 
 msgid "Conference rooms let several callers talk together."
@@ -736,9 +759,6 @@ msgstr ""
 msgid "Data partition"
 msgstr ""
 
-msgid "Database in backup is corrupt"
-msgstr ""
-
 msgid "Default expiry (s)"
 msgstr ""
 
@@ -847,6 +867,14 @@ msgid "Drop the greeting here or click to upload"
 msgstr ""
 
 msgid "Drop the update file here or click to upload"
+msgstr ""
+
+#, python-format
+msgid "Duplicate %(type)s id %(id)s"
+msgstr ""
+
+#, python-format
+msgid "Duplicate user %(name)s"
 msgstr ""
 
 msgid "Duration"
@@ -1351,6 +1379,10 @@ msgstr ""
 msgid "MCP clients:"
 msgstr ""
 
+#, python-format
+msgid "Made by PhonixPBX %(version)s."
+msgstr ""
+
 msgid ""
 "Make sure the network of your computer is allowed before applying "
 "restrictions."
@@ -1366,6 +1398,9 @@ msgid "Manager user"
 msgstr ""
 
 msgid "Manager user not found"
+msgstr ""
+
+msgid "Manager users"
 msgstr ""
 
 msgid "Max. message length (s)"
@@ -1387,6 +1422,9 @@ msgid "Media encryption (SRTP)"
 msgstr ""
 
 msgid "Media file not found"
+msgstr ""
+
+msgid "Media files"
 msgstr ""
 
 msgid "Members"
@@ -1551,8 +1589,8 @@ msgid "No applications"
 msgstr ""
 
 msgid ""
-"No backups yet. Backups contain the configuration, media and the TLS "
-"certificate."
+"No backups yet. Backups contain the configuration with all passwords, the"
+" media files and the TLS certificate."
 msgstr ""
 
 msgid "No call groups"
@@ -2071,6 +2109,19 @@ msgstr ""
 msgid "Restore"
 msgstr ""
 
+#, python-format
+msgid "Restore %(name)s"
+msgstr ""
+
+msgid "Restore this backup now?"
+msgstr ""
+
+msgid ""
+"Restoring replaces the whole configuration, including web users, "
+"passwords and API tokens, and applies it right away. The current state is"
+" backed up first."
+msgstr ""
+
 msgid "Ring"
 msgstr ""
 
@@ -2202,6 +2253,9 @@ msgstr ""
 msgid "Services"
 msgstr ""
 
+msgid "Settings groups"
+msgstr ""
+
 msgid "Settings saved."
 msgstr ""
 
@@ -2294,6 +2348,9 @@ msgstr ""
 msgid "TLS / SMTPS (port 465)"
 msgstr ""
 
+msgid "TLS certificate and key"
+msgstr ""
+
 msgid "TLS port"
 msgstr ""
 
@@ -2334,6 +2391,19 @@ msgid ""
 " reachable from the internet."
 msgstr ""
 
+msgid "The configuration in the backup is missing or damaged"
+msgstr ""
+
+#, python-format
+msgid "The configuration is invalid: %(errors)s"
+msgstr ""
+
+#, python-format
+msgid ""
+"The configuration was created by PhonixPBX %(release)s and is newer than "
+"this system supports. Update this system first."
+msgstr ""
+
 msgid "The directory URL must start with https://"
 msgstr ""
 
@@ -2369,6 +2439,10 @@ msgstr ""
 msgid "The log is empty or not available."
 msgstr ""
 
+#, python-format
+msgid "The media file %(path)s is missing or damaged"
+msgstr ""
+
 msgid "The number used to dial this phone and the SIP/IAX username."
 msgstr ""
 
@@ -2397,11 +2471,19 @@ msgid ""
 msgstr ""
 
 msgid ""
+"This backup was made by an older PhonixPBX release in a format that can "
+"no longer be restored."
+msgstr ""
+
+msgid ""
 "This erases the complete configuration, voicemail, media and backups on "
 "this system and reboots. Download a backup first."
 msgstr ""
 
 msgid "This field is required"
+msgstr ""
+
+msgid "This is not a PhonixPBX configuration file"
 msgstr ""
 
 msgid "This phone cannot place outgoing calls through the selected providers."
@@ -2501,6 +2583,10 @@ msgstr ""
 msgid "Unknown codec %(codec)r"
 msgstr ""
 
+#, python-format
+msgid "Unknown configuration version %(version)s"
+msgstr ""
+
 msgid "Unknown language"
 msgstr ""
 
@@ -2534,9 +2620,6 @@ msgstr ""
 
 #, python-format
 msgid "Unsafe path in backup: %(name)s"
-msgstr ""
-
-msgid "Unsupported backup format"
 msgstr ""
 
 msgid "Up"
@@ -2574,8 +2657,8 @@ msgid "Updates: replace the container image"
 msgstr ""
 
 msgid ""
-"Upload a PhonixPBX backup (<code>.tar.zst</code>). The current state is "
-"backed up first."
+"Upload a PhonixPBX backup (<code>.tar.zst</code>). You get a preview "
+"before anything changes."
 msgstr ""
 
 msgid ""
@@ -2717,6 +2800,9 @@ msgstr ""
 msgid ""
 "Web interface and SSH. One CIDR per line, e.g. 192.168.1.0/24. Empty = "
 "everyone."
+msgstr ""
+
+msgid "Web users"
 msgstr ""
 
 msgid "Wildcard domains need DNS validation"

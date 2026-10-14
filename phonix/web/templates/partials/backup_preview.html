@@ -1,0 +1,22 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+{% set m = preview.manifest %}
+{% set labels = {"settings": _("Settings groups"), "users": _("Web users"), "api_tokens": _("API tokens"), "providers": _("Providers"), "phones": _("Phones"), "callgroups": _("Call groups"), "conferences": _("Conference rooms"), "applications": _("Applications"), "ami_users": _("Manager users"), "media": _("Media files")} %}
+<div class="card border-warning mt-3">
+  <div class="card-body">
+    <h4>{{ _("Backup from %(created)s", created=m.get("created", "?")) }}</h4>
+    <p class="text-secondary mb-2">{{ _("Made by PhonixPBX %(version)s.", version=m.get("version", "?")) }}</p>
+    <table class="table table-sm">
+      <tbody>
+        {% for section, count in preview.counts.items() %}<tr><td>{{ labels.get(section, section) }}</td><td class="text-end">{{ count }}</td></tr>{% endfor %}
+        {% if "tls" in preview.files %}<tr><td colspan="2">{{ _("TLS certificate and key") }}</td></tr>{% endif %}
+        {% if "acme" in preview.files %}<tr><td colspan="2">{{ _("ACME account") }}</td></tr>{% endif %}
+      </tbody>
+    </table>
+    <div class="alert alert-warning">{{ _("Restoring replaces the whole configuration, including web users, passwords and API tokens, and applies it right away. The current state is backed up first.") }}</div>
+    <form hx-post="/system/backup/restore" hx-target="#restore-result" hx-confirm="{{ _('Restore this backup now?') }}">
+      <input type="hidden" name="token" value="{{ token }}">
+      <input type="hidden" name="name" value="{{ name }}">
+      <button class="btn btn-danger" type="submit">{{ icon("restore", "me-1") }}{{ _("Restore") }}</button>
+    </form>
+  </div>
+</div>

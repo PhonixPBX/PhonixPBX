@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-13 22:46+0200\n"
+"POT-Creation-Date: 2026-10-14 13:12+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ja\n"
@@ -55,6 +55,14 @@ msgstr[0] "%(num)d 件のルート"
 #, python-format
 msgid "%(number)s via %(provider)s"
 msgstr "%(number)s（%(provider)s 経由）"
+
+#, python-format
+msgid "%(object)s: %(error)s"
+msgstr "%(object)s: %(error)s"
+
+#, python-format
+msgid "%(object)s: reference to unknown %(type)s %(id)s"
+msgstr "%(object)s: 不明な %(type)s %(id)s への参照です"
 
 #, python-format
 msgid "%(used)s of %(total)s"
@@ -134,6 +142,9 @@ msgstr "プロバイダーのフェイルオーバー先に自分自身は指定
 
 msgid "A secret is required"
 msgstr "シークレットは必須です"
+
+msgid "ACME account"
+msgstr "ACME アカウント"
 
 msgid "ACME directory URL"
 msgstr "ACME ディレクトリ URL"
@@ -404,8 +415,12 @@ msgid "Backup %(name)s created."
 msgstr "バックアップ %(name)s を作成しました。"
 
 #, python-format
-msgid "Backup from %(created)s restored. Review the configuration and apply the changes."
-msgstr "%(created)s のバックアップを復元しました。設定を確認して変更を適用してください。"
+msgid "Backup from %(created)s"
+msgstr "%(created)s のバックアップ"
+
+#, python-format
+msgid "Backup from %(created)s restored and applied."
+msgstr "%(created)s のバックアップを復元して適用しました。"
 
 msgid "Backup is too large"
 msgstr "バックアップが大きすぎます"
@@ -415,6 +430,10 @@ msgstr "バックアップのマニフェストがありません"
 
 msgid "Backup not found"
 msgstr "バックアップが見つかりません"
+
+#, python-format
+msgid "Backup restored, but applying it failed: %(errors)s"
+msgstr "バックアップを復元しましたが、適用に失敗しました: %(errors)s"
 
 msgid "Backup/Restore"
 msgstr "バックアップ/復元"
@@ -477,6 +496,9 @@ msgstr "コールグループ %(name)s <%(number)s>"
 
 msgid "Call group not found"
 msgstr "コールグループが見つかりません"
+
+msgid "Call groups"
+msgstr "コールグループ"
 
 msgid "Call groups ring several phones at once or one after another."
 msgstr "コールグループは、複数の電話機を同時または順番に呼び出します。"
@@ -595,6 +617,9 @@ msgstr "会議室"
 
 msgid "Conference room not found"
 msgstr "会議室が見つかりません"
+
+msgid "Conference rooms"
+msgstr "会議室"
 
 msgid "Conference rooms let several callers talk together."
 msgstr "会議室では、複数の発信者が同時に通話できます。"
@@ -721,9 +746,6 @@ msgstr "ダークモード"
 msgid "Data partition"
 msgstr "データパーティション"
 
-msgid "Database in backup is corrupt"
-msgstr "バックアップ内のデータベースが破損しています"
-
 msgid "Default expiry (s)"
 msgstr "デフォルトの有効期限（秒）"
 
@@ -833,6 +855,14 @@ msgstr "応答メッセージをここにドロップするか、クリックし
 
 msgid "Drop the update file here or click to upload"
 msgstr "アップデートファイルをここにドロップするか、クリックしてアップロード"
+
+#, python-format
+msgid "Duplicate %(type)s id %(id)s"
+msgstr "%(type)s の ID %(id)s が重複しています"
+
+#, python-format
+msgid "Duplicate user %(name)s"
+msgstr "ユーザー %(name)s が重複しています"
 
 msgid "Duration"
 msgstr "通話時間"
@@ -1330,6 +1360,10 @@ msgstr "ログ"
 msgid "MCP clients:"
 msgstr "MCP クライアント:"
 
+#, python-format
+msgid "Made by PhonixPBX %(version)s."
+msgstr "PhonixPBX %(version)s で作成。"
+
 msgid "Make sure the network of your computer is allowed before applying restrictions."
 msgstr "制限を適用する前に、お使いのコンピューターのネットワークが許可されていることを確認してください。"
 
@@ -1344,6 +1378,9 @@ msgstr "マネージャーユーザー"
 
 msgid "Manager user not found"
 msgstr "マネージャーユーザーが見つかりません"
+
+msgid "Manager users"
+msgstr "マネージャーユーザー"
 
 msgid "Max. message length (s)"
 msgstr "メッセージの最大長（秒）"
@@ -1365,6 +1402,9 @@ msgstr "メディア暗号化（SRTP）"
 
 msgid "Media file not found"
 msgstr "メディアファイルが見つかりません"
+
+msgid "Media files"
+msgstr "メディアファイル"
 
 msgid "Members"
 msgstr "メンバー"
@@ -1523,8 +1563,8 @@ msgstr "アクティブな通話はありません。"
 msgid "No applications"
 msgstr "アプリケーションはありません"
 
-msgid "No backups yet. Backups contain the configuration, media and the TLS certificate."
-msgstr "バックアップはまだありません。バックアップには設定、メディア、TLS 証明書が含まれます。"
+msgid "No backups yet. Backups contain the configuration with all passwords, the media files and the TLS certificate."
+msgstr "バックアップはまだありません。バックアップには、すべてのパスワードを含む設定、メディアファイル、TLS 証明書が含まれます。"
 
 msgid "No call groups"
 msgstr "コールグループはありません"
@@ -2032,6 +2072,18 @@ msgstr "SIP-TLS のための Asterisk の再起動に失敗しました: %(error
 msgid "Restore"
 msgstr "復元"
 
+#, python-format
+msgid "Restore %(name)s"
+msgstr "%(name)s を復元"
+
+msgid "Restore this backup now?"
+msgstr "このバックアップを今すぐ復元しますか？"
+
+msgid ""
+"Restoring replaces the whole configuration, including web users, passwords and API tokens, and applies it right away."
+" The current state is backed up first."
+msgstr "復元すると、Web ユーザー、パスワード、API トークンを含む設定全体が置き換えられ、すぐに適用されます。現在の状態は事前にバックアップされます。"
+
 msgid "Ring"
 msgstr "呼出"
 
@@ -2158,6 +2210,9 @@ msgstr "サーバーで認証が必要"
 msgid "Services"
 msgstr "サービス"
 
+msgid "Settings groups"
+msgstr "設定グループ"
+
 msgid "Settings saved."
 msgstr "設定を保存しました。"
 
@@ -2251,6 +2306,9 @@ msgstr "システム設定"
 msgid "TLS / SMTPS (port 465)"
 msgstr "TLS / SMTPS（ポート 465）"
 
+msgid "TLS certificate and key"
+msgstr "TLS 証明書と鍵"
+
 msgid "TLS port"
 msgstr "TLS ポート"
 
@@ -2291,6 +2349,19 @@ msgstr ""
 "認証局は <code>http://&lt;name&gt;/.well-known/acme-challenge/</code> に接続します。名前はこの PBX に解決される必要があり、ポート 80 "
 "にインターネットから到達できる必要があります。"
 
+msgid "The configuration in the backup is missing or damaged"
+msgstr "バックアップ内の設定が見つからないか、破損しています"
+
+#, python-format
+msgid "The configuration is invalid: %(errors)s"
+msgstr "設定が無効です: %(errors)s"
+
+#, python-format
+msgid ""
+"The configuration was created by PhonixPBX %(release)s and is newer than this system supports. Update this system "
+"first."
+msgstr "この設定は PhonixPBX %(release)s で作成されており、このシステムがサポートするより新しいものです。先にこのシステムを更新してください。"
+
 msgid "The directory URL must start with https://"
 msgstr "ディレクトリ URL は https:// で始まる必要があります"
 
@@ -2325,6 +2396,10 @@ msgstr "lego ACME クライアントがインストールされていません�
 msgid "The log is empty or not available."
 msgstr "ログが空か、利用できません。"
 
+#, python-format
+msgid "The media file %(path)s is missing or damaged"
+msgstr "メディアファイル %(path)s が見つからないか、破損しています"
+
 msgid "The number used to dial this phone and the SIP/IAX username."
 msgstr "この電話機を呼び出す番号で、SIP/IAX のユーザー名にもなります。"
 
@@ -2353,6 +2428,9 @@ msgstr ""
 "Web インターフェースは自己署名証明書を使用しています。ブラウザーの警告を表示させないようにするには、<a href=\"/advanced/certificate\">Let's Encrypt "
 "から証明書を取得するか、独自の証明書をアップロード</a>してください。"
 
+msgid "This backup was made by an older PhonixPBX release in a format that can no longer be restored."
+msgstr "このバックアップは古い PhonixPBX リリースで作成されたもので、その形式はもう復元できません。"
+
 msgid ""
 "This erases the complete configuration, voicemail, media and backups on this system and reboots. Download a backup "
 "first."
@@ -2360,6 +2438,9 @@ msgstr "このシステムのすべての設定、ボイスメール、メディ
 
 msgid "This field is required"
 msgstr "この項目は必須です"
+
+msgid "This is not a PhonixPBX configuration file"
+msgstr "PhonixPBX の設定ファイルではありません"
 
 msgid "This phone cannot place outgoing calls through the selected providers."
 msgstr "この電話機は、選択したプロバイダー経由で発信できません。"
@@ -2456,6 +2537,10 @@ msgstr "不明"
 msgid "Unknown codec %(codec)r"
 msgstr "不明なコーデックです: %(codec)r"
 
+#, python-format
+msgid "Unknown configuration version %(version)s"
+msgstr "不明な設定バージョンです: %(version)s"
+
 msgid "Unknown language"
 msgstr "不明な言語です"
 
@@ -2491,9 +2576,6 @@ msgstr "未登録"
 msgid "Unsafe path in backup: %(name)s"
 msgstr "バックアップ内に安全でないパスがあります: %(name)s"
 
-msgid "Unsupported backup format"
-msgstr "未対応のバックアップ形式です"
-
 msgid "Up"
 msgstr "接続中"
 
@@ -2528,8 +2610,8 @@ msgstr "アップデート署名鍵が ed25519 鍵ではありません"
 msgid "Updates: replace the container image"
 msgstr "アップデート: コンテナーイメージを置き換えてください"
 
-msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). The current state is backed up first."
-msgstr "PhonixPBX のバックアップ（<code>.tar.zst</code>）をアップロードしてください。現在の状態は事前にバックアップされます。"
+msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). You get a preview before anything changes."
+msgstr "PhonixPBX のバックアップ (<code>.tar.zst</code>) をアップロードしてください。変更前にプレビューが表示されます。"
 
 msgid ""
 "Upload a signed <code>.update</code> bundle for this board. It is written to the inactive system slot; the "
@@ -2659,6 +2741,9 @@ msgstr "ボイスメール、電話会議、メディア"
 
 msgid "Web interface and SSH. One CIDR per line, e.g. 192.168.1.0/24. Empty = everyone."
 msgstr "Web インターフェースと SSH。1 行に 1 つの CIDR を記述します（例: 192.168.1.0/24）。空欄 = すべて許可。"
+
+msgid "Web users"
+msgstr "Web ユーザー"
 
 msgid "Wildcard domains need DNS validation"
 msgstr "ワイルドカードドメインには DNS 検証が必要です"

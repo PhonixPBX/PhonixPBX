@@ -13,6 +13,27 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   providers, call groups, conferences, applications, AMI users, settings, system and Asterisk
   status, logs, and previewing and applying pending changes. The API tokens page shows an
   example client command.
+- `phonix config export|import|schema` to export and import the configuration as a
+  versioned `config.json`. Its JSON Schema is in `docs/config-schema.json`.
+- Restoring a backup first shows a preview of its contents. Stored backups can be restored
+  directly from the list.
+
+### Changed
+
+- Backups contain the configuration as a versioned, schema-validated `config.json` instead
+  of a copy of the database. A restore validates everything and does a dry run first, then
+  replaces the configuration in one transaction and applies it right away. Backups from
+  older releases restore on newer ones; backups made with 1.0.0 can no longer be restored.
+- The Asterisk database is no longer part of backups. Backup files are only readable by
+  the `phonix` user.
+- Web sessions end if their user was replaced, e.g. by a restore. All users are logged out
+  once after updating.
+
+### Fixed
+
+- Restoring a backup could leave the system broken: the database was replaced under
+  running processes, a backup from a newer release failed halfway through, and media,
+  TLS and ACME directories lost their permissions.
 
 ## [1.0.0] - 2026-10-13
 

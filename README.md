@@ -44,7 +44,7 @@ Old AskoziaPBX configurations can still be imported. The spelling *Phonix* inste
 | `phonix/generators` | pure functions: DB snapshot → Asterisk/OS configuration files |
 | `phonix/legacy` | legacy `config.xml` import/export |
 | `phonix/web` | FastAPI app, Jinja templates, static assets (vendored Tabler/htmx) |
-| `phonix/cli.py` | `phonix` command (apply, firstboot, user, legacy, backup, web, …) |
+| `phonix/cli.py` | `phonix` command (apply, firstboot, user, legacy, backup, config, web, …) |
 | `system/`, `packaging/`, `image/` | files installed into the image, the APKBUILD and the image builder |
 | `Containerfile`, `system/container/` | OCI image (`ghcr.io/phonixpbx/phonix`): entry point, root helper, health check |
 | `tests/` | unit, web and golden-file tests; `tests/integration` runs against real Asterisk |

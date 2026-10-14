@@ -20,6 +20,8 @@ from phonix import i18n
 from phonix.core.models import User
 
 SESSION_USER = "uid"
+# the user id alone could name another user after a backup was restored
+SESSION_USERNAME = "uname"
 SESSION_CSRF = "csrf"
 SESSION_LOGIN_AT = "at"
 # web interface language of the logged in user (read by LanguageMiddleware)
@@ -62,6 +64,7 @@ async def verify_csrf(request: Request) -> None:
 def login(request: Request, user: User) -> None:
     request.session.clear()
     request.session[SESSION_USER] = user.id
+    request.session[SESSION_USERNAME] = user.username
     request.session[SESSION_LOGIN_AT] = int(time.time())
     request.session[SESSION_CSRF] = secrets.token_urlsafe(32)
     request.session[SESSION_LANGUAGE] = i18n.normalize(user.language)
@@ -80,13 +83,13 @@ def current_user(request: Request, session: Session, max_age_minutes: int) -> Us
         request.session.clear()
         return None
     user = session.get(User, uid)
-    if user is None:
+    if user is None or user.username != request.session.get(SESSION_USERNAME):
         request.session.clear()
-    else:
-        # sliding expiration
-        request.session[SESSION_LOGIN_AT] = int(time.time())
-        # language changed by another session: used from the next request on
-        request.session[SESSION_LANGUAGE] = i18n.normalize(user.language)
+        return None
+    # sliding expiration
+    request.session[SESSION_LOGIN_AT] = int(time.time())
+    # language changed by another session: used from the next request on
+    request.session[SESSION_LANGUAGE] = i18n.normalize(user.language)
     return user
 
 

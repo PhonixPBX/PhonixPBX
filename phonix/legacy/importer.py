@@ -19,7 +19,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Any, TypeVar
 
-from sqlalchemy import delete, select
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -30,24 +30,20 @@ from phonix.core.models import (
     AmiUser,
     Application,
     CallGroup,
-    CallGroupMember,
     ConferenceRoom,
     Phone,
-    PhoneBlockedProvider,
-    PhoneProviderCallerId,
     Provider,
     ProviderDialPattern,
-    ProviderIncomingRoute,
 )
 from phonix.legacy import mapping as m
 from phonix.legacy import upgrade
 from phonix.legacy.parse import MAX_BYTES, LegacyConfig, LegacyParseError, Node, parse_bytes
 from phonix.legacy.report import ImportReport
+from phonix.services import configdoc, users
 from phonix.services import dialplan as dp
 from phonix.services import manager as mgr
 from phonix.services import phones as ph
 from phonix.services import providers as pv
-from phonix.services import users
 from phonix.services.common import AREAS, ServiceError, audit, mark_dirty, parse
 
 log = logging.getLogger(__name__)
@@ -141,7 +137,7 @@ def _begin(session: Session) -> None:
 
 def _backup(report: ImportReport) -> None:
     try:
-        from phonix.services import backup  # type: ignore[attr-defined]
+        from phonix.services import backup
 
         path = backup.create()
         report.info("file", "backup", f"Automatic backup created before replacing: {path}")
@@ -313,24 +309,7 @@ class LegacyImporter:
             "applications": self.session.query(Application).count(),
             "manager users": self.session.query(AmiUser).count(),
         }
-        for model in (
-            CallGroupMember,
-            CallGroup,
-            ProviderIncomingRoute,
-            ProviderDialPattern,
-            PhoneProviderCallerId,
-            PhoneBlockedProvider,
-            Phone,
-            ConferenceRoom,
-            Application,
-            AmiUser,
-        ):
-            self.session.execute(delete(model))
-        self.session.execute(
-            Provider.__table__.update().values(failover_provider_id=None)  # type: ignore[attr-defined]
-        )
-        self.session.execute(delete(Provider))
-        self.session.expire_all()
+        configdoc.delete_pbx_objects(self.session)
         removed = ", ".join(f"{n} {k}" for k, n in counts.items() if n)
         self.report.info("file", "replace", f"Replace mode: existing objects removed ({removed or 'none'})")
 

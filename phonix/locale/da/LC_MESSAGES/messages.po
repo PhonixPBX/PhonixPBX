@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-13 22:46+0200\n"
+"POT-Creation-Date: 2026-10-14 13:12+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: da\n"
@@ -57,6 +57,14 @@ msgstr[1] "%(num)d ruter"
 #, python-format
 msgid "%(number)s via %(provider)s"
 msgstr "%(number)s via %(provider)s"
+
+#, python-format
+msgid "%(object)s: %(error)s"
+msgstr "%(object)s: %(error)s"
+
+#, python-format
+msgid "%(object)s: reference to unknown %(type)s %(id)s"
+msgstr "%(object)s: henvisning til ukendt %(type)s %(id)s"
 
 #, python-format
 msgid "%(used)s of %(total)s"
@@ -143,6 +151,9 @@ msgstr "En udbyder kan ikke have failover til sig selv"
 
 msgid "A secret is required"
 msgstr "En hemmelighed er påkrævet"
+
+msgid "ACME account"
+msgstr "ACME-konto"
 
 msgid "ACME directory URL"
 msgstr "ACME-katalog-URL"
@@ -413,8 +424,12 @@ msgid "Backup %(name)s created."
 msgstr "Backup %(name)s oprettet."
 
 #, python-format
-msgid "Backup from %(created)s restored. Review the configuration and apply the changes."
-msgstr "Backup fra %(created)s gendannet. Gennemgå konfigurationen, og anvend ændringerne."
+msgid "Backup from %(created)s"
+msgstr "Backup fra %(created)s"
+
+#, python-format
+msgid "Backup from %(created)s restored and applied."
+msgstr "Backup fra %(created)s er gendannet og anvendt."
 
 msgid "Backup is too large"
 msgstr "Backuppen er for stor"
@@ -424,6 +439,10 @@ msgstr "Backup-manifestet mangler"
 
 msgid "Backup not found"
 msgstr "Backup ikke fundet"
+
+#, python-format
+msgid "Backup restored, but applying it failed: %(errors)s"
+msgstr "Backup gendannet, men anvendelsen mislykkedes: %(errors)s"
 
 msgid "Backup/Restore"
 msgstr "Backup/gendannelse"
@@ -486,6 +505,9 @@ msgstr "Opkaldsgruppe %(name)s <%(number)s>"
 
 msgid "Call group not found"
 msgstr "Opkaldsgruppe ikke fundet"
+
+msgid "Call groups"
+msgstr "Opkaldsgrupper"
 
 msgid "Call groups ring several phones at once or one after another."
 msgstr "Opkaldsgrupper ringer til flere telefoner på én gang eller efter hinanden."
@@ -604,6 +626,9 @@ msgstr "Konferencerum"
 
 msgid "Conference room not found"
 msgstr "Konferencerum ikke fundet"
+
+msgid "Conference rooms"
+msgstr "Konferencerum"
 
 msgid "Conference rooms let several callers talk together."
 msgstr "Konferencerum lader flere opkaldere tale sammen."
@@ -732,9 +757,6 @@ msgstr "Mørk tilstand"
 msgid "Data partition"
 msgstr "Datapartition"
 
-msgid "Database in backup is corrupt"
-msgstr "Databasen i backuppen er beskadiget"
-
 msgid "Default expiry (s)"
 msgstr "Standardudløbstid (s)"
 
@@ -844,6 +866,14 @@ msgstr "Slip hilsenen her, eller klik for at uploade"
 
 msgid "Drop the update file here or click to upload"
 msgstr "Slip opdateringsfilen her, eller klik for at uploade"
+
+#, python-format
+msgid "Duplicate %(type)s id %(id)s"
+msgstr "Dubleret id %(id)s for %(type)s"
+
+#, python-format
+msgid "Duplicate user %(name)s"
+msgstr "Brugeren %(name)s findes flere gange"
 
 msgid "Duration"
 msgstr "Varighed"
@@ -1341,6 +1371,10 @@ msgstr "Logfiler"
 msgid "MCP clients:"
 msgstr "MCP-klienter:"
 
+#, python-format
+msgid "Made by PhonixPBX %(version)s."
+msgstr "Lavet med PhonixPBX %(version)s."
+
 msgid "Make sure the network of your computer is allowed before applying restrictions."
 msgstr "Sørg for, at din computers netværk er tilladt, før du anvender begrænsninger."
 
@@ -1355,6 +1389,9 @@ msgstr "Manager-bruger"
 
 msgid "Manager user not found"
 msgstr "Manager-bruger ikke fundet"
+
+msgid "Manager users"
+msgstr "Manager-brugere"
 
 msgid "Max. message length (s)"
 msgstr "Maks. beskedlængde (s)"
@@ -1376,6 +1413,9 @@ msgstr "Mediekryptering (SRTP)"
 
 msgid "Media file not found"
 msgstr "Mediefil ikke fundet"
+
+msgid "Media files"
+msgstr "Mediefiler"
 
 msgid "Members"
 msgstr "Medlemmer"
@@ -1534,8 +1574,8 @@ msgstr "Ingen aktive opkald."
 msgid "No applications"
 msgstr "Ingen applikationer"
 
-msgid "No backups yet. Backups contain the configuration, media and the TLS certificate."
-msgstr "Ingen backups endnu. Backups indeholder konfigurationen, medier og TLS-certifikatet."
+msgid "No backups yet. Backups contain the configuration with all passwords, the media files and the TLS certificate."
+msgstr "Ingen backups endnu. Backups indeholder konfigurationen med alle adgangskoder, mediefilerne og TLS-certifikatet."
 
 msgid "No call groups"
 msgstr "Ingen opkaldsgrupper"
@@ -2049,6 +2089,20 @@ msgstr "Genstart af Asterisk for SIP-TLS mislykkedes: %(error)s"
 msgid "Restore"
 msgstr "Gendan"
 
+#, python-format
+msgid "Restore %(name)s"
+msgstr "Gendan %(name)s"
+
+msgid "Restore this backup now?"
+msgstr "Gendan denne backup nu?"
+
+msgid ""
+"Restoring replaces the whole configuration, including web users, passwords and API tokens, and applies it right away."
+" The current state is backed up first."
+msgstr ""
+"Gendannelse erstatter hele konfigurationen, inklusive webbrugere, adgangskoder og API-tokens, og anvender den med det"
+" samme. Den nuværende tilstand sikkerhedskopieres først."
+
 msgid "Ring"
 msgstr "Kalder"
 
@@ -2181,6 +2235,9 @@ msgstr "Serveren kræver godkendelse"
 msgid "Services"
 msgstr "Tjenester"
 
+msgid "Settings groups"
+msgstr "Indstillingsgrupper"
+
 msgid "Settings saved."
 msgstr "Indstillinger gemt."
 
@@ -2275,6 +2332,9 @@ msgstr "Systemindstillinger"
 msgid "TLS / SMTPS (port 465)"
 msgstr "TLS / SMTPS (port 465)"
 
+msgid "TLS certificate and key"
+msgstr "TLS-certifikat og nøgle"
+
 msgid "TLS port"
 msgstr "TLS-port"
 
@@ -2317,6 +2377,21 @@ msgstr ""
 "CA'en forbinder til <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: navnene skal pege på denne PBX, og "
 "port 80 skal kunne nås fra internettet."
 
+msgid "The configuration in the backup is missing or damaged"
+msgstr "Konfigurationen i backuppen mangler eller er beskadiget"
+
+#, python-format
+msgid "The configuration is invalid: %(errors)s"
+msgstr "Konfigurationen er ugyldig: %(errors)s"
+
+#, python-format
+msgid ""
+"The configuration was created by PhonixPBX %(release)s and is newer than this system supports. Update this system "
+"first."
+msgstr ""
+"Konfigurationen blev oprettet af PhonixPBX %(release)s og er nyere, end dette system understøtter. Opdater dette "
+"system først."
+
 msgid "The directory URL must start with https://"
 msgstr "Katalog-URL'en skal starte med https://"
 
@@ -2351,6 +2426,10 @@ msgstr "ACME-klienten lego er ikke installeret."
 msgid "The log is empty or not available."
 msgstr "Loggen er tom eller ikke tilgængelig."
 
+#, python-format
+msgid "The media file %(path)s is missing or damaged"
+msgstr "Mediefilen %(path)s mangler eller er beskadiget"
+
 msgid "The number used to dial this phone and the SIP/IAX username."
 msgstr "Nummeret, der bruges til at ringe til denne telefon, og SIP/IAX-brugernavnet."
 
@@ -2379,6 +2458,9 @@ msgstr ""
 "Webgrænsefladen bruger et selvsigneret certifikat. <a href=\"/advanced/certificate\">Hent et fra Let's Encrypt, eller"
 " upload dit eget</a> for at slippe af med browseradvarsler."
 
+msgid "This backup was made by an older PhonixPBX release in a format that can no longer be restored."
+msgstr "Denne backup blev lavet af en ældre PhonixPBX-version i et format, der ikke længere kan gendannes."
+
 msgid ""
 "This erases the complete configuration, voicemail, media and backups on this system and reboots. Download a backup "
 "first."
@@ -2388,6 +2470,9 @@ msgstr ""
 
 msgid "This field is required"
 msgstr "Dette felt er påkrævet"
+
+msgid "This is not a PhonixPBX configuration file"
+msgstr "Dette er ikke en PhonixPBX-konfigurationsfil"
 
 msgid "This phone cannot place outgoing calls through the selected providers."
 msgstr "Denne telefon kan ikke foretage udgående opkald via de valgte udbydere."
@@ -2484,6 +2569,10 @@ msgstr "Ukendt"
 msgid "Unknown codec %(codec)r"
 msgstr "Ukendt codec %(codec)r"
 
+#, python-format
+msgid "Unknown configuration version %(version)s"
+msgstr "Ukendt konfigurationsversion %(version)s"
+
 msgid "Unknown language"
 msgstr "Ukendt sprog"
 
@@ -2519,9 +2608,6 @@ msgstr "Ikke registreret"
 msgid "Unsafe path in backup: %(name)s"
 msgstr "Usikker sti i backup: %(name)s"
 
-msgid "Unsupported backup format"
-msgstr "Backupformatet understøttes ikke"
-
 msgid "Up"
 msgstr "Oppe"
 
@@ -2556,8 +2642,8 @@ msgstr "Signeringsnøglen til opdateringer er ikke en ed25519-nøgle"
 msgid "Updates: replace the container image"
 msgstr "Opdateringer: udskift container-imaget"
 
-msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). The current state is backed up first."
-msgstr "Upload en PhonixPBX-backup (<code>.tar.zst</code>). Den aktuelle tilstand sikkerhedskopieres først."
+msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). You get a preview before anything changes."
+msgstr "Upload en PhonixPBX-backup (<code>.tar.zst</code>). Du får en forhåndsvisning, før noget ændres."
 
 msgid ""
 "Upload a signed <code>.update</code> bundle for this board. It is written to the inactive system slot; the "
@@ -2689,6 +2775,9 @@ msgstr "Telefonsvarer, konferencer og medier"
 
 msgid "Web interface and SSH. One CIDR per line, e.g. 192.168.1.0/24. Empty = everyone."
 msgstr "Webgrænseflade og SSH. Én CIDR pr. linje, f.eks. 192.168.1.0/24. Tom = alle."
+
+msgid "Web users"
+msgstr "Webbrugere"
 
 msgid "Wildcard domains need DNS validation"
 msgstr "Wildcard-domæner kræver DNS-validering"

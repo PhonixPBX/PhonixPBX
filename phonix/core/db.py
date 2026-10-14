@@ -56,7 +56,7 @@ def get_engine() -> Engine:
 
 
 def dispose() -> None:
-    """Drop the cached engine (used by tests and after restoring a backup)."""
+    """Drop the cached engine (used by tests)."""
     global _engine, _session_factory
     if _engine is not None:
         _engine.dispose()

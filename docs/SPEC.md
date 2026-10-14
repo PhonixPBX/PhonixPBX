@@ -127,7 +127,7 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 - Network: DHCP or static; the IPv4 fields come from the old app, and IPv6 is optional
 - Storage: status of the data partition and usage
 - Firmware update: upload a signed bundle, or check online
-- Backup/Restore: a `.tar.zst` containing the DB snapshot and media; restore runs migrations
+- Backup/Restore: a `.tar.zst` with a versioned `config.json`, media, TLS and ACME files (see section 3b)
 - Legacy `config.xml` import and export (see section 3a)
 - Factory defaults
 - Reboot
@@ -175,7 +175,7 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
   - `parse.py`: XML to a typed intermediate model
   - `upgrade.py`: older config versions to 2.1
   - `mapping.py`: intermediate model to and from the DB
-  - `emit.py`: DB to config.xml 2.1
+  - `exporter.py`: DB to config.xml 2.1
 - Parsing uses `defusedxml`, to protect against XXE and entity bombs.
 - List tags follow `$listtags` in `legacy/.../etc/inc/xmlparse.inc`.
 - Defaults come from `$defaults` in `globals.inc`.
@@ -220,7 +220,7 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 3. **Commit.** Everything is written in a single DB transaction, which marks all subsystems dirty. The user then reviews the changes and clicks Apply.
 
 **Export (PhonixPBX → config.xml 2.1)**
-- `emit.py` performs the inverse mapping:
+- `exporter.py` performs the inverse mapping:
   - `legacy_uniqid` is reused when present; otherwise a uniqid is generated in the old format.
   - Application logic is base64-encoded again.
 - PhonixPBX-only settings are left out and listed in the export report: TLS/SRTP, nftables, multiple users, and PJSIP-only options.
@@ -244,6 +244,37 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 - **Round trip, export side:** `import(export(db)) == db` for the supported subset.
 - **Round trip, import side:** `export(import(xml))` keeps every supported field. The XML is compared semantically, ignoring ordering and `lastchange`.
 - **Generator check:** the generators run on imported fixtures, and the resulting Asterisk config loads cleanly in the CI Asterisk container.
+
+### 3b. Backup and restore (v1)
+
+A backup holds the configuration as a document, not as a database file. This keeps backups restorable on newer releases, and a restore never replaces the database under running processes.
+
+**Archive** (`<data>/backups/phonix-backup-YYYYmmdd-HHMMSS.tar.zst`, mode 0600, the newest 10 are kept)
+- `manifest.json`: `{"format": 2, "version", "created", "config_version"}`. Format 1 archives (a raw `phonix.db` snapshot) are refused.
+- `config.json`: the configuration document (below).
+- `media/`: the files that `config.json` lists, with their sha256.
+- `tls/`, `acme/`: certificate, key and ACME account, without the `acme/lock` file.
+- Not included: the Asterisk database (`asterisk/`, runtime state), voicemail messages (`spool/`), `secrets.json` (machine-local keys), SSH host keys and logs.
+
+**config.json** (`phonix/services/configdoc.py`, schema in `docs/config-schema.json`)
+- `{"format": "phonix-config", "version": 1, "phonix_version", "created", "settings", "users", "providers", "phones", "callgroups", "conferences", "applications", "ami_users", "media"}`.
+- Contains every secret: SIP/IAX passwords, voicemail PINs, manager secrets, the e-mail password, the argon2 hashes of the web users and the sha256 hashes of their API tokens.
+- Objects have document-local `id`s that references use (`dial_provider_id`, `member_ids`, `incoming_routes[].dest_id`, …); the field names are those of the REST API. Settings groups that are missing get their defaults.
+- Unknown keys are errors. `version` is bumped whenever the document changes incompatibly; older documents are upgraded step by step (`UPGRADES`), newer ones are refused with the release that made them. A test keeps the checked-in schema current.
+
+**Restore** (`phonix/services/backup.py`)
+1. Extract into a temporary directory below `/data` and validate the manifest, `config.json` and the media checksums.
+2. Dry run the import and show a preview (counts, files). Nothing has changed so far.
+3. Take a safety backup of the current state.
+4. In one transaction, wipe all configuration tables (not the audit log) and create every object through the service layer, so the same validation as in the UI applies. The first error aborts the restore.
+5. Swap in the `media`, `tls` and `acme` directories (with the modes and group from first boot), then commit. If the commit fails, the directories are swapped back.
+6. Apply the configuration and reload nginx when a certificate was restored.
+
+Sessions store the user name next to the user id, so a session whose id now belongs to another user ends.
+
+**Interfaces**
+- **UI:** System → Backup/Restore. An upload or a stored backup first shows the preview; Restore needs a confirmation.
+- **CLI:** `phonix backup create [file]`, `phonix backup restore <file> [--dry-run]`, and `phonix config export|import|schema` for the bare `config.json` (an import checks the media files in place and leaves the apply to the user).
 
 ### Later phases (not v1)
 - Fax to email via `res_fax_spandsp`, if Alpine's Asterisk build includes it

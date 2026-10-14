@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-13 22:46+0200\n"
+"POT-Creation-Date: 2026-10-14 13:12+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: pl\n"
@@ -59,6 +59,14 @@ msgstr[2] "%(num)d tras"
 #, python-format
 msgid "%(number)s via %(provider)s"
 msgstr "%(number)s przez %(provider)s"
+
+#, python-format
+msgid "%(object)s: %(error)s"
+msgstr "%(object)s: %(error)s"
+
+#, python-format
+msgid "%(object)s: reference to unknown %(type)s %(id)s"
+msgstr "%(object)s: odwołanie do nieznanego obiektu %(type)s %(id)s"
 
 #, python-format
 msgid "%(used)s of %(total)s"
@@ -144,6 +152,9 @@ msgstr "Dostawca nie może być zapasowym dla samego siebie"
 
 msgid "A secret is required"
 msgstr "Sekret jest wymagany"
+
+msgid "ACME account"
+msgstr "Konto ACME"
 
 msgid "ACME directory URL"
 msgstr "URL katalogu ACME"
@@ -414,8 +425,12 @@ msgid "Backup %(name)s created."
 msgstr "Utworzono kopię zapasową %(name)s."
 
 #, python-format
-msgid "Backup from %(created)s restored. Review the configuration and apply the changes."
-msgstr "Przywrócono kopię zapasową z %(created)s. Proszę sprawdzić konfigurację i zastosować zmiany."
+msgid "Backup from %(created)s"
+msgstr "Kopia zapasowa z %(created)s"
+
+#, python-format
+msgid "Backup from %(created)s restored and applied."
+msgstr "Kopia zapasowa z %(created)s została przywrócona i zastosowana."
 
 msgid "Backup is too large"
 msgstr "Kopia zapasowa jest za duża"
@@ -425,6 +440,10 @@ msgstr "Brak manifestu kopii zapasowej"
 
 msgid "Backup not found"
 msgstr "Nie znaleziono kopii zapasowej"
+
+#, python-format
+msgid "Backup restored, but applying it failed: %(errors)s"
+msgstr "Kopia zapasowa została przywrócona, ale nie udało się jej zastosować: %(errors)s"
 
 msgid "Backup/Restore"
 msgstr "Kopia zapasowa/Przywracanie"
@@ -487,6 +506,9 @@ msgstr "Grupa telefoniczna %(name)s <%(number)s>"
 
 msgid "Call group not found"
 msgstr "Nie znaleziono grupy telefonicznej"
+
+msgid "Call groups"
+msgstr "Grupy telefoniczne"
 
 msgid "Call groups ring several phones at once or one after another."
 msgstr "Grupy telefoniczne dzwonią na kilka telefonów jednocześnie lub po kolei."
@@ -605,6 +627,9 @@ msgstr "Sala konferencyjna"
 
 msgid "Conference room not found"
 msgstr "Nie znaleziono sali konferencyjnej"
+
+msgid "Conference rooms"
+msgstr "Sale konferencyjne"
 
 msgid "Conference rooms let several callers talk together."
 msgstr "Sale konferencyjne umożliwiają rozmowę kilku dzwoniących jednocześnie."
@@ -733,9 +758,6 @@ msgstr "Tryb ciemny"
 msgid "Data partition"
 msgstr "Partycja danych"
 
-msgid "Database in backup is corrupt"
-msgstr "Baza danych w kopii zapasowej jest uszkodzona"
-
 msgid "Default expiry (s)"
 msgstr "Domyślny czas ważności (s)"
 
@@ -845,6 +867,14 @@ msgstr "Upuść powitanie tutaj lub kliknij, aby przesłać"
 
 msgid "Drop the update file here or click to upload"
 msgstr "Upuść plik aktualizacji tutaj lub kliknij, aby przesłać"
+
+#, python-format
+msgid "Duplicate %(type)s id %(id)s"
+msgstr "Zduplikowany identyfikator %(id)s dla %(type)s"
+
+#, python-format
+msgid "Duplicate user %(name)s"
+msgstr "Zduplikowany użytkownik %(name)s"
 
 msgid "Duration"
 msgstr "Czas trwania"
@@ -1343,6 +1373,10 @@ msgstr "Logi"
 msgid "MCP clients:"
 msgstr "Klienci MCP:"
 
+#, python-format
+msgid "Made by PhonixPBX %(version)s."
+msgstr "Utworzona przez PhonixPBX %(version)s."
+
 msgid "Make sure the network of your computer is allowed before applying restrictions."
 msgstr "Przed zastosowaniem ograniczeń proszę upewnić się, że sieć Państwa komputera jest dozwolona."
 
@@ -1357,6 +1391,9 @@ msgstr "Użytkownik AMI"
 
 msgid "Manager user not found"
 msgstr "Nie znaleziono użytkownika AMI"
+
+msgid "Manager users"
+msgstr "Użytkownicy AMI"
 
 msgid "Max. message length (s)"
 msgstr "Maks. długość wiadomości (s)"
@@ -1378,6 +1415,9 @@ msgstr "Szyfrowanie mediów (SRTP)"
 
 msgid "Media file not found"
 msgstr "Nie znaleziono pliku mediów"
+
+msgid "Media files"
+msgstr "Pliki multimedialne"
 
 msgid "Members"
 msgstr "Członkowie"
@@ -1538,8 +1578,10 @@ msgstr "Brak aktywnych połączeń."
 msgid "No applications"
 msgstr "Brak aplikacji"
 
-msgid "No backups yet. Backups contain the configuration, media and the TLS certificate."
-msgstr "Brak kopii zapasowych. Kopie zapasowe zawierają konfigurację, pliki mediów i certyfikat TLS."
+msgid "No backups yet. Backups contain the configuration with all passwords, the media files and the TLS certificate."
+msgstr ""
+"Brak kopii zapasowych. Kopie zapasowe zawierają konfigurację ze wszystkimi hasłami, pliki multimedialne i certyfikat "
+"TLS."
 
 msgid "No call groups"
 msgstr "Brak grup telefonicznych"
@@ -2052,6 +2094,20 @@ msgstr "Restart Asteriska dla SIP-TLS nie powiódł się: %(error)s"
 msgid "Restore"
 msgstr "Przywróć"
 
+#, python-format
+msgid "Restore %(name)s"
+msgstr "Przywróć %(name)s"
+
+msgid "Restore this backup now?"
+msgstr "Przywrócić teraz tę kopię zapasową?"
+
+msgid ""
+"Restoring replaces the whole configuration, including web users, passwords and API tokens, and applies it right away."
+" The current state is backed up first."
+msgstr ""
+"Przywrócenie zastępuje całą konfigurację, w tym użytkowników WWW, hasła i tokeny API, i od razu ją stosuje. Bieżący "
+"stan jest najpierw zapisywany w kopii zapasowej."
+
 msgid "Ring"
 msgstr "Dzwoni"
 
@@ -2184,6 +2240,9 @@ msgstr "Serwer wymaga uwierzytelnienia"
 msgid "Services"
 msgstr "Usługi"
 
+msgid "Settings groups"
+msgstr "Grupy ustawień"
+
 msgid "Settings saved."
 msgstr "Zapisano ustawienia."
 
@@ -2278,6 +2337,9 @@ msgstr "Ustawienia systemu"
 msgid "TLS / SMTPS (port 465)"
 msgstr "TLS / SMTPS (port 465)"
 
+msgid "TLS certificate and key"
+msgstr "Certyfikat i klucz TLS"
+
 msgid "TLS port"
 msgstr "Port TLS"
 
@@ -2320,6 +2382,21 @@ msgstr ""
 "CA łączy się z <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: nazwy muszą wskazywać na ten PBX, a port"
 " 80 musi być osiągalny z internetu."
 
+msgid "The configuration in the backup is missing or damaged"
+msgstr "Brak konfiguracji w kopii zapasowej lub jest ona uszkodzona"
+
+#, python-format
+msgid "The configuration is invalid: %(errors)s"
+msgstr "Konfiguracja jest nieprawidłowa: %(errors)s"
+
+#, python-format
+msgid ""
+"The configuration was created by PhonixPBX %(release)s and is newer than this system supports. Update this system "
+"first."
+msgstr ""
+"Konfiguracja została utworzona przez PhonixPBX %(release)s i jest nowsza, niż obsługuje ten system. Najpierw "
+"zaktualizuj ten system."
+
 msgid "The directory URL must start with https://"
 msgstr "URL katalogu musi zaczynać się od https://"
 
@@ -2354,6 +2431,10 @@ msgstr "Klient ACME lego nie jest zainstalowany."
 msgid "The log is empty or not available."
 msgstr "Log jest pusty lub niedostępny."
 
+#, python-format
+msgid "The media file %(path)s is missing or damaged"
+msgstr "Brak pliku multimedialnego %(path)s lub jest on uszkodzony"
+
 msgid "The number used to dial this phone and the SIP/IAX username."
 msgstr "Numer służący do dzwonienia na ten telefon oraz nazwa użytkownika SIP/IAX."
 
@@ -2382,6 +2463,9 @@ msgstr ""
 "Interfejs WWW używa certyfikatu samopodpisanego. <a href=\"/advanced/certificate\">Proszę uzyskać certyfikat od Let's"
 " Encrypt lub przesłać własny</a>, aby pozbyć się ostrzeżeń przeglądarki."
 
+msgid "This backup was made by an older PhonixPBX release in a format that can no longer be restored."
+msgstr "Ta kopia zapasowa została utworzona przez starszą wersję PhonixPBX w formacie, którego nie można już przywrócić."
+
 msgid ""
 "This erases the complete configuration, voicemail, media and backups on this system and reboots. Download a backup "
 "first."
@@ -2391,6 +2475,9 @@ msgstr ""
 
 msgid "This field is required"
 msgstr "To pole jest wymagane"
+
+msgid "This is not a PhonixPBX configuration file"
+msgstr "To nie jest plik konfiguracyjny PhonixPBX"
 
 msgid "This phone cannot place outgoing calls through the selected providers."
 msgstr "Ten telefon nie może wykonywać połączeń wychodzących przez wybranych dostawców."
@@ -2489,6 +2576,10 @@ msgstr "Nieznany"
 msgid "Unknown codec %(codec)r"
 msgstr "Nieznany kodek %(codec)r"
 
+#, python-format
+msgid "Unknown configuration version %(version)s"
+msgstr "Nieznana wersja konfiguracji %(version)s"
+
 msgid "Unknown language"
 msgstr "Nieznany język"
 
@@ -2524,9 +2615,6 @@ msgstr "Niezarejestrowany"
 msgid "Unsafe path in backup: %(name)s"
 msgstr "Niebezpieczna ścieżka w kopii zapasowej: %(name)s"
 
-msgid "Unsupported backup format"
-msgstr "Nieobsługiwany format kopii zapasowej"
-
 msgid "Up"
 msgstr "Aktywny"
 
@@ -2561,8 +2649,8 @@ msgstr "Klucz podpisu aktualizacji nie jest kluczem ed25519"
 msgid "Updates: replace the container image"
 msgstr "Aktualizacje: wymiana obrazu kontenera"
 
-msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). The current state is backed up first."
-msgstr "Proszę przesłać kopię zapasową PhonixPBX (<code>.tar.zst</code>). Najpierw zostanie utworzona kopia bieżącego stanu."
+msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). You get a preview before anything changes."
+msgstr "Prześlij kopię zapasową PhonixPBX (<code>.tar.zst</code>). Przed jakąkolwiek zmianą zobaczysz podgląd."
 
 msgid ""
 "Upload a signed <code>.update</code> bundle for this board. It is written to the inactive system slot; the "
@@ -2697,6 +2785,9 @@ msgstr "Poczta głosowa, konferencje i media"
 
 msgid "Web interface and SSH. One CIDR per line, e.g. 192.168.1.0/24. Empty = everyone."
 msgstr "Interfejs WWW i SSH. Jedna sieć CIDR w wierszu, np. 192.168.1.0/24. Puste = wszyscy."
+
+msgid "Web users"
+msgstr "Użytkownicy WWW"
 
 msgid "Wildcard domains need DNS validation"
 msgstr "Domeny wieloznaczne (wildcard) wymagają walidacji DNS"

@@ -1,0 +1,1723 @@
+{
+  "$defs": {
+    "AcmeSettingsDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "challenge": {
+          "default": "http",
+          "enum": [
+            "http",
+            "dns"
+          ],
+          "title": "Challenge",
+          "type": "string"
+        },
+        "dns_env": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Dns Env",
+          "type": "object"
+        },
+        "dns_provider": {
+          "default": "",
+          "title": "Dns Provider",
+          "type": "string"
+        },
+        "dns_resolvers": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Dns Resolvers",
+          "type": "array"
+        },
+        "domains": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Domains",
+          "type": "array"
+        },
+        "eab_hmac": {
+          "default": "",
+          "title": "Eab Hmac",
+          "type": "string"
+        },
+        "eab_kid": {
+          "default": "",
+          "title": "Eab Kid",
+          "type": "string"
+        },
+        "email": {
+          "default": "",
+          "title": "Email",
+          "type": "string"
+        },
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "server": {
+          "default": "letsencrypt",
+          "enum": [
+            "letsencrypt",
+            "letsencrypt-staging",
+            "zerossl",
+            "custom"
+          ],
+          "title": "Server",
+          "type": "string"
+        },
+        "server_url": {
+          "default": "",
+          "title": "Server Url",
+          "type": "string"
+        }
+      },
+      "title": "AcmeSettingsDoc",
+      "type": "object"
+    },
+    "AmiUserDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "legacy_uniqid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Legacy Uniqid"
+        },
+        "permit": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Permit",
+          "type": "array"
+        },
+        "read_perms": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Read Perms",
+          "type": "array"
+        },
+        "secret": {
+          "default": "",
+          "title": "Secret",
+          "type": "string"
+        },
+        "username": {
+          "title": "Username",
+          "type": "string"
+        },
+        "write_perms": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Write Perms",
+          "type": "array"
+        }
+      },
+      "required": [
+        "username"
+      ],
+      "title": "AmiUserDoc",
+      "type": "object"
+    },
+    "ApplicationDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "enabled": {
+          "default": true,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "extension": {
+          "title": "Extension",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "legacy_uniqid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Legacy Uniqid"
+        },
+        "logic": {
+          "title": "Logic",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "public_access": {
+          "default": false,
+          "title": "Public Access",
+          "type": "boolean"
+        },
+        "public_name": {
+          "default": "",
+          "title": "Public Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "extension",
+        "logic",
+        "id"
+      ],
+      "title": "ApplicationDoc",
+      "type": "object"
+    },
+    "CallGroupDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "extension": {
+          "default": "",
+          "title": "Extension",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "legacy_uniqid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Legacy Uniqid"
+        },
+        "member_ids": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Member Ids",
+          "type": "array"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "public_access": {
+          "default": false,
+          "title": "Public Access",
+          "type": "boolean"
+        },
+        "public_name": {
+          "default": "",
+          "title": "Public Name",
+          "type": "string"
+        },
+        "ringlength": {
+          "anyOf": [
+            {
+              "maximum": 600,
+              "minimum": 5,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ringlength"
+        },
+        "strategy": {
+          "default": "ringall",
+          "enum": [
+            "ringall",
+            "linear"
+          ],
+          "title": "Strategy",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "id"
+      ],
+      "title": "CallGroupDoc",
+      "type": "object"
+    },
+    "ConferenceRoomDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "admin_pin": {
+          "default": "",
+          "title": "Admin Pin",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "legacy_uniqid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Legacy Uniqid"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "number": {
+          "title": "Number",
+          "type": "string"
+        },
+        "pin": {
+          "default": "",
+          "title": "Pin",
+          "type": "string"
+        },
+        "public_access": {
+          "default": false,
+          "title": "Public Access",
+          "type": "boolean"
+        },
+        "public_name": {
+          "default": "",
+          "title": "Public Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "number",
+        "name",
+        "id"
+      ],
+      "title": "ConferenceRoomDoc",
+      "type": "object"
+    },
+    "EmailSettingsDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "auth": {
+          "default": true,
+          "title": "Auth",
+          "type": "boolean"
+        },
+        "encryption": {
+          "default": "starttls",
+          "enum": [
+            "none",
+            "starttls",
+            "tls"
+          ],
+          "title": "Encryption",
+          "type": "string"
+        },
+        "from_address": {
+          "default": "",
+          "title": "From Address",
+          "type": "string"
+        },
+        "host": {
+          "default": "",
+          "title": "Host",
+          "type": "string"
+        },
+        "password": {
+          "default": "",
+          "title": "Password",
+          "type": "string"
+        },
+        "port": {
+          "default": 587,
+          "maximum": 65535,
+          "minimum": 1,
+          "title": "Port",
+          "type": "integer"
+        },
+        "username": {
+          "default": "",
+          "title": "Username",
+          "type": "string"
+        },
+        "verify_cert": {
+          "default": true,
+          "title": "Verify Cert",
+          "type": "boolean"
+        }
+      },
+      "title": "EmailSettingsDoc",
+      "type": "object"
+    },
+    "FeatureSettingsDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "attended_transfer": {
+          "default": "**",
+          "title": "Attended Transfer",
+          "type": "string"
+        },
+        "atxfer_noanswer_timeout_s": {
+          "default": 15,
+          "maximum": 600,
+          "minimum": 1,
+          "title": "Atxfer Noanswer Timeout S",
+          "type": "integer"
+        },
+        "blind_transfer": {
+          "default": "##",
+          "title": "Blind Transfer",
+          "type": "string"
+        },
+        "disconnect": {
+          "default": "*0",
+          "title": "Disconnect",
+          "type": "string"
+        },
+        "feature_digit_timeout_ms": {
+          "default": 1000,
+          "maximum": 10000,
+          "minimum": 100,
+          "title": "Feature Digit Timeout Ms",
+          "type": "integer"
+        },
+        "park_end": {
+          "default": 720,
+          "title": "Park End",
+          "type": "integer"
+        },
+        "park_ext": {
+          "default": "700",
+          "title": "Park Ext",
+          "type": "string"
+        },
+        "park_start": {
+          "default": 701,
+          "title": "Park Start",
+          "type": "integer"
+        },
+        "park_time_s": {
+          "default": 45,
+          "maximum": 3600,
+          "minimum": 5,
+          "title": "Park Time S",
+          "type": "integer"
+        },
+        "pickup": {
+          "default": "*8",
+          "title": "Pickup",
+          "type": "string"
+        },
+        "transfer_digit_timeout_s": {
+          "default": 3,
+          "maximum": 60,
+          "minimum": 1,
+          "title": "Transfer Digit Timeout S",
+          "type": "integer"
+        }
+      },
+      "title": "FeatureSettingsDoc",
+      "type": "object"
+    },
+    "FirewallSettingsDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "admin_allowed_networks": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Admin Allowed Networks",
+          "type": "array"
+        },
+        "ban_enabled": {
+          "default": true,
+          "title": "Ban Enabled",
+          "type": "boolean"
+        },
+        "ban_seconds": {
+          "default": 3600,
+          "minimum": 60,
+          "title": "Ban Seconds",
+          "type": "integer"
+        },
+        "ban_threshold": {
+          "default": 10,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Ban Threshold",
+          "type": "integer"
+        },
+        "enabled": {
+          "default": true,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "sip_allowed_networks": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Sip Allowed Networks",
+          "type": "array"
+        }
+      },
+      "title": "FirewallSettingsDoc",
+      "type": "object"
+    },
+    "GuiSettingsDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "expand_advanced": {
+          "default": false,
+          "title": "Expand Advanced",
+          "type": "boolean"
+        },
+        "session_minutes": {
+          "default": 60,
+          "maximum": 1440,
+          "minimum": 5,
+          "title": "Session Minutes",
+          "type": "integer"
+        }
+      },
+      "title": "GuiSettingsDoc",
+      "type": "object"
+    },
+    "IaxSettingsDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "default": true,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "force_jitterbuffer": {
+          "default": false,
+          "title": "Force Jitterbuffer",
+          "type": "boolean"
+        },
+        "jitterbuffer": {
+          "default": false,
+          "title": "Jitterbuffer",
+          "type": "boolean"
+        },
+        "manual_attributes": {
+          "default": "",
+          "title": "Manual Attributes",
+          "type": "string"
+        },
+        "port": {
+          "default": 4569,
+          "maximum": 65535,
+          "minimum": 1,
+          "title": "Port",
+          "type": "integer"
+        }
+      },
+      "title": "IaxSettingsDoc",
+      "type": "object"
+    },
+    "IncomingRouteIn": {
+      "properties": {
+        "dest_id": {
+          "title": "Dest Id",
+          "type": "integer"
+        },
+        "dest_type": {
+          "enum": [
+            "phone",
+            "callgroup",
+            "application",
+            "conference"
+          ],
+          "title": "Dest Type",
+          "type": "string"
+        },
+        "pattern": {
+          "default": "",
+          "title": "Pattern",
+          "type": "string"
+        }
+      },
+      "required": [
+        "dest_type",
+        "dest_id"
+      ],
+      "title": "IncomingRouteIn",
+      "type": "object"
+    },
+    "MediaDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "moh",
+            "vm_greeting"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 128,
+          "title": "Name",
+          "type": "string"
+        },
+        "path": {
+          "pattern": "^[a-z_]+/[A-Za-z0-9_-]+\\.wav$",
+          "title": "Path",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "size": {
+          "minimum": 0,
+          "title": "Size",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "name",
+        "path",
+        "size",
+        "sha256"
+      ],
+      "title": "MediaDoc",
+      "type": "object"
+    },
+    "MediaSettingsDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "custom_moh": {
+          "default": false,
+          "title": "Custom Moh",
+          "type": "boolean"
+        },
+        "custom_vm_greeting": {
+          "default": false,
+          "title": "Custom Vm Greeting",
+          "type": "boolean"
+        }
+      },
+      "title": "MediaSettingsDoc",
+      "type": "object"
+    },
+    "NetworkSettingsDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "address": {
+          "default": "192.168.1.2",
+          "title": "Address",
+          "type": "string"
+        },
+        "dns_servers": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Dns Servers",
+          "type": "array"
+        },
+        "external_address": {
+          "default": "",
+          "title": "External Address",
+          "type": "string"
+        },
+        "external_hostname": {
+          "default": "",
+          "title": "External Hostname",
+          "type": "string"
+        },
+        "gateway": {
+          "default": "",
+          "title": "Gateway",
+          "type": "string"
+        },
+        "interface": {
+          "default": "eth0",
+          "title": "Interface",
+          "type": "string"
+        },
+        "ipv6": {
+          "default": "auto",
+          "enum": [
+            "auto",
+            "off"
+          ],
+          "title": "Ipv6",
+          "type": "string"
+        },
+        "mode": {
+          "default": "dhcp",
+          "enum": [
+            "dhcp",
+            "static"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "prefix": {
+          "default": 24,
+          "maximum": 32,
+          "minimum": 1,
+          "title": "Prefix",
+          "type": "integer"
+        },
+        "topology": {
+          "default": "public",
+          "enum": [
+            "public",
+            "natstatic",
+            "natdynamichost"
+          ],
+          "title": "Topology",
+          "type": "string"
+        }
+      },
+      "title": "NetworkSettingsDoc",
+      "type": "object"
+    },
+    "PhoneDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "blocked_provider_ids": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Blocked Provider Ids",
+          "type": "array"
+        },
+        "busylevel": {
+          "anyOf": [
+            {
+              "maximum": 100,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Busylevel"
+        },
+        "callerid": {
+          "title": "Callerid",
+          "type": "string"
+        },
+        "codecs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Codecs",
+          "type": "array"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "dial_provider_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dial Provider Id"
+        },
+        "dial_string": {
+          "default": "",
+          "title": "Dial String",
+          "type": "string"
+        },
+        "dial_type": {
+          "default": "provider",
+          "enum": [
+            "sip_uri",
+            "iax_uri",
+            "provider"
+          ],
+          "title": "Dial Type",
+          "type": "string"
+        },
+        "dtmf_mode": {
+          "default": "rfc4733",
+          "enum": [
+            "rfc4733",
+            "inband",
+            "info",
+            "auto"
+          ],
+          "title": "Dtmf Mode",
+          "type": "string"
+        },
+        "enabled": {
+          "default": true,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "extension": {
+          "title": "Extension",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "language": {
+          "default": "en",
+          "title": "Language",
+          "type": "string"
+        },
+        "legacy_uniqid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Legacy Uniqid"
+        },
+        "manual_attributes": {
+          "default": "",
+          "title": "Manual Attributes",
+          "type": "string"
+        },
+        "max_contacts": {
+          "default": 1,
+          "maximum": 10,
+          "minimum": 1,
+          "title": "Max Contacts",
+          "type": "integer"
+        },
+        "nat": {
+          "default": true,
+          "title": "Nat",
+          "type": "boolean"
+        },
+        "notify_email": {
+          "default": "",
+          "title": "Notify Email",
+          "type": "string"
+        },
+        "notify_missed": {
+          "default": false,
+          "title": "Notify Missed",
+          "type": "boolean"
+        },
+        "provider_callerids": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Provider Callerids",
+          "type": "object"
+        },
+        "public_access": {
+          "default": false,
+          "title": "Public Access",
+          "type": "boolean"
+        },
+        "public_name": {
+          "default": "",
+          "title": "Public Name",
+          "type": "string"
+        },
+        "qualify": {
+          "default": 60,
+          "maximum": 3600,
+          "minimum": 0,
+          "title": "Qualify",
+          "type": "integer"
+        },
+        "ringlength": {
+          "anyOf": [
+            {
+              "maximum": 600,
+              "minimum": 5,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ringlength"
+        },
+        "secret": {
+          "default": "",
+          "title": "Secret",
+          "type": "string"
+        },
+        "tech": {
+          "default": "pjsip",
+          "enum": [
+            "pjsip",
+            "iax",
+            "external"
+          ],
+          "title": "Tech",
+          "type": "string"
+        },
+        "vm_email": {
+          "default": "",
+          "title": "Vm Email",
+          "type": "string"
+        },
+        "vm_enabled": {
+          "default": false,
+          "title": "Vm Enabled",
+          "type": "boolean"
+        },
+        "vm_pin": {
+          "default": "",
+          "title": "Vm Pin",
+          "type": "string"
+        }
+      },
+      "required": [
+        "extension",
+        "callerid",
+        "id"
+      ],
+      "title": "PhoneDoc",
+      "type": "object"
+    },
+    "ProviderDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "auth_user": {
+          "default": "",
+          "title": "Auth User",
+          "type": "string"
+        },
+        "callerid_source": {
+          "default": "phones",
+          "enum": [
+            "phones",
+            "string"
+          ],
+          "title": "Callerid Source",
+          "type": "string"
+        },
+        "callerid_string": {
+          "default": "",
+          "title": "Callerid String",
+          "type": "string"
+        },
+        "codecs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Codecs",
+          "type": "array"
+        },
+        "dialpatterns": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Dialpatterns",
+          "type": "array"
+        },
+        "dtmf_mode": {
+          "default": "rfc4733",
+          "enum": [
+            "rfc4733",
+            "inband",
+            "info",
+            "auto"
+          ],
+          "title": "Dtmf Mode",
+          "type": "string"
+        },
+        "enabled": {
+          "default": true,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "failover_provider_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Failover Provider Id"
+        },
+        "from_domain": {
+          "default": "",
+          "title": "From Domain",
+          "type": "string"
+        },
+        "from_user": {
+          "default": "",
+          "title": "From User",
+          "type": "string"
+        },
+        "host": {
+          "title": "Host",
+          "type": "string"
+        },
+        "iax_auth": {
+          "default": "md5",
+          "enum": [
+            "md5",
+            "plaintext",
+            "rsa"
+          ],
+          "title": "Iax Auth",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "incoming_cid_override": {
+          "default": "",
+          "enum": [
+            "",
+            "replacenamewithnum",
+            "replace",
+            "prepend"
+          ],
+          "title": "Incoming Cid Override",
+          "type": "string"
+        },
+        "incoming_cid_string": {
+          "default": "",
+          "title": "Incoming Cid String",
+          "type": "string"
+        },
+        "incoming_routes": {
+          "items": {
+            "$ref": "#/$defs/IncomingRouteIn"
+          },
+          "title": "Incoming Routes",
+          "type": "array"
+        },
+        "language": {
+          "default": "en",
+          "title": "Language",
+          "type": "string"
+        },
+        "legacy_uniqid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Legacy Uniqid"
+        },
+        "manual_attributes": {
+          "default": "",
+          "title": "Manual Attributes",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "nat": {
+          "default": true,
+          "title": "Nat",
+          "type": "boolean"
+        },
+        "port": {
+          "anyOf": [
+            {
+              "maximum": 65535,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Port"
+        },
+        "qualify": {
+          "default": 60,
+          "maximum": 3600,
+          "minimum": 0,
+          "title": "Qualify",
+          "type": "integer"
+        },
+        "readback_number": {
+          "default": "",
+          "title": "Readback Number",
+          "type": "string"
+        },
+        "registration": {
+          "default": true,
+          "title": "Registration",
+          "type": "boolean"
+        },
+        "secret": {
+          "default": "",
+          "title": "Secret",
+          "type": "string"
+        },
+        "tech": {
+          "default": "pjsip",
+          "enum": [
+            "pjsip",
+            "iax"
+          ],
+          "title": "Tech",
+          "type": "string"
+        },
+        "transport": {
+          "default": "udp",
+          "enum": [
+            "udp",
+            "tcp",
+            "tls"
+          ],
+          "title": "Transport",
+          "type": "string"
+        },
+        "username": {
+          "title": "Username",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "host",
+        "username",
+        "id"
+      ],
+      "title": "ProviderDoc",
+      "type": "object"
+    },
+    "RtpSettingsDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "port_end": {
+          "default": 20000,
+          "maximum": 65535,
+          "minimum": 1024,
+          "title": "Port End",
+          "type": "integer"
+        },
+        "port_start": {
+          "default": 10000,
+          "maximum": 65535,
+          "minimum": 1024,
+          "title": "Port Start",
+          "type": "integer"
+        }
+      },
+      "title": "RtpSettingsDoc",
+      "type": "object"
+    },
+    "SettingsDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "acme": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AcmeSettingsDoc"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "email": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EmailSettingsDoc"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "features": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FeatureSettingsDoc"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "firewall": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FirewallSettingsDoc"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "gui": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GuiSettingsDoc"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "iax": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/IaxSettingsDoc"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "media": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MediaSettingsDoc"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "network": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NetworkSettingsDoc"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "rtp": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RtpSettingsDoc"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "sip": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SipSettingsDoc"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "system": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SystemSettingsDoc"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "update": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/UpdateSettingsDoc"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "voicemail": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VoicemailSettingsDoc"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "SettingsDoc",
+      "type": "object"
+    },
+    "SipSettingsDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "default_expiry": {
+          "default": 3600,
+          "minimum": 60,
+          "title": "Default Expiry",
+          "type": "integer"
+        },
+        "manual_attributes": {
+          "default": "",
+          "title": "Manual Attributes",
+          "type": "string"
+        },
+        "max_expiry": {
+          "default": 7200,
+          "minimum": 60,
+          "title": "Max Expiry",
+          "type": "integer"
+        },
+        "min_expiry": {
+          "default": 60,
+          "minimum": 10,
+          "title": "Min Expiry",
+          "type": "integer"
+        },
+        "srtp": {
+          "default": "off",
+          "enum": [
+            "off",
+            "optional"
+          ],
+          "title": "Srtp",
+          "type": "string"
+        },
+        "srv_lookup": {
+          "default": true,
+          "title": "Srv Lookup",
+          "type": "boolean"
+        },
+        "tcp_enabled": {
+          "default": false,
+          "title": "Tcp Enabled",
+          "type": "boolean"
+        },
+        "tls_enabled": {
+          "default": false,
+          "title": "Tls Enabled",
+          "type": "boolean"
+        },
+        "tls_port": {
+          "default": 5061,
+          "maximum": 65535,
+          "minimum": 1,
+          "title": "Tls Port",
+          "type": "integer"
+        },
+        "udp_port": {
+          "default": 5060,
+          "maximum": 65535,
+          "minimum": 1,
+          "title": "Udp Port",
+          "type": "integer"
+        }
+      },
+      "title": "SipSettingsDoc",
+      "type": "object"
+    },
+    "SystemSettingsDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "domain": {
+          "default": "local",
+          "title": "Domain",
+          "type": "string"
+        },
+        "hostname": {
+          "default": "phonix",
+          "title": "Hostname",
+          "type": "string"
+        },
+        "ntp_servers": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Ntp Servers",
+          "type": "array"
+        },
+        "prompt_language": {
+          "default": "en",
+          "title": "Prompt Language",
+          "type": "string"
+        },
+        "ssh_enabled": {
+          "default": false,
+          "title": "Ssh Enabled",
+          "type": "boolean"
+        },
+        "ssh_password_hash": {
+          "default": "",
+          "title": "Ssh Password Hash",
+          "type": "string"
+        },
+        "timezone": {
+          "default": "UTC",
+          "title": "Timezone",
+          "type": "string"
+        },
+        "tonezone": {
+          "default": "us",
+          "title": "Tonezone",
+          "type": "string"
+        },
+        "ui_language": {
+          "default": "en",
+          "title": "Ui Language",
+          "type": "string"
+        }
+      },
+      "title": "SystemSettingsDoc",
+      "type": "object"
+    },
+    "TokenDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "created_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Created At"
+        },
+        "enabled": {
+          "default": true,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "expires_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expires At"
+        },
+        "name": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "prefix": {
+          "maxLength": 16,
+          "title": "Prefix",
+          "type": "string"
+        },
+        "read_only": {
+          "default": true,
+          "title": "Read Only",
+          "type": "boolean"
+        },
+        "token_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Token Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "token_hash",
+        "prefix"
+      ],
+      "title": "TokenDoc",
+      "type": "object"
+    },
+    "UpdateSettingsDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "auto_check": {
+          "default": false,
+          "title": "Auto Check",
+          "type": "boolean"
+        },
+        "check_url": {
+          "default": "https://api.github.com/repos/PhonixPBX/PhonixPBX/releases/latest",
+          "title": "Check Url",
+          "type": "string"
+        }
+      },
+      "title": "UpdateSettingsDoc",
+      "type": "object"
+    },
+    "UserDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "created_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Created At"
+        },
+        "language": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Language"
+        },
+        "must_change_pw": {
+          "default": false,
+          "title": "Must Change Pw",
+          "type": "boolean"
+        },
+        "password_hash": {
+          "maxLength": 255,
+          "pattern": "^\\$argon2",
+          "title": "Password Hash",
+          "type": "string"
+        },
+        "role": {
+          "default": "admin",
+          "maxLength": 16,
+          "title": "Role",
+          "type": "string"
+        },
+        "tokens": {
+          "items": {
+            "$ref": "#/$defs/TokenDoc"
+          },
+          "title": "Tokens",
+          "type": "array"
+        },
+        "username": {
+          "pattern": "^[a-z][a-z0-9._-]{0,31}$",
+          "title": "Username",
+          "type": "string"
+        }
+      },
+      "required": [
+        "username",
+        "password_hash"
+      ],
+      "title": "UserDoc",
+      "type": "object"
+    },
+    "VoicemailSettingsDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "attach_audio": {
+          "default": true,
+          "title": "Attach Audio",
+          "type": "boolean"
+        },
+        "custom_body": {
+          "default": "",
+          "title": "Custom Body",
+          "type": "string"
+        },
+        "custom_subject": {
+          "default": "",
+          "title": "Custom Subject",
+          "type": "string"
+        },
+        "from_address": {
+          "default": "",
+          "title": "From Address",
+          "type": "string"
+        },
+        "from_name": {
+          "default": "PhonixPBX Voicemail",
+          "title": "From Name",
+          "type": "string"
+        },
+        "keep_messages": {
+          "default": true,
+          "title": "Keep Messages",
+          "type": "boolean"
+        },
+        "max_message_seconds": {
+          "default": 180,
+          "maximum": 3600,
+          "minimum": 10,
+          "title": "Max Message Seconds",
+          "type": "integer"
+        }
+      },
+      "title": "VoicemailSettingsDoc",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "ami_users": {
+      "items": {
+        "$ref": "#/$defs/AmiUserDoc"
+      },
+      "title": "Ami Users",
+      "type": "array"
+    },
+    "applications": {
+      "items": {
+        "$ref": "#/$defs/ApplicationDoc"
+      },
+      "title": "Applications",
+      "type": "array"
+    },
+    "callgroups": {
+      "items": {
+        "$ref": "#/$defs/CallGroupDoc"
+      },
+      "title": "Callgroups",
+      "type": "array"
+    },
+    "conferences": {
+      "items": {
+        "$ref": "#/$defs/ConferenceRoomDoc"
+      },
+      "title": "Conferences",
+      "type": "array"
+    },
+    "created": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Created"
+    },
+    "format": {
+      "const": "phonix-config",
+      "title": "Format",
+      "type": "string"
+    },
+    "media": {
+      "items": {
+        "$ref": "#/$defs/MediaDoc"
+      },
+      "title": "Media",
+      "type": "array"
+    },
+    "phones": {
+      "items": {
+        "$ref": "#/$defs/PhoneDoc"
+      },
+      "title": "Phones",
+      "type": "array"
+    },
+    "phonix_version": {
+      "default": "",
+      "title": "Phonix Version",
+      "type": "string"
+    },
+    "providers": {
+      "items": {
+        "$ref": "#/$defs/ProviderDoc"
+      },
+      "title": "Providers",
+      "type": "array"
+    },
+    "settings": {
+      "$ref": "#/$defs/SettingsDoc"
+    },
+    "users": {
+      "items": {
+        "$ref": "#/$defs/UserDoc"
+      },
+      "minItems": 1,
+      "title": "Users",
+      "type": "array"
+    },
+    "version": {
+      "title": "Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "format",
+    "version",
+    "users"
+  ],
+  "title": "PhonixPBX configuration, version 1",
+  "type": "object"
+}

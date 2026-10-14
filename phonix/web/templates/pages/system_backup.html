@@ -17,19 +17,20 @@
         {% for b in backups %}
         <tr><td>{{ b.name }}</td><td class="text-secondary">{{ b.stat().st_size | filesize }}</td>
           <td class="table-actions">
+            <button class="btn btn-ghost-primary btn-icon btn-sm" type="button" hx-post="/system/backup/preview/{{ b.name }}" hx-target="#restore-result" aria-label="{{ _("Restore %(name)s", name=b.name) }}">{{ icon("restore") }}</button>
             <a class="btn btn-ghost-primary btn-icon btn-sm" href="/system/backup/download/{{ b.name }}" aria-label="{{ _("Download %(name)s", name=b.name) }}">{{ icon("download") }}</a>
             {{ delete_button("/system/backup/" ~ b.name, b.name) }}
           </td></tr>
         {% endfor %}
         </tbody>
       </table>
-      {% else %}<div class="card-body text-secondary">{{ _("No backups yet. Backups contain the configuration, media and the TLS certificate.") }}</div>{% endif %}
+      {% else %}<div class="card-body text-secondary">{{ _("No backups yet. Backups contain the configuration with all passwords, the media files and the TLS certificate.") }}</div>{% endif %}
     </div>
     <div class="card mt-3">
       <div class="card-header"><h3 class="card-title">{{ _("Restore") }}</h3></div>
       <div class="card-body">
-        <p class="text-secondary">{{ _("Upload a PhonixPBX backup (<code>.tar.zst</code>). The current state is backed up first.") }}</p>
-        <form action="/system/backup/restore" class="dropzone" data-dropzone data-param="file" data-max-mb="2048" data-accept=".zst" data-target="#restore-result"
+        <p class="text-secondary">{{ _("Upload a PhonixPBX backup (<code>.tar.zst</code>). You get a preview before anything changes.") }}</p>
+        <form action="/system/backup/upload" class="dropzone" data-dropzone data-param="file" data-max-mb="2048" data-accept=".zst" data-target="#restore-result"
               data-message="{{ _("Drop the backup here or click to upload") }}"></form>
         <div id="restore-result"></div>
       </div>

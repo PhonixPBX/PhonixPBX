@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-13 22:46+0200\n"
+"POT-Creation-Date: 2026-10-14 13:12+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: sv\n"
@@ -57,6 +57,14 @@ msgstr[1] "%(num)d rutter"
 #, python-format
 msgid "%(number)s via %(provider)s"
 msgstr "%(number)s via %(provider)s"
+
+#, python-format
+msgid "%(object)s: %(error)s"
+msgstr "%(object)s: %(error)s"
+
+#, python-format
+msgid "%(object)s: reference to unknown %(type)s %(id)s"
+msgstr "%(object)s: hänvisning till okänt %(type)s %(id)s"
 
 #, python-format
 msgid "%(used)s of %(total)s"
@@ -143,6 +151,9 @@ msgstr "En leverantör kan inte vara reserv för sig själv"
 
 msgid "A secret is required"
 msgstr "En hemlighet krävs"
+
+msgid "ACME account"
+msgstr "ACME-konto"
 
 msgid "ACME directory URL"
 msgstr "ACME-katalog-URL"
@@ -413,8 +424,12 @@ msgid "Backup %(name)s created."
 msgstr "Säkerhetskopian %(name)s har skapats."
 
 #, python-format
-msgid "Backup from %(created)s restored. Review the configuration and apply the changes."
-msgstr "Säkerhetskopian från %(created)s har återställts. Granska konfigurationen och verkställ ändringarna."
+msgid "Backup from %(created)s"
+msgstr "Säkerhetskopia från %(created)s"
+
+#, python-format
+msgid "Backup from %(created)s restored and applied."
+msgstr "Säkerhetskopian från %(created)s har återställts och tillämpats."
 
 msgid "Backup is too large"
 msgstr "Säkerhetskopian är för stor"
@@ -424,6 +439,10 @@ msgstr "Säkerhetskopians manifest saknas"
 
 msgid "Backup not found"
 msgstr "Säkerhetskopian hittades inte"
+
+#, python-format
+msgid "Backup restored, but applying it failed: %(errors)s"
+msgstr "Säkerhetskopian återställdes, men det gick inte att tillämpa den: %(errors)s"
 
 msgid "Backup/Restore"
 msgstr "Säkerhetskopiering/återställning"
@@ -486,6 +505,9 @@ msgstr "Samtalsgrupp %(name)s <%(number)s>"
 
 msgid "Call group not found"
 msgstr "Samtalsgruppen hittades inte"
+
+msgid "Call groups"
+msgstr "Samtalsgrupper"
 
 msgid "Call groups ring several phones at once or one after another."
 msgstr "Samtalsgrupper ringer på flera telefoner samtidigt eller en i taget."
@@ -604,6 +626,9 @@ msgstr "Konferensrum"
 
 msgid "Conference room not found"
 msgstr "Konferensrummet hittades inte"
+
+msgid "Conference rooms"
+msgstr "Konferensrum"
 
 msgid "Conference rooms let several callers talk together."
 msgstr "I konferensrum kan flera uppringare prata med varandra."
@@ -732,9 +757,6 @@ msgstr "Mörkt läge"
 msgid "Data partition"
 msgstr "Datapartition"
 
-msgid "Database in backup is corrupt"
-msgstr "Databasen i säkerhetskopian är skadad"
-
 msgid "Default expiry (s)"
 msgstr "Standardgiltighetstid (s)"
 
@@ -844,6 +866,14 @@ msgstr "Släpp hälsningen här eller klicka för att ladda upp"
 
 msgid "Drop the update file here or click to upload"
 msgstr "Släpp uppdateringsfilen här eller klicka för att ladda upp"
+
+#, python-format
+msgid "Duplicate %(type)s id %(id)s"
+msgstr "Dubblett-ID %(id)s för %(type)s"
+
+#, python-format
+msgid "Duplicate user %(name)s"
+msgstr "Dubblettanvändare %(name)s"
 
 msgid "Duration"
 msgstr "Varaktighet"
@@ -1342,6 +1372,10 @@ msgstr "Loggar"
 msgid "MCP clients:"
 msgstr "MCP-klienter:"
 
+#, python-format
+msgid "Made by PhonixPBX %(version)s."
+msgstr "Skapad med PhonixPBX %(version)s."
+
 msgid "Make sure the network of your computer is allowed before applying restrictions."
 msgstr "Se till att din dators nätverk är tillåtet innan du verkställer begränsningar."
 
@@ -1356,6 +1390,9 @@ msgstr "Manager-användare"
 
 msgid "Manager user not found"
 msgstr "Manager-användaren hittades inte"
+
+msgid "Manager users"
+msgstr "Manager-användare"
 
 msgid "Max. message length (s)"
 msgstr "Max. meddelandelängd (s)"
@@ -1377,6 +1414,9 @@ msgstr "Mediekryptering (SRTP)"
 
 msgid "Media file not found"
 msgstr "Mediefilen hittades inte"
+
+msgid "Media files"
+msgstr "Mediefiler"
 
 msgid "Members"
 msgstr "Medlemmar"
@@ -1535,8 +1575,10 @@ msgstr "Inga aktiva samtal."
 msgid "No applications"
 msgstr "Inga applikationer"
 
-msgid "No backups yet. Backups contain the configuration, media and the TLS certificate."
-msgstr "Inga säkerhetskopior än. Säkerhetskopior innehåller konfigurationen, media och TLS-certifikatet."
+msgid "No backups yet. Backups contain the configuration with all passwords, the media files and the TLS certificate."
+msgstr ""
+"Inga säkerhetskopior ännu. Säkerhetskopior innehåller konfigurationen med alla lösenord, mediefilerna och TLS-"
+"certifikatet."
 
 msgid "No call groups"
 msgstr "Inga samtalsgrupper"
@@ -2050,6 +2092,20 @@ msgstr "Det gick inte att starta om Asterisk för SIP-TLS: %(error)s"
 msgid "Restore"
 msgstr "Återställ"
 
+#, python-format
+msgid "Restore %(name)s"
+msgstr "Återställ %(name)s"
+
+msgid "Restore this backup now?"
+msgstr "Återställa den här säkerhetskopian nu?"
+
+msgid ""
+"Restoring replaces the whole configuration, including web users, passwords and API tokens, and applies it right away."
+" The current state is backed up first."
+msgstr ""
+"Återställningen ersätter hela konfigurationen, inklusive webbanvändare, lösenord och API-token, och tillämpar den "
+"direkt. Det aktuella läget säkerhetskopieras först."
+
 msgid "Ring"
 msgstr "Signalerar"
 
@@ -2182,6 +2238,9 @@ msgstr "Servern kräver autentisering"
 msgid "Services"
 msgstr "Tjänster"
 
+msgid "Settings groups"
+msgstr "Inställningsgrupper"
+
 msgid "Settings saved."
 msgstr "Inställningarna har sparats."
 
@@ -2276,6 +2335,9 @@ msgstr "Systeminställningar"
 msgid "TLS / SMTPS (port 465)"
 msgstr "TLS / SMTPS (port 465)"
 
+msgid "TLS certificate and key"
+msgstr "TLS-certifikat och nyckel"
+
 msgid "TLS port"
 msgstr "TLS-port"
 
@@ -2318,6 +2380,21 @@ msgstr ""
 "CA:n ansluter till <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: namnen måste peka på den här växeln "
 "och port 80 måste kunna nås från internet."
 
+msgid "The configuration in the backup is missing or damaged"
+msgstr "Konfigurationen i säkerhetskopian saknas eller är skadad"
+
+#, python-format
+msgid "The configuration is invalid: %(errors)s"
+msgstr "Konfigurationen är ogiltig: %(errors)s"
+
+#, python-format
+msgid ""
+"The configuration was created by PhonixPBX %(release)s and is newer than this system supports. Update this system "
+"first."
+msgstr ""
+"Konfigurationen skapades av PhonixPBX %(release)s och är nyare än vad det här systemet stöder. Uppdatera det här "
+"systemet först."
+
 msgid "The directory URL must start with https://"
 msgstr "Katalog-URL:en måste börja med https://"
 
@@ -2352,6 +2429,10 @@ msgstr "ACME-klienten lego är inte installerad."
 msgid "The log is empty or not available."
 msgstr "Loggen är tom eller inte tillgänglig."
 
+#, python-format
+msgid "The media file %(path)s is missing or damaged"
+msgstr "Mediefilen %(path)s saknas eller är skadad"
+
 msgid "The number used to dial this phone and the SIP/IAX username."
 msgstr "Numret som används för att ringa den här telefonen och SIP/IAX-användarnamnet."
 
@@ -2380,6 +2461,9 @@ msgstr ""
 "Webbgränssnittet använder ett självsignerat certifikat. <a href=\"/advanced/certificate\">Hämta ett från Let's "
 "Encrypt eller ladda upp ditt eget</a> för att slippa varningar i webbläsaren."
 
+msgid "This backup was made by an older PhonixPBX release in a format that can no longer be restored."
+msgstr "Den här säkerhetskopian gjordes av en äldre PhonixPBX-version i ett format som inte längre kan återställas."
+
 msgid ""
 "This erases the complete configuration, voicemail, media and backups on this system and reboots. Download a backup "
 "first."
@@ -2389,6 +2473,9 @@ msgstr ""
 
 msgid "This field is required"
 msgstr "Fältet är obligatoriskt"
+
+msgid "This is not a PhonixPBX configuration file"
+msgstr "Det här är ingen PhonixPBX-konfigurationsfil"
 
 msgid "This phone cannot place outgoing calls through the selected providers."
 msgstr "Den här telefonen kan inte ringa utgående samtal via de valda leverantörerna."
@@ -2485,6 +2572,10 @@ msgstr "Okänd"
 msgid "Unknown codec %(codec)r"
 msgstr "Okänd codec %(codec)r"
 
+#, python-format
+msgid "Unknown configuration version %(version)s"
+msgstr "Okänd konfigurationsversion %(version)s"
+
 msgid "Unknown language"
 msgstr "Okänt språk"
 
@@ -2520,9 +2611,6 @@ msgstr "Oregistrerad"
 msgid "Unsafe path in backup: %(name)s"
 msgstr "Osäker sökväg i säkerhetskopian: %(name)s"
 
-msgid "Unsupported backup format"
-msgstr "Formatet för säkerhetskopian stöds inte"
-
 msgid "Up"
 msgstr "Uppkopplad"
 
@@ -2557,8 +2645,8 @@ msgstr "Signeringsnyckeln för uppdateringar är inte en ed25519-nyckel"
 msgid "Updates: replace the container image"
 msgstr "Uppdateringar: ersätt containeravbilden"
 
-msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). The current state is backed up first."
-msgstr "Ladda upp en PhonixPBX-säkerhetskopia (<code>.tar.zst</code>). Det aktuella läget säkerhetskopieras först."
+msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). You get a preview before anything changes."
+msgstr "Ladda upp en PhonixPBX-säkerhetskopia (<code>.tar.zst</code>). Du får en förhandsvisning innan något ändras."
 
 msgid ""
 "Upload a signed <code>.update</code> bundle for this board. It is written to the inactive system slot; the "
@@ -2692,6 +2780,9 @@ msgstr "Röstbrevlåda, konferenser och media"
 
 msgid "Web interface and SSH. One CIDR per line, e.g. 192.168.1.0/24. Empty = everyone."
 msgstr "Webbgränssnitt och SSH. En CIDR per rad, t.ex. 192.168.1.0/24. Tomt = alla."
+
+msgid "Web users"
+msgstr "Webbanvändare"
 
 msgid "Wildcard domains need DNS validation"
 msgstr "Wildcard-domäner kräver DNS-validering"

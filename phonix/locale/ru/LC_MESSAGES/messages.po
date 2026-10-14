@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-13 22:46+0200\n"
+"POT-Creation-Date: 2026-10-14 13:12+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ru\n"
@@ -59,6 +59,14 @@ msgstr[2] "%(num)d маршрутов"
 #, python-format
 msgid "%(number)s via %(provider)s"
 msgstr "%(number)s через %(provider)s"
+
+#, python-format
+msgid "%(object)s: %(error)s"
+msgstr "%(object)s: %(error)s"
+
+#, python-format
+msgid "%(object)s: reference to unknown %(type)s %(id)s"
+msgstr "%(object)s: ссылка на неизвестный объект %(type)s %(id)s"
 
 #, python-format
 msgid "%(used)s of %(total)s"
@@ -144,6 +152,9 @@ msgstr "Провайдер не может быть резервным для с
 
 msgid "A secret is required"
 msgstr "Требуется секрет"
+
+msgid "ACME account"
+msgstr "Учетная запись ACME"
 
 msgid "ACME directory URL"
 msgstr "URL каталога ACME"
@@ -414,8 +425,12 @@ msgid "Backup %(name)s created."
 msgstr "Резервная копия %(name)s создана."
 
 #, python-format
-msgid "Backup from %(created)s restored. Review the configuration and apply the changes."
-msgstr "Резервная копия от %(created)s восстановлена. Проверьте конфигурацию и примените изменения."
+msgid "Backup from %(created)s"
+msgstr "Резервная копия от %(created)s"
+
+#, python-format
+msgid "Backup from %(created)s restored and applied."
+msgstr "Резервная копия от %(created)s восстановлена и применена."
 
 msgid "Backup is too large"
 msgstr "Резервная копия слишком большая"
@@ -425,6 +440,10 @@ msgstr "В резервной копии отсутствует манифест
 
 msgid "Backup not found"
 msgstr "Резервная копия не найдена"
+
+#, python-format
+msgid "Backup restored, but applying it failed: %(errors)s"
+msgstr "Резервная копия восстановлена, но применить ее не удалось: %(errors)s"
 
 msgid "Backup/Restore"
 msgstr "Архивация/Восстановление"
@@ -487,6 +506,9 @@ msgstr "Группа вызова %(name)s <%(number)s>"
 
 msgid "Call group not found"
 msgstr "Группа вызова не найдена"
+
+msgid "Call groups"
+msgstr "Группы вызова"
 
 msgid "Call groups ring several phones at once or one after another."
 msgstr "Группы вызова звонят на несколько телефонов одновременно или по очереди."
@@ -605,6 +627,9 @@ msgstr "Конференц-комната"
 
 msgid "Conference room not found"
 msgstr "Конференц-комната не найдена"
+
+msgid "Conference rooms"
+msgstr "Конференц-комнаты"
 
 msgid "Conference rooms let several callers talk together."
 msgstr "Конференц-комнаты позволяют нескольким абонентам разговаривать вместе."
@@ -733,9 +758,6 @@ msgstr "Темная тема"
 msgid "Data partition"
 msgstr "Раздел данных"
 
-msgid "Database in backup is corrupt"
-msgstr "База данных в резервной копии повреждена"
-
 msgid "Default expiry (s)"
 msgstr "Срок регистрации по умолчанию (с)"
 
@@ -845,6 +867,14 @@ msgstr "Перетащите приветствие сюда или нажмит
 
 msgid "Drop the update file here or click to upload"
 msgstr "Перетащите файл обновления сюда или нажмите для загрузки"
+
+#, python-format
+msgid "Duplicate %(type)s id %(id)s"
+msgstr "Повторяющийся ID %(id)s для %(type)s"
+
+#, python-format
+msgid "Duplicate user %(name)s"
+msgstr "Повторяющийся пользователь %(name)s"
 
 msgid "Duration"
 msgstr "Длительность"
@@ -1343,6 +1373,10 @@ msgstr "Журналы"
 msgid "MCP clients:"
 msgstr "Клиенты MCP:"
 
+#, python-format
+msgid "Made by PhonixPBX %(version)s."
+msgstr "Создана в PhonixPBX %(version)s."
+
 msgid "Make sure the network of your computer is allowed before applying restrictions."
 msgstr "Перед применением ограничений убедитесь, что сеть вашего компьютера разрешена."
 
@@ -1357,6 +1391,9 @@ msgstr "Пользователь AMI"
 
 msgid "Manager user not found"
 msgstr "Пользователь AMI не найден"
+
+msgid "Manager users"
+msgstr "Пользователи AMI"
 
 msgid "Max. message length (s)"
 msgstr "Макс. длина сообщения (с)"
@@ -1378,6 +1415,9 @@ msgstr "Шифрование медиа (SRTP)"
 
 msgid "Media file not found"
 msgstr "Медиафайл не найден"
+
+msgid "Media files"
+msgstr "Медиафайлы"
 
 msgid "Members"
 msgstr "Участники"
@@ -1538,8 +1578,8 @@ msgstr "Нет активных вызовов."
 msgid "No applications"
 msgstr "Нет приложений"
 
-msgid "No backups yet. Backups contain the configuration, media and the TLS certificate."
-msgstr "Резервных копий пока нет. Резервные копии содержат конфигурацию, медиафайлы и TLS-сертификат."
+msgid "No backups yet. Backups contain the configuration with all passwords, the media files and the TLS certificate."
+msgstr "Резервных копий пока нет. Резервные копии содержат конфигурацию со всеми паролями, медиафайлы и TLS-сертификат."
 
 msgid "No call groups"
 msgstr "Нет групп вызова"
@@ -2052,6 +2092,20 @@ msgstr "Не удалось перезапустить Asterisk для SIP-TLS: 
 msgid "Restore"
 msgstr "Восстановить"
 
+#, python-format
+msgid "Restore %(name)s"
+msgstr "Восстановить %(name)s"
+
+msgid "Restore this backup now?"
+msgstr "Восстановить эту резервную копию сейчас?"
+
+msgid ""
+"Restoring replaces the whole configuration, including web users, passwords and API tokens, and applies it right away."
+" The current state is backed up first."
+msgstr ""
+"Восстановление заменяет всю конфигурацию, включая веб-пользователей, пароли и токены API, и сразу применяет ее. Перед"
+" этим создается резервная копия текущего состояния."
+
 msgid "Ring"
 msgstr "Вызов"
 
@@ -2184,6 +2238,9 @@ msgstr "Сервер требует аутентификации"
 msgid "Services"
 msgstr "Службы"
 
+msgid "Settings groups"
+msgstr "Группы настроек"
+
 msgid "Settings saved."
 msgstr "Настройки сохранены."
 
@@ -2278,6 +2335,9 @@ msgstr "Системные настройки"
 msgid "TLS / SMTPS (port 465)"
 msgstr "TLS / SMTPS (порт 465)"
 
+msgid "TLS certificate and key"
+msgstr "TLS-сертификат и ключ"
+
 msgid "TLS port"
 msgstr "Порт TLS"
 
@@ -2320,6 +2380,19 @@ msgstr ""
 "Центр сертификации подключается к <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: имена должны "
 "разрешаться в адрес этой АТС, а порт 80 должен быть доступен из интернета."
 
+msgid "The configuration in the backup is missing or damaged"
+msgstr "Конфигурация в резервной копии отсутствует или повреждена"
+
+#, python-format
+msgid "The configuration is invalid: %(errors)s"
+msgstr "Конфигурация недействительна: %(errors)s"
+
+#, python-format
+msgid ""
+"The configuration was created by PhonixPBX %(release)s and is newer than this system supports. Update this system "
+"first."
+msgstr "Конфигурация создана в PhonixPBX %(release)s и новее, чем поддерживает эта система. Сначала обновите эту систему."
+
 msgid "The directory URL must start with https://"
 msgstr "URL каталога должен начинаться с https://"
 
@@ -2354,6 +2427,10 @@ msgstr "ACME-клиент lego не установлен."
 msgid "The log is empty or not available."
 msgstr "Журнал пуст или недоступен."
 
+#, python-format
+msgid "The media file %(path)s is missing or damaged"
+msgstr "Медиафайл %(path)s отсутствует или поврежден"
+
 msgid "The number used to dial this phone and the SIP/IAX username."
 msgstr "Номер для вызова этого телефона и имя пользователя SIP/IAX."
 
@@ -2382,6 +2459,9 @@ msgstr ""
 "Веб-интерфейс использует самоподписанный сертификат. <a href=\"/advanced/certificate\">Получите сертификат от Let's "
 "Encrypt или загрузите собственный</a>, чтобы избавиться от предупреждений браузера."
 
+msgid "This backup was made by an older PhonixPBX release in a format that can no longer be restored."
+msgstr "Эта резервная копия создана более старой версией PhonixPBX в формате, который больше нельзя восстановить."
+
 msgid ""
 "This erases the complete configuration, voicemail, media and backups on this system and reboots. Download a backup "
 "first."
@@ -2391,6 +2471,9 @@ msgstr ""
 
 msgid "This field is required"
 msgstr "Это поле обязательно"
+
+msgid "This is not a PhonixPBX configuration file"
+msgstr "Это не файл конфигурации PhonixPBX"
 
 msgid "This phone cannot place outgoing calls through the selected providers."
 msgstr "Этот телефон не может совершать исходящие вызовы через выбранных провайдеров."
@@ -2489,6 +2572,10 @@ msgstr "Неизвестно"
 msgid "Unknown codec %(codec)r"
 msgstr "Неизвестный кодек %(codec)r"
 
+#, python-format
+msgid "Unknown configuration version %(version)s"
+msgstr "Неизвестная версия конфигурации %(version)s"
+
 msgid "Unknown language"
 msgstr "Неизвестный язык"
 
@@ -2524,9 +2611,6 @@ msgstr "Не зарегистрирован"
 msgid "Unsafe path in backup: %(name)s"
 msgstr "Небезопасный путь в резервной копии: %(name)s"
 
-msgid "Unsupported backup format"
-msgstr "Неподдерживаемый формат резервной копии"
-
 msgid "Up"
 msgstr "Активен"
 
@@ -2561,8 +2645,10 @@ msgstr "Ключ подписи обновлений не является кл�
 msgid "Updates: replace the container image"
 msgstr "Обновления: замените образ контейнера"
 
-msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). The current state is backed up first."
-msgstr "Загрузите резервную копию PhonixPBX (<code>.tar.zst</code>). Сначала создается резервная копия текущего состояния."
+msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). You get a preview before anything changes."
+msgstr ""
+"Загрузите резервную копию PhonixPBX (<code>.tar.zst</code>). Перед любыми изменениями вы увидите предварительный "
+"просмотр."
 
 msgid ""
 "Upload a signed <code>.update</code> bundle for this board. It is written to the inactive system slot; the "
@@ -2698,6 +2784,9 @@ msgstr "Голосовая почта, конференц-связь и меди
 
 msgid "Web interface and SSH. One CIDR per line, e.g. 192.168.1.0/24. Empty = everyone."
 msgstr "Веб-интерфейс и SSH. По одной сети CIDR в строке, например 192.168.1.0/24. Пусто = все."
+
+msgid "Web users"
+msgstr "Веб-пользователи"
 
 msgid "Wildcard domains need DNS validation"
 msgstr "Для wildcard-доменов требуется проверка через DNS"
