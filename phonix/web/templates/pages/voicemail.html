@@ -1,6 +1,6 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
-{% from "macros/forms.html" import csrf, input, textarea, checkbox, form_errors, submit with context %}
+{% from "macros/forms.html" import csrf, input, textarea, checkbox, select, form_errors, submit with context %}
 {% block content %}
 {% if not email_ok %}<div class="alert alert-info">{{ _('Voicemail can be read by dialing <strong>000086</strong>. Configure <a href="/services/email">e-mail notifications</a> to receive messages by e-mail.') }}</div>{% endif %}
 <form method="post" action="/services/voicemail" class="card">
@@ -16,9 +16,55 @@
       <div class="col-md-4">{{ checkbox("attach_audio", _("Attach the recording to the e-mail"), values, errors) }}</div>
       <div class="col-md-4">{{ checkbox("keep_messages", _("Keep messages on the PBX after e-mailing"), values, errors) }}</div>
     </div>
-    {{ input("custom_subject", _("E-mail subject"), values, errors, placeholder="New voicemail ${VM_MSGNUM} in mailbox ${VM_MAILBOX} from ${VM_CALLERID}") }}
-    {{ textarea("custom_body", _("E-mail text"), values, errors, rows=6, help=_("Variables: ${VM_NAME}, ${VM_DUR}, ${VM_MSGNUM}, ${VM_MAILBOX}, ${VM_CALLERID}, ${VM_DATE}. Empty = default text.")) }}
   </div>
   {{ submit() }}
 </form>
+
+{% set langs = [] %}{% for k, v in LANGUAGES.items() %}{% set _x = langs.append((k, _(v))) %}{% endfor %}
+<div class="card mt-3" id="texts">
+  <div class="card-header">
+    <h3 class="card-title">{{ _("E-mail texts") }}</h3>
+  </div>
+  <div class="card-body">
+    <p class="text-secondary">{{ _("Voicemail and missed call e-mails are sent in the e-mail language of each phone (Accounts > Phones). The texts below are used for the selected language; change them to customise the e-mails.") }}</p>
+    <form method="get" action="/services/voicemail#texts" class="row">
+      <div class="col-md-6">{{ select("lang", _("Language"), {"lang": texts_lang}, {}, langs, attrs="data-submit-on-change") }}</div>
+    </form>
+  </div>
+  <form method="post" action="/services/voicemail/texts">
+    {{ csrf() }}
+    <input type="hidden" name="lang" value="{{ texts_lang }}">
+    <div class="card-body pt-0">
+      {{ form_errors(text_errors) }}
+      <h4>{{ _("New voicemail") }}{% if "vm_subject" in customized or "vm_body" in customized %} <span class="badge bg-blue-lt ms-2">{{ _("customised") }}</span>{% endif %}</h4>
+      {{ input("vm_subject", _("E-mail subject"), texts, text_errors) }}
+      {{ textarea("vm_body", _("E-mail text"), texts, text_errors, rows=6, help=_("Variables: %(names)s", names=variables.vm)) }}
+      <h4 class="mt-4">{{ _("Missed call") }}{% if "missed_subject" in customized or "missed_body" in customized %} <span class="badge bg-blue-lt ms-2">{{ _("customised") }}</span>{% endif %}</h4>
+      {{ input("missed_subject", _("E-mail subject"), texts, text_errors) }}
+      {{ textarea("missed_body", _("E-mail text"), texts, text_errors, rows=8, help=_("Variables: %(names)s", names=variables.missed)) }}
+    </div>
+    <div class="card-footer">
+      <div class="d-flex">
+        <button type="submit" class="btn" formaction="/services/voicemail/texts/reset" {% if not customized %}disabled{% endif %}>{{ icon("restore") }}{{ _("Reset to default") }}</button>
+        <button type="submit" class="btn btn-primary ms-auto">{{ icon("device-floppy") }}{{ _("Save") }}</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="card mt-3">
+  <div class="card-header"><h3 class="card-title">{{ _("Preview") }}</h3></div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="fw-bold mb-1">{{ preview.vm_subject }}</div>
+        <pre class="mail-preview">{{ preview.vm_body }}</pre>
+      </div>
+      <div class="col-md-6">
+        <div class="fw-bold mb-1">{{ preview.missed_subject }}</div>
+        <pre class="mail-preview">{{ preview.missed_body }}</pre>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

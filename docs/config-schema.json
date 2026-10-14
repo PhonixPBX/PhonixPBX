@@ -711,6 +711,37 @@
       "title": "NetworkSettingsDoc",
       "type": "object"
     },
+    "NotificationTexts": {
+      "description": "E-mail texts of one language; an empty text uses the built-in (translated) default.",
+      "properties": {
+        "missed_body": {
+          "default": "",
+          "maxLength": 4000,
+          "title": "Missed Body",
+          "type": "string"
+        },
+        "missed_subject": {
+          "default": "",
+          "maxLength": 200,
+          "title": "Missed Subject",
+          "type": "string"
+        },
+        "vm_body": {
+          "default": "",
+          "maxLength": 4000,
+          "title": "Vm Body",
+          "type": "string"
+        },
+        "vm_subject": {
+          "default": "",
+          "maxLength": 200,
+          "title": "Vm Subject",
+          "type": "string"
+        }
+      },
+      "title": "NotificationTexts",
+      "type": "object"
+    },
     "PhoneDoc": {
       "additionalProperties": false,
       "properties": {
@@ -839,6 +870,11 @@
         "notify_email": {
           "default": "",
           "title": "Notify Email",
+          "type": "string"
+        },
+        "notify_language": {
+          "default": "",
+          "title": "Notify Language",
           "type": "string"
         },
         "notify_missed": {
@@ -1616,16 +1652,6 @@
           "title": "Attach Audio",
           "type": "boolean"
         },
-        "custom_body": {
-          "default": "",
-          "title": "Custom Body",
-          "type": "string"
-        },
-        "custom_subject": {
-          "default": "",
-          "title": "Custom Subject",
-          "type": "string"
-        },
         "from_address": {
           "default": "",
           "title": "From Address",
@@ -1647,6 +1673,13 @@
           "minimum": 10,
           "title": "Max Message Seconds",
           "type": "integer"
+        },
+        "templates": {
+          "additionalProperties": {
+            "$ref": "#/$defs/NotificationTexts"
+          },
+          "title": "Templates",
+          "type": "object"
         }
       },
       "title": "VoicemailSettingsDoc",
@@ -1749,6 +1782,6 @@
     "version",
     "users"
   ],
-  "title": "PhonixPBX configuration, version 1",
+  "title": "PhonixPBX configuration, version 2",
   "type": "object"
 }

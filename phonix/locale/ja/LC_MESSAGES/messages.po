@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-14 18:49+0200\n"
+"POT-Creation-Date: 2026-10-14 19:19+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ja\n"
@@ -873,6 +873,9 @@ msgstr "通話時間"
 msgid "Dutch"
 msgstr "オランダ語"
 
+msgid "E-mail language"
+msgstr "メールの言語"
+
 msgid "E-mail notification on missed calls"
 msgstr "不在着信のメール通知"
 
@@ -884,6 +887,9 @@ msgstr "メールの件名"
 
 msgid "E-mail text"
 msgstr "メール本文"
+
+msgid "E-mail texts"
+msgstr "メールの文面"
 
 msgid "E.g. a DynDNS name."
 msgstr "例: DynDNS 名。"
@@ -1124,6 +1130,47 @@ msgstr "ギリシャ"
 msgid "HTTP (port 80)"
 msgstr "HTTP（ポート 80）"
 
+#, python-brace-format
+msgid ""
+"Hello ${NAME},\n"
+"\n"
+"you missed a call to ${EXTENSION}.\n"
+"\n"
+"Caller: ${CALLERID}\n"
+"Reason: ${REASON}\n"
+"Time: ${DATE}\n"
+"\n"
+"-- \n"
+"PhonixPBX\n"
+msgstr ""
+"${NAME} 様\n"
+"\n"
+"${EXTENSION} への着信を逃しました。\n"
+"\n"
+"発信者: ${CALLERID}\n"
+"理由: ${REASON}\n"
+"日時: ${DATE}\n"
+"\n"
+"-- \n"
+"PhonixPBX\n"
+
+#, python-brace-format
+msgid ""
+"Hello ${VM_NAME},\n"
+"\n"
+"you have a new voicemail message (number ${VM_MSGNUM}, ${VM_DUR} long) in mailbox ${VM_MAILBOX} from ${VM_CALLERID}, "
+"received on ${VM_DATE}.\n"
+"\n"
+"-- \n"
+"PhonixPBX\n"
+msgstr ""
+"${VM_NAME} 様\n"
+"\n"
+"ボイスメールボックス ${VM_MAILBOX} に ${VM_CALLERID} から新しいボイスメール (番号 ${VM_MSGNUM}、長さ ${VM_DUR}) が届きました。受信日時: ${VM_DATE}\n"
+"\n"
+"-- \n"
+"PhonixPBX\n"
+
 msgid "Host"
 msgstr "ホスト"
 
@@ -1317,6 +1364,9 @@ msgstr "遅延"
 msgid "Language"
 msgstr "言語"
 
+msgid "Language of the voicemail and missed call e-mails. The texts can be changed under Services > Voicemail."
+msgstr "ボイスメールと不在着信のメールの言語です。文面はサービス > ボイスメールで変更できます。"
+
 #, python-format
 msgid "Language of the web interface for %(user)s."
 msgstr "%(user)s の Web インターフェースの言語です。"
@@ -1439,6 +1489,13 @@ msgstr "メキシコ"
 
 msgid "Minimum expiry (s)"
 msgstr "最小有効期限（秒）"
+
+msgid "Missed call"
+msgstr "不在着信"
+
+#, python-brace-format
+msgid "Missed call from ${CALLERID}"
+msgstr "${CALLERID} からの不在着信"
 
 #, python-format
 msgid "Missing DNS provider credentials: %(names)s"
@@ -1573,6 +1630,13 @@ msgstr "新しいマネージャーユーザー"
 msgid "New password"
 msgstr "新しいパスワード"
 
+msgid "New voicemail"
+msgstr "新しいボイスメール"
+
+#, python-brace-format
+msgid "New voicemail from ${VM_CALLERID}"
+msgstr "${VM_CALLERID} からの新しいボイスメール"
+
 msgid "Newer"
 msgstr "新しい順"
 
@@ -1581,6 +1645,9 @@ msgstr "API トークンはありません"
 
 msgid "No active calls."
 msgstr "アクティブな通話はありません。"
+
+msgid "No answer"
+msgstr "応答なし"
 
 msgid "No applications"
 msgstr "アプリケーションはありません"
@@ -1643,6 +1710,9 @@ msgstr "有効なアップデートバンドルではありません: %(error)s"
 
 msgid "Not in use"
 msgstr "未使用"
+
+msgid "Not reachable"
+msgstr "到達不能"
 
 #, python-format
 msgid "Not supported, dropped: %(sections)s"
@@ -2091,6 +2161,9 @@ msgstr "予約済み"
 msgid "Reset and reboot"
 msgstr "リセットして再起動"
 
+msgid "Reset to default"
+msgstr "既定に戻す"
+
 msgid "Reset to factory defaults"
 msgstr "工場出荷時設定にリセット"
 
@@ -2187,6 +2260,9 @@ msgstr "SSH の root パスワード"
 
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS（ポート 587）"
+
+msgid "Same as phone language"
+msgstr "電話機の言語と同じ"
 
 msgid "Save"
 msgstr "保存"
@@ -2385,6 +2461,9 @@ msgstr ""
 "認証局は <code>http://&lt;name&gt;/.well-known/acme-challenge/</code> に接続します。名前はこの PBX に解決される必要があり、ポート 80 "
 "にインターネットから到達できる必要があります。"
 
+msgid "The caller hung up"
+msgstr "発信者が切断しました"
+
 msgid "The configuration in the backup is missing or damaged"
 msgstr "バックアップ内の設定が見つからないか、破損しています"
 
@@ -2453,6 +2532,9 @@ msgstr "システムを再起動しています。復帰するとこのページ
 
 msgid "The system is shutting down."
 msgstr "システムをシャットダウンしています。"
+
+msgid "The text must not contain control characters"
+msgstr "テキストに制御文字を含めることはできません"
 
 msgid "The uploaded file expired, please upload it again."
 msgstr "アップロードしたファイルの有効期限が切れました。もう一度アップロードしてください。"
@@ -2731,9 +2813,9 @@ msgstr "検証"
 msgid "Value"
 msgstr "値"
 
-#, python-brace-format
-msgid "Variables: ${VM_NAME}, ${VM_DUR}, ${VM_MSGNUM}, ${VM_MAILBOX}, ${VM_CALLERID}, ${VM_DATE}. Empty = default text."
-msgstr "変数: ${VM_NAME}、${VM_DUR}、${VM_MSGNUM}、${VM_MAILBOX}、${VM_CALLERID}、${VM_DATE}。空欄 = デフォルトのテキスト。"
+#, python-format
+msgid "Variables: %(names)s"
+msgstr "変数: %(names)s"
 
 msgid "Venezuela"
 msgstr "ベネズエラ"
@@ -2763,6 +2845,11 @@ msgstr "ボイスメールと通知"
 
 msgid "Voicemail PIN"
 msgstr "ボイスメール PIN"
+
+msgid ""
+"Voicemail and missed call e-mails are sent in the e-mail language of each phone (Accounts > Phones). The texts below "
+"are used for the selected language; change them to customise the e-mails."
+msgstr "ボイスメールと不在着信のメールは、各電話機のメール言語で送信されます (アカウント > 電話機)。以下の文面は選択した言語に使われます。メールをカスタマイズするには変更してください。"
 
 msgid ""
 "Voicemail can be read by dialing <strong>000086</strong>. Configure <a href=\"/services/email\">e-mail "
@@ -2867,6 +2954,9 @@ msgstr "config.xml バージョン %(version)s"
 
 msgid "create"
 msgstr "作成"
+
+msgid "customised"
+msgstr "カスタマイズ済み"
 
 msgid "destination"
 msgstr "宛先"

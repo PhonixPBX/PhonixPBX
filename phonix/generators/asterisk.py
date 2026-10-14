@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import ipaddress
+import json
 
 from phonix.generators import dialplan
 from phonix.generators.base import DATA, GeneratedFile, Snapshot, render
@@ -14,11 +15,6 @@ ETC = "/etc/asterisk"
 
 def manual_lines(text: str) -> list[str]:
     return [line.strip() for line in (text or "").splitlines() if line.strip()]
-
-
-def vm_body(text: str) -> str:
-    """voicemail.conf ``emailbody`` is a single line with ``\\n`` escapes."""
-    return text.replace("\r\n", "\n").replace("\\", "\\\\").replace("\n", "\\n").replace(";", r"\;")
 
 
 def net_mask(cidr: str) -> str:
@@ -92,10 +88,31 @@ def voicemail_conf(snap: Snapshot) -> str:
         vm=snap.voicemail,
         from_address=from_address,
         email_ok=email.configured,
-        msmtprc="/etc/phonix/msmtprc",
         phones=[p for p in snap.active_phones if p.vm_enabled],
-        vm_body=vm_body,
     )
+
+
+def notify_json(snap: Snapshot) -> str:
+    """Language, name and texts for the e-mail sender (phonix.notify): per mailbox or
+    missed call target, and per language in use."""
+    from phonix.services import notifications as nt
+
+    targets: dict[str, dict[str, str]] = {}
+    for p in snap.active_phones:
+        if (p.vm_enabled and p.vm_email) or (p.notify_missed and p.notify_email):
+            targets[p.extension] = {"lang": nt.effective_language(p), "name": p.callerid, "extension": p.extension}
+    for group in snap.callgroups:
+        members = dialplan.group_members(group, snap)
+        # the first member gets the group's missed call mails (dialplan.callgroup_steps)
+        if members and members[0].notify_missed and members[0].notify_email:
+            targets[dialplan.group_notify_target(group)] = {
+                "lang": nt.effective_language(members[0]),
+                "name": group.name,
+                "extension": group.extension or "",
+            }
+    langs = sorted({t["lang"] for t in targets.values()})
+    data = {"targets": targets, "languages": {lang: nt.runtime_texts(snap.voicemail, lang) for lang in langs}}
+    return json.dumps(data, indent=2, sort_keys=True, ensure_ascii=False) + "\n"
 
 
 def manager_conf(snap: Snapshot) -> str:
@@ -145,6 +162,8 @@ def generate(snap: Snapshot) -> list[GeneratedFile]:
         _file("iax.conf", iax_conf(snap), "asterisk:iax"),
         _file("extensions.conf", dialplan.generate(snap), "asterisk:dialplan"),
         _file("voicemail.conf", voicemail_conf(snap), "asterisk:voicemail"),
+        # read by /usr/libexec/phonix/notify (user asterisk) at send time, no reload needed
+        _file("phonix-notify.json", notify_json(snap), "asterisk:voicemail"),
         _file("confbridge.conf", render("asterisk/confbridge.conf.j2"), "asterisk:confbridge"),
         _file("musiconhold.conf", render("asterisk/musiconhold.conf.j2", moh_dir=moh_dir(snap)), "asterisk:moh"),
         _file("features.conf", render("asterisk/features.conf.j2", f=snap.features), "asterisk:features"),

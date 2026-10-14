@@ -18,9 +18,29 @@ def test_migrations_match_models(runtime: config.RuntimeConfig) -> None:
 
 
 def test_squashed_nightly_revision_is_restamped(runtime: config.RuntimeConfig) -> None:
-    migrate.upgrade()
+    # a pre-1.0 nightly database at 0003 has the schema of 0001
+    migrate.upgrade("0001")
     with db.get_engine().begin() as conn:
         conn.execute(text("UPDATE alembic_version SET version_num = '0003'"))
     migrate.upgrade()
-    assert migrate.current_revision() == migrate.head_revision() == "0001"
+    assert migrate.current_revision() == migrate.head_revision() == "0004"
     assert not migrate.needs_upgrade()
+
+
+def test_0004_moves_custom_voicemail_text(runtime: config.RuntimeConfig) -> None:
+    import json
+
+    migrate.upgrade("0001")
+    with db.get_engine().begin() as conn:
+        conn.execute(
+            text("INSERT INTO settings (\"group\", data) VALUES ('system', :s), ('voicemail', :v)"),
+            {
+                "s": json.dumps({"prompt_language": "fr"}),
+                "v": json.dumps({"from_name": "VM", "custom_subject": "Nouveau", "custom_body": "Bonjour"}),
+            },
+        )
+    migrate.upgrade()
+    with db.get_engine().connect() as conn:
+        data = conn.execute(text("SELECT data FROM settings WHERE \"group\" = 'voicemail'")).scalar_one()
+    data = json.loads(data) if isinstance(data, str) else data
+    assert data == {"from_name": "VM", "templates": {"fr": {"vm_subject": "Nouveau", "vm_body": "Bonjour"}}}

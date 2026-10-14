@@ -19,6 +19,18 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   `https://<hostname>.local/` opens the web interface, and discovery tools find it as an
   HTTPS service. It is on by default and can be turned off under System → General. The
   firewall lets mDNS through, and new self-signed certificates include the `.local` name.
+- Voicemail and missed call e-mails are sent in the language of the phone, with the date
+  formatted for that language and the reason of a missed call spelled out ("Busy", "No
+  answer"). Phones get an *E-mail language* setting (default: the phone's language). Under
+  Services → Voicemail the subject and text of both e-mails can be changed per language,
+  with a preview and a reset to the built-in text.
+
+### Changed
+
+- The custom voicemail e-mail subject and text are kept as the texts of the default prompt
+  language. Configuration files (`config.json`) are now version 2; version 1 files are
+  upgraded on import.
+- `/usr/libexec/phonix/notify` replaces `notify-missed-call`.
 
 ### Fixed
 

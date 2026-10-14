@@ -1,0 +1,17 @@
+#!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
+# Voicemail and missed call e-mails in the language of the phone (phonix.notify).
+# Called by Asterisk (user asterisk):
+#   notify voicemail                                        mailcmd in voicemail.conf
+#   notify missed <email> <target> <cause> <callerid>       sub-missed-call hangup handler
+# The arguments are untrusted data; phonix.notify validates them.
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+export PATH
+
+if [ "${1:-}" = missed ]; then
+	# in the background so the dialplan is not blocked by a slow relay
+	setsid python3 -m phonix.notify "$@" >/dev/null 2>&1 </dev/null &
+	exit 0
+fi
+exec python3 -m phonix.notify "$@"

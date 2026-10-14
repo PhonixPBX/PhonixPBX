@@ -45,8 +45,9 @@ def test_catalog_complete(lang):
 
 @pytest.mark.parametrize("lang", CATALOG_LANGUAGES)
 def test_catalog_placeholders(lang):
-    """Named placeholders and inline HTML tags of a translation match the source."""
-    names = re.compile(r"%\(\w+\)[sdr]")
+    """Named placeholders, ${VARIABLES} of the e-mail texts and inline HTML tags of a
+    translation match the source."""
+    names = re.compile(r"%\(\w+\)[sdr]|\$\{[A-Z_]+\}")
     tags = re.compile(r"</?(a|b|br|code|em|i|kbd|span|strong)[\s>/]")
     for m in _catalog(lang):
         if not m.id:

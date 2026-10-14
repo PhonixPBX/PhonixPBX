@@ -55,6 +55,10 @@
         <hr>
         {{ checkbox("notify_missed", _("E-mail notification on missed calls"), values, errors) }}
         <div data-show-if="notify_missed=true">{{ input("notify_email", _("Notification address"), values, errors, type="email") }}</div>
+        <hr>
+        <div class="row">
+          <div class="col-md-6">{{ select("notify_language", _("E-mail language"), values, errors, language_opts, empty=_("Same as phone language"), help=_("Language of the voicemail and missed call e-mails. The texts can be changed under Services > Voicemail.")) }}</div>
+        </div>
       </div>
 
       {% if tech != "external" %}

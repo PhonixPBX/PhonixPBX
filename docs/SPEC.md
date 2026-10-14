@@ -145,6 +145,7 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 **Services**
 - Email notifications (msmtp)
 - Voicemail, with voicemail-to-email
+- Voicemail and missed call e-mails in the e-mail language of each phone (*E-mail language*, default: the phone's language). The built-in texts are translated through the catalogs, and dates are formatted for the language. *Services → Voicemail* overrides the subject and text per language and resets a language to the built-in text; a text equal to the built-in one is not stored, so it keeps following the translations.
 - Conferencing (ConfBridge)
 - Media: music-on-hold upload, custom voicemail greetings, prompt language
 
@@ -515,6 +516,7 @@ Each phase ends shippable and tested.
 
 - Python runtime on Alpine 3.24 is 3.14; development and CI also run the suite on 3.10 (`dev/constraints-alpine-3.24.txt` pins the Alpine package versions).
 - Asterisk 22 has no `Macro()`; the generated dialplan uses `Gosub` subroutines (`sub-dial`, `sub-try`, `sub-checkcf`, `sub-missed-call`). Missed call mails run as a hangup handler.
+- E-mails: `voicemail.conf` has one global subject and body, so Asterisk only puts the message details into them (`key=value` lines) and hands the mail to `mailcmd=/usr/libexec/phonix/notify voicemail`. `phonix.notify` replaces subject and text with the mailbox language's texts, keeps the recording attached and sends it with msmtp; a mail it cannot rewrite is sent unchanged. The hangup handler calls `notify missed <email> <target> <cause> <callerid>`. Languages, names and texts come from the generated `/etc/asterisk/phonix-notify.json`, so the sender needs neither the database nor gettext.
 - PJSIP providers register with `line=yes`; several accounts on the same host share one inbound context that dispatches on the account user name (legacy behaviour).
 - The legacy "direct dial SIP URI" context (`outgoing-uri`) is not ported (toll-fraud risk, no PJSIP equivalent without a fixed domain).
 - Swagger UI at `/api/docs` loads its assets from jsDelivr and therefore needs internet access; `/api/v1/openapi.json` is always available.

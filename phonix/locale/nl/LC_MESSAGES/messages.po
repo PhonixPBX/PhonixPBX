@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-14 18:49+0200\n"
+"POT-Creation-Date: 2026-10-14 19:19+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: nl\n"
@@ -884,6 +884,9 @@ msgstr "Duur"
 msgid "Dutch"
 msgstr "Nederlands"
 
+msgid "E-mail language"
+msgstr "E-mailtaal"
+
 msgid "E-mail notification on missed calls"
 msgstr "E-mailmelding bij gemiste oproepen"
 
@@ -895,6 +898,9 @@ msgstr "E-mailonderwerp"
 
 msgid "E-mail text"
 msgstr "E-mailtekst"
+
+msgid "E-mail texts"
+msgstr "E-mailteksten"
 
 msgid "E.g. a DynDNS name."
 msgstr "Bijv. een DynDNS-naam."
@@ -1135,6 +1141,48 @@ msgstr "Griekenland"
 msgid "HTTP (port 80)"
 msgstr "HTTP (poort 80)"
 
+#, python-brace-format
+msgid ""
+"Hello ${NAME},\n"
+"\n"
+"you missed a call to ${EXTENSION}.\n"
+"\n"
+"Caller: ${CALLERID}\n"
+"Reason: ${REASON}\n"
+"Time: ${DATE}\n"
+"\n"
+"-- \n"
+"PhonixPBX\n"
+msgstr ""
+"Hallo ${NAME},\n"
+"\n"
+"je hebt een oproep naar ${EXTENSION} gemist.\n"
+"\n"
+"Beller: ${CALLERID}\n"
+"Reden: ${REASON}\n"
+"Tijd: ${DATE}\n"
+"\n"
+"-- \n"
+"PhonixPBX\n"
+
+#, python-brace-format
+msgid ""
+"Hello ${VM_NAME},\n"
+"\n"
+"you have a new voicemail message (number ${VM_MSGNUM}, ${VM_DUR} long) in mailbox ${VM_MAILBOX} from ${VM_CALLERID}, "
+"received on ${VM_DATE}.\n"
+"\n"
+"-- \n"
+"PhonixPBX\n"
+msgstr ""
+"Hallo ${VM_NAME},\n"
+"\n"
+"je hebt een nieuw voicemailbericht (nummer ${VM_MSGNUM}, duur ${VM_DUR}) in voicemailbox ${VM_MAILBOX} van "
+"${VM_CALLERID}, ontvangen op ${VM_DATE}.\n"
+"\n"
+"-- \n"
+"PhonixPBX\n"
+
 msgid "Host"
 msgstr "Host"
 
@@ -1329,6 +1377,9 @@ msgstr "Vertraagd"
 msgid "Language"
 msgstr "Taal"
 
+msgid "Language of the voicemail and missed call e-mails. The texts can be changed under Services > Voicemail."
+msgstr "Taal van de voicemail- en gemiste-oproepe-mails. De teksten kunnen worden aangepast onder Diensten > Voicemail."
+
 #, python-format
 msgid "Language of the web interface for %(user)s."
 msgstr "Taal van de webinterface voor %(user)s."
@@ -1451,6 +1502,13 @@ msgstr "Mexico"
 
 msgid "Minimum expiry (s)"
 msgstr "Minimale verlooptijd (s)"
+
+msgid "Missed call"
+msgstr "Gemiste oproep"
+
+#, python-brace-format
+msgid "Missed call from ${CALLERID}"
+msgstr "Gemiste oproep van ${CALLERID}"
 
 #, python-format
 msgid "Missing DNS provider credentials: %(names)s"
@@ -1585,6 +1643,13 @@ msgstr "Nieuwe managergebruiker"
 msgid "New password"
 msgstr "Nieuw wachtwoord"
 
+msgid "New voicemail"
+msgstr "Nieuwe voicemail"
+
+#, python-brace-format
+msgid "New voicemail from ${VM_CALLERID}"
+msgstr "Nieuwe voicemail van ${VM_CALLERID}"
+
 msgid "Newer"
 msgstr "Nieuwer"
 
@@ -1593,6 +1658,9 @@ msgstr "Geen API-tokens"
 
 msgid "No active calls."
 msgstr "Geen actieve gesprekken."
+
+msgid "No answer"
+msgstr "Geen antwoord"
 
 msgid "No applications"
 msgstr "Geen applicaties"
@@ -1655,6 +1723,9 @@ msgstr "Geen geldige updatebundel: %(error)s"
 
 msgid "Not in use"
 msgstr "Niet in gebruik"
+
+msgid "Not reachable"
+msgstr "Niet bereikbaar"
 
 #, python-format
 msgid "Not supported, dropped: %(sections)s"
@@ -2113,6 +2184,9 @@ msgstr "Gereserveerd"
 msgid "Reset and reboot"
 msgstr "Resetten en herstarten"
 
+msgid "Reset to default"
+msgstr "Standaard herstellen"
+
 msgid "Reset to factory defaults"
 msgstr "Terugzetten naar fabrieksinstellingen"
 
@@ -2215,6 +2289,9 @@ msgstr "SSH-rootwachtwoord"
 
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (poort 587)"
+
+msgid "Same as phone language"
+msgstr "Zelfde als taal van de telefoon"
 
 msgid "Save"
 msgstr "Opslaan"
@@ -2418,6 +2495,9 @@ msgstr ""
 "De CA maakt verbinding met <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: de namen moeten naar deze "
 "PBX verwijzen en poort 80 moet vanaf internet bereikbaar zijn."
 
+msgid "The caller hung up"
+msgstr "De beller heeft opgehangen"
+
 msgid "The configuration in the backup is missing or damaged"
 msgstr "De configuratie in de back-up ontbreekt of is beschadigd"
 
@@ -2488,6 +2568,9 @@ msgstr "Het systeem wordt herstart. Deze pagina wordt herladen zodra het weer be
 
 msgid "The system is shutting down."
 msgstr "Het systeem wordt uitgeschakeld."
+
+msgid "The text must not contain control characters"
+msgstr "De tekst mag geen stuurtekens bevatten"
 
 msgid "The uploaded file expired, please upload it again."
 msgstr "Het geüploade bestand is verlopen, upload het opnieuw."
@@ -2777,9 +2860,9 @@ msgstr "Validatie"
 msgid "Value"
 msgstr "Waarde"
 
-#, python-brace-format
-msgid "Variables: ${VM_NAME}, ${VM_DUR}, ${VM_MSGNUM}, ${VM_MAILBOX}, ${VM_CALLERID}, ${VM_DATE}. Empty = default text."
-msgstr "Variabelen: ${VM_NAME}, ${VM_DUR}, ${VM_MSGNUM}, ${VM_MAILBOX}, ${VM_CALLERID}, ${VM_DATE}. Leeg = standaardtekst."
+#, python-format
+msgid "Variables: %(names)s"
+msgstr "Variabelen: %(names)s"
 
 msgid "Venezuela"
 msgstr "Venezuela"
@@ -2809,6 +2892,13 @@ msgstr "Voicemail &amp; meldingen"
 
 msgid "Voicemail PIN"
 msgstr "Voicemail-PIN"
+
+msgid ""
+"Voicemail and missed call e-mails are sent in the e-mail language of each phone (Accounts > Phones). The texts below "
+"are used for the selected language; change them to customise the e-mails."
+msgstr ""
+"Voicemail- en gemiste-oproepe-mails worden verstuurd in de e-mailtaal van elke telefoon (Accounts > Telefoons). De "
+"teksten hieronder gelden voor de gekozen taal; pas ze aan om de e-mails te wijzigen."
 
 msgid ""
 "Voicemail can be read by dialing <strong>000086</strong>. Configure <a href=\"/services/email\">e-mail "
@@ -2915,6 +3005,9 @@ msgstr "config.xml versie %(version)s"
 
 msgid "create"
 msgstr "aanmaken"
+
+msgid "customised"
+msgstr "aangepast"
 
 msgid "destination"
 msgstr "bestemming"

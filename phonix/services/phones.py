@@ -66,6 +66,7 @@ class PhoneIn(BaseModel):
     vm_email: str = ""
     notify_missed: bool = False
     notify_email: str = ""
+    notify_language: str = ""
     dial_type: Literal["sip_uri", "iax_uri", "provider"] = "provider"
     dial_provider_id: int | None = None
     dial_string: str = ""
@@ -78,6 +79,7 @@ class PhoneIn(BaseModel):
     _cid = field_validator("callerid")(lambda cls, x: v.callerid_name(x))
     _desc = field_validator("description")(lambda cls, x: v.no_control(x.strip(), N_("Description")))
     _lang = field_validator("language")(lambda cls, x: v.language(x))
+    _nlang = field_validator("notify_language")(lambda cls, x: v.language(x) if x else "")
     _codecs = field_validator("codecs")(lambda cls, x: v.codecs(x))
     _pub = field_validator("public_name")(lambda cls, x: public_name(x))
     _attrs = field_validator("manual_attributes")(lambda cls, x: v.manual_attributes(x))
@@ -194,6 +196,7 @@ def to_dict(phone: Phone, with_secret: bool = False) -> dict[str, Any]:
         "vm_email": phone.vm_email,
         "notify_missed": phone.notify_missed,
         "notify_email": phone.notify_email,
+        "notify_language": phone.notify_language,
         "dial_type": phone.dial_type,
         "dial_provider_id": phone.dial_provider_id,
         "dial_string": phone.dial_string,
@@ -228,6 +231,7 @@ def _apply(session: Session, phone: Phone, data: PhoneIn) -> None:
         "vm_email",
         "notify_missed",
         "notify_email",
+        "notify_language",
         "dial_type",
         "dial_string",
         "manual_attributes",

@@ -63,9 +63,25 @@ from phonix.services import users as users_svc
 from phonix.services.common import AREAS, ServiceError, errors_from_validation, mark_dirty, parse
 
 FORMAT = "phonix-config"
-CONFIG_VERSION = 1
+CONFIG_VERSION = 2
+
+
+def _upgrade_1(data: dict[str, Any]) -> dict[str, Any]:
+    """1 -> 2: the one custom voicemail e-mail text became texts per language (kept for the
+    default prompt language, like the database migration 0004)."""
+    settings = data.get("settings") or {}
+    vm = settings.get("voicemail")
+    if isinstance(vm, dict):
+        subject = vm.pop("custom_subject", "") or ""
+        body = vm.pop("custom_body", "") or ""
+        if subject or body:
+            lang = (settings.get("system") or {}).get("prompt_language") or "en"
+            vm.setdefault("templates", {})[lang] = {"vm_subject": subject, "vm_body": body}
+    return data
+
+
 # version n -> n + 1, applied to the plain dict before validation
-UPGRADES: dict[int, Callable[[dict[str, Any]], dict[str, Any]]] = {}
+UPGRADES: dict[int, Callable[[dict[str, Any]], dict[str, Any]]] = {1: _upgrade_1}
 
 _FORBID = ConfigDict(extra="forbid")
 

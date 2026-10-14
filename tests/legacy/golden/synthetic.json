@@ -123,6 +123,7 @@
         "max_contacts": 1,
         "nat": true,
         "notify_email": "alice@example.com",
+        "notify_language": "de",
         "notify_missed": true,
         "provider_callerids": {
           "Sipgate": "Alice <4930111101>"
@@ -158,6 +159,7 @@
         "max_contacts": 1,
         "nat": false,
         "notify_email": "",
+        "notify_language": "de",
         "notify_missed": false,
         "provider_callerids": {},
         "public_access": false,
@@ -191,6 +193,7 @@
         "max_contacts": 1,
         "nat": true,
         "notify_email": "",
+        "notify_language": "",
         "notify_missed": false,
         "provider_callerids": {},
         "public_access": false,
@@ -224,6 +227,7 @@
         "max_contacts": 1,
         "nat": true,
         "notify_email": "",
+        "notify_language": "de",
         "notify_missed": false,
         "provider_callerids": {},
         "public_access": false,
@@ -259,6 +263,7 @@
         "max_contacts": 1,
         "nat": true,
         "notify_email": "",
+        "notify_language": "de",
         "notify_missed": false,
         "provider_callerids": {},
         "public_access": false,
@@ -294,6 +299,7 @@
         "max_contacts": 1,
         "nat": true,
         "notify_email": "",
+        "notify_language": "de",
         "notify_missed": false,
         "provider_callerids": {},
         "public_access": false,
@@ -568,12 +574,18 @@
       },
       "voicemail": {
         "attach_audio": true,
-        "custom_body": "Hello ${VM_NAME},\nyou got a ${VM_DUR} long message from ${VM_CALLERID} on ${VM_DATE}.",
-        "custom_subject": "New message in mailbox ${VM_MAILBOX}",
         "from_address": "voicemail@example.com",
         "from_name": "PhonixPBX Voicemail",
         "keep_messages": true,
-        "max_message_seconds": 180
+        "max_message_seconds": 180,
+        "templates": {
+          "de": {
+            "missed_body": "",
+            "missed_subject": "",
+            "vm_body": "Hello ${VM_NAME},\nyou got a ${VM_DUR} long message from ${VM_CALLERID} on ${VM_DATE}.",
+            "vm_subject": "New message in mailbox ${VM_MAILBOX}"
+          }
+        }
       }
     }
   },

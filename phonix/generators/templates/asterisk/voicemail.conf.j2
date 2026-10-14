@@ -15,18 +15,13 @@ operator=no
 saycid=no
 sendvoicemail=no
 pollmailboxes=no
-emaildateformat=%A, %d %B %Y at %H:%M:%S
-mailcmd=/usr/bin/msmtp -C {{ msmtprc }} -t
-{% if vm.custom_subject %}
-emailsubject={{ vm.custom_subject | cfg }}
-{% else %}
-emailsubject=New voicemail ${VM_MSGNUM} in mailbox ${VM_MAILBOX} from ${VM_CALLERID}
-{% endif %}
-{% if vm.custom_body %}
-emailbody={{ vm_body(vm.custom_body) }}
-{% else %}
-emailbody=Hello ${VM_NAME},\n\nyou have a new message (number ${VM_MSGNUM}, ${VM_DUR} long) in mailbox ${VM_MAILBOX} from ${VM_CALLERID}, on ${VM_DATE}.\n\n-- \nPhonixPBX\n
-{% endif %}
+charset=UTF-8
+; subject and text are replaced by the mailbox's language by the mailcmd
+; (phonix.notify, texts in phonix-notify.json); these lines only carry the details
+emaildateformat=%Y-%m-%dT%H:%M:%S%z
+mailcmd=/usr/libexec/phonix/notify voicemail
+emailsubject=PHONIX-VM ${VM_MAILBOX}
+emailbody=mailbox=${VM_MAILBOX}\nmsgnum=${VM_MSGNUM}\nname=${VM_NAME}\ncallerid=${VM_CALLERID}\ndur=${VM_DUR}\ndate=${VM_DATE}\n
 
 [zonemessages]
 

@@ -249,6 +249,14 @@
   padding: 0.75rem;
   border-radius: var(--tblr-border-radius);
 }
+.mail-preview {
+  font-family: inherit;
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+  background: var(--tblr-bg-surface-secondary);
+  padding: 0.75rem;
+  border-radius: var(--tblr-border-radius);
+}
 .chart-lg {
   min-height: 16rem;
 }

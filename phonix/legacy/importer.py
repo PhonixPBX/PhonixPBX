@@ -168,7 +168,9 @@ class LegacyImporter:
         self.report = report
         self.merge = mode == "merge"
         self.user = user or "legacy-import"
-        self.ctx = m.Context(report=report, lookup=self._lookup if self.merge else None)
+        self.ctx = m.Context(
+            report=report, lookup=self._lookup if self.merge else None, mail_language=m.mail_language_in(cfg.root)
+        )
         self.provider_nodes: list[tuple[Node, dict[str, Any], int]] = []
 
     # --- helpers ------------------------------------------------------------

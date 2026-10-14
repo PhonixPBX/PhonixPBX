@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-14 18:49+0200\n"
+"POT-Creation-Date: 2026-10-14 19:19+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ru\n"
@@ -885,6 +885,9 @@ msgstr "Длительность"
 msgid "Dutch"
 msgstr "Нидерландский"
 
+msgid "E-mail language"
+msgstr "Язык писем"
+
 msgid "E-mail notification on missed calls"
 msgstr "Уведомление о пропущенных вызовах по электронной почте"
 
@@ -896,6 +899,9 @@ msgstr "Тема письма"
 
 msgid "E-mail text"
 msgstr "Текст письма"
+
+msgid "E-mail texts"
+msgstr "Тексты писем"
 
 msgid "E.g. a DynDNS name."
 msgstr "Например, имя DynDNS."
@@ -1136,6 +1142,48 @@ msgstr "Греция"
 msgid "HTTP (port 80)"
 msgstr "HTTP (порт 80)"
 
+#, python-brace-format
+msgid ""
+"Hello ${NAME},\n"
+"\n"
+"you missed a call to ${EXTENSION}.\n"
+"\n"
+"Caller: ${CALLERID}\n"
+"Reason: ${REASON}\n"
+"Time: ${DATE}\n"
+"\n"
+"-- \n"
+"PhonixPBX\n"
+msgstr ""
+"Здравствуйте, ${NAME}!\n"
+"\n"
+"У вас пропущенный вызов на ${EXTENSION}.\n"
+"\n"
+"Абонент: ${CALLERID}\n"
+"Причина: ${REASON}\n"
+"Время: ${DATE}\n"
+"\n"
+"-- \n"
+"PhonixPBX\n"
+
+#, python-brace-format
+msgid ""
+"Hello ${VM_NAME},\n"
+"\n"
+"you have a new voicemail message (number ${VM_MSGNUM}, ${VM_DUR} long) in mailbox ${VM_MAILBOX} from ${VM_CALLERID}, "
+"received on ${VM_DATE}.\n"
+"\n"
+"-- \n"
+"PhonixPBX\n"
+msgstr ""
+"Здравствуйте, ${VM_NAME}!\n"
+"\n"
+"У вас новое голосовое сообщение (номер ${VM_MSGNUM}, длительность ${VM_DUR}) в ящике ${VM_MAILBOX} от ${VM_CALLERID},"
+" получено ${VM_DATE}.\n"
+"\n"
+"-- \n"
+"PhonixPBX\n"
+
 msgid "Host"
 msgstr "Хост"
 
@@ -1330,6 +1378,9 @@ msgstr "Задержка"
 msgid "Language"
 msgstr "Язык"
 
+msgid "Language of the voicemail and missed call e-mails. The texts can be changed under Services > Voicemail."
+msgstr "Язык писем о голосовой почте и пропущенных вызовах. Тексты можно изменить в разделе Службы > Голосовая почта."
+
 #, python-format
 msgid "Language of the web interface for %(user)s."
 msgstr "Язык веб-интерфейса для %(user)s."
@@ -1452,6 +1503,13 @@ msgstr "Мексика"
 
 msgid "Minimum expiry (s)"
 msgstr "Минимальный срок регистрации (с)"
+
+msgid "Missed call"
+msgstr "Пропущенный вызов"
+
+#, python-brace-format
+msgid "Missed call from ${CALLERID}"
+msgstr "Пропущенный вызов от ${CALLERID}"
 
 #, python-format
 msgid "Missing DNS provider credentials: %(names)s"
@@ -1588,6 +1646,13 @@ msgstr "Новый пользователь AMI"
 msgid "New password"
 msgstr "Новый пароль"
 
+msgid "New voicemail"
+msgstr "Новое голосовое сообщение"
+
+#, python-brace-format
+msgid "New voicemail from ${VM_CALLERID}"
+msgstr "Новое голосовое сообщение от ${VM_CALLERID}"
+
 msgid "Newer"
 msgstr "Новее"
 
@@ -1596,6 +1661,9 @@ msgstr "Нет токенов API"
 
 msgid "No active calls."
 msgstr "Нет активных вызовов."
+
+msgid "No answer"
+msgstr "Нет ответа"
 
 msgid "No applications"
 msgstr "Нет приложений"
@@ -1658,6 +1726,9 @@ msgstr "Недействительный пакет обновления: %(erro
 
 msgid "Not in use"
 msgstr "Не используется"
+
+msgid "Not reachable"
+msgstr "Недоступен"
 
 #, python-format
 msgid "Not supported, dropped: %(sections)s"
@@ -2115,6 +2186,9 @@ msgstr "Зарезервирован"
 msgid "Reset and reboot"
 msgstr "Сбросить и перезагрузить"
 
+msgid "Reset to default"
+msgstr "Сбросить по умолчанию"
+
 msgid "Reset to factory defaults"
 msgstr "Сброс к заводским настройкам"
 
@@ -2217,6 +2291,9 @@ msgstr "Пароль root для SSH"
 
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (порт 587)"
+
+msgid "Same as phone language"
+msgstr "Как язык телефона"
 
 msgid "Save"
 msgstr "Сохранить"
@@ -2420,6 +2497,9 @@ msgstr ""
 "Центр сертификации подключается к <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: имена должны "
 "разрешаться в адрес этой АТС, а порт 80 должен быть доступен из интернета."
 
+msgid "The caller hung up"
+msgstr "Абонент положил трубку"
+
 msgid "The configuration in the backup is missing or damaged"
 msgstr "Конфигурация в резервной копии отсутствует или повреждена"
 
@@ -2488,6 +2568,9 @@ msgstr "Система перезагружается. Страница обно
 
 msgid "The system is shutting down."
 msgstr "Система выключается."
+
+msgid "The text must not contain control characters"
+msgstr "Текст не должен содержать управляющих символов"
 
 msgid "The uploaded file expired, please upload it again."
 msgstr "Срок хранения загруженного файла истек, загрузите его снова."
@@ -2774,11 +2857,9 @@ msgstr "Проверка"
 msgid "Value"
 msgstr "Значение"
 
-#, python-brace-format
-msgid "Variables: ${VM_NAME}, ${VM_DUR}, ${VM_MSGNUM}, ${VM_MAILBOX}, ${VM_CALLERID}, ${VM_DATE}. Empty = default text."
-msgstr ""
-"Переменные: ${VM_NAME}, ${VM_DUR}, ${VM_MSGNUM}, ${VM_MAILBOX}, ${VM_CALLERID}, ${VM_DATE}. Пусто = текст по "
-"умолчанию."
+#, python-format
+msgid "Variables: %(names)s"
+msgstr "Переменные: %(names)s"
 
 msgid "Venezuela"
 msgstr "Венесуэла"
@@ -2808,6 +2889,13 @@ msgstr "Голосовая почта и уведомления"
 
 msgid "Voicemail PIN"
 msgstr "PIN голосовой почты"
+
+msgid ""
+"Voicemail and missed call e-mails are sent in the e-mail language of each phone (Accounts > Phones). The texts below "
+"are used for the selected language; change them to customise the e-mails."
+msgstr ""
+"Письма о голосовой почте и пропущенных вызовах отправляются на языке писем каждого телефона (Учётные записи > "
+"Телефоны). Тексты ниже относятся к выбранному языку; измените их, чтобы настроить письма."
 
 msgid ""
 "Voicemail can be read by dialing <strong>000086</strong>. Configure <a href=\"/services/email\">e-mail "
@@ -2914,6 +3002,9 @@ msgstr "config.xml версии %(version)s"
 
 msgid "create"
 msgstr "создать"
+
+msgid "customised"
+msgstr "изменено"
 
 msgid "destination"
 msgstr "назначение"

@@ -56,7 +56,7 @@ RUN set -eu; S=/tmp/system; L=/usr/libexec/phonix; \
     install -Dm755 "$S/container/entrypoint" "$L/entrypoint"; \
     install -Dm755 "$S/container/priv" "$L/priv"; \
     install -Dm755 "$S/container/healthcheck" "$L/healthcheck"; \
-    install -Dm755 "$S/libexec/notify-missed-call" "$L/notify-missed-call"; \
+    install -Dm755 "$S/libexec/notify" "$L/notify"; \
     install -Dm400 "$S/doas.d/phonix.conf" /etc/doas.d/phonix.conf; \
     install -Dm644 "$S/nginx/phonix.conf" /usr/share/phonix/nginx-phonix.conf; \
     install -Dm644 "$S/logrotate.d/phonix" /etc/logrotate.d/phonix; \

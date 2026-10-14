@@ -17,7 +17,7 @@ from sqlalchemy.orm import Session
 from phonix.core import validation as v
 from phonix.core.models import Setting
 from phonix.core.shacrypt import HASH_RE
-from phonix.i18n import _
+from phonix.i18n import N_, _
 
 
 class SettingsGroup(BaseModel):
@@ -152,6 +152,37 @@ class IaxSettings(SettingsGroup):
     manual_attributes: str = ""
 
 
+# control characters other than line breaks and tabs
+_TEXT_CONTROL = re.compile(r"[\x00-\x08\x0b-\x1f\x7f]")
+
+
+class NotificationTexts(BaseModel):
+    """E-mail texts of one language; an empty text uses the built-in (translated) default."""
+
+    model_config = ConfigDict(extra="ignore")
+    vm_subject: str = Field(default="", max_length=200)
+    vm_body: str = Field(default="", max_length=4000)
+    missed_subject: str = Field(default="", max_length=200)
+    missed_body: str = Field(default="", max_length=4000)
+
+    @field_validator("vm_subject", "missed_subject")
+    @classmethod
+    def _subject(cls, value: str) -> str:
+        return v.no_control(value.strip(), N_("Subject"))
+
+    @field_validator("vm_body", "missed_body")
+    @classmethod
+    def _body(cls, value: str) -> str:
+        value = value.replace("\r\n", "\n").rstrip()
+        if _TEXT_CONTROL.search(value):
+            raise ValueError(_("The text must not contain control characters"))
+        return value
+
+    @property
+    def empty(self) -> bool:
+        return not (self.vm_subject or self.vm_body or self.missed_subject or self.missed_body)
+
+
 class VoicemailSettings(SettingsGroup):
     group: str = Field(default="voicemail", exclude=True)
     from_address: str = ""
@@ -159,13 +190,18 @@ class VoicemailSettings(SettingsGroup):
     attach_audio: bool = True
     keep_messages: bool = True
     max_message_seconds: int = Field(default=180, ge=10, le=3600)
-    custom_subject: str = ""
-    custom_body: str = ""
+    # language -> customised voicemail and missed call e-mail texts
+    templates: dict[str, NotificationTexts] = Field(default_factory=dict)
 
     @field_validator("from_address")
     @classmethod
     def _from(cls, value: str) -> str:
         return v.email(value) if value else ""
+
+    @field_validator("templates")
+    @classmethod
+    def _templates(cls, value: dict[str, NotificationTexts]) -> dict[str, NotificationTexts]:
+        return {v.language(lang): texts for lang, texts in sorted(value.items()) if not texts.empty}
 
 
 class EmailSettings(SettingsGroup):

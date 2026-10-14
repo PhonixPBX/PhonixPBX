@@ -134,8 +134,11 @@ def test_synthetic_import_details(initialized: config.RuntimeConfig) -> None:
         assert s["features"]["attended_transfer"] == "*2"
         assert s["features"]["feature_digit_timeout_ms"] == 1500
         assert (s["features"]["park_ext"], s["features"]["park_start"]) == ("800", 801)
-        assert s["voicemail"]["custom_subject"] == "New message in mailbox ${VM_MAILBOX}"
-        assert "${VM_DUR} long" in s["voicemail"]["custom_body"]
+        # maillanguage de-informal: the custom text belongs to German, and the phones keep
+        # getting German e-mails
+        assert s["voicemail"]["templates"]["de"]["vm_subject"] == "New message in mailbox ${VM_MAILBOX}"
+        assert "${VM_DUR} long" in s["voicemail"]["templates"]["de"]["vm_body"]
+        assert {p.notify_language for p in session.scalars(select(Phone)) if p.language != "de"} == {"de"}
         assert s["email"]["encryption"] == "starttls" and s["email"]["port"] == 587
 
         # web admin password is the legacy one

@@ -5,17 +5,20 @@
 from __future__ import annotations
 
 import subprocess
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse, Response
 from sqlalchemy.orm import Session
 
-from phonix import config
+from phonix import config, i18n
 from phonix.core import settings as st
 from phonix.core.models import MediaFile, User
 from phonix.i18n import N_, _
+from phonix.notify import VARIABLES
 from phonix.services import dialplan as dp
 from phonix.services import media as media_svc
+from phonix.services import notifications
 from phonix.services.common import NotFound, ServiceError
 from phonix.web.deps import get_db, ui_user
 from phonix.web.routes.ui.common import dirty_trigger, page, redirect, save_settings_form, service_errors
@@ -82,29 +85,78 @@ async def email_test(request: Request, user: User = Depends(ui_user), db: Sessio
 # --- voicemail ---------------------------------------------------------------------------
 
 
-@router.get("/voicemail")
-def voicemail(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
+def _texts_lang(db: Session, lang: str | None) -> str:
+    if lang in i18n.LANGUAGE_NAMES:
+        return lang
+    return i18n.normalize(st.load(db, st.SystemSettings).prompt_language)
+
+
+def _voicemail_page(
+    request: Request,
+    db: Session,
+    lang: str | None = None,
+    values: dict[str, Any] | None = None,
+    errors: dict[str, str] | None = None,
+    texts: dict[str, str] | None = None,
+    text_errors: dict[str, str] | None = None,
+    status_code: int = 200,
+) -> Response:
+    vm = st.load(db, st.VoicemailSettings)
+    lang = _texts_lang(db, lang)
+    custom = vm.templates.get(lang)
     return page(
         request,
         "pages/voicemail.html",
-        values=st.load(db, st.VoicemailSettings).model_dump(),
+        status_code=status_code,
+        values=values if values is not None else vm.model_dump(),
+        errors=errors or {},
         email_ok=st.load(db, st.EmailSettings).configured,
+        texts_lang=lang,
+        texts=texts if texts is not None else notifications.texts(vm, lang),
+        text_errors=text_errors or {},
+        customized=[key for key, value in (custom.model_dump() if custom else {}).items() if value],
+        preview=notifications.preview(vm, lang),
+        variables={kind: ", ".join(f"${{{name}}}" for name in names) for kind, names in VARIABLES.items()},
     )
+
+
+@router.get("/voicemail")
+def voicemail(
+    request: Request, lang: str | None = None, user: User = Depends(ui_user), db: Session = Depends(get_db)
+) -> Response:
+    return _voicemail_page(request, db, lang)
 
 
 @router.post("/voicemail")
 async def voicemail_save(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
     saved, values, errors = await save_settings_form(request, db, st.VoicemailSettings, ("services",))
     if not saved:
-        return page(
-            request,
-            "pages/voicemail.html",
-            status_code=422,
-            values=values,
-            errors=errors,
-            email_ok=st.load(db, st.EmailSettings).configured,
-        )
+        return _voicemail_page(request, db, values=values, errors=errors, status_code=422)
     return redirect(request, "/services/voicemail")
+
+
+@router.post("/voicemail/texts")
+async def voicemail_texts_save(
+    request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)
+) -> Response:
+    form = await request.form()
+    lang = _texts_lang(db, str(form.get("lang", "")))
+    data = {key: str(form.get(key, "")) for key in notifications.FIELDS}
+    try:
+        notifications.save_texts(db, lang, data, user=user.username)
+    except ServiceError as exc:
+        return _voicemail_page(request, db, lang, texts=data, text_errors=service_errors(exc), status_code=422)
+    return redirect(request, f"/services/voicemail?lang={lang}#texts")
+
+
+@router.post("/voicemail/texts/reset")
+async def voicemail_texts_reset(
+    request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)
+) -> Response:
+    form = await request.form()
+    lang = _texts_lang(db, str(form.get("lang", "")))
+    notifications.reset_texts(db, lang, user=user.username)
+    return redirect(request, f"/services/voicemail?lang={lang}#texts")
 
 
 # --- conferencing --------------------------------------------------------------------------

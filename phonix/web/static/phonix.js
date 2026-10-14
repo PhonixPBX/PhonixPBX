@@ -281,6 +281,8 @@
   document.addEventListener("change", (evt) => {
     const form = evt.target.closest("form");
     if (form) updateConditional(form);
+    // <select data-submit-on-change>: e.g. a language switch of a GET form
+    if (form && evt.target.closest("[data-submit-on-change]")) form.requestSubmit();
   });
 
   // keep the log view scrolled to the end when new lines arrive

@@ -29,7 +29,7 @@ from phonix.core.models import Application, CallGroup, ConferenceRoom, Phone, Pr
 from phonix.core.validation import parse_dialpattern
 from phonix.generators.base import HEADER, Snapshot
 
-NOTIFY_SCRIPT = "/usr/libexec/phonix/notify-missed-call"
+NOTIFY_SCRIPT = "/usr/libexec/phonix/notify"
 CF_MAX_HOPS = 3
 APP_PATTERN = "_[0-9a-zA-Z*#]!"
 CATCHALL_PATTERN = "_[0-9*#+]!"
@@ -84,6 +84,8 @@ class RingTarget:
     vm_box: str
     notify_email: str
     ringlength: int | None
+    # key of the target in phonix-notify.json (language and name of the missed call mail)
+    notify_target: str = ""
     cf_extension: str = ""
     pickupmark: str = ""
 
@@ -113,9 +115,15 @@ def phone_target(phone: Phone, snap: Snapshot) -> RingTarget:
         vm_box=phone.extension if phone.vm_enabled else "",
         notify_email=phone.notify_email if phone.notify_missed else "",
         ringlength=phone.ringlength,
+        notify_target=phone.extension,
         cf_extension=phone.extension if phone.tech != "external" else "",
         pickupmark=phone.extension,
     )
+
+
+def group_notify_target(group: CallGroup) -> str:
+    """Key of a call group in phonix-notify.json."""
+    return f"group-{group.id}"
 
 
 def group_members(group: CallGroup, snap: Snapshot) -> list[Phone]:
@@ -136,6 +144,7 @@ def ring_steps(target: RingTarget, from_public: bool, linear: list[RingTarget] |
         steps.append(f"Gosub(sub-checkcf,s,1({target.cf_extension}))")
     if target.notify_email:
         steps.append(f"Set(NOTIFY_EMAIL={target.notify_email})")
+        steps.append(f"Set(NOTIFY_TARGET={target.notify_target})")
         steps.append("Set(CHANNEL(hangup_handler_push)=sub-missed-call,s,1)")
     # callers coming from outside must not get the transfer feature (legacy "t" vs "tT")
     options = "t" if from_public else "tT"
@@ -165,6 +174,7 @@ def callgroup_steps(group: CallGroup, snap: Snapshot, from_public: bool) -> list
         vm_box=first.extension if first.vm_enabled else "",
         notify_email=first.notify_email if first.notify_missed else "",
         ringlength=group.ringlength,
+        notify_target=group_notify_target(group),
     )
     if group.strategy == "linear":
         for t, phone in zip(targets, members, strict=False):
@@ -274,7 +284,7 @@ class DialplanBuilder:
                     'GotoIf($["${DIALSTATUS}" = "ANSWER"]?done)',
                     'GotoIf($["${NOTIFY_EMAIL}" = ""]?done)',
                     'GotoIf($["${VMSTATUS}" = "SUCCESS"]?done)',
-                    f'System({NOTIFY_SCRIPT} "${{NOTIFY_EMAIL}}" '
+                    f'System({NOTIFY_SCRIPT} missed "${{NOTIFY_EMAIL}}" "${{NOTIFY_TARGET}}" '
                     '"${IF($["${MISSEDCAUSE}" = ""]?hung-up:${MISSEDCAUSE})}" '
                     '"${FILTER(0-9a-zA-Z +._@<>-,${CALLERID(all)})}")',
                     "@done Return()",

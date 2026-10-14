@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-14 18:49+0200\n"
+"POT-Creation-Date: 2026-10-14 19:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -886,6 +886,9 @@ msgstr ""
 msgid "Dutch"
 msgstr ""
 
+msgid "E-mail language"
+msgstr ""
+
 msgid "E-mail notification on missed calls"
 msgstr ""
 
@@ -896,6 +899,9 @@ msgid "E-mail subject"
 msgstr ""
 
 msgid "E-mail text"
+msgstr ""
+
+msgid "E-mail texts"
 msgstr ""
 
 msgid "E.g. a DynDNS name."
@@ -1143,6 +1149,31 @@ msgstr ""
 msgid "HTTP (port 80)"
 msgstr ""
 
+#, python-brace-format
+msgid ""
+"Hello ${NAME},\n"
+"\n"
+"you missed a call to ${EXTENSION}.\n"
+"\n"
+"Caller: ${CALLERID}\n"
+"Reason: ${REASON}\n"
+"Time: ${DATE}\n"
+"\n"
+"-- \n"
+"PhonixPBX\n"
+msgstr ""
+
+#, python-brace-format
+msgid ""
+"Hello ${VM_NAME},\n"
+"\n"
+"you have a new voicemail message (number ${VM_MSGNUM}, ${VM_DUR} long) in"
+" mailbox ${VM_MAILBOX} from ${VM_CALLERID}, received on ${VM_DATE}.\n"
+"\n"
+"-- \n"
+"PhonixPBX\n"
+msgstr ""
+
 msgid "Host"
 msgstr ""
 
@@ -1336,6 +1367,11 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
+msgid ""
+"Language of the voicemail and missed call e-mails. The texts can be "
+"changed under Services > Voicemail."
+msgstr ""
+
 #, python-format
 msgid "Language of the web interface for %(user)s."
 msgstr ""
@@ -1461,6 +1497,13 @@ msgid "Mexico"
 msgstr ""
 
 msgid "Minimum expiry (s)"
+msgstr ""
+
+msgid "Missed call"
+msgstr ""
+
+#, python-brace-format
+msgid "Missed call from ${CALLERID}"
 msgstr ""
 
 #, python-format
@@ -1600,6 +1643,13 @@ msgstr ""
 msgid "New password"
 msgstr ""
 
+msgid "New voicemail"
+msgstr ""
+
+#, python-brace-format
+msgid "New voicemail from ${VM_CALLERID}"
+msgstr ""
+
 msgid "Newer"
 msgstr ""
 
@@ -1607,6 +1657,9 @@ msgid "No API tokens"
 msgstr ""
 
 msgid "No active calls."
+msgstr ""
+
+msgid "No answer"
 msgstr ""
 
 msgid "No applications"
@@ -1673,6 +1726,9 @@ msgid "Not a valid update bundle: %(error)s"
 msgstr ""
 
 msgid "Not in use"
+msgstr ""
+
+msgid "Not reachable"
 msgstr ""
 
 #, python-format
@@ -2130,6 +2186,9 @@ msgstr ""
 msgid "Reset and reboot"
 msgstr ""
 
+msgid "Reset to default"
+msgstr ""
+
 msgid "Reset to factory defaults"
 msgstr ""
 
@@ -2226,6 +2285,9 @@ msgid "SSH root password"
 msgstr ""
 
 msgid "STARTTLS (port 587)"
+msgstr ""
+
+msgid "Same as phone language"
 msgstr ""
 
 msgid "Save"
@@ -2428,6 +2490,9 @@ msgid ""
 " reachable from the internet."
 msgstr ""
 
+msgid "The caller hung up"
+msgstr ""
+
 msgid "The configuration in the backup is missing or damaged"
 msgstr ""
 
@@ -2496,6 +2561,9 @@ msgid "The system is rebooting. This page reloads when it is back."
 msgstr ""
 
 msgid "The system is shutting down."
+msgstr ""
+
+msgid "The text must not contain control characters"
 msgstr ""
 
 msgid "The uploaded file expired, please upload it again."
@@ -2785,10 +2853,8 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
-#, python-brace-format
-msgid ""
-"Variables: ${VM_NAME}, ${VM_DUR}, ${VM_MSGNUM}, ${VM_MAILBOX}, "
-"${VM_CALLERID}, ${VM_DATE}. Empty = default text."
+#, python-format
+msgid "Variables: %(names)s"
 msgstr ""
 
 msgid "Venezuela"
@@ -2820,6 +2886,12 @@ msgid "Voicemail &amp; notifications"
 msgstr ""
 
 msgid "Voicemail PIN"
+msgstr ""
+
+msgid ""
+"Voicemail and missed call e-mails are sent in the e-mail language of each"
+" phone (Accounts > Phones). The texts below are used for the selected "
+"language; change them to customise the e-mails."
 msgstr ""
 
 msgid ""
@@ -2929,6 +3001,9 @@ msgid "config.xml version %(version)s"
 msgstr ""
 
 msgid "create"
+msgstr ""
+
+msgid "customised"
 msgstr ""
 
 msgid "destination"

@@ -126,11 +126,23 @@ def test_upgrade_chain(session, monkeypatch):
         data["phones"][0]["description"] = "upgraded"
         return data
 
-    monkeypatch.setattr(configdoc, "CONFIG_VERSION", 2)
-    monkeypatch.setitem(configdoc.UPGRADES, 1, upgrade)
+    current = configdoc.CONFIG_VERSION
+    monkeypatch.setattr(configdoc, "CONFIG_VERSION", current + 1)
+    monkeypatch.setitem(configdoc.UPGRADES, current, upgrade)
     parsed = configdoc.parse_document(doc)
-    assert parsed.version == 2 and parsed.phones[0].description == "upgraded"
+    assert parsed.version == current + 1 and parsed.phones[0].description == "upgraded"
     assert doc["phones"][0]["description"] == ""  # the input is not modified
+
+
+def test_upgrade_1_moves_custom_voicemail_text(session):
+    doc = _populated(session)
+    doc["version"] = 1
+    doc["settings"]["system"]["prompt_language"] = "de"
+    doc["settings"]["voicemail"].pop("templates", None)
+    doc["settings"]["voicemail"].update(custom_subject="Neue Nachricht", custom_body="Hallo ${VM_NAME}")
+    vm = configdoc.parse_document(doc).settings.voicemail
+    assert vm.templates["de"].vm_subject == "Neue Nachricht"
+    assert vm.templates["de"].vm_body == "Hallo ${VM_NAME}"
 
 
 def test_missing_settings_groups_keep_current_values(session, initialized):

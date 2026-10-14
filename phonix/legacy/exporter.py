@@ -39,6 +39,7 @@ from phonix.core.models import (
 from phonix.legacy import mapping as m
 from phonix.legacy.report import ExportReport
 from phonix.legacy.upgrade import LATEST
+from phonix.services import notifications
 from phonix.services.common import audit
 
 ROOT_TAG = "askoziapbx"
@@ -243,12 +244,26 @@ def _voicemail(cfg: dict[str, st.SettingsGroup], report: ExportReport) -> dict[s
     for name in ("from_name", "attach_audio", "keep_messages", "max_message_seconds"):
         if getattr(vm, name) != getattr(defaults, name):
             report.omit("voicemail", name, str(getattr(vm, name)))
-    custom = bool(vm.custom_subject or vm.custom_body)
+    # legacy has one custom text for all mailboxes: the only language with custom voicemail
+    # texts (an imported legacy text), else the default language's
+    system = cfg["system"]
+    assert isinstance(system, st.SystemSettings)
+    with_vm = [lang for lang, texts in vm.templates.items() if texts.vm_subject or texts.vm_body]
+    lang = with_vm[0] if len(with_vm) == 1 else system.prompt_language
+    for other in vm.templates:
+        if other != lang:
+            report.omit("voicemail", f"templates.{other}", "e-mail texts of another language")
+    texts = vm.templates.get(lang, st.NotificationTexts())
+    if texts.missed_subject or texts.missed_body:
+        report.omit("voicemail", f"templates.{lang}", "missed call e-mail text")
+    custom = bool(texts.vm_subject or texts.vm_body)
+    subject = texts.vm_subject or notifications.default_texts(lang)["vm_subject"]
+    body = texts.vm_body or notifications.default_texts(lang)["vm_body"]
     return {
         "fromaddress": vm.from_address or None,
         "user_defined": custom,
-        "user_subject": _b64(m.voicemail_tokens_out(vm.custom_subject)) if custom else None,
-        "user_body": _b64(m.voicemail_tokens_out(vm.custom_body)) if custom else None,
+        "user_subject": _b64(m.voicemail_tokens_out(subject)) if custom else None,
+        "user_body": _b64(m.voicemail_tokens_out(body)) if custom else None,
     }
 
 

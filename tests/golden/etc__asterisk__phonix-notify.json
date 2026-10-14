@@ -1,0 +1,29 @@
+{
+  "languages": {
+    "en": {
+      "missed_body": "Hello ${NAME},\n\nyou missed a call to ${EXTENSION}.\n\nCaller: ${CALLERID}\nReason: ${REASON}\nTime: ${DATE}\n\n-- \nPhonixPBX\n",
+      "missed_subject": "Missed call from ${CALLERID}",
+      "reasons": {
+        "busy": "Busy",
+        "hung-up": "The caller hung up",
+        "no-answer": "No answer",
+        "unavailable": "Not reachable"
+      },
+      "unknown": "unknown",
+      "vm_body": "Hello ${VM_NAME},\n\nyou have a new voicemail message (number ${VM_MSGNUM}, ${VM_DUR} long) in mailbox ${VM_MAILBOX} from ${VM_CALLERID}, received on ${VM_DATE}.\n\n-- \nPhonixPBX\n",
+      "vm_subject": "New voicemail from ${VM_CALLERID}"
+    }
+  },
+  "targets": {
+    "101": {
+      "extension": "101",
+      "lang": "en",
+      "name": "Alice"
+    },
+    "group-1": {
+      "extension": "300",
+      "lang": "en",
+      "name": "Sales"
+    }
+  }
+}

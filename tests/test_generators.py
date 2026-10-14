@@ -140,3 +140,26 @@ def test_mdns(session):
     files = render(session)
     assert files["/etc/phonix/mdns"].content == "off\n"
     assert "5353" not in files["/etc/nftables.nft"].content
+
+
+def test_notification_languages(session):
+    import json
+
+    from phonix.services import phones as ph
+
+    ids = sample_pbx(session)
+    phone = ph.get_phone(session, ids["alice"])
+    data = ph.to_dict(phone)
+    data["notify_language"] = "de"
+    ph.update_phone(session, phone.id, ph.parse_phone(data))
+    notify = json.loads(render(session)["/etc/asterisk/phonix-notify.json"].content)
+    # Alice and the call group she gets the missed calls of
+    assert notify["targets"]["101"] == {"extension": "101", "lang": "de", "name": "Alice"}
+    assert notify["targets"][f"group-{ids['group']}"]["lang"] == "de"
+    assert set(notify["languages"]) == {"de"}
+    assert notify["languages"]["de"]["missed_subject"] == "Verpasster Anruf von ${CALLERID}"
+    assert notify["languages"]["de"]["reasons"]["busy"] == "Besetzt"
+    vm = st.load(session, st.VoicemailSettings)
+    st.save(session, vm.model_copy(update={"templates": {"de": st.NotificationTexts(vm_subject="VM ${VM_MAILBOX}")}}))
+    notify = json.loads(render(session)["/etc/asterisk/phonix-notify.json"].content)
+    assert notify["languages"]["de"]["vm_subject"] == "VM ${VM_MAILBOX}"

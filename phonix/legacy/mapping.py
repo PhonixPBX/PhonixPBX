@@ -318,6 +318,8 @@ class Context:
     dropped: dict[str, str] = field(default_factory=dict)
     # fallback lookup in the database (merge mode)
     lookup: Callable[[str], tuple[str, int] | None] | None = None
+    # global voicemail e-mail language (mail_language_in), "" = unknown
+    mail_language: str = ""
 
     def resolve(self, uniqid: str) -> tuple[str, int] | None:
         if uniqid in self.refs:
@@ -347,6 +349,12 @@ def language_in(value: str, ctx: Context, section: str, name: str) -> str:
         ctx.report.warning(section, name, f"Unknown language {value!r}, using English")
         return "en"
     return code
+
+
+def mail_language_in(root: Node) -> str:
+    """Global voicemail e-mail language ("de-informal", "en-formal") -> language code or ""."""
+    value = root.node("voicemail").text("maillanguage").strip().lower()
+    return LANGUAGE_IN.get(value.split("-")[0], "") if value else ""
 
 
 def ui_language_in(value: str) -> str | None:
@@ -683,6 +691,9 @@ def phone_in(node: Node, tech: str, ctx: Context) -> dict[str, Any] | None:
     if node.text("emailcallnotify") == "enabled" and not notify_email:
         report.warning(section, name, "Missed call notification disabled: no valid e-mail address")
     data["notify_email"] = notify_email
+    # the legacy e-mail language was global
+    if ctx.mail_language and ctx.mail_language != data["language"]:
+        data["notify_language"] = ctx.mail_language
 
     if tech in ("sip", "iax"):
         data["secret"] = secret_in(node.text("secret"), ctx, section, name, generate=True)
@@ -1215,26 +1226,28 @@ def settings_in(root: Node, current: dict[str, st.SettingsGroup], report: Import
     vmn = root.node("voicemail")
     if vmn.text("fromaddress"):
         _assign(vm, "from_address", vmn.text("fromaddress"), report, "voicemail.from_address")
+    mail_language = mail_language_in(root)
+    if vmn.text("maillanguage") and not mail_language:
+        report.info(
+            "settings",
+            "voicemail.maillanguage",
+            f"Voicemail e-mail language {vmn.text('maillanguage')!r} not available, "
+            "the e-mails use the language of each phone",
+        )
     if vmn.flag("user_defined"):
         subject = decode_b64(vmn.text("user_subject")) or ""
         body = decode_b64(vmn.text("user_body")) or ""
         for token, replacement in VOICEMAIL_TOKENS:
             subject = re.sub(rf"(?<![{{\w]){token}\b", replacement, subject)
             body = re.sub(rf"(?<![{{\w]){token}\b", replacement, body)
-        _assign(
-            vm,
-            "custom_subject",
-            subject.replace("\n", " ").strip(),
-            report,
-            "voicemail.custom_subject",
-        )
-        _assign(vm, "custom_body", body, report, "voicemail.custom_body")
-    elif vmn.text("maillanguage") and not vmn.text("maillanguage").startswith("en"):
-        report.info(
-            "settings",
-            "voicemail.maillanguage",
-            f"Voicemail e-mail template {vmn.text('maillanguage')!r} not available, the English template is used",
-        )
+        templates = {lang: texts.model_dump() for lang, texts in vm.templates.items()}
+        lang = mail_language or "en"
+        templates[lang] = {
+            **templates.get(lang, {}),
+            "vm_subject": subject.replace("\n", " ").strip(),
+            "vm_body": body,
+        }
+        _assign(vm, "templates", templates, report, "voicemail.templates")
 
     # e-mail
     mailn = root.node("notifications", "email")
@@ -1307,6 +1320,8 @@ def phone_out(phone: Phone, uid: Callable[[str, int], str], report: ExportReport
         "vmtoemailaddress": phone.vm_email or None,
         "vmpin": phone.vm_pin or None,
     }
+    if phone.notify_language:
+        report.omit("phones", name, f"notify_language={phone.notify_language}")
     if phone.tech in ("pjsip", "iax"):
         out["secret"] = phone.secret
         out["codec"] = list(phone.codecs or [])

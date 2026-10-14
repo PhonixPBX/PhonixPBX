@@ -145,6 +145,8 @@ class Phone(Base):
     vm_email: Mapped[str] = mapped_column(String(255), default="")
     notify_missed: Mapped[bool] = mapped_column(Boolean, default=False)
     notify_email: Mapped[str] = mapped_column(String(255), default="")
+    # language of the voicemail and missed call e-mails; "" = same as ``language``
+    notify_language: Mapped[str] = mapped_column(String(16), default="")
 
     # external phones (tech == "external")
     dial_type: Mapped[str] = mapped_column(String(16), default="provider")

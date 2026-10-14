@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-14 18:49+0200\n"
+"POT-Creation-Date: 2026-10-14 19:19+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: da\n"
@@ -884,6 +884,9 @@ msgstr "Varighed"
 msgid "Dutch"
 msgstr "Hollandsk"
 
+msgid "E-mail language"
+msgstr "E-mailsprog"
+
 msgid "E-mail notification on missed calls"
 msgstr "E-mailnotifikation ved ubesvarede opkald"
 
@@ -895,6 +898,9 @@ msgstr "E-mailemne"
 
 msgid "E-mail text"
 msgstr "E-mailtekst"
+
+msgid "E-mail texts"
+msgstr "E-mailtekster"
 
 msgid "E.g. a DynDNS name."
 msgstr "F.eks. et DynDNS-navn."
@@ -1135,6 +1141,48 @@ msgstr "Grækenland"
 msgid "HTTP (port 80)"
 msgstr "HTTP (port 80)"
 
+#, python-brace-format
+msgid ""
+"Hello ${NAME},\n"
+"\n"
+"you missed a call to ${EXTENSION}.\n"
+"\n"
+"Caller: ${CALLERID}\n"
+"Reason: ${REASON}\n"
+"Time: ${DATE}\n"
+"\n"
+"-- \n"
+"PhonixPBX\n"
+msgstr ""
+"Hej ${NAME},\n"
+"\n"
+"du har mistet et opkald til ${EXTENSION}.\n"
+"\n"
+"Opkalder: ${CALLERID}\n"
+"Årsag: ${REASON}\n"
+"Tidspunkt: ${DATE}\n"
+"\n"
+"-- \n"
+"PhonixPBX\n"
+
+#, python-brace-format
+msgid ""
+"Hello ${VM_NAME},\n"
+"\n"
+"you have a new voicemail message (number ${VM_MSGNUM}, ${VM_DUR} long) in mailbox ${VM_MAILBOX} from ${VM_CALLERID}, "
+"received on ${VM_DATE}.\n"
+"\n"
+"-- \n"
+"PhonixPBX\n"
+msgstr ""
+"Hej ${VM_NAME},\n"
+"\n"
+"du har en ny talebesked (nummer ${VM_MSGNUM}, varighed ${VM_DUR}) i postkasse ${VM_MAILBOX} fra ${VM_CALLERID}, "
+"modtaget ${VM_DATE}.\n"
+"\n"
+"-- \n"
+"PhonixPBX\n"
+
 msgid "Host"
 msgstr "Vært"
 
@@ -1328,6 +1376,9 @@ msgstr "Forsinket"
 msgid "Language"
 msgstr "Sprog"
 
+msgid "Language of the voicemail and missed call e-mails. The texts can be changed under Services > Voicemail."
+msgstr "Sprog for e-mails om talebeskeder og mistede opkald. Teksterne kan ændres under Tjenester > Telefonsvarer."
+
 #, python-format
 msgid "Language of the web interface for %(user)s."
 msgstr "Sprog for webgrænsefladen for %(user)s."
@@ -1450,6 +1501,13 @@ msgstr "Mexico"
 
 msgid "Minimum expiry (s)"
 msgstr "Minimal udløbstid (s)"
+
+msgid "Missed call"
+msgstr "Mistet opkald"
+
+#, python-brace-format
+msgid "Missed call from ${CALLERID}"
+msgstr "Mistet opkald fra ${CALLERID}"
 
 #, python-format
 msgid "Missing DNS provider credentials: %(names)s"
@@ -1584,6 +1642,13 @@ msgstr "Ny manager-bruger"
 msgid "New password"
 msgstr "Ny adgangskode"
 
+msgid "New voicemail"
+msgstr "Ny talebesked"
+
+#, python-brace-format
+msgid "New voicemail from ${VM_CALLERID}"
+msgstr "Ny talebesked fra ${VM_CALLERID}"
+
 msgid "Newer"
 msgstr "Nyere"
 
@@ -1592,6 +1657,9 @@ msgstr "Ingen API-tokens"
 
 msgid "No active calls."
 msgstr "Ingen aktive opkald."
+
+msgid "No answer"
+msgstr "Intet svar"
 
 msgid "No applications"
 msgstr "Ingen applikationer"
@@ -1654,6 +1722,9 @@ msgstr "Ikke en gyldig opdateringspakke: %(error)s"
 
 msgid "Not in use"
 msgstr "Ikke i brug"
+
+msgid "Not reachable"
+msgstr "Ikke tilgængelig"
 
 #, python-format
 msgid "Not supported, dropped: %(sections)s"
@@ -2112,6 +2183,9 @@ msgstr "Reserveret"
 msgid "Reset and reboot"
 msgstr "Nulstil og genstart"
 
+msgid "Reset to default"
+msgstr "Nulstil til standard"
+
 msgid "Reset to factory defaults"
 msgstr "Nulstil til fabriksindstillinger"
 
@@ -2214,6 +2288,9 @@ msgstr "SSH-adgangskode til root"
 
 msgid "STARTTLS (port 587)"
 msgstr "STARTTLS (port 587)"
+
+msgid "Same as phone language"
+msgstr "Samme som telefonens sprog"
 
 msgid "Save"
 msgstr "Gem"
@@ -2417,6 +2494,9 @@ msgstr ""
 "CA'en forbinder til <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: navnene skal pege på denne PBX, og "
 "port 80 skal kunne nås fra internettet."
 
+msgid "The caller hung up"
+msgstr "Den, der ringede, lagde på"
+
 msgid "The configuration in the backup is missing or damaged"
 msgstr "Konfigurationen i backuppen mangler eller er beskadiget"
 
@@ -2487,6 +2567,9 @@ msgstr "Systemet genstarter. Denne side genindlæses, når det er tilbage."
 
 msgid "The system is shutting down."
 msgstr "Systemet lukker ned."
+
+msgid "The text must not contain control characters"
+msgstr "Teksten må ikke indeholde kontroltegn"
 
 msgid "The uploaded file expired, please upload it again."
 msgstr "Den uploadede fil er udløbet, upload den igen."
@@ -2767,9 +2850,9 @@ msgstr "Validering"
 msgid "Value"
 msgstr "Værdi"
 
-#, python-brace-format
-msgid "Variables: ${VM_NAME}, ${VM_DUR}, ${VM_MSGNUM}, ${VM_MAILBOX}, ${VM_CALLERID}, ${VM_DATE}. Empty = default text."
-msgstr "Variabler: ${VM_NAME}, ${VM_DUR}, ${VM_MSGNUM}, ${VM_MAILBOX}, ${VM_CALLERID}, ${VM_DATE}. Tom = standardtekst."
+#, python-format
+msgid "Variables: %(names)s"
+msgstr "Variabler: %(names)s"
 
 msgid "Venezuela"
 msgstr "Venezuela"
@@ -2799,6 +2882,13 @@ msgstr "Telefonsvarer &amp; notifikationer"
 
 msgid "Voicemail PIN"
 msgstr "Telefonsvarer-PIN"
+
+msgid ""
+"Voicemail and missed call e-mails are sent in the e-mail language of each phone (Accounts > Phones). The texts below "
+"are used for the selected language; change them to customise the e-mails."
+msgstr ""
+"E-mails om talebeskeder og mistede opkald sendes på hver telefons e-mailsprog (Konti > Telefoner). Teksterne nedenfor"
+" gælder for det valgte sprog; ret dem for at tilpasse e-mailene."
 
 msgid ""
 "Voicemail can be read by dialing <strong>000086</strong>. Configure <a href=\"/services/email\">e-mail "
@@ -2905,6 +2995,9 @@ msgstr "config.xml version %(version)s"
 
 msgid "create"
 msgstr "opret"
+
+msgid "customised"
+msgstr "tilpasset"
 
 msgid "destination"
 msgstr "destination"

@@ -96,6 +96,53 @@ def test_create_phone_via_form(client):
     assert "Form Phone" in page and "Phone 150 created" in page
 
 
+def test_voicemail_texts_per_language(client):
+    from phonix.core import settings as st
+
+    login(client)
+    page = client.get("/services/voicemail?lang=de").text
+    assert "Neue Sprachnachricht von ${VM_CALLERID}" in page and 'value="de"' in page
+    # preview with sample values
+    assert "Verpasster Anruf von &#34;Bob&#34; &lt;0441234567&gt;" in page
+
+    def post(url, **data):
+        token = csrf(client, "/services/voicemail?lang=de")
+        return client.post(url, data={"csrf_token": token, "lang": "de", **data}, follow_redirects=False)
+
+    r = post(
+        "/services/voicemail/texts", vm_subject="Mailbox ${VM_MAILBOX}", vm_body="", missed_subject="", missed_body=""
+    )
+    assert r.status_code == 303 and r.headers["location"] == "/services/voicemail?lang=de#texts"
+    with session_scope() as s:
+        assert st.load(s, st.VoicemailSettings).templates["de"].vm_subject == "Mailbox ${VM_MAILBOX}"
+    page = client.get("/services/voicemail?lang=de").text
+    assert 'value="Mailbox ${VM_MAILBOX}"' in page and "Mailbox 101" in page
+    assert post("/services/voicemail/texts", vm_subject="a\x01b").status_code == 422
+    assert post("/services/voicemail/texts/reset").status_code == 303
+    with session_scope() as s:
+        assert st.load(s, st.VoicemailSettings).templates == {}
+    # the other voicemail settings form leaves the texts alone
+    post("/services/voicemail/texts", vm_subject="Mailbox ${VM_MAILBOX}")
+    token = csrf(client, "/services/voicemail")
+    client.post("/services/voicemail", data={"csrf_token": token, "from_name": "VM", "max_message_seconds": "120"})
+    with session_scope() as s:
+        assert "de" in st.load(s, st.VoicemailSettings).templates
+
+
+def test_phone_notify_language(client):
+    from sqlalchemy import select
+
+    from phonix.core.models import Phone
+
+    login(client)
+    assert "Same as phone language" in client.get("/accounts/phones/new").text
+    token = csrf(client, "/accounts/phones/new")
+    data = {"csrf_token": token, "tech": "pjsip", "extension": "151", "callerid": "Lang", "notify_language": "fr"}
+    assert client.post("/accounts/phones/new", data=data, follow_redirects=False).status_code == 303
+    with session_scope() as s:
+        assert s.scalar(select(Phone).where(Phone.extension == "151")).notify_language == "fr"
+
+
 def test_form_validation_errors(client):
     login(client)
     token = csrf(client, "/accounts/phones/new")

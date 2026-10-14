@@ -32,6 +32,8 @@ chown -R asterisk:asterisk /data/asterisk /var/log/asterisk /var/run/asterisk /v
 chgrp -R asterisk /srv/root/etc/asterisk /data/media /data/tls
 chmod 750 /data && chgrp asterisk /data
 
+# voicemail and missed call e-mails (mailcmd, sub-missed-call)
+install -Dm755 /src/system/libexec/notify /usr/libexec/phonix/notify
 /src/dev/libexec/priv asterisk-start
 mkdir -p /var/log/phonix
 phonix monitor >/var/log/phonix/monitor.log 2>&1 &

@@ -75,6 +75,7 @@
         "max_contacts": 1,
         "nat": true,
         "notify_email": "",
+        "notify_language": "",
         "notify_missed": false,
         "provider_callerids": {},
         "public_access": false,
@@ -244,12 +245,11 @@
       },
       "voicemail": {
         "attach_audio": true,
-        "custom_body": "",
-        "custom_subject": "",
         "from_address": "",
         "from_name": "PhonixPBX Voicemail",
         "keep_messages": true,
-        "max_message_seconds": 180
+        "max_message_seconds": 180,
+        "templates": {}
       }
     }
   },
