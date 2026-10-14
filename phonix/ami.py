@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import contextlib
 import itertools
+import re
 import socket
 from collections.abc import Iterator
 from typing import Any
@@ -18,6 +19,9 @@ from phonix import config
 from phonix.services import secrets
 
 Message = dict[str, str]
+
+
+_EMPTY_LIST = re.compile(r"^No .* found$", re.IGNORECASE)
 
 
 class AmiError(Exception):
@@ -129,7 +133,11 @@ class AmiClient:
             if msg.get("ActionID") != action_id:
                 continue
             if msg.get("Response") == "Error":
-                raise AmiError(msg.get("Message", "action failed"))
+                message = msg.get("Message", "action failed")
+                # PJSIPShow* answer an empty list with "No <objects> found"
+                if _EMPTY_LIST.match(message.strip()):
+                    return []
+                raise AmiError(message)
             if msg.get("EventList") == "Complete":
                 return events
             if "Event" in msg:
