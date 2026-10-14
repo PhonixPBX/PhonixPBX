@@ -1390,6 +1390,11 @@
           "title": "Hostname",
           "type": "string"
         },
+        "mdns_enabled": {
+          "default": true,
+          "title": "Mdns Enabled",
+          "type": "boolean"
+        },
         "ntp_servers": {
           "items": {
             "type": "string"

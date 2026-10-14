@@ -227,6 +227,7 @@
       "system": {
         "domain": "local",
         "hostname": "oldbox",
+        "mdns_enabled": true,
         "ntp_servers": [
           "pool.ntp.org"
         ],

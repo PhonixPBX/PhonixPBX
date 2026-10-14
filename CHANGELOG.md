@@ -15,6 +15,10 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   follows them live until Ctrl-C.
 - The OCI image writes the web and monitor output to `/var/log/phonix` as well as to the
   container output.
+- The appliance and the LXC images announce themselves on the LAN with mDNS:
+  `https://<hostname>.local/` opens the web interface, and discovery tools find it as an
+  HTTPS service. It is on by default and can be turned off under System → General. The
+  firewall lets mDNS through, and new self-signed certificates include the `.local` name.
 
 ### Fixed
 

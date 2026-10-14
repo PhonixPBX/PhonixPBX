@@ -171,6 +171,27 @@ def test_ssh_root_password(client):
     assert post(ssh_password_clear="true").status_code == 303 and stored() == ""
 
 
+def test_mdns_checkbox(client):
+    from phonix.core import settings as st
+
+    login(client)
+    page = client.get("/system/general").text
+    assert 'name="mdns_enabled"' in page and "https://phonix.local/" in page
+    form = {
+        "hostname": "phonix",
+        "domain": "local",
+        "timezone": "UTC",
+        "tonezone": "us",
+        "prompt_language": "en",
+        "ntp_servers": "pool.ntp.org",
+        "mdns_enabled__present": "1",
+    }
+    r = client.post("/system/general", data={"csrf_token": csrf(client, "/system/general"), **form})
+    assert r.status_code == 200
+    with session_scope() as s:
+        assert st.load(s, st.SystemSettings).mdns_enabled is False
+
+
 def test_apply_via_htmx(client):
     login(client)
     token = csrf(client)

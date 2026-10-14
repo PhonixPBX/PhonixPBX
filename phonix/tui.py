@@ -48,6 +48,10 @@ def banner() -> str:
         f"  LAN ({net.interface}, {'DHCP' if net.mode == 'dhcp' else 'static'}): {ip}",
         f"  Web interface: https://{ip}/",
     ]
+    with session_scope() as session:
+        system = st.load(session, st.SystemSettings)
+    if system.mdns_enabled and platform.kind() in ("appliance", "lxc"):
+        lines.append(f"                 https://{system.hostname}.local/")
     password = firstboot.initial_password()
     if password:
         lines += ["", f"  Initial login: admin / {password}", "  (you must change the password at the first login)"]

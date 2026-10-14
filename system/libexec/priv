@@ -122,6 +122,7 @@ staged_files() {
 	system:time) echo /etc/chrony/chrony.conf /etc/timezone ;;
 	system:firewall) echo /etc/nftables.nft ;;
 	system:ssh) echo /etc/phonix/ssh ;;
+	system:mdns) echo /etc/avahi/avahi-daemon.conf /etc/avahi/services/phonix.service /etc/phonix/mdns ;;
 	*) return 1 ;;
 	esac
 }
@@ -218,6 +219,16 @@ activate() {
 		else
 			rc-update del dropbear default >/dev/null 2>&1 || true
 			! svc_started dropbear || rc-service dropbear stop >/dev/null 2>&1 || true
+		fi
+		;;
+	system:mdns)
+		# a changed host name or service file needs a restart (no D-Bus for avahi-set-host-name)
+		if [ "$(head -n 1 /etc/phonix/mdns 2>/dev/null)" = on ]; then
+			rc-update add phonix-mdns default >/dev/null 2>&1 || true
+			rc-service phonix-mdns restart >/dev/null 2>&1 || die "starting mdns failed"
+		else
+			rc-update del phonix-mdns default >/dev/null 2>&1 || true
+			! svc_started phonix-mdns || rc-service phonix-mdns stop >/dev/null 2>&1 || true
 		fi
 		;;
 	esac

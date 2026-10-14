@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-14 18:02+0200\n"
+"POT-Creation-Date: 2026-10-14 18:49+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: es\n"
@@ -301,6 +301,9 @@ msgstr "Mostrar siempre desplegadas las secciones avanzadas"
 
 msgid "An e-mail address is required for the ACME account"
 msgstr "Se requiere una dirección de correo electrónico para la cuenta ACME"
+
+msgid "Announce on the local network (mDNS)"
+msgstr "Anunciar en la red local (mDNS)"
 
 msgid "Application"
 msgstr "Aplicación"
@@ -1394,6 +1397,12 @@ msgstr "Creada con PhonixPBX %(version)s."
 
 msgid "Make sure the network of your computer is allowed before applying restrictions."
 msgstr "Asegúrese de que la red de su equipo esté permitida antes de aplicar restricciones."
+
+#, python-format
+msgid "Makes the web interface reachable as https://%(name)s.local/ and lets discovery tools find it."
+msgstr ""
+"Hace accesible la interfaz web como https://%(name)s.local/ y permite que las herramientas de descubrimiento la "
+"encuentren."
 
 msgid "Malaysia"
 msgstr "Malasia"

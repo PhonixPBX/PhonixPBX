@@ -44,6 +44,8 @@ add_user chrony 102 103 /dev/null /sbin/nologin
 add_group nginx 104
 add_user nginx 103 104 /var/lib/nginx /sbin/nologin
 add_member www-data nginx
+add_group avahi 105
+add_user avahi 104 105 /dev/null /sbin/nologin
 add_group phonix 200
 add_user phonix 200 200 /data /sbin/nologin
 add_member asterisk phonix

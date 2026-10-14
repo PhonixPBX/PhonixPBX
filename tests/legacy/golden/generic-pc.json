@@ -180,6 +180,7 @@
       "system": {
         "domain": "local",
         "hostname": "askoziapbx",
+        "mdns_enabled": true,
         "ntp_servers": [
           "pool.ntp.org"
         ],

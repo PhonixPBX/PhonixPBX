@@ -40,6 +40,7 @@ def nftables(snap: Snapshot) -> str:
         "system/nftables.nft.j2",
         fw=fw,
         ssh=snap.system.ssh_enabled,
+        mdns=snap.system.mdns_enabled,
         admin4=admin4,
         admin6=admin6,
         sip4=sip4,
@@ -72,6 +73,14 @@ def generate(snap: Snapshot) -> list[GeneratedFile]:
             "system:ssh",
             mode=0o640,
         ),
+        _priv(
+            "/etc/avahi/avahi-daemon.conf",
+            render("system/avahi-daemon.conf.j2", hostname=sysset.hostname),
+            "system:mdns",
+        ),
+        _priv("/etc/avahi/services/phonix.service", render("system/phonix.service.j2"), "system:mdns"),
+        # on/off: whether phonix-mdns (avahi-daemon) runs
+        _priv("/etc/phonix/mdns", ("on" if sysset.mdns_enabled else "off") + "\n", "system:mdns"),
         GeneratedFile(
             path="/etc/phonix/msmtprc",
             content=render("system/msmtprc.j2", email=snap.email),

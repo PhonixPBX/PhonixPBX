@@ -37,6 +37,8 @@ class SystemSettings(SettingsGroup):
     # web UI language
     ui_language: str = "en"
     ntp_servers: list[str] = Field(default_factory=lambda: ["pool.ntp.org"])
+    # announce <hostname>.local and the web interface on the LAN (mDNS/DNS-SD)
+    mdns_enabled: bool = True
     ssh_enabled: bool = False
     # root password for SSH logins (SHA-512 crypt, see core/shacrypt); empty = keys only
     ssh_password_hash: str = ""

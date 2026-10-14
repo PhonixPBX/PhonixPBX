@@ -20,6 +20,9 @@
       {% set langs = [] %}{% for k, v in LANGUAGES.items() %}{% set _x = langs.append((k, _(v))) %}{% endfor %}
       <div class="col-md-6">{{ select("prompt_language", _("Default prompt language"), values, errors, langs) }}</div>
     </div>
+    {% if platform != "oci" %}
+    {{ checkbox("mdns_enabled", _("Announce on the local network (mDNS)"), values, errors, help=_("Makes the web interface reachable as https://%(name)s.local/ and lets discovery tools find it.", name=values.get("hostname") or "phonix")) }}
+    {% endif %}
     <hr>
     {{ checkbox("ssh_enabled", _("Enable SSH access (key or password login for root)"), values, errors, help=_("Only enable when needed. Access can additionally be limited under Advanced > Firewall.")) }}
     <div class="row">

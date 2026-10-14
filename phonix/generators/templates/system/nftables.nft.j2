@@ -54,6 +54,12 @@ table inet phonix {
 		meta l4proto ipv6-icmp accept
 		udp sport 67 udp dport 68 accept
 		udp dport 546 accept
+{% if mdns %}
+
+		# mDNS (<hostname>.local)
+		ip daddr 224.0.0.251 udp dport 5353 accept
+		ip6 daddr ff02::fb udp dport 5353 accept
+{% endif %}
 
 		# web interface{% if ssh %} and ssh{% endif %}
 

@@ -9,7 +9,7 @@ description="Generate PhonixPBX system and Asterisk configuration"
 depend() {
 	need localmount
 	after phonix-firstboot
-	before hostname networking net nftables firewall chronyd asterisk dropbear nginx msmtp
+	before hostname networking net nftables firewall chronyd asterisk dropbear nginx msmtp phonix-mdns
 }
 
 _env() {
@@ -59,6 +59,11 @@ start() {
 		ln -sfn /etc/init.d/dropbear /etc/runlevels/default/dropbear
 	else
 		rm -f /etc/runlevels/default/dropbear
+	fi
+	if [ "$(head -n 1 /etc/phonix/mdns 2>/dev/null)" = on ]; then
+		ln -sfn /etc/init.d/phonix-mdns /etc/runlevels/default/phonix-mdns
+	else
+		rm -f /etc/runlevels/default/phonix-mdns
 	fi
 
 	# a failed generator must not leave the box unreachable: keep the

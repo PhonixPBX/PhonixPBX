@@ -58,6 +58,7 @@ ORDER = [
     "system:time",
     "system:firewall",
     "system:ssh",
+    "system:mdns",
     "email",
     "asterisk:restart",
     *RELOAD_COMMANDS,

@@ -550,6 +550,7 @@
       "system": {
         "domain": "example.com",
         "hostname": "pbx-office",
+        "mdns_enabled": true,
         "ntp_servers": [
           "0.pool.ntp.org",
           "1.pool.ntp.org"

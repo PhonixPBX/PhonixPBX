@@ -280,3 +280,10 @@ def test_regenerate_turns_acme_off(client):
     assert r.status_code == 303
     with session_scope() as s:
         assert not st.load(s, st.AcmeSettings).enabled
+
+
+def test_self_signed_includes_mdns_name():
+    tls.generate_self_signed("pbx.example.org")
+    assert {"pbx.example.org", "pbx.local"} <= set(tls.dns_names(tls.current_certificate()))
+    tls.generate_self_signed("phonix.local")
+    assert tls.dns_names(tls.current_certificate()).count("phonix.local") == 1

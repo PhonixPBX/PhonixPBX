@@ -38,6 +38,10 @@ def generate_self_signed(hostname: str, ips: list[str] | None = None, days: int 
         ]
     )
     alt: list[x509.GeneralName] = [x509.DNSName(hostname), x509.DNSName("localhost")]
+    # the name announced over mDNS, also with another domain
+    mdns_name = hostname.split(".")[0] + ".local"
+    if mdns_name != hostname:
+        alt.append(x509.DNSName(mdns_name))
     for ip in ips or []:
         alt.append(x509.IPAddress(ipaddress.ip_address(ip)))
     now = dt.datetime.now(dt.timezone.utc)

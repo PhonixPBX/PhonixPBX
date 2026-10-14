@@ -46,6 +46,7 @@ depends="
 	iproute2
 	dropbear
 	dropbear-openrc
+	avahi
 	e2fsprogs
 	dosfstools
 	logrotate
@@ -86,7 +87,7 @@ package() {
 
 	# OpenRC services
 	local svc
-	for svc in phonix-firstboot phonix-apply phonix-web phonix-monitor phonix-healthcheck; do
+	for svc in phonix-firstboot phonix-apply phonix-web phonix-monitor phonix-healthcheck phonix-mdns; do
 		install -Dm755 "$sys/openrc/init.d/$svc" "$pkgdir/etc/init.d/$svc"
 	done
 	install -Dm644 "$sys/openrc/conf.d/phonix" "$pkgdir/etc/conf.d/phonix"

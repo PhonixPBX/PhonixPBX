@@ -123,7 +123,7 @@ Uniqueness of extensions across phones, call groups, rooms and applications is e
 The menu keeps the original structure from `usr/www/fbegin.inc`.
 
 **System**
-- General: hostname, domain, DNS, timezone, NTP, language, admin password
+- General: hostname, domain, DNS, timezone, NTP, language, admin password, mDNS announcement (avahi-daemon without D-Bus via the `phonix-mdns` service: `<hostname>.local` and `_https._tcp`; not in the OCI image)
 - Network: DHCP or static; the IPv4 fields come from the old app, and IPv6 is optional
 - Storage: status of the data partition and usage
 - Firmware update: upload a signed bundle, or check online

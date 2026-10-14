@@ -82,7 +82,9 @@ The console (screen and serial port, 115200 baud) shows a menu with:
   (you must change the password at the first login)
 ```
 
-If the box has no screen, find its IP address in your router's DHCP lease list.
+If the box has no screen, open `https://phonix.local/` (see below) or find its IP address in your router's DHCP lease list.
+
+The box announces itself on the LAN with mDNS (avahi): `https://<hostname>.local/` works on macOS, iOS, Windows 10 and newer, Android 12 and newer, and Linux with nss-mdns. Discovery tools list it as an HTTPS service named "PhonixPBX on <hostname>". If a second box with the same host name is on the LAN, the second one gets `<hostname>-2.local`, so give each box its own host name. The self-signed certificate includes the `.local` name. Turn the announcement off under *System → General*.
 
 ## 3. Log in
 
@@ -183,6 +185,7 @@ Differences to the appliance:
 - **Updates** replace the container. *System → Firmware* says so, and update bundles are refused. To update, create a new container from the new image and attach the old `/data` volume, or restore a backup (*System → Backup/Restore*) into the new container.
 - **Factory reset** erases `/data` at the next start of the container.
 - **Console menu** runs on the container console (`/dev/console`) and on `tty1`.
+- **mDNS** (`<hostname>.local`) works when the container is on a bridge of your LAN. It uses the host name from *System → General*, not the container's host name.
 
 The containers run unprivileged. Give them at least 512 MB RAM (1 GB recommended) and 2 GB disk plus the data volume. For telephones on your LAN, attach the container to a bridge of your LAN so it gets its own address (`eth0`). Phones and providers then reach SIP (5060) and RTP (10000-20000/udp) directly.
 
@@ -328,6 +331,7 @@ podman run -d --name phonix --network host -e PHONIX_HTTP_PORT=8080 -e PHONIX_HT
 Notes:
 
 - **Network, host name, DNS and clock** come from the container engine. PhonixPBX does not change them, as in the LXC images.
+- **No mDNS.** The image does not announce `<hostname>.local`: container networks usually do not carry multicast. With `--network host`, the host's own avahi or systemd-resolved can publish a name for the host.
 - **Updates.** Pull the new image and recreate the container with the same volume: `docker pull ghcr.io/phonixpbx/phonix:latest && docker rm -f phonix && docker run ...`, or `docker compose pull && docker compose up -d`. *System → Firmware* refuses update bundles.
 - **Reboot and shut down** in the web interface stop the container. With `--restart unless-stopped`, *Reboot* starts it again.
 - **Factory reset** stops the container and erases `/data` when the same container starts again.

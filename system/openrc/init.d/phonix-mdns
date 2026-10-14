@@ -1,0 +1,24 @@
+#!/sbin/openrc-run
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
+# Announces <hostname>.local and the web interface on the LAN (mDNS/DNS-SD).
+# avahi-daemon without D-Bus: avahi-openrc would pull in the D-Bus daemon.
+# Enabled and disabled by the privileged helper (System > General).
+
+description="PhonixPBX mDNS announcements (avahi-daemon)"
+
+supervisor=supervise-daemon
+command=/usr/sbin/avahi-daemon
+command_args="-f /etc/avahi/avahi-daemon.conf"
+respawn_delay=5
+respawn_max=0
+
+depend() {
+	need net
+	after phonix-apply nftables
+	use logger
+}
+
+start_pre() {
+	checkpath -d -m 0755 -o avahi:avahi /run/avahi-daemon
+}

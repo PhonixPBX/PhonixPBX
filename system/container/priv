@@ -105,6 +105,7 @@ staged_files() {
 	system:time) echo /etc/chrony/chrony.conf /etc/timezone ;;
 	system:firewall) echo /etc/nftables.nft ;;
 	system:ssh) echo /etc/phonix/ssh ;;
+	system:mdns) echo /etc/avahi/avahi-daemon.conf /etc/avahi/services/phonix.service /etc/phonix/mdns ;;
 	*) return 1 ;;
 	esac
 }

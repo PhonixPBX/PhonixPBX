@@ -46,6 +46,7 @@ STAGED_FILES = {
     "system:time": ["/etc/chrony/chrony.conf", "/etc/timezone"],
     "system:firewall": ["/etc/nftables.nft"],
     "system:ssh": ["/etc/phonix/ssh"],
+    "system:mdns": ["/etc/avahi/avahi-daemon.conf", "/etc/avahi/services/phonix.service", "/etc/phonix/mdns"],
 }
 
 _ARG = re.compile(r"^[A-Za-z0-9_.:/\-]{1,255}$")

@@ -125,3 +125,18 @@ def test_ssh_root_password_line(session):
     st.save(session, st.SystemSettings(ssh_enabled=True, ssh_password_hash=pw))
     f = render(session)["/etc/phonix/ssh"]
     assert f.content == f"on\n{pw}\n" and f.mode == 0o640 and f.privileged
+
+
+def test_mdns(session):
+    files = render(session)
+    assert files["/etc/phonix/mdns"].content == "on\n"
+    assert files["/etc/phonix/mdns"].component == "system:mdns" and files["/etc/phonix/mdns"].privileged
+    assert "host-name=phonix\n" in files["/etc/avahi/avahi-daemon.conf"].content
+    assert "enable-dbus=no" in files["/etc/avahi/avahi-daemon.conf"].content
+    assert "<type>_https._tcp</type>" in files["/etc/avahi/services/phonix.service"].content
+    st.save(session, st.FirewallSettings(enabled=True))
+    assert "udp dport 5353 accept" in render(session)["/etc/nftables.nft"].content
+    st.save(session, st.SystemSettings(mdns_enabled=False))
+    files = render(session)
+    assert files["/etc/phonix/mdns"].content == "off\n"
+    assert "5353" not in files["/etc/nftables.nft"].content
