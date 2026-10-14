@@ -16,6 +16,11 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 - The OCI image writes the web and monitor output to `/var/log/phonix` as well as to the
   container output.
 
+### Fixed
+
+- Saving a call group that keeps some of its members failed with a database error
+  (`UNIQUE constraint failed: callgroup_members.group_id, callgroup_members.phone_id`).
+
 ## [1.1.0] - 2026-10-14
 
 ### Added

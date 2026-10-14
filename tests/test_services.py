@@ -58,6 +58,16 @@ def test_delete_phone_removes_routes(session):
     assert [m.phone_id for m in group.members] == [ids["bob"]]
 
 
+def test_update_callgroup_keeps_and_reorders_members(session):
+    ids = sample_pbx(session)
+    data = dialplan.callgroup_to_dict(dialplan.get_callgroup(session, ids["group"]))
+    data["member_ids"] = [ids["carol"], *reversed(data["member_ids"])]
+    dialplan.update_callgroup(session, ids["group"], dialplan.CallGroupIn.model_validate(data))
+    group = dialplan.get_callgroup(session, ids["group"])
+    assert [m.phone_id for m in group.members] == data["member_ids"]
+    assert [m.position for m in group.members] == [0, 1, 2]
+
+
 def test_failover_cannot_be_self(session):
     ids = sample_pbx(session)
     data = providers.to_dict(providers.get_provider(session, ids["trunk"]))

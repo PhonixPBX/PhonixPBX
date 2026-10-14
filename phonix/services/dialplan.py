@@ -116,7 +116,15 @@ def _apply_callgroup(session: Session, group: CallGroup, data: CallGroupIn) -> N
     group.ringlength = data.ringlength
     group.public_access = data.public_access
     group.public_name = data.public_name
-    group.members = [CallGroupMember(phone_id=pid, position=i) for i, pid in enumerate(data.member_ids)]
+    # reuse the existing rows: the flush inserts new members before it deletes orphans,
+    # so a fresh row for a phone that stays in the group violates (group_id, phone_id)
+    existing = {m.phone_id: m for m in group.members}
+    members = []
+    for i, pid in enumerate(data.member_ids):
+        member = existing.get(pid) or CallGroupMember(phone_id=pid)
+        member.position = i
+        members.append(member)
+    group.members = members
 
 
 def create_callgroup(session: Session, data: CallGroupIn, user: str = "") -> CallGroup:
