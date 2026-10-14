@@ -24,7 +24,7 @@
         {{ input("check_url", _("Update information URL"), values, errors, placeholder="https://api.github.com/repos/PhonixPBX/PhonixPBX/releases/latest") }}
         {{ checkbox("auto_check", _("Check automatically"), values, errors) }}
         <button class="btn" type="submit">{{ _("Save") }}</button>
-        <button class="btn btn-primary" type="button" hx-post="/system/firmware/check" hx-target="#check-result">{{ icon("refresh", "me-1") }}{{ _("Check now") }}</button>
+        <button class="btn btn-primary" type="button" hx-post="/system/firmware/check" hx-target="#check-result">{{ icon("refresh") }}{{ _("Check now") }}</button>
       </form>
       <div id="check-result"></div>
     </div></div>

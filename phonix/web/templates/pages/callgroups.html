@@ -1,7 +1,7 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
 {% from "macros/ui.html" import delete_button, empty with context %}
-{% block actions %}<a href="/dialplan/callgroups/new" class="btn btn-primary">{{ icon("plus") }} {{ _("Call group") }}</a>{% endblock %}
+{% block actions %}<a href="/dialplan/callgroups/new" class="btn btn-primary">{{ icon("plus") }}{{ _("Call group") }}</a>{% endblock %}
 {% block content %}
 <div class="card">
   {% if items %}

@@ -8,7 +8,7 @@
       <div class="card-header"><h3 class="card-title">{{ _("Backups") }}</h3>
         <div class="card-actions">
           <form method="post" action="/system/backup/create" class="m-0"><input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-            <button class="btn btn-primary" type="submit">{{ icon("database-export", "me-1") }}{{ _("Create backup") }}</button></form>
+            <button class="btn btn-primary" type="submit">{{ icon("database-export") }}{{ _("Create backup") }}</button></form>
         </div>
       </div>
       {% if backups %}
@@ -46,7 +46,7 @@
         <div id="legacy-result" class="mt-3"></div>
         <hr>
         <p class="mb-2">{{ _("Export the current configuration in the legacy format (best effort; contains passwords in plain text).") }}</p>
-        <a class="btn" href="/system/legacy/export">{{ icon("file-export", "me-1") }}{{ _("Export config.xml") }}</a>
+        <a class="btn" href="/system/legacy/export">{{ icon("file-export") }}{{ _("Export config.xml") }}</a>
       </div>
     </div>
   </div>

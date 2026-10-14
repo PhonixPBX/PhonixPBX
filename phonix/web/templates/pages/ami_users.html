@@ -1,7 +1,7 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
 {% from "macros/ui.html" import delete_button, empty with context %}
-{% block actions %}<a href="/advanced/manager/new" class="btn btn-primary">{{ icon("plus") }} {{ _("Manager user") }}</a>{% endblock %}
+{% block actions %}<a href="/advanced/manager/new" class="btn btn-primary">{{ icon("plus") }}{{ _("Manager user") }}</a>{% endblock %}
 {% block content %}
 <div class="alert alert-info">{{ _("The Asterisk Manager Interface (TCP port 5038) lets external software (CTI, dashboards) control the PBX. Only add users you need and restrict their networks.") }}</div>
 <div class="card">

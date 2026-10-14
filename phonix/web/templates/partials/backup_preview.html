@@ -16,7 +16,7 @@
     <form hx-post="/system/backup/restore" hx-target="#restore-result" hx-confirm="{{ _('Restore this backup now?') }}">
       <input type="hidden" name="token" value="{{ token }}">
       <input type="hidden" name="name" value="{{ name }}">
-      <button class="btn btn-danger" type="submit">{{ icon("restore", "me-1") }}{{ _("Restore") }}</button>
+      <button class="btn btn-danger" type="submit">{{ icon("restore") }}{{ _("Restore") }}</button>
     </form>
   </div>
 </div>

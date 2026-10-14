@@ -32,7 +32,7 @@
   <div class="card-body">
     <form hx-post="/services/email/test" hx-target="#mail-test" hx-swap="innerHTML" hx-disable="find button">
       <div class="mb-3"><label class="form-label" for="test-to">{{ _("Recipient") }}</label><input id="test-to" type="email" name="to" class="form-control" required></div>
-      <button class="btn w-100" type="submit"><span class="spinner-border spinner-border-sm me-2 htmx-indicator"></span>{{ icon("send", "me-1") }}{{ _("Send test") }}</button>
+      <button class="btn w-100" type="submit"><span class="spinner-border spinner-border-sm me-2 htmx-indicator"></span>{{ icon("send") }}{{ _("Send test") }}</button>
     </form>
     <div id="mail-test"></div>
     <p class="text-secondary small mt-2">{{ _("Uses the applied configuration &mdash; apply pending changes first.") }}</p>

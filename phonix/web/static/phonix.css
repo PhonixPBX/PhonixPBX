@@ -106,10 +106,17 @@
   font-size: 1.25em;
   vertical-align: -0.15em;
 }
-.btn .ti,
-.btn-icon .ti {
+/* same spacing as Tabler's .btn .icon; write {{ icon(...) }}{{ _("Label") }} without me-* or a space */
+.btn .ti {
   font-size: 1.25rem;
   vertical-align: middle;
+  margin: 0 calc(var(--tblr-btn-padding-x) / 2) 0 calc(var(--tblr-btn-padding-x) / -4);
+}
+.btn .ti.icon-end {
+  margin: 0 calc(var(--tblr-btn-padding-x) / -4) 0 calc(var(--tblr-btn-padding-x) / 2);
+}
+.btn-icon .ti {
+  margin: 0;
 }
 .nav-link-icon {
   width: 1.5rem;

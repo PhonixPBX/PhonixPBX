@@ -10,7 +10,7 @@
     <p>{{ _("This erases the complete configuration, voicemail, media and backups on this system and reboots. Download a backup first.") }}</p>
     {{ input("confirm", _("Type RESET to confirm"), {}, errors, required=True) }}
   </div>
-  <div class="card-footer text-end"><button class="btn btn-danger" type="submit">{{ icon("alert-triangle", "me-1") }}{{ _("Reset and reboot") }}</button></div>
+  <div class="card-footer text-end"><button class="btn btn-danger" type="submit">{{ icon("alert-triangle") }}{{ _("Reset and reboot") }}</button></div>
 </form>
 </div></div>
 {% endblock %}

@@ -22,7 +22,7 @@
       <input type="hidden" name="token" value="{{ token }}">
       <div><label class="form-label" for="legacy-mode">{{ _("Mode") }}</label>
         <select class="form-select" id="legacy-mode" name="mode"><option value="replace">{{ _("Replace current configuration (backup first)") }}</option><option value="merge">{{ _("Merge into current configuration") }}</option></select></div>
-      <button class="btn btn-primary" type="submit">{{ icon("file-import", "me-1") }}{{ _("Import") }}</button>
+      <button class="btn btn-primary" type="submit">{{ icon("file-import") }}{{ _("Import") }}</button>
     </form>
     {% elif not dry_run and rd.ok %}
     <div class="alert alert-success mt-3 mb-0">{{ _("Imported. Review the configuration and apply the pending changes.") }}</div>

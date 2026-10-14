@@ -69,7 +69,7 @@
           {% endfor %}
         </div>
         <div class="invalid-feedback d-block">{% for k, e in (errors or {}).items() if k.startswith("incoming_routes") %}{{ _("Route %(num)s: %(error)s", num=(k.split(".")[1] | int + 1 if "." in k else ""), error=e) }} {% endfor %}</div>
-        <button type="button" class="btn mt-2" data-add-row="#route-template" data-into="#routes">{{ icon("plus") }} {{ _("Add route") }}</button>
+        <button type="button" class="btn mt-2" data-add-row="#route-template" data-into="#routes">{{ icon("plus") }}{{ _("Add route") }}</button>
         <template id="route-template">
           <div class="row g-2 dyn-row">
             <div class="col-md-4"><input class="form-control font-monospace" name="route_pattern___INDEX__" placeholder="{{ _("all numbers") }}" aria-label="{{ _("incoming number pattern") }}"></div>

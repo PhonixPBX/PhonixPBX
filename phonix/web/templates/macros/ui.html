@@ -41,6 +41,6 @@
   <div class="empty-icon">{{ icon("mood-empty") }}</div>
   <p class="empty-title">{{ title }}</p>
   <p class="empty-subtitle text-secondary">{{ text }}</p>
-  {% if url %}<div class="empty-action"><a href="{{ url }}" class="btn btn-primary">{{ icon("plus") }} {{ label }}</a></div>{% endif %}
+  {% if url %}<div class="empty-action"><a href="{{ url }}" class="btn btn-primary">{{ icon("plus") }}{{ label }}</a></div>{% endif %}
 </div>
 {% endmacro %}

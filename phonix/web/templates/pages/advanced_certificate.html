@@ -16,7 +16,7 @@
     </dl>
     {% else %}<p class="text-secondary">{{ _("No certificate found.") }}</p>{% endif %}
     <form method="post" action="/advanced/certificate/regenerate" class="m-0">
-      {{ csrf() }}<button class="btn" type="submit">{{ icon("refresh", "me-1") }}{{ _("Create new self-signed certificate") }}</button>
+      {{ csrf() }}<button class="btn" type="submit">{{ icon("refresh") }}{{ _("Create new self-signed certificate") }}</button>
     </form>
   </div></div></div>
   <div class="col-lg-6">
@@ -83,8 +83,8 @@
       </div>
       <div class="card-footer">
         <div class="d-flex">
-          <button type="submit" class="btn btn-primary ms-auto">{{ icon("device-floppy", "me-1") }}{{ _("Save") }}</button>
-          <button type="submit" class="btn ms-2" formaction="/advanced/certificate/acme?issue=1"{% if status.get("state") == "running" %} disabled{% endif %}>{{ icon("certificate", "me-1") }}{{ _("Save and request certificate now") }}</button>
+          <button type="submit" class="btn btn-primary ms-auto">{{ icon("device-floppy") }}{{ _("Save") }}</button>
+          <button type="submit" class="btn ms-2" formaction="/advanced/certificate/acme?issue=1"{% if status.get("state") == "running" %} disabled{% endif %}>{{ icon("certificate") }}{{ _("Save and request certificate now") }}</button>
         </div>
       </div>
     </form>

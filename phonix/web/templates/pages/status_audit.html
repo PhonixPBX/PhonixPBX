@@ -21,8 +21,8 @@
     </table>
   </div>
   <div class="card-footer d-flex">
-    {% if page_no > 1 %}<a class="btn" href="?page_no={{ page_no - 1 }}">{{ icon("chevron-left") }} {{ _("Newer") }}</a>{% endif %}
-    {% if has_more %}<a class="btn ms-auto" href="?page_no={{ page_no + 1 }}">{{ _("Older") }} {{ icon("chevron-right") }}</a>{% endif %}
+    {% if page_no > 1 %}<a class="btn" href="?page_no={{ page_no - 1 }}">{{ icon("chevron-left") }}{{ _("Newer") }}</a>{% endif %}
+    {% if has_more %}<a class="btn ms-auto" href="?page_no={{ page_no + 1 }}">{{ _("Older") }}{{ icon("chevron-right", "icon-end") }}</a>{% endif %}
   </div>
 </div>
 {% endblock %}
