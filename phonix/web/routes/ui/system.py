@@ -231,7 +231,8 @@ async def firmware_upload(
             if fh.tell() > update.MAX_BUNDLE:
                 break
     try:
-        info = update.install(target)
+        # hashing and writing the slot takes minutes on an SD card: keep the event loop free
+        info = await run_in_threadpool(update.install, target)
     except (ServiceError, privileged.PrivilegedError) as exc:
         target.unlink(missing_ok=True)
         return _alert(request, "danger", _("Update rejected: %(error)s", error=exc), status_code=422)

@@ -130,6 +130,9 @@ dir 0700 phonix:phonix "$D/acme"
 dir 2750 phonix:asterisk "$D/media"
 dir 0750 asterisk:asterisk "$D/asterisk" "$D/spool"
 dir 0700 nginx:nginx "$D/tmp/nginx"
+# upload spool files of the web app (phonix-web on the appliance)
+dir 0700 phonix:phonix "$D/tmp/web"
+rm -rf "${D:?}/tmp/web/"*
 dir 0755 root:root "$D/log" "$D/import"
 if [ ! -s "$D/machine-id" ]; then
 	tr -d '-' </proc/sys/kernel/random/uuid >"$D/machine-id"
@@ -219,7 +222,7 @@ log "starting Asterisk"
 
 su-exec phonix phonix monitor &
 MONITOR_PID=$!
-su-exec phonix phonix web --uds "$SOCKET" &
+TMPDIR="$D/tmp/web" su-exec phonix phonix web --uds "$SOCKET" &
 WEB_PID=$!
 nginx -g 'daemon off;' &
 NGINX_PID=$!

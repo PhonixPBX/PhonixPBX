@@ -33,6 +33,10 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ### Fixed
 
+- Uploading a firmware update larger than 128 MiB (e.g. on the Raspberry Pi) failed with
+  "Server responded with 0 code." and nothing was installed: the upload was buffered in the
+  small `/tmp` RAM disk. Uploads are now buffered on the data partition, and the web
+  interface stays responsive while an update is installed.
 - Restoring a backup could leave the system broken: the database was replaced under
   running processes, a backup from a newer release failed halfway through, and media,
   TLS and ACME directories lost their permissions.

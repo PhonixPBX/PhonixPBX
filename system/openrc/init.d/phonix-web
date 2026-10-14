@@ -10,6 +10,10 @@ description="PhonixPBX web interface"
 [ -r /etc/conf.d/phonix ] && . /etc/conf.d/phonix
 export PHONIX_DATA_DIR PHONIX_BOOT_DIR PHONIX_PRIVILEGED PHONIX_LIBEXEC_DIR \
 	PHONIX_AMI_HOST PHONIX_AMI_PORT
+# uploads (firmware bundles, backups) are spooled to temporary files: keep them
+# on the data partition, /tmp is a small tmpfs
+TMPDIR=/data/tmp/web
+export TMPDIR
 
 supervisor=supervise-daemon
 command=/usr/bin/phonix
@@ -35,5 +39,7 @@ start_pre() {
 	checkpath -d -m 0755 -o phonix:phonix /run/phonix/acme
 	checkpath -d -m 0755 -o root:root /var/log/phonix
 	checkpath -f -m 0640 -o phonix:phonix /var/log/phonix/web.log
+	checkpath -d -m 0700 -o phonix:phonix "$TMPDIR"
+	rm -rf "${TMPDIR:?}"/*
 	rm -f "$socket"
 }
