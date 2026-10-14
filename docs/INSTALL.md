@@ -375,6 +375,12 @@ Example alerts:
 - `phonix_asterisk_up == 0`
 - `phonix_tls_certificate_expiry_seconds - time() < 14 * 86400`
 
+## Known log messages
+
+Some messages look alarming but are expected and harmless:
+
+- `ERROR res_pjsip/config_system.c: There are no local system nameservers configured, resorting to system resolution` in `/var/log/asterisk/messages`. It is logged on every PJSIP load and reload. Asterisk reads the nameservers through a libc call that musl (the C library of Alpine) does not implement, so the list is always empty, even when `/etc/resolv.conf` is correct. The list only configures the built-in resolver of pjproject, which is not used: SIP lookups (including SRV and NAPTR) go through the Asterisk DNS core and `res_resolver_unbound`, which reads `/etc/resolv.conf` itself.
+
 ## Migrating from AskoziaPBX 1.x / 2.x
 
 1. Before flashing, copy `config.xml` from the old box. Use the old web interface (*System → Backup*), or copy `conf/config.xml` from its first partition.
