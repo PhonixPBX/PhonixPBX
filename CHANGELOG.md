@@ -4,6 +4,18 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Status → Logs shows the logs of the web application and the security monitor
+  (`/var/log/phonix/web.log`, `monitor.log`), live like the Asterisk and system logs. The MCP
+  `tail_log` tool reads them too.
+- The console menu can view the Asterisk, system, web application and monitor logs and
+  follows them live until Ctrl-C.
+- The OCI image writes the web and monitor output to `/var/log/phonix` as well as to the
+  container output.
+
 ## [1.1.0] - 2026-10-14
 
 ### Added
@@ -99,5 +111,6 @@ The pre-release database migrations were squashed into a single initial revision
 Nightly installs at the latest pre-release schema are upgraded automatically; older
 nightly databases must be recreated (factory reset).
 
+[Unreleased]: https://github.com/PhonixPBX/PhonixPBX/compare/v1.1.0...HEAD
 [1.1.0]: https://github.com/PhonixPBX/PhonixPBX/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/PhonixPBX/PhonixPBX/releases/tag/v1.0.0

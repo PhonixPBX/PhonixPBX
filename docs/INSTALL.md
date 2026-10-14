@@ -98,6 +98,7 @@ The menu runs on the local screen (`tty1`) and on the serial console. It offers:
 - show status
 - set the LAN IP address (DHCP or static)
 - reset the administrator password
+- view logs (Asterisk, system, web application, monitor), followed live until Ctrl-C
 - reboot
 - shut down
 - reset to factory defaults

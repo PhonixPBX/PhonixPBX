@@ -33,7 +33,8 @@ chgrp -R asterisk /srv/root/etc/asterisk /data/media /data/tls
 chmod 750 /data && chgrp asterisk /data
 
 /src/dev/libexec/priv asterisk-start
-phonix monitor >/var/log/phonix-monitor.log 2>&1 &
+mkdir -p /var/log/phonix
+phonix monitor >/var/log/phonix/monitor.log 2>&1 &
 
 phonix banner | sed "s#https://\([^/]*\)/#http://\1:$WEB_PORT/#"
 echo "  Console menu: dev/console.sh   Asterisk CLI: podman exec -it phonix-dev asterisk -r"

@@ -159,6 +159,10 @@ def test_tail_log(client, runtime, tmp_path):
     path.write_text("".join(f"line {i}\n" for i in range(10)))
     r = call(client, "tail_log", bearer(read_only=True), log="asterisk", lines=3)["structuredContent"]
     assert r["lines"] == ["line 7", "line 8", "line 9"]
+    runtime.log_files["monitor"] = tmp_path / "monitor.log"
+    runtime.log_files["monitor"].write_text("banned 192.0.2.1\n")
+    r = call(client, "tail_log", log="monitor")["structuredContent"]
+    assert r["lines"] == ["banned 192.0.2.1"]
     assert call(client, "tail_log", log="/etc/shadow")["isError"] is True
     assert call(client, "tail_log", log="asterisk", lines=5000)["isError"] is True
 

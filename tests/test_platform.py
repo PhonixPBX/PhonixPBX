@@ -123,3 +123,16 @@ def test_tui_going_down_returns_after_timeout(capsys):
     assert "Rebooting |" in out
     assert "Rebooting did not finish within 0 minutes; back to the menu." in out
     assert signal.getsignal(signal.SIGINT) is before
+
+
+def test_tui_follow_log(tmp_path):
+    from phonix import tui
+
+    path = tmp_path / "web.log"
+    path.write_text("old line\n")
+    follow = tui._follow(path, interval=0.01)
+    with path.open("a") as fh:
+        fh.write("new line\n")
+    assert next(follow) == "new line\n"
+    path.write_text("rotated\n")  # shorter than before: starts over
+    assert next(follow) == "rotated\n"

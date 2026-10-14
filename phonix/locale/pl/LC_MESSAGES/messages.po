@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-14 17:18+0200\n"
+"POT-Creation-Date: 2026-10-14 18:02+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: pl\n"
@@ -1453,6 +1453,9 @@ msgstr "Brak danych uwierzytelniających dostawcy DNS: %(names)s"
 msgid "Mode"
 msgstr "Tryb"
 
+msgid "Monitor"
+msgstr "Monitor"
+
 msgid "Music on hold"
 msgstr "Muzyka na czekanie"
 
@@ -2812,6 +2815,9 @@ msgstr "Powitanie poczty głosowej"
 
 msgid "Voicemail, conferencing and media"
 msgstr "Poczta głosowa, konferencje i media"
+
+msgid "Web application"
+msgstr "Aplikacja webowa"
 
 msgid "Web interface and SSH. One CIDR per line, e.g. 192.168.1.0/24. Empty = everyone."
 msgstr "Interfejs WWW i SSH. Jedna sieć CIDR w wierszu, np. 192.168.1.0/24. Puste = wszyscy."

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-14 17:18+0200\n"
+"POT-Creation-Date: 2026-10-14 18:02+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: sv\n"
@@ -1452,6 +1452,9 @@ msgstr "Saknade inloggningsuppgifter för DNS-leverantören: %(names)s"
 msgid "Mode"
 msgstr "Läge"
 
+msgid "Monitor"
+msgstr "Monitor"
+
 msgid "Music on hold"
 msgstr "Väntmusik"
 
@@ -2807,6 +2810,9 @@ msgstr "Hälsning för röstbrevlådan"
 
 msgid "Voicemail, conferencing and media"
 msgstr "Röstbrevlåda, konferenser och media"
+
+msgid "Web application"
+msgstr "Webbapplikation"
 
 msgid "Web interface and SSH. One CIDR per line, e.g. 192.168.1.0/24. Empty = everyone."
 msgstr "Webbgränssnitt och SSH. En CIDR per rad, t.ex. 192.168.1.0/24. Tomt = alla."

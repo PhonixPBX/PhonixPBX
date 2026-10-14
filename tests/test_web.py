@@ -426,3 +426,13 @@ def test_update_is_newer(latest, current, newer):
     from phonix.services import update
 
     assert update.is_newer(latest, current) is newer
+
+
+def test_application_logs(client, runtime, tmp_path):
+    path = runtime.log_files["web"] = tmp_path / "web.log"
+    path.write_text("INFO: started <server>\n")
+    login(client)
+    r = client.get("/status/logs?log=web")
+    assert r.status_code == 200
+    assert "INFO: started &lt;server&gt;" in r.text
+    assert "/status/logs?log=monitor" in r.text

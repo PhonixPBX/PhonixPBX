@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-14 17:18+0200\n"
+"POT-Creation-Date: 2026-10-14 18:02+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ja\n"
@@ -1440,6 +1440,9 @@ msgstr "DNS プロバイダーの認証情報が不足しています: %(names)s
 msgid "Mode"
 msgstr "モード"
 
+msgid "Monitor"
+msgstr "モニター"
+
 msgid "Music on hold"
 msgstr "保留音"
 
@@ -2764,6 +2767,9 @@ msgstr "ボイスメール応答メッセージ"
 
 msgid "Voicemail, conferencing and media"
 msgstr "ボイスメール、電話会議、メディア"
+
+msgid "Web application"
+msgstr "Webアプリケーション"
 
 msgid "Web interface and SSH. One CIDR per line, e.g. 192.168.1.0/24. Empty = everyone."
 msgstr "Web インターフェースと SSH。1 行に 1 つの CIDR を記述します（例: 192.168.1.0/24）。空欄 = すべて許可。"

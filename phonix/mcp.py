@@ -28,7 +28,7 @@ from phonix.services.resources import RESOURCES, Resource
 
 SUPPORTED_VERSIONS = ("2025-11-25", "2025-06-18", "2025-03-26")
 LOG_LINES_MAX = 1000
-LOGS = ("asterisk", "system")  # keys of RuntimeConfig.log_files
+LOGS = ("asterisk", "system", "web", "monitor")  # keys of RuntimeConfig.log_files
 
 INSTRUCTIONS = (
     "PhonixPBX is an Asterisk based PBX appliance. Changes made with the create_*, update_*, "

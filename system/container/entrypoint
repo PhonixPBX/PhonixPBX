@@ -220,9 +220,20 @@ nginx -t -q || die "nginx configuration test failed"
 log "starting Asterisk"
 "$LIBEXEC/priv" asterisk-start || log "WARNING: Asterisk did not start, see /var/log/asterisk/messages"
 
-su-exec phonix phonix monitor &
+# web and monitor log to the container output and to /var/log/phonix (Status > Logs);
+# tee ends by itself when the service closes the fifo
+logpipe() { # name
+	rm -f "/run/phonix/$1.log.fifo"
+	mkfifo -m 0600 "/run/phonix/$1.log.fifo" || die "cannot create the $1 log fifo"
+	touch "/var/log/phonix/$1.log" && chown phonix:phonix "/var/log/phonix/$1.log" &&
+		chmod 0640 "/var/log/phonix/$1.log" || die "cannot prepare /var/log/phonix/$1.log"
+	tee -a "/var/log/phonix/$1.log" <"/run/phonix/$1.log.fifo" &
+}
+logpipe monitor
+su-exec phonix phonix monitor >/run/phonix/monitor.log.fifo 2>&1 &
 MONITOR_PID=$!
-TMPDIR="$D/tmp/web" su-exec phonix phonix web --uds "$SOCKET" &
+logpipe web
+TMPDIR="$D/tmp/web" su-exec phonix phonix web --uds "$SOCKET" >/run/phonix/web.log.fifo 2>&1 &
 WEB_PID=$!
 nginx -g 'daemon off;' &
 NGINX_PID=$!

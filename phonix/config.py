@@ -114,6 +114,8 @@ def load() -> RuntimeConfig:
         log_files={
             "asterisk": Path(_env("LOG_ASTERISK", "/var/log/asterisk/messages")),
             "system": Path(_env("LOG_SYSTEM", "/var/log/messages")),
+            "web": Path(_env("LOG_WEB", "/var/log/phonix/web.log")),
+            "monitor": Path(_env("LOG_MONITOR", "/var/log/phonix/monitor.log")),
         },
     )
 

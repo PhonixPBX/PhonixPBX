@@ -13,12 +13,14 @@ import signal
 import sys
 import termios
 import time
+from collections.abc import Iterator
+from pathlib import Path
 
-from phonix import __version__
+from phonix import __version__, config
 from phonix.core import settings as st
 from phonix.core.db import session_scope
 from phonix.services import apply as apply_svc
-from phonix.services import facts, firstboot, platform, privileged, users
+from phonix.services import facts, firstboot, platform, privileged, status, users
 from phonix.services.common import ServiceError, mark_dirty
 from phonix.services.ownership import fix_data_ownership
 
@@ -119,6 +121,54 @@ def _priv(action: str) -> bool:
     return True
 
 
+LOG_TITLES = {"asterisk": "Asterisk", "system": "System", "web": "Web application", "monitor": "Monitor"}
+
+
+def _follow(path: Path, interval: float = 1.0) -> Iterator[str]:
+    """Yield the text appended to ``path`` from now on (like ``tail -f``); starts over when the file shrinks
+    (rotated)."""
+    return _follow_from(path, path.stat().st_size if path.exists() else 0, interval)
+
+
+def _follow_from(path: Path, position: int, interval: float) -> Iterator[str]:
+    while True:
+        try:
+            size = path.stat().st_size
+            if size < position:
+                position = 0
+            if size > position:
+                with path.open("rb") as fh:
+                    fh.seek(position)
+                    chunk = fh.read(256 * 1024)
+                    position += len(chunk)
+                yield chunk.decode("utf-8", "replace")
+                continue
+        except OSError:
+            pass
+        time.sleep(interval)
+
+
+def view_logs() -> None:
+    files = config.get().log_files
+    keys = list(files)
+    for idx, key in enumerate(keys, 1):
+        print(f"  {idx}) {LOG_TITLES.get(key, key)}")
+    choice = _ask("Log")
+    if not choice.isdigit() or not 1 <= int(choice) <= len(keys):
+        return
+    path = files[keys[int(choice) - 1]]
+    if not path.exists():
+        print(f"{path} does not exist.")
+        return
+    print()
+    for line in status.tail(path, 40):
+        print(line)
+    print(f"\n--- following {path}, press Ctrl-C to return ---\n")
+    for text in _follow(path):
+        sys.stdout.write(text)
+        sys.stdout.flush()
+
+
 # if init hasn't stopped the menu by then, the reboot or shutdown failed
 GOING_DOWN_TIMEOUT = 300
 
@@ -167,6 +217,7 @@ MENU = [
     ("Show status", lambda: print(banner())),
     ("Set LAN IP address", set_lan),
     ("Reset administrator password", reset_password),
+    ("View logs", view_logs),
     ("Reboot", lambda: _power("reboot", "Reboot now?", "Rebooting")),
     ("Shut down", lambda: _power("shutdown", "Shut down now?", "Shutting down")),
     (

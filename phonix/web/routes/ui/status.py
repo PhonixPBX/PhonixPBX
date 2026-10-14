@@ -76,7 +76,7 @@ def metrics(user: User = Depends(ui_user)) -> JSONResponse:
     return JSONResponse(data)
 
 
-LOGS = {"asterisk": "Asterisk", "system": N_("System")}
+LOGS = {"asterisk": "Asterisk", "system": N_("System"), "web": N_("Web application"), "monitor": N_("Monitor")}
 
 
 @router.get("/status/logs")
