@@ -4,7 +4,7 @@
 # Builds the "phonix" package from a source tarball of this repository
 # (image/lib/build-apk.sh creates phonix-$pkgver.tar.gz next to this file).
 pkgname=phonix
-pkgver=${PHONIX_PKGVER:-1.1.0}
+pkgver=${PHONIX_PKGVER:-1.2.0}
 pkgrel=0
 pkgdesc="PhonixPBX - Asterisk PBX appliance: web interface and system integration"
 url="https://github.com/PhonixPBX/PhonixPBX"
