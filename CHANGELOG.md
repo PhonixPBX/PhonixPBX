@@ -22,6 +22,8 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   hash (existing hashes are upgraded at the next login), so the web application peaks at
   about 90 MB instead of 150 MB. nginx runs one worker process instead of one per CPU core.
   Containers now need at least 256 MB RAM (512 MB recommended) instead of 512 MB (1 GB).
+- The `pc-x86` image needs a CPU with SSE2. PC Engines ALIX boards (AMD Geode) are not
+  supported; move their AskoziaPBX `config.xml` to supported hardware.
 
 ## [1.2.0] - 2026-10-14
 

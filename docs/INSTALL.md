@@ -6,7 +6,9 @@ PhonixPBX ships as a complete disk image for three boards:
 |---|---|---|
 | `rpi-arm64` | `phonix-<version>-rpi-arm64.img.zst` | Raspberry Pi 3B+, 4, 400, 5, Zero 2 W (64-bit) |
 | `pc-amd64` | `phonix-<version>-pc-amd64.img.zst` | 64-bit PCs, servers and VMs; UEFI or legacy BIOS |
-| `pc-x86` | `phonix-<version>-pc-x86.img.zst` | 32-bit PCs, legacy BIOS only. Best effort. |
+| `pc-x86` | `phonix-<version>-pc-x86.img.zst` | 32-bit PCs with SSE2 (Pentium 4 / Pentium M or newer), legacy BIOS only. Best effort. |
+
+CPUs without SSE2 are not supported: PC Engines ALIX and WRAP (AMD Geode), VIA C3/Eden before the C7, Pentium III and older. Alpine's 32-bit packages need SSE2. On a PC Engines APU (64-bit), use the `pc-amd64` image; its serial console speed (115200) matches the APU default.
 
 Each release also includes a signed update bundle per board, `phonix-<version>-<board>.update` (also for the LXC boards), and a `SHA256SUMS` file.
 
@@ -424,6 +426,8 @@ Some messages look alarming but are expected and harmless:
 5. The import report is shown at the first login. It lists the features that were not carried over, such as analog/ISDN hardware and DAHDI.
 
 You can also import the file later under *System → Backup/Restore*.
+
+An AskoziaPBX box on PC Engines ALIX hardware cannot be reflashed with PhonixPBX (see the hardware list at the top). Copy its `config.xml` and import it on one of the supported boards or in a container, as described above.
 
 ## Building the images yourself
 

@@ -447,6 +447,7 @@ This replaces the old `/cf` and `/offload` scheme and meets the goals of the `st
 
 **`pc-x86` (best effort)**
 - Same as amd64, but BIOS only with i686 `linux-lts`.
+- Requires SSE2: Alpine's x86 packages (Python, Asterisk, nginx, OpenSSL) use SSE2 instructions. Geode-based boards (PC Engines ALIX/WRAP) are not supported.
 - Built in CI and boot-tested in QEMU. It ships only if Alpine x86 still packages `asterisk`; otherwise it is dropped with a note.
 
 **`lxc-amd64`, `lxc-arm64` (system containers)**
