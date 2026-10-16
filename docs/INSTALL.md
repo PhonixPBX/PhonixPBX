@@ -8,7 +8,7 @@ PhonixPBX ships as a complete disk image for three boards:
 | `pc-amd64` | `phonix-<version>-pc-amd64.img.zst` | 64-bit PCs, servers and VMs; UEFI or legacy BIOS |
 | `pc-x86` | `phonix-<version>-pc-x86.img.zst` | 32-bit PCs, legacy BIOS only. Best effort. |
 
-Each release also includes a signed update bundle per board, `phonix-<version>-<board>.update`, and a `SHA256SUMS` file.
+Each release also includes a signed update bundle per board, `phonix-<version>-<board>.update` (also for the LXC boards), and a `SHA256SUMS` file.
 
 PhonixPBX also runs in containers, with the same system inside:
 
@@ -182,10 +182,39 @@ Differences to the appliance:
 
 - **`/data`** is a directory in the container. Put it on a separate volume (examples below), so the container can be replaced on updates while the data stays. The first start initialises it exactly like the data partition: database, TLS certificate, random admin password.
 - **Network, host name and DNS** belong to the container host. PhonixPBX does not write `/etc/network/interfaces`, `/etc/hostname`, `/etc/hosts` or `/etc/resolv.conf` in a container. *System → Network* shows a notice. The LAN interface setting there only picks the address that is used for SIP, and the NAT settings work as usual. The image default is DHCP on `eth0`.
-- **Updates** replace the container. *System → Firmware* says so, and update bundles are refused. To update, create a new container from the new image and attach the old `/data` volume, or restore a backup (*System → Backup/Restore*) into the new container.
+- **Updates** upgrade the packages of the container in place (see [Updating a system container](#updating-a-system-container)). There are no A/B slots and no automatic rollback, so take a snapshot on the container host first.
 - **Factory reset** erases `/data` at the next start of the container.
 - **Console menu** runs on the container console (`/dev/console`) and on `tty1`.
 - **mDNS** (`<hostname>.local`) works when the container is on a bridge of your LAN. It uses the host name from *System → General*, not the container's host name.
+
+### Updating a system container
+
+Each release has an update bundle per container board, `phonix-<version>-lxc-<arch>.update`. It holds every package of the release, so the container ends up with the same packages as a freshly created one, whatever version it ran before.
+
+Containers created from version 1.2.0 or older refuse update bundles. Update them once by replacing the container, as described for each host below. After that, updates work in place.
+
+1. **Take a snapshot first.** A container has no second system slot, so if the new version does not work, nothing switches back by itself. A snapshot of the container lets you go back:
+
+   | Host | Snapshot | Roll back |
+   |---|---|---|
+   | Proxmox VE | `pct snapshot <vmid> before-update` (or *Snapshots → Take Snapshot*) | `pct rollback <vmid> before-update` |
+   | Incus | `incus snapshot create <name> before-update` | `incus snapshot restore <name> before-update` |
+   | LXC | `lxc-snapshot -n <name>` (stop the container first) | `lxc-snapshot -n <name> -r snap0` |
+
+   - On Proxmox VE the storage must support snapshots (LVM-thin, ZFS, Ceph, Btrfs). The snapshot includes the `/data` mount point. On plain directory storage, make a backup instead (`vzdump <vmid>`).
+   - On Incus, `incus snapshot create` does not include a separate storage volume. Snapshot the `/data` volume too: `incus storage volume snapshot create default phonix-data before-update`.
+2. Go to *System → Firmware*, confirm that you took a snapshot, and upload the bundle. Its signature, board and checksums are checked as on the appliance. PhonixPBX then saves a backup of the configuration (*System → Backup/Restore*). After that the packages are upgraded from the bundle; nothing is downloaded.
+3. Restart the container with the button. The new version starts and migrates the database.
+
+What the update changes:
+- PhonixPBX sets up its own system files again, as in a new image: console, nginx, runlevels, the generated `/etc/asterisk`.
+- Packages you installed yourself with `apk add` are removed, because the bundle defines the complete package set.
+- The files the container host manages stay as they are: `/etc/network/interfaces`, `/etc/hostname`, `/etc/hosts`.
+- Where a package brings a new version of a configuration file that you changed, your version stays, and the package's is saved next to it as `*.apk-new`.
+
+The log is in `/var/log/phonix/update.log`.
+
+If the update fails or the new version does not work, roll back to the snapshot. Without a snapshot, create a new container from the previous release and restore the backup that was saved before the update. You can also still update by replacing the container, as described for each host below.
 
 The containers run unprivileged. Give them at least 256 MB RAM (512 MB recommended) and 2 GB disk plus the data volume. For telephones on your LAN, attach the container to a bridge of your LAN so it gets its own address (`eth0`). Phones and providers then reach SIP (5060) and RTP (10000-20000/udp) directly.
 
@@ -215,7 +244,7 @@ The containers run unprivileged. Give them at least 256 MB RAM (512 MB recommend
 
 Proxmox writes `/etc/network/interfaces`, `/etc/hostname`, `/etc/hosts` and `/etc/resolv.conf` at every start from the container settings. PhonixPBX leaves these files to Proxmox, so change the network in Proxmox (`pct set 120 --net0 ...` or the GUI), not in PhonixPBX.
 
-Update to a new version, keeping the data volume:
+To update, take a snapshot (`pct snapshot 120 before-update`) and upload the update bundle under *System → Firmware* (see [Updating a system container](#updating-a-system-container)). You can also replace the container with a new one and keep the data volume:
 
 ```sh
 pct stop 120
@@ -236,7 +265,7 @@ incus console pbx          # console menu (Enter to redraw, Ctrl+a q to leave)
 incus list pbx             # address of the container
 ```
 
-On the default `incusbr0` network the PBX is only reachable from the host. For phones on your LAN, give it a NIC on your LAN, for example `incus config device override pbx eth0 nictype=macvlan parent=enp1s0` (or a bridged NIC). To update, `incus image import` the new version, create a new instance, and attach the same `phonix-data` volume to it. LXD works the same way with `lxc` instead of `incus`.
+On the default `incusbr0` network the PBX is only reachable from the host. For phones on your LAN, give it a NIC on your LAN, for example `incus config device override pbx eth0 nictype=macvlan parent=enp1s0` (or a bridged NIC). To update, snapshot the instance and the data volume and upload the update bundle (see [Updating a system container](#updating-a-system-container)). Or `incus image import` the new version, create a new instance, and attach the same `phonix-data` volume to it. LXD works the same way with `lxc` instead of `incus`.
 
 ### LXC (lxc-create)
 

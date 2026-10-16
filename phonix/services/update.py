@@ -1,18 +1,26 @@
 # SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
 # SPDX-License-Identifier: Apache-2.0
-"""Firmware updates: signed A/B update bundles.
+"""Firmware updates: signed update bundles.
 
 Bundle format (built by image/mkbundle.sh): an uncompressed tar containing
 ``manifest.json`` (``{"version", "board", "files": {name: sha256}}``),
 ``manifest.sig`` (raw ed25519 signature over manifest.json) and the payload
 files. The Python side verifies signature, board and hashes; the root helper
-writes the payload into the inactive slot.
+checks everything again and installs the payload:
+
+- appliance boards: ``rootfs.squashfs``, ``vmlinuz``, ``initramfs`` (and
+  ``boot.tar``) are written into the inactive A/B slot, which gets a trial boot
+- LXC boards: ``packages.tar`` (a signed apk repository with every package of
+  the release), ``world`` and ``image-info`` upgrade the container in place
+  with apk; there is no automatic rollback, so a backup of the configuration is
+  taken first and the UI recommends a snapshot on the container host
 """
 
 from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import re
 import tarfile
 from dataclasses import dataclass
@@ -25,8 +33,10 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
 from phonix import __version__, config
 from phonix.i18n import _
-from phonix.services import platform, privileged
+from phonix.services import backup, platform, privileged
 from phonix.services.common import ServiceError
+
+log = logging.getLogger(__name__)
 
 MAX_BUNDLE = 1024**3
 MAX_MANIFEST = 1024**2
@@ -107,7 +117,7 @@ def _public_key() -> Ed25519PublicKey:
 
 
 def verify_bundle(path: Path) -> BundleInfo:
-    if platform.is_container():
+    if not platform.supports_updates():
         raise ServiceError(_(platform.CONTAINER_UPDATE_HINT))
     if path.stat().st_size > MAX_BUNDLE:
         raise ServiceError(_("Update file is too large"))
@@ -153,6 +163,13 @@ def verify_bundle(path: Path) -> BundleInfo:
 
 def install(path: Path) -> BundleInfo:
     info = verify_bundle(path)
+    if platform.kind() == "lxc":
+        # no A/B slot to fall back to: keep the configuration of the running version
+        try:
+            saved = backup.create()
+        except (OSError, ServiceError) as exc:
+            raise ServiceError(_("Backup before the update failed: %(error)s", error=exc)) from exc
+        log.info("backup before the update to %s: %s", info.version, saved)
     privileged.run("install-update", str(path), timeout=900)
     return info
 

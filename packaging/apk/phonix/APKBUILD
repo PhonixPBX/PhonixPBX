@@ -96,8 +96,13 @@ package() {
 	install -Dm755 "$sys/libexec/priv" "$pkgdir/usr/libexec/phonix/priv"
 	install -Dm644 "$sys/libexec/bootctl.sh" "$pkgdir/usr/libexec/phonix/bootctl.sh"
 	local f
-	for f in verify-manifest notify healthcheck-loop console ssh-root-password; do
+	for f in verify-manifest notify healthcheck-loop console ssh-root-password rootfs-fixup; do
 		install -Dm755 "$sys/libexec/$f" "$pkgdir/usr/libexec/phonix/$f"
+	done
+	# configuration overlay of the images; rootfs-fixup installs it again after
+	# a package update of an LXC container
+	( cd "$sys/rootfs" && find . -type f ) | while read -r f; do
+		install -Dm644 "$sys/rootfs/$f" "$pkgdir/usr/share/phonix/rootfs/$f"
 	done
 	install -Dm400 "$sys/doas.d/phonix.conf" "$pkgdir/etc/doas.d/phonix.conf"
 

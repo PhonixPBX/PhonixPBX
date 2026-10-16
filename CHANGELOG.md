@@ -6,6 +6,16 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- LXC/Incus/Proxmox VE system containers can be updated in place. Each release has an update
+  bundle per container board (`phonix-<version>-lxc-<arch>.update`); uploading it under
+  *System → Firmware* saves a configuration backup and upgrades the packages, and the new
+  version starts when the container restarts. There is no automatic rollback: the page asks
+  you to take a snapshot on the container host first. OCI containers are still updated by
+  replacing the image. Containers created from 1.2.0 or older must be replaced once to get
+  this feature.
+
 ### Changed
 
 - Lower memory use. Web passwords are hashed with argon2id at 19 MiB instead of 64 MiB per

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-14 19:19+0200\n"
+"POT-Creation-Date: 2026-10-16 14:15+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: fr\n"
@@ -134,6 +134,13 @@ msgstr ""
 
 msgid "A certificate request is already running."
 msgstr "Une demande de certificat est déjà en cours."
+
+msgid ""
+"A container has no second system slot: if the new version does not work, there is no automatic rollback. Take a "
+"snapshot on the container host before you update, so you can go back to it."
+msgstr ""
+"Un conteneur n'a pas de second slot système : si la nouvelle version ne fonctionne pas, il n'y a pas de retour "
+"arrière automatique. Prenez un instantané sur l'hôte du conteneur avant la mise à jour afin de pouvoir y revenir."
 
 msgid "A custom greeting played before callers leave a message (replaces the standard \"unavailable\" message)."
 msgstr ""
@@ -427,6 +434,10 @@ msgid "Backup %(name)s created."
 msgstr "Sauvegarde %(name)s créée."
 
 #, python-format
+msgid "Backup before the update failed: %(error)s"
+msgstr "La sauvegarde avant la mise à jour a échoué : %(error)s"
+
+#, python-format
 msgid "Backup from %(created)s"
 msgstr "Sauvegarde du %(created)s"
 
@@ -685,13 +696,6 @@ msgstr "Créer"
 
 msgid "Create a SIP phone and register your desk phone or softphone with it."
 msgstr "Créez un téléphone SIP et enregistrez-y votre téléphone de bureau ou votre softphone."
-
-msgid ""
-"Create a new container from the new template and attach the same <code>/data</code> volume, or restore a backup "
-"(<em>System &rarr; Backup/Restore</em>) into the new container."
-msgstr ""
-"Créez un nouveau conteneur à partir du nouveau modèle et rattachez le même volume <code>/data</code>, ou restaurez "
-"une sauvegarde (<em>Système &rarr; Sauvegarde/Restauration</em>) dans le nouveau conteneur."
 
 msgid "Create a token to use the REST API (/api/v1) from scripts."
 msgstr "Créez un jeton pour utiliser l'API REST (/api/v1) depuis des scripts."
@@ -1203,6 +1207,9 @@ msgstr "Nom d'hôte ou adresse IP de l'opérateur."
 msgid "Hungary"
 msgstr "Hongrie"
 
+msgid "I have taken a snapshot of this container"
+msgstr "J'ai pris un instantané de ce conteneur"
+
 msgid "IAX"
 msgstr "IAX"
 
@@ -1220,6 +1227,9 @@ msgstr "Opérateur IAX"
 
 msgid "IP address"
 msgstr "Adresse IP"
+
+msgid "If the new version does not work, roll back to the snapshot you took on the container host."
+msgstr "Si la nouvelle version ne fonctionne pas, revenez à l'instantané pris sur l'hôte du conteneur."
 
 msgid "Import"
 msgstr "Importer"
@@ -1967,13 +1977,6 @@ msgid "PhonixPBX runs in a container, so firmware update bundles do not apply he
 msgstr "PhonixPBX s'exécute dans un conteneur : les paquets de mise à jour du micrologiciel ne s'appliquent donc pas ici."
 
 msgid ""
-"PhonixPBX runs in a container: firmware update bundles do not apply. Update by replacing the container with a newer "
-"image and keeping /data."
-msgstr ""
-"PhonixPBX s'exécute dans un conteneur : les paquets de mise à jour du micrologiciel ne s'appliquent pas. Mettez à "
-"jour en remplaçant le conteneur par une image plus récente tout en conservant /data."
-
-msgid ""
 "PhonixPBX runs in a container: the address, gateway and DNS servers of the container are configured on the container "
 "host and the settings for the LAN interface below are not applied. The interface selects the address that is used for"
 " SIP; the NAT settings apply as usual."
@@ -1981,6 +1984,13 @@ msgstr ""
 "PhonixPBX s'exécute dans un conteneur : l'adresse, la passerelle et les serveurs DNS du conteneur sont configurés sur"
 " l'hôte du conteneur et les réglages de l'interface LAN ci-dessous ne sont pas appliqués. L'interface détermine "
 "l'adresse utilisée pour SIP ; les réglages NAT s'appliquent normalement."
+
+msgid ""
+"PhonixPBX runs in an OCI container: firmware update bundles do not apply. Update by replacing the container with a "
+"newer image and keeping /data."
+msgstr ""
+"PhonixPBX s'exécute dans un conteneur OCI : les paquets de mise à jour du micrologiciel ne s'appliquent pas. Mettez à"
+" jour en remplaçant le conteneur par une image plus récente et en conservant /data."
 
 msgid "Pickup"
 msgstr "Interception"
@@ -2480,6 +2490,9 @@ msgstr "Secret TSIG"
 msgid "Taiwan"
 msgstr "Taïwan"
 
+msgid "Take a snapshot of the container first"
+msgstr "Prenez d'abord un instantané du conteneur"
+
 msgid "Telephony"
 msgstr "Téléphonie"
 
@@ -2793,6 +2806,15 @@ msgstr ""
 "configuration et les données sont conservées. Si le nouveau micrologiciel ne démarre pas, le précédent est démarré "
 "automatiquement."
 
+msgid ""
+"Upload a signed <code>.update</code> bundle for this board. The packages of the container are upgraded in place; the "
+"configuration and data are kept. A backup of the configuration is saved first (<em>System &rarr; "
+"Backup/Restore</em>)."
+msgstr ""
+"Envoyez un paquet <code>.update</code> signé pour cette carte. Les paquets du conteneur sont mis à niveau sur place ;"
+" la configuration et les données sont conservées. Une sauvegarde de la configuration est enregistrée au préalable "
+"(<em>Système &rarr; Sauvegarde/Restauration</em>)."
+
 msgid "Upload certificate"
 msgstr "Envoyer un certificat"
 
@@ -2890,6 +2912,14 @@ msgstr "La version %(latest)s est disponible (version actuelle : %(version)s). 
 #, python-format
 msgid "Version <strong>%(version)s</strong> has been installed into the inactive slot."
 msgstr "La version <strong>%(version)s</strong> a été installée dans le slot inactif."
+
+#, python-format
+msgid ""
+"Version <strong>%(version)s</strong> has been installed. Restart the container to start it; until then the previous "
+"version keeps running."
+msgstr ""
+"La version <strong>%(version)s</strong> a été installée. Redémarrez le conteneur pour la lancer ; d'ici là, la "
+"version précédente continue de fonctionner."
 
 msgid "Voice prompts"
 msgstr "Annonces vocales"
@@ -3114,6 +3144,13 @@ msgstr "l'un après l'autre"
 msgid "open"
 msgstr "ouvert"
 
+msgid ""
+"or <em>Snapshots &rarr; Take Snapshot</em> in the Proxmox VE web interface; roll back with <code>pct rollback "
+"&lt;vmid&gt; before-update</code>"
+msgstr ""
+"ou <em>Snapshots &rarr; Take Snapshot</em> dans l'interface web de Proxmox VE ; retour arrière avec <code>pct "
+"rollback &lt;vmid&gt; before-update</code>"
+
 #, python-format
 msgid "phone %(callerid)s <%(extension)s>"
 msgstr "le téléphone %(callerid)s <%(extension)s>"
@@ -3164,6 +3201,13 @@ msgstr "requis lorsque la source de l'identifiant d'appelant est un texte fixe"
 
 msgid "ring all"
 msgstr "tous simultanément"
+
+msgid ""
+"roll back with <code>incus snapshot restore &lt;name&gt; before-update</code>; snapshot a separate <code>/data</code>"
+" volume as well"
+msgstr ""
+"retour arrière avec <code>incus snapshot restore &lt;name&gt; before-update</code> ; prenez aussi un instantané d'un "
+"volume <code>/data</code> séparé"
 
 msgid "running"
 msgstr "en marche"

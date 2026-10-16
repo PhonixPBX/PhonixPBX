@@ -1,0 +1,198 @@
+#!/bin/sh
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
+# Turn an Alpine root file system with the PhonixPBX packages into the
+# PhonixPBX system: configuration overlay, console, nginx, symlinks to /data,
+# runlevels.
+#
+#   rootfs-fixup <root> <board> <version>
+#
+# Runs at image build time (image/lib/build-rootfs.sh, PHONIX_FIXUP_BUILD=1)
+# and in an LXC system container after a package update (priv install-update,
+# root /). The script is idempotent: everything it changes is set up again from
+# the package contents, so an apk upgrade that brought back package defaults or
+# left *.apk-new files ends up in the same state as a fresh image.
+#
+# Environment (build time; at update time the defaults apply):
+#   PHONIX_FIXUP_BUILD=1     fresh root file system: install every overlay file
+#   PHONIX_ROOTFS_SRC        overlay directory (default <root>/usr/share/phonix/rootfs)
+#   PHONIX_SERIAL_TTYS       serial consoles for the console menu (appliance)
+#   PHONIX_CLOCK_SERVICE     hwclock or swclock (appliance)
+#   PHONIX_APK_REPOS         /etc/apk/repositories content (default: keep the
+#                            mirror, follow the Alpine branch of the root)
+set -eu
+
+die() {
+	echo "rootfs-fixup: $*" >&2
+	exit 1
+}
+
+[ $# -eq 3 ] || die "usage: rootfs-fixup <root> <board> <version>"
+R=${1%/}
+BOARD=$2
+VERSION=$3
+[ -d "$R/etc" ] || die "$1 is not a root file system"
+case "$BOARD" in '' | *[!A-Za-z0-9_-]*) die "invalid board '$BOARD'" ;; esac
+case "$VERSION" in '' | *[!A-Za-z0-9._+~-]*) die "invalid version '$VERSION'" ;; esac
+BUILD=${PHONIX_FIXUP_BUILD:-0}
+SRC=${PHONIX_ROOTFS_SRC:-$R/usr/share/phonix/rootfs}
+[ -d "$SRC/etc" ] || die "no overlay in $SRC"
+CONTAINER=0
+case "$BOARD" in lxc-*) CONTAINER=1 ;; esac
+
+# --- nginx ------------------------------------------------------------------------------
+# the package's nginx.conf (a newer one after an update), one worker: it serves
+# the admin UI only; "auto" starts one per CPU core (RAM)
+[ -f "$R/etc/nginx/nginx.conf.apk-new" ] && mv -f "$R/etc/nginx/nginx.conf.apk-new" "$R/etc/nginx/nginx.conf"
+sed -i 's/^worker_processes .*/worker_processes 1;/' "$R/etc/nginx/nginx.conf"
+grep -q '^worker_processes 1;' "$R/etc/nginx/nginx.conf" || die "nginx.conf: worker_processes not set"
+rm -f "$R/etc/nginx/http.d/default.conf" "$R/etc/nginx/http.d/default.conf.apk-new"
+
+# --- configuration overlay (system/rootfs) ----------------------------------------------------
+# files the container host or phonix apply own: installed into a fresh root
+# file system only (Proxmox VE rewrites interfaces, Incus hostname/hosts,
+# phonix apply nftables.nft)
+host_owned() {
+	case "$1" in
+	./etc/network/interfaces | ./etc/hostname | ./etc/hosts | ./etc/nftables.nft) return 0 ;;
+	esac
+	return 1
+}
+FRESH_INTERFACES=0
+(cd "$SRC" && find . -mindepth 1 ! -type d) | while read -r _p; do
+	rm -f "$R/$_p.apk-new"
+	if [ "$BUILD" != 1 ] && host_owned "$_p" && [ -e "$R/$_p" ]; then
+		continue
+	fi
+	mkdir -p "$(dirname "$R/$_p")"
+	cp -a "$SRC/$_p" "$R/$_p"
+	# cp -a keeps the checkout's modes (group writable with umask 002)
+	[ -L "$R/$_p" ] || chmod go-w "$R/$_p"
+done
+[ "$BUILD" = 1 ] && FRESH_INTERFACES=1
+chmod 755 "$R/"
+chmod 644 "$R/etc/inittab" "$R/etc/fstab"
+for t in ${PHONIX_SERIAL_TTYS:-}; do
+	sed -i "/^::ctrlaltdel/i ::respawn:/usr/libexec/phonix/console $t" "$R/etc/inittab"
+done
+if [ "$CONTAINER" = 1 ]; then
+	# container console (incus console, lxc-console -t 0, pct console with
+	# cmode=console); tty1 stays for lxc-console / pct console (cmode=tty)
+	sed -i "/^::ctrlaltdel/i ::respawn:/usr/libexec/phonix/console console" "$R/etc/inittab"
+	sed -i 's/^# \/etc\/inittab - PhonixPBX appliance/# \/etc\/inittab - PhonixPBX system container/' "$R/etc/inittab"
+	# Proxmox VE appends "ttyN::respawn:/sbin/getty" lines to the inittab of
+	# Alpine containers at every start; a getty on tty1 next to the console
+	# menu makes both fight over the terminal
+	: >"$R/etc/.pve-ignore.inittab"
+	if [ "$FRESH_INTERFACES" = 1 ]; then
+		sed -i '1s/.*/# Default for system containers: DHCP on eth0. Not managed by PhonixPBX;\n# Proxmox VE rewrites this file from the container settings./' \
+			"$R/etc/network/interfaces"
+	fi
+	cat >"$R/etc/fstab" <<'FSTAB'
+# PhonixPBX system container: the root file system and /data are set up by
+# the container host (LXC, Incus, Proxmox VE).
+FSTAB
+	cat >"$R/etc/motd" <<'MOTD'
+
+PhonixPBX system container. Configuration lives in /data/phonix.db; use the
+web interface or the "phonix" command. Files that PhonixPBX generates (e.g.
+/etc/asterisk) are rewritten at every start. Network and host name are
+configured on the container host.
+
+MOTD
+fi
+rm -f "$R/etc/network/interfaces.apk-new" "$R/etc/hostname.apk-new" "$R/etc/hosts.apk-new"
+
+# --- Asterisk: the configuration is generated at boot (phonix apply) ---------------------------
+# the asterisk package brings its sample configuration back with every update
+rm -rf "$R/etc/asterisk"
+install -d -m 0750 "$R/etc/asterisk"
+chown 200:102 "$R/etc/asterisk"
+install -d -m 0750 -o 200 -g 102 "$R/etc/phonix"
+mkdir -p "$R/var/lib/asterisk/keys"
+for _d in "$R/var/lib/asterisk" "$R/var/spool/asterisk" "$R/var/log/asterisk"; do
+	# container: /var/spool/asterisk is the symlink to /data/spool
+	[ -L "$_d" ] || [ ! -d "$_d" ] || chown -R 101:102 "$_d"
+done
+
+# --- board, os-release ---------------------------------------------------------------------
+echo "$BOARD" >"$R/etc/phonix/board"
+chmod 644 "$R/etc/phonix/board"
+[ -f "$R/etc/os-release.apk-new" ] && mv -f "$R/etc/os-release.apk-new" "$R/etc/os-release"
+sed -i "s/^PRETTY_NAME=.*/PRETTY_NAME=\"PhonixPBX $VERSION (Alpine Linux $(cat "$R/etc/alpine-release"))\"/" \
+	"$R/etc/os-release"
+
+# --- persistent state on /data -------------------------------------------------------------
+# a directory the package manager put where the symlink to /data belongs:
+# moved aside if it holds files, so nothing is lost
+to_link() { # path target
+	if [ -d "$1" ] && [ ! -L "$1" ]; then
+		if [ -n "$(find "$1" ! -type d | head -n 1)" ]; then
+			rm -rf "$1.phonix-old"
+			mv "$1" "$1.phonix-old"
+			echo "rootfs-fixup: moved ${1#"$R"} to ${1#"$R"}.phonix-old" >&2
+		else
+			rm -rf "$1"
+		fi
+	fi
+	ln -sfn "$2" "$1"
+}
+mkdir -p "$R/data" "$R/media/boot"
+[ "$CONTAINER" = 1 ] || mkdir -p "$R/media/root-ro" "$R/media/overlay"
+if [ "$CONTAINER" = 1 ]; then
+	# no bind mount needed: voicemail and other spool data live on /data
+	to_link "$R/var/spool/asterisk" /data/spool
+fi
+to_link "$R/etc/dropbear" /data/ssh/dropbear
+install -d -m 0700 "$R/root/.ssh"
+ln -sfn /data/ssh/authorized_keys "$R/root/.ssh/authorized_keys"
+
+# --- apk repositories -------------------------------------------------------------------------
+if [ -n "${PHONIX_APK_REPOS:-}" ]; then
+	printf '%s\n' "$PHONIX_APK_REPOS" >"$R/etc/apk/repositories"
+elif [ -f "$R/etc/apk/repositories" ]; then
+	# same mirror, Alpine branch of the (updated) root file system
+	_branch=v$(cut -d. -f1,2 "$R/etc/alpine-release")
+	sed -i -E "s#/v[0-9]+\.[0-9]+/#/$_branch/#" "$R/etc/apk/repositories"
+fi
+rm -f "$R/etc/apk/repositories.apk-new"
+
+# --- services -------------------------------------------------------------------------------
+rl() { # runlevel service...
+	_lvl=$1
+	shift
+	mkdir -p "$R/etc/runlevels/$_lvl"
+	for _s in "$@"; do
+		[ -e "$R/etc/init.d/$_s" ] || die "missing service $_s"
+		ln -sfn "/etc/init.d/$_s" "$R/etc/runlevels/$_lvl/$_s"
+	done
+}
+# dropbear and phonix-mdns are linked by phonix-apply at every boot
+rm -rf "$R/etc/runlevels"
+if [ "$CONTAINER" = 1 ]; then
+	# no devices, modules, sysctl, kernel log, hardware clock, ACPI or entropy
+	# seeding (the host's business); time comes from the host (no chronyd);
+	# no A/B slots (no phonix-healthcheck); the host mounts the file systems
+	# and sets the host name (lxc.uts.name)
+	mkdir -p "$R/etc/runlevels/sysinit"
+	rl boot bootmisc syslog phonix-firstboot phonix-apply nftables networking
+	rl default crond asterisk phonix-web nginx phonix-monitor
+	rl shutdown killprocs savecache
+else
+	rl sysinit devfs dmesg mdev hwdrivers
+	# shellcheck disable=SC2086
+	rl boot modules sysctl hostname bootmisc syslog klogd seedrng ${PHONIX_CLOCK_SERVICE:-} \
+		phonix-firstboot phonix-apply nftables networking
+	rl default acpid crond chronyd asterisk phonix-web nginx phonix-monitor phonix-healthcheck
+	rl shutdown killprocs savecache mount-ro
+fi
+mkdir -p "$R/etc/runlevels/nonetwork"
+
+# --- trim -------------------------------------------------------------------------------------
+rm -rf "$R/var/cache/apk"/* "$R/usr/share/man" "$R/usr/share/doc" "$R/usr/share/info"
+
+# configuration files of other packages that changed in both the package and
+# here: the running version stays, the package's is next to it
+_left=$(find "$R/etc" -name '*.apk-new' 2>/dev/null | sed "s#^$R##" | sort | tr '\n' ' ')
+[ -z "$_left" ] || echo "rootfs-fixup: kept the local version of: $_left" >&2
+exit 0

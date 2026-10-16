@@ -30,17 +30,37 @@
     </div></div>
   </div>
   <div class="col-lg-6">
-    {% if info.platform in ("lxc", "oci") %}
+    {% if info.platform == "oci" %}
     <div class="card"><div class="card-body">
       <h3 class="card-title">{{ _("Updates: replace the container image") }}</h3>
       <p class="text-secondary mb-2">{{ _("PhonixPBX runs in a container, so firmware update bundles do not apply here.") }}</p>
       <p class="text-secondary mb-0">
-      {% if info.platform == "oci" %}
         {{ _("Pull the new image and recreate the container with the same <code>/data</code> volume (for example <code>docker compose pull &amp;&amp; docker compose up -d</code>).") }}
-      {% else %}
-        {{ _("Create a new container from the new template and attach the same <code>/data</code> volume, or restore a backup (<em>System &rarr; Backup/Restore</em>) into the new container.") }}
-      {% endif %}
       </p>
+    </div></div>
+    {% elif info.platform == "lxc" %}
+    <div class="card"><div class="card-body">
+      <h3 class="card-title">{{ _("Install an update") }}</h3>
+      <p class="text-secondary">{{ _("Upload a signed <code>.update</code> bundle for this board. The packages of the container are upgraded in place; the configuration and data are kept. A backup of the configuration is saved first (<em>System &rarr; Backup/Restore</em>).") }}</p>
+      <div class="alert alert-warning" role="alert">
+        <h4 class="alert-title">{{ _("Take a snapshot of the container first") }}</h4>
+        <p class="text-secondary">{{ _("A container has no second system slot: if the new version does not work, there is no automatic rollback. Take a snapshot on the container host before you update, so you can go back to it.") }}</p>
+        <dl class="row mb-0">
+          <dt class="col-sm-3">Proxmox VE</dt>
+          <dd class="col-sm-9"><code>pct snapshot &lt;vmid&gt; before-update</code><br><span class="text-secondary">{{ _("or <em>Snapshots &rarr; Take Snapshot</em> in the Proxmox VE web interface; roll back with <code>pct rollback &lt;vmid&gt; before-update</code>") }}</span></dd>
+          <dt class="col-sm-3">Incus</dt>
+          <dd class="col-sm-9"><code>incus snapshot create &lt;name&gt; before-update</code><br><span class="text-secondary">{{ _("roll back with <code>incus snapshot restore &lt;name&gt; before-update</code>; snapshot a separate <code>/data</code> volume as well") }}</span></dd>
+          <dt class="col-sm-3">LXC</dt>
+          <dd class="col-sm-9"><code>lxc-snapshot -n &lt;name&gt;</code></dd>
+        </dl>
+      </div>
+      <label class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="snapshot-confirm">
+        <span class="form-check-label">{{ _("I have taken a snapshot of this container") }}</span>
+      </label>
+      <form action="/system/firmware/upload" class="dropzone" data-dropzone data-requires="#snapshot-confirm" data-param="file" data-max-mb="1024" data-accept=".update" data-target="#firmware-result"
+            data-message="{{ _("Drop the update file here or click to upload") }}"></form>
+      <div id="firmware-result"></div>
     </div></div>
     {% else %}
     <div class="card"><div class="card-body">

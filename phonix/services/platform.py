@@ -8,8 +8,10 @@ the LXC/Incus system container images and ``oci-<arch>`` for the OCI
 (Docker/Podman) image. Without the file (development, tests) it is ``dev``.
 
 In a container the host (Proxmox, Incus, LXC, Docker, ...) owns the network
-configuration and the host name, there are no A/B system slots, and the
-system is updated by replacing the container image.
+configuration and the host name and there are no A/B system slots. An LXC
+system container is updated in place with a package bundle (no automatic
+rollback: a host snapshot is recommended); an OCI container is updated by
+replacing the container image.
 """
 
 from __future__ import annotations
@@ -47,7 +49,12 @@ def kind(name: str | None = None) -> str:
     return "appliance"
 
 
+def supports_updates(name: str | None = None) -> bool:
+    """Firmware update bundles apply to the appliance (A/B slots) and LXC (packages), not to OCI."""
+    return kind(name) != "oci"
+
+
 CONTAINER_UPDATE_HINT = N_(
-    "PhonixPBX runs in a container: firmware update bundles do not apply. "
+    "PhonixPBX runs in an OCI container: firmware update bundles do not apply. "
     "Update by replacing the container with a newer image and keeping /data."
 )

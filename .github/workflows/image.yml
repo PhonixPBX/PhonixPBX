@@ -109,9 +109,9 @@ jobs:
           rm rootfs.lst
         env:
           BOARD: ${{ matrix.board }}
-      - name: Boot test of the rootfs as a system container (docker)
+      - name: Boot and package update test of the rootfs as a system container (docker)
         if: matrix.board == 'lxc-amd64'
-        run: CONTAINER=docker image/test-lxc.sh out/phonix-*-lxc-amd64.tar.xz
+        run: CONTAINER=docker image/test-lxc.sh --update out/phonix-*-lxc-amd64.update out/phonix-*-lxc-amd64.tar.xz
       - name: Enable KVM
         if: matrix.board == 'pc-amd64' || matrix.board == 'pc-x86'
         run: |
@@ -139,7 +139,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: phonix-${{ matrix.board }}
-          # disk image + update bundle, or (lxc-*) rootfs, lxc metadata and Incus image
+          # disk image + update bundle, or (lxc-*) rootfs, lxc metadata, Incus image and update bundle
           path: |
             out/phonix-*-${{ matrix.board }}.img.zst
             out/phonix-*-${{ matrix.board }}.update

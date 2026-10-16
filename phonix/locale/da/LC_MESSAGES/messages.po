@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-14 19:19+0200\n"
+"POT-Creation-Date: 2026-10-16 14:15+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: da\n"
@@ -134,6 +134,13 @@ msgstr ""
 
 msgid "A certificate request is already running."
 msgstr "En certifikatanmodning kører allerede."
+
+msgid ""
+"A container has no second system slot: if the new version does not work, there is no automatic rollback. Take a "
+"snapshot on the container host before you update, so you can go back to it."
+msgstr ""
+"En container har ingen anden systemplads: hvis den nye version ikke virker, rulles der ikke automatisk tilbage. Tag "
+"et snapshot på containerværten før opdateringen, så du kan vende tilbage til det."
 
 msgid "A custom greeting played before callers leave a message (replaces the standard \"unavailable\" message)."
 msgstr ""
@@ -427,6 +434,10 @@ msgid "Backup %(name)s created."
 msgstr "Backup %(name)s oprettet."
 
 #, python-format
+msgid "Backup before the update failed: %(error)s"
+msgstr "Backup før opdateringen mislykkedes: %(error)s"
+
+#, python-format
 msgid "Backup from %(created)s"
 msgstr "Backup fra %(created)s"
 
@@ -685,13 +696,6 @@ msgstr "Opret"
 
 msgid "Create a SIP phone and register your desk phone or softphone with it."
 msgstr "Opret en SIP-telefon, og registrer din bordtelefon eller softphone på den."
-
-msgid ""
-"Create a new container from the new template and attach the same <code>/data</code> volume, or restore a backup "
-"(<em>System &rarr; Backup/Restore</em>) into the new container."
-msgstr ""
-"Opret en ny container fra den nye skabelon, og tilknyt den samme <code>/data</code>-volumen, eller gendan en backup "
-"(<em>System &rarr; Backup/gendannelse</em>) i den nye container."
 
 msgid "Create a token to use the REST API (/api/v1) from scripts."
 msgstr "Opret et token for at bruge REST API'et (/api/v1) fra scripts."
@@ -1201,6 +1205,9 @@ msgstr "Udbyderens værtsnavn eller IP-adresse."
 msgid "Hungary"
 msgstr "Ungarn"
 
+msgid "I have taken a snapshot of this container"
+msgstr "Jeg har taget et snapshot af denne container"
+
 msgid "IAX"
 msgstr "IAX"
 
@@ -1218,6 +1225,9 @@ msgstr "IAX-udbyder"
 
 msgid "IP address"
 msgstr "IP-adresse"
+
+msgid "If the new version does not work, roll back to the snapshot you took on the container host."
+msgstr "Hvis den nye version ikke virker, så rul tilbage til det snapshot, du tog på containerværten."
 
 msgid "Import"
 msgstr "Importer"
@@ -1956,13 +1966,6 @@ msgid "PhonixPBX runs in a container, so firmware update bundles do not apply he
 msgstr "PhonixPBX kører i en container, så firmwareopdateringspakker gælder ikke her."
 
 msgid ""
-"PhonixPBX runs in a container: firmware update bundles do not apply. Update by replacing the container with a newer "
-"image and keeping /data."
-msgstr ""
-"PhonixPBX kører i en container: firmwareopdateringspakker gælder ikke. Opdater ved at erstatte containeren med et "
-"nyere image og beholde /data."
-
-msgid ""
 "PhonixPBX runs in a container: the address, gateway and DNS servers of the container are configured on the container "
 "host and the settings for the LAN interface below are not applied. The interface selects the address that is used for"
 " SIP; the NAT settings apply as usual."
@@ -1970,6 +1973,13 @@ msgstr ""
 "PhonixPBX kører i en container: containerens adresse, gateway og DNS-servere konfigureres på containerværten, og "
 "indstillingerne for LAN-interfacet nedenfor anvendes ikke. Interfacet bestemmer den adresse, der bruges til SIP; NAT-"
 "indstillingerne gælder som normalt."
+
+msgid ""
+"PhonixPBX runs in an OCI container: firmware update bundles do not apply. Update by replacing the container with a "
+"newer image and keeping /data."
+msgstr ""
+"PhonixPBX kører i en OCI-container: firmware-opdateringspakker gælder ikke. Opdater ved at erstatte containeren med "
+"et nyere image og beholde /data."
 
 msgid "Pickup"
 msgstr "Overtagelse"
@@ -2467,6 +2477,9 @@ msgstr "TSIG-hemmelighed"
 msgid "Taiwan"
 msgstr "Taiwan"
 
+msgid "Take a snapshot of the container first"
+msgstr "Tag først et snapshot af containeren"
+
 msgid "Telephony"
 msgstr "Telefoni"
 
@@ -2775,6 +2788,15 @@ msgstr ""
 "Upload en signeret <code>.update</code>-pakke til dette board. Den skrives til den inaktive systemplads; "
 "konfigurationen og data bevares. Hvis den nye firmware ikke starter, startes den forrige automatisk."
 
+msgid ""
+"Upload a signed <code>.update</code> bundle for this board. The packages of the container are upgraded in place; the "
+"configuration and data are kept. A backup of the configuration is saved first (<em>System &rarr; "
+"Backup/Restore</em>)."
+msgstr ""
+"Upload en signeret <code>.update</code>-pakke til dette board. Containerens pakker opgraderes på stedet; "
+"konfigurationen og data bevares. Først gemmes en backup af konfigurationen (<em>System &rarr; "
+"Backup/gendannelse</em>)."
+
 msgid "Upload certificate"
 msgstr "Upload certifikat"
 
@@ -2870,6 +2892,14 @@ msgstr "Version %(latest)s er tilgængelig (kører %(version)s). Download: %(url
 #, python-format
 msgid "Version <strong>%(version)s</strong> has been installed into the inactive slot."
 msgstr "Version <strong>%(version)s</strong> er installeret i den inaktive plads."
+
+#, python-format
+msgid ""
+"Version <strong>%(version)s</strong> has been installed. Restart the container to start it; until then the previous "
+"version keeps running."
+msgstr ""
+"Version <strong>%(version)s</strong> er installeret. Genstart containeren for at starte den; indtil da kører den "
+"forrige version videre."
 
 msgid "Voice prompts"
 msgstr "Talebeskeder"
@@ -3093,6 +3123,13 @@ msgstr "én efter én"
 msgid "open"
 msgstr "åben"
 
+msgid ""
+"or <em>Snapshots &rarr; Take Snapshot</em> in the Proxmox VE web interface; roll back with <code>pct rollback "
+"&lt;vmid&gt; before-update</code>"
+msgstr ""
+"eller <em>Snapshots &rarr; Take Snapshot</em> i Proxmox VE's webinterface; rul tilbage med <code>pct rollback "
+"&lt;vmid&gt; before-update</code>"
+
 #, python-format
 msgid "phone %(callerid)s <%(extension)s>"
 msgstr "telefon %(callerid)s <%(extension)s>"
@@ -3143,6 +3180,13 @@ msgstr "påkrævet, når kilden til opkalds-ID er en fast tekst"
 
 msgid "ring all"
 msgstr "ring til alle"
+
+msgid ""
+"roll back with <code>incus snapshot restore &lt;name&gt; before-update</code>; snapshot a separate <code>/data</code>"
+" volume as well"
+msgstr ""
+"rul tilbage med <code>incus snapshot restore &lt;name&gt; before-update</code>; tag også et snapshot af en separat "
+"<code>/data</code>-volumen"
 
 msgid "running"
 msgstr "kører"

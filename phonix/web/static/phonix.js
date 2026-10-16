@@ -84,6 +84,17 @@
           headers: { "X-CSRF-Token": csrf() },
           dictDefaultMessage: form.dataset.message || "Drop a file here or click to upload",
         });
+        // data-requires="#checkbox": uploads stay disabled until it is ticked
+        const gate = form.dataset.requires && document.querySelector(form.dataset.requires);
+        if (gate) {
+          const sync = () => {
+            if (gate.checked) dz.enable();
+            else dz.disable();
+            form.classList.toggle("opacity-50", !gate.checked);
+          };
+          gate.addEventListener("change", sync);
+          sync();
+        }
         dz.on("success", (file, response) => {
           const target = document.querySelector(form.dataset.target || "#upload-result");
           if (target) {

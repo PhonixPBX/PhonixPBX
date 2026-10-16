@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-14 19:19+0200\n"
+"POT-Creation-Date: 2026-10-16 14:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -130,6 +130,12 @@ msgid ""
 msgstr ""
 
 msgid "A certificate request is already running."
+msgstr ""
+
+msgid ""
+"A container has no second system slot: if the new version does not work, "
+"there is no automatic rollback. Take a snapshot on the container host "
+"before you update, so you can go back to it."
 msgstr ""
 
 msgid ""
@@ -428,6 +434,10 @@ msgid "Backup %(name)s created."
 msgstr ""
 
 #, python-format
+msgid "Backup before the update failed: %(error)s"
+msgstr ""
+
+#, python-format
 msgid "Backup from %(created)s"
 msgstr ""
 
@@ -687,12 +697,6 @@ msgid "Create"
 msgstr ""
 
 msgid "Create a SIP phone and register your desk phone or softphone with it."
-msgstr ""
-
-msgid ""
-"Create a new container from the new template and attach the same "
-"<code>/data</code> volume, or restore a backup (<em>System &rarr; "
-"Backup/Restore</em>) into the new container."
 msgstr ""
 
 msgid "Create a token to use the REST API (/api/v1) from scripts."
@@ -1192,6 +1196,9 @@ msgstr ""
 msgid "Hungary"
 msgstr ""
 
+msgid "I have taken a snapshot of this container"
+msgstr ""
+
 msgid "IAX"
 msgstr ""
 
@@ -1208,6 +1215,11 @@ msgid "IAX provider"
 msgstr ""
 
 msgid "IP address"
+msgstr ""
+
+msgid ""
+"If the new version does not work, roll back to the snapshot you took on "
+"the container host."
 msgstr ""
 
 msgid "Import"
@@ -1966,15 +1978,15 @@ msgid ""
 msgstr ""
 
 msgid ""
-"PhonixPBX runs in a container: firmware update bundles do not apply. "
-"Update by replacing the container with a newer image and keeping /data."
-msgstr ""
-
-msgid ""
 "PhonixPBX runs in a container: the address, gateway and DNS servers of "
 "the container are configured on the container host and the settings for "
 "the LAN interface below are not applied. The interface selects the "
 "address that is used for SIP; the NAT settings apply as usual."
+msgstr ""
+
+msgid ""
+"PhonixPBX runs in an OCI container: firmware update bundles do not apply."
+" Update by replacing the container with a newer image and keeping /data."
 msgstr ""
 
 msgid "Pickup"
@@ -2465,6 +2477,9 @@ msgstr ""
 msgid "Taiwan"
 msgstr ""
 
+msgid "Take a snapshot of the container first"
+msgstr ""
+
 msgid "Telephony"
 msgstr ""
 
@@ -2772,6 +2787,13 @@ msgid ""
 " new firmware fails to start, the previous one is booted automatically."
 msgstr ""
 
+msgid ""
+"Upload a signed <code>.update</code> bundle for this board. The packages "
+"of the container are upgraded in place; the configuration and data are "
+"kept. A backup of the configuration is saved first (<em>System &rarr; "
+"Backup/Restore</em>)."
+msgstr ""
+
 msgid "Upload certificate"
 msgstr ""
 
@@ -2874,6 +2896,12 @@ msgstr ""
 msgid ""
 "Version <strong>%(version)s</strong> has been installed into the inactive"
 " slot."
+msgstr ""
+
+#, python-format
+msgid ""
+"Version <strong>%(version)s</strong> has been installed. Restart the "
+"container to start it; until then the previous version keeps running."
 msgstr ""
 
 msgid "Voice prompts"
@@ -3100,6 +3128,12 @@ msgstr ""
 msgid "open"
 msgstr ""
 
+msgid ""
+"or <em>Snapshots &rarr; Take Snapshot</em> in the Proxmox VE web "
+"interface; roll back with <code>pct rollback &lt;vmid&gt; before-"
+"update</code>"
+msgstr ""
+
 #, python-format
 msgid "phone %(callerid)s <%(extension)s>"
 msgstr ""
@@ -3149,6 +3183,11 @@ msgid "required when the caller id source is a fixed string"
 msgstr ""
 
 msgid "ring all"
+msgstr ""
+
+msgid ""
+"roll back with <code>incus snapshot restore &lt;name&gt; before-"
+"update</code>; snapshot a separate <code>/data</code> volume as well"
 msgstr ""
 
 msgid "running"

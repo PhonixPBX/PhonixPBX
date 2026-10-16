@@ -453,7 +453,8 @@ This replaces the old `/cf` and `/offload` scheme and meets the goals of the `st
 - The same root filesystem, built by the same pipeline (`CONTAINER=1`, `LOADER=none` in the profile). There is no kernel, initramfs, boot loader or A/B slot. OpenRC is init, and the runlevels have no device, module, sysctl, clock, ACPI or health check services.
 - Output: a rootfs tarball (Proxmox VE CT template, `lxc-create -t local` with a small metadata tarball) and an Incus/LXD unified image.
 - `/data` is a directory or volume in the container. `/var/spool/asterisk` is a symlink to `/data/spool`.
-- Network, host name and DNS belong to the container host, and `phonix apply` skips `system:network` and `system:hostname` (`phonix.services.platform`). Updates replace the container. `priv install-update`/`mark-good` refuse, and factory reset empties `/data` at the next start.
+- Network, host name and DNS belong to the container host, and `phonix apply` skips `system:network` and `system:hostname` (`phonix.services.platform`). `priv mark-good` refuses, and factory reset empties `/data` at the next start.
+- Updates are in place, with a package bundle (see Updates). The root filesystem is writable and keeps its apk database, and `apk-tools` is installed (`lxc-<arch>.packages`). There is no rollback: the UI asks for a snapshot on the container host, and a configuration backup is saved first.
 
 **OCI image (`ghcr.io/phonixpbx/phonix`)**
 - Multi-arch application container from `Containerfile`: Alpine packages, the `phonix` wheel and the same file layout, with board `oci-<arch>`.
@@ -462,7 +463,11 @@ This replaces the old `/cf` and `/offload` scheme and meets the goals of the `st
 
 ### Updates
 - The UI uploads a bundle or downloads it from a URL. The ed25519 signature is verified in Python with `cryptography`, using `py3-cryptography`.
-- `/usr/libexec/phonix/install-update` writes the squashfs and kernel to the inactive slot and sets the next boot to try that slot.
+- `priv install-update` writes the squashfs and kernel to the inactive slot and sets the next boot to try that slot.
+- LXC boards get a package bundle instead: `packages.tar` (an apk repository with every package of the release; the index is unsigned because the manifest covers the whole tar), `world` and `image-info`.
+  - `priv install-update` replaces `/etc/apk/world` and runs `apk upgrade --available` against that repository only.
+  - It then runs `rootfs-fixup`, the same script the image build uses, to set up the overlay, console, nginx, runlevels, `/etc/asterisk` and the symlinks to `/data` again.
+  - The new version starts when the container restarts. OCI containers are still updated by replacing the image.
 - After boot, `phonix-healthcheck` confirms the web app and Asterisk are up and then marks the slot good. If that fails, the bootloader rolls back.
 - RAUC was considered and rejected for v1 to keep the image small. The scheme above is roughly 150 lines and fully under our control.
 

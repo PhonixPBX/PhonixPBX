@@ -109,7 +109,7 @@ is_container() {
 }
 
 no_slots_in_container() {
-	die "PhonixPBX runs in a container (board $(board)): firmware updates and boot slots do not apply - update by replacing the container with a newer image and keep /data"
+	die "PhonixPBX runs in a container (board $(board)): there are no boot slots"
 }
 
 # ------------------------------------------------------------------ staged files
@@ -256,9 +256,12 @@ do_install_staged() {
 
 # ------------------------------------------------------------------ updates
 
-bundle_member_ok() {
-	case "$1" in
-	manifest.json | manifest.sig | rootfs.squashfs | vmlinuz | initramfs | boot.tar) return 0 ;;
+bundle_member_ok() { # name board
+	case "$2:$1" in
+	*:manifest.json | *:manifest.sig) return 0 ;;
+	lxc-*:packages.tar | lxc-*:world | lxc-*:image-info) return 0 ;;
+	lxc-*:*) return 1 ;;
+	*:rootfs.squashfs | *:vmlinuz | *:initramfs | *:boot.tar) return 0 ;;
 	*) return 1 ;;
 	esac
 }
@@ -267,9 +270,49 @@ sha256_of() {
 	sha256sum "$1" | cut -d' ' -f1
 }
 
+# work directory below /data (root only) with the bundle's member list checked
+# and its manifest verified: sets WORK, _version and $WORK/sums
+bundle_open() { # bundle board required-member...
+	_b=$1
+	_bb=$2
+	shift 2
+	mkdir -p /data/tmp
+	WORK=$(mktemp -d /data/tmp/update.XXXXXX)
+	chmod 700 "$WORK"
+
+	# member names are checked before anything is extracted
+	tar -tf "$_b" >"$WORK/members" || die "bundle is not a tar archive"
+	while IFS= read -r _m; do
+		bundle_member_ok "$_m" "$_bb" || die "unexpected bundle member '$_m'"
+	done <"$WORK/members"
+	for _m in manifest.json manifest.sig "$@"; do
+		grep -qx "$_m" "$WORK/members" || die "bundle lacks $_m"
+	done
+
+	mkdir "$WORK/x"
+	(cd "$WORK/x" && tar -xf "$_b" manifest.json manifest.sig) || die "cannot extract manifest"
+	# signature (ed25519 over manifest.json), board and checksum list
+	python3 -I "$LIBEXEC/verify-manifest" "$WORK/x" "$_bb" "$UPDATE_KEY" >"$WORK/sums" ||
+		die "bundle signature/manifest verification failed"
+	_version=$(sed -n 's/^version //p' "$WORK/sums")
+	sed -i '/^version /d' "$WORK/sums"
+}
+
+# extract members into the work directory (root only, so the files cannot
+# change after the check) and compare them with the manifest
+bundle_extract() { # bundle member...
+	_b=$1
+	shift
+	(cd "$WORK/x" && tar -xf "$_b" "$@") || die "cannot extract $*"
+	for _m in "$@"; do
+		_want=$(awk -v n="$_m" '$2 == n { print $1 }' "$WORK/sums")
+		[ -n "$_want" ] || die "$_m is not covered by the manifest"
+		[ "$(sha256_of "$WORK/x/$_m")" = "$_want" ] || die "checksum mismatch for $_m"
+	done
+}
+
 do_install_update() {
 	_bundle=$1
-	! is_container || no_slots_in_container
 	case "$_bundle" in /*) ;; *) die "bundle path must be absolute" ;; esac
 	_real=$(readlink -f -- "$_bundle" 2>/dev/null) || die "bundle $_bundle not found"
 	[ -e "$_real" ] || die "bundle $_bundle not found"
@@ -282,6 +325,13 @@ do_install_update() {
 
 	_board=$(board)
 	[ -n "$_board" ] || die "unknown board (missing $BOARD_FILE)"
+	case "$_board" in
+	lxc-*)
+		install_update_lxc "$_real" "$_board"
+		return
+		;;
+	oci-*) die "PhonixPBX runs in an OCI container: update by replacing the container with a newer image and keep /data" ;;
+	esac
 	_cur=$(bootctl_current)
 	_target=$(bootctl_other "$_cur")
 	_base=$(disk_base)
@@ -289,37 +339,14 @@ do_install_update() {
 	[ -b "$_part" ] || die "target partition $_part not found"
 	if grep -q "^$_part " /proc/mounts; then die "target partition $_part is in use"; fi
 
-	mkdir -p /data/tmp
-	WORK=$(mktemp -d /data/tmp/update.XXXXXX)
-	chmod 700 "$WORK"
+	WORK=
 	trap 'rm -rf "$WORK"; boot_ro' EXIT INT TERM
-
-	# member names are checked before anything is extracted
-	tar -tf "$_real" >"$WORK/members" || die "bundle is not a tar archive"
-	while IFS= read -r _m; do
-		bundle_member_ok "$_m" || die "unexpected bundle member '$_m'"
-	done <"$WORK/members"
-	for _m in manifest.json manifest.sig rootfs.squashfs vmlinuz initramfs; do
-		grep -qx "$_m" "$WORK/members" || die "bundle lacks $_m"
-	done
-
-	mkdir "$WORK/x"
-	(cd "$WORK/x" && tar -xf "$_real" manifest.json manifest.sig) || die "cannot extract manifest"
-	# signature (ed25519 over manifest.json), board and checksum list
-	python3 -I "$LIBEXEC/verify-manifest" "$WORK/x" "$_board" "$UPDATE_KEY" >"$WORK/sums" ||
-		die "bundle signature/manifest verification failed"
-	_version=$(sed -n 's/^version //p' "$WORK/sums")
-	sed -i '/^version /d' "$WORK/sums"
+	bundle_open "$_real" "$_board" rootfs.squashfs vmlinuz initramfs
 
 	_small="vmlinuz initramfs"
 	grep -qx boot.tar "$WORK/members" && _small="$_small boot.tar"
 	# shellcheck disable=SC2086
-	(cd "$WORK/x" && tar -xf "$_real" $_small) || die "cannot extract boot files"
-	for _m in $_small; do
-		_want=$(awk -v n="$_m" '$2 == n { print $1 }' "$WORK/sums")
-		[ -n "$_want" ] || die "$_m is not covered by the manifest"
-		[ "$(sha256_of "$WORK/x/$_m")" = "$_want" ] || die "checksum mismatch for $_m"
-	done
+	bundle_extract "$_real" $_small
 	_want_root=$(awk '$2 == "rootfs.squashfs" { print $1 }' "$WORK/sums")
 	[ -n "$_want_root" ] || die "rootfs.squashfs is not covered by the manifest"
 
@@ -365,6 +392,80 @@ do_install_update() {
 	log "update $_version installed into slot $_target, trial boot armed"
 	kmsg "update $_version installed into slot $_target"
 	echo "installed $_version into slot $_target - reboot to activate"
+}
+
+# LXC system container: no A/B slots, the packages are upgraded in place to
+# exactly the package set of the release (the bundle's apk repository and
+# world). There is no rollback; the web interface takes a configuration backup
+# first and asks for a snapshot on the container host.
+install_update_lxc() { # bundle board
+	_b=$1
+	_bb=$2
+	WORK=
+	trap 'rm -rf "$WORK"' EXIT INT TERM
+	bundle_open "$_b" "$_bb" packages.tar world image-info
+	bundle_extract "$_b" world image-info packages.tar
+
+	# world: package names, optionally with a version constraint
+	[ -s "$WORK/x/world" ] || die "empty world"
+	if grep -Evq '^[A-Za-z0-9][A-Za-z0-9._+-]*([<>=~]+[A-Za-z0-9._+~-]+)?$' "$WORK/x/world"; then
+		die "invalid world"
+	fi
+	grep -qx phonix "$WORK/x/world" || die "world lacks phonix"
+	# image-info: shell variable assignments read by other tools
+	if grep -Evq '^PHONIX_[A-Z_]+="[A-Za-z0-9._+~:-]*"$' "$WORK/x/image-info"; then
+		die "invalid image-info"
+	fi
+
+	# the repository: <arch>/APKINDEX.tar.gz and <arch>/*.apk, nothing else
+	_arch=$(apk --print-arch)
+	tar -tf "$WORK/x/packages.tar" >"$WORK/repo-members" || die "packages.tar is not a tar archive"
+	while IFS= read -r _m; do
+		case "$_m" in
+		"$_arch/" | "$_arch/APKINDEX.tar.gz") ;;
+		"$_arch"/*/* | "$_arch"/.*) die "unexpected repository member '$_m'" ;;
+		"$_arch"/*.apk) ;;
+		*) die "unexpected repository member '$_m' (bundle for another architecture?)" ;;
+		esac
+	done <"$WORK/repo-members"
+	grep -qx "$_arch/APKINDEX.tar.gz" "$WORK/repo-members" || die "packages.tar lacks the package index"
+	mkdir "$WORK/repo"
+	tar -xf "$WORK/x/packages.tar" -C "$WORK/repo" || die "cannot unpack packages.tar"
+	rm -f "$WORK/x/packages.tar"
+
+	# the index is unsigned: packages.tar as a whole is covered by the manifest
+	# signature. Nothing comes from the network.
+	_apk() {
+		apk --no-cache --no-interactive --allow-untrusted --repositories-file /dev/null \
+			-X "$WORK/repo" "$@"
+	}
+	cp /etc/apk/world "$WORK/world.old"
+	cp "$WORK/x/world" /etc/apk/world
+	if ! _apk upgrade --available --simulate >"$WORK/simulate.log" 2>&1; then
+		cp "$WORK/world.old" /etc/apk/world
+		log "update $_version: $(tail -n 5 "$WORK/simulate.log" | tr '\n' ' ')"
+		die "the packages of $_version cannot be installed: $(tail -n 3 "$WORK/simulate.log" | tr '\n' ' ')"
+	fi
+
+	log "installing $_version (packages)"
+	kmsg "installing update $_version"
+	mkdir -p /var/log/phonix
+	_ulog=/var/log/phonix/update.log
+	{
+		echo "== $(date -u +%Y-%m-%dT%H:%M:%SZ) update to $_version"
+		cat "$WORK/simulate.log"
+	} >>"$_ulog"
+	if ! _apk upgrade --available >>"$_ulog" 2>&1; then
+		die "apk upgrade to $_version failed, the system may be partly updated (see $_ulog): $(tail -n 3 "$_ulog" | tr '\n' ' ')"
+	fi
+	# the rootfs-fixup of the new version
+	"$LIBEXEC/rootfs-fixup" / "$_bb" "$_version" >>"$_ulog" 2>&1 ||
+		die "rootfs-fixup after the update to $_version failed (see $_ulog)"
+	install -m 0644 "$WORK/x/image-info" /usr/share/phonix/image-info
+	sync
+	log "update $_version installed, restart the container to activate"
+	kmsg "update $_version installed"
+	echo "installed $_version - restart the container to activate"
 }
 
 do_mark_good() {

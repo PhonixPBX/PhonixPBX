@@ -1,11 +1,11 @@
 # SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
 # SPDX-License-Identifier: Apache-2.0
-"""Container boards (LXC/Incus, OCI): host-managed network, no firmware updates."""
+"""Container boards (LXC/Incus, OCI): host-managed network; package updates for LXC, none for OCI."""
 
 import subprocess
 
 import pytest
-from test_web import client, login  # noqa: F401 - fixture
+from test_web import client, csrf, login  # noqa: F401 - fixture
 
 from phonix import config
 from phonix.services import apply, platform, privileged, update
@@ -19,22 +19,23 @@ def _set_board(runtime, name: str) -> None:
 
 
 @pytest.mark.parametrize(
-    ("board", "kind", "container"),
+    ("board", "kind", "container", "updates"),
     [
-        ("dev", "dev", False),
-        ("pc-amd64", "appliance", False),
-        ("rpi-arm64", "appliance", False),
-        ("lxc-amd64", "lxc", True),
-        ("lxc-arm64", "lxc", True),
-        ("oci-amd64", "oci", True),
+        ("dev", "dev", False, True),
+        ("pc-amd64", "appliance", False, True),
+        ("rpi-arm64", "appliance", False, True),
+        ("lxc-amd64", "lxc", True, True),
+        ("lxc-arm64", "lxc", True, True),
+        ("oci-amd64", "oci", True, False),
     ],
 )
-def test_board_kinds(runtime, board, kind, container):
+def test_board_kinds(runtime, board, kind, container, updates):
     if board != "dev":
         _set_board(runtime, board)
     assert platform.board() == board
     assert platform.kind() == kind
     assert platform.is_container() is container
+    assert platform.supports_updates() is updates
 
 
 def test_container_apply_leaves_network_and_hostname_alone(session, runtime):
@@ -63,14 +64,66 @@ def test_container_rejects_firmware_bundles(runtime, tmp_path):
     assert update.status()["platform"] == "oci"
 
 
+def test_lxc_install_takes_a_backup_first(session, runtime, tmp_path, monkeypatch):
+    _set_board(runtime, "lxc-amd64")
+    bundle = tmp_path / "x.update"
+    bundle.write_bytes(b"verified elsewhere")
+    monkeypatch.setattr(update, "verify_bundle", lambda path: update.BundleInfo("9.9.9", "lxc-amd64", {}))
+    privileged.recorder.calls.clear()
+    assert update.install(bundle).version == "9.9.9"
+    assert ("install-update", str(bundle)) in privileged.recorder.calls
+    assert len(list(runtime.backup_dir.glob("phonix-backup-*.tar.zst"))) == 1
+    assert update.status()["slot"] == "-"
+
+
+def test_lxc_install_stops_when_the_backup_fails(session, runtime, tmp_path, monkeypatch):
+    from phonix.services import backup
+
+    _set_board(runtime, "lxc-amd64")
+    monkeypatch.setattr(update, "verify_bundle", lambda path: update.BundleInfo("9.9.9", "lxc-amd64", {}))
+
+    def full_disk(target=None):
+        raise OSError(28, "No space left on device")
+
+    monkeypatch.setattr(backup, "create", full_disk)
+    privileged.recorder.calls.clear()
+    with pytest.raises(ServiceError, match="Backup before the update failed"):
+        update.install(tmp_path / "x.update")
+    assert not privileged.recorder.calls
+
+
 def test_firmware_page_in_container(client, runtime):  # noqa: F811
     login(client)
-    assert "Install an update" in client.get("/system/firmware").text
+    page = client.get("/system/firmware").text
+    assert "Install an update" in page
+    assert "snapshot" not in page
     _set_board(runtime, "lxc-amd64")
+    page = client.get("/system/firmware").text
+    assert "Install an update" in page
+    assert "Take a snapshot of the container first" in page
+    for command in ("pct snapshot", "pct rollback", "incus snapshot create", "lxc-snapshot"):
+        assert command in page
+    assert 'id="snapshot-confirm"' in page
+    assert 'data-requires="#snapshot-confirm"' in page
+    assert "Updates: replace the container image" not in page
+    assert "configured on the container host" in client.get("/system/network").text
+    _set_board(runtime, "oci-amd64")
     page = client.get("/system/firmware").text
     assert "Updates: replace the container image" in page
     assert "Install an update" not in page
-    assert "configured on the container host" in client.get("/system/network").text
+    assert "snapshot-confirm" not in page
+
+
+def test_firmware_done_in_lxc(client, runtime, monkeypatch):  # noqa: F811
+    monkeypatch.setattr(update, "install", lambda path: update.BundleInfo("9.9.9", "lxc-amd64", {}))
+    login(client)
+    headers = {"HX-Request": "true", "X-CSRF-Token": csrf(client, "/system/firmware")}
+    files = {"file": ("x.update", b"bundle", "application/octet-stream")}
+    _set_board(runtime, "lxc-amd64")
+    r = client.post("/system/firmware/upload", headers=headers, files=files)
+    assert r.status_code == 200
+    assert "Restart the container" in r.text and "roll back to the snapshot" in r.text
+    assert "inactive slot" not in r.text
 
 
 def test_fix_data_ownership_leaves_root_and_asterisk_dirs_alone(runtime, monkeypatch):

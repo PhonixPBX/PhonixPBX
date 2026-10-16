@@ -1,1 +1,3 @@
 # LXC / Incus system container (x86_64): no kernel or firmware.
+# the package manager: priv install-update upgrades the container in place
+apk-tools

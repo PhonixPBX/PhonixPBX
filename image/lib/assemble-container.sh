@@ -8,6 +8,7 @@
 #    out/phonix-<version>-lxc-<arch>.meta.tar.xz  metadata for lxc-create -t local
 #    out/phonix-<version>-incus-<arch>.tar.xz     Incus/LXD unified image
 #    out/phonix-<version>-lxc-<arch>.packages
+#    out/phonix-<version>-lxc-<arch>.update       signed package update bundle
 #
 # Runs inside the build container, where the files have their real (numeric)
 # ownership; the tarballs store numeric ids only (root = 0, asterisk = 101,
@@ -104,5 +105,34 @@ mv "$OUT/$INCUS_NAME.tar.xz.tmp" "$OUT/$INCUS_NAME.tar.xz"
 rm -f "$C/incus.tar"
 
 cp "$BW/packages.txt" "$OUT/$NAME.packages"
+
+# --- update bundle -------------------------------------------------------------------------
+# every installed package at the installed version, as an apk repository: priv
+# install-update upgrades a running container to exactly this package set. The
+# index is not signed: the manifest signature covers packages.tar as a whole.
+msg "[$BOARD] update bundle"
+P=$C/payload
+mkdir -p "$P" "$C/repo/$ARCH"
+# shellcheck disable=SC2046
+apk --root "$R" --arch "$ARCH" --cache-dir "$WORK/cache/apk-$ARCH" --repositories-file /dev/null \
+	-X "$LOCAL_REPO" -X "$ALPINE_MIRROR/$ALPINE_BRANCH/main" -X "$ALPINE_MIRROR/$ALPINE_BRANCH/community" \
+	--no-interactive fetch --output "$C/repo/$ARCH" $(apk --root "$R" info 2>/dev/null) >"$C/fetch.log" 2>&1 ||
+	{ tail -n 20 "$C/fetch.log"; die "apk fetch failed"; }
+(cd "$C/repo/$ARCH" && ls -- *.apk | sed 's/\.apk$//' | sort) >"$C/fetched.txt"
+cmp -s "$C/fetched.txt" "$BW/packages.txt" ||
+	{ diff "$BW/packages.txt" "$C/fetched.txt" || true; die "the repositories do not have the installed package versions"; }
+(
+	cd "$C/repo/$ARCH" || exit 1
+	apk --keys-dir "$R/etc/apk/keys" index --no-warnings --quiet --output APKINDEX.tar.gz \
+		--description "PhonixPBX $VERSION $BOARD" --rewrite-arch "$ARCH" ./*.apk
+) || die "apk index failed"
+tar -C "$C/repo" --format=ustar --owner=0 --group=0 --numeric-owner --sort=name \
+	--mtime="@$SOURCE_DATE_EPOCH" -cf "$P/packages.tar" "$ARCH"
+cp "$R/etc/apk/world" "$P/world"
+cp "$R/usr/share/phonix/image-info" "$P/image-info"
+SIGNKEY=${PHONIX_UPDATE_SIGNING_KEY:-$KEYS_DIR/update-signing.pem}
+"$IMG/mkbundle.sh" "$BOARD" "$VERSION" "$P" "$SIGNKEY" "$OUT/$NAME.update"
+rm -rf "$C/repo" "$P"
+
 write_sha256sums
-msg "[$BOARD] done: $NAME.tar.xz ($(du -h "$OUT/$NAME.tar.xz" | cut -f1)), $INCUS_NAME.tar.xz ($(du -h "$OUT/$INCUS_NAME.tar.xz" | cut -f1))"
+msg "[$BOARD] done: $NAME.tar.xz ($(du -h "$OUT/$NAME.tar.xz" | cut -f1)), $INCUS_NAME.tar.xz ($(du -h "$OUT/$INCUS_NAME.tar.xz" | cut -f1)), $NAME.update ($(du -h "$OUT/$NAME.update" | cut -f1))"

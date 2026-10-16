@@ -5,8 +5,10 @@
 #
 #   mkbundle.sh <board> <version> <payload-dir> <signing-key.pem> <output.update>
 #
-# <payload-dir> contains rootfs.squashfs, vmlinuz, initramfs and, for the
-# Raspberry Pi, boot.tar (device trees + overlays). The bundle is an
+# <payload-dir> contains, for the appliance boards, rootfs.squashfs, vmlinuz,
+# initramfs and, for the Raspberry Pi, boot.tar (device trees + overlays);
+# for the LXC boards packages.tar (apk repository with every package of the
+# release), world (/etc/apk/world) and image-info. The bundle is an
 # uncompressed tar: manifest.json {version, board, files: {name: sha256}},
 # manifest.sig (raw 64 byte ed25519 signature over manifest.json) and the
 # payload files. Needs OpenSSL >= 3.0 and python3.
@@ -15,8 +17,13 @@ set -eu
 board=$1 version=$2 dir=$3 key=$4 out=$5
 : "${SOURCE_DATE_EPOCH:=$(date +%s)}"
 
-files="rootfs.squashfs vmlinuz initramfs"
-[ -f "$dir/boot.tar" ] && files="$files boot.tar"
+case "$board" in
+lxc-*) files="packages.tar world image-info" ;;
+*)
+	files="rootfs.squashfs vmlinuz initramfs"
+	[ -f "$dir/boot.tar" ] && files="$files boot.tar"
+	;;
+esac
 for f in $files; do
 	[ -f "$dir/$f" ] || { echo "mkbundle: missing $dir/$f" >&2; exit 1; }
 done

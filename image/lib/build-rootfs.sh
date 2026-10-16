@@ -85,59 +85,20 @@ else
 	# the kernel packages ship modules.dep & co. (kmod trigger not needed)
 	[ -s "$R/lib/modules/$KVER/modules.dep" ] || depmod -b "$R" "$KVER"
 fi
-rm -f "$R/etc/nginx/http.d/default.conf"
-# one worker serves the admin UI; "auto" starts one per CPU core (RAM)
-sed -i 's/^worker_processes .*/worker_processes 1;/' "$R/etc/nginx/nginx.conf"
-grep -q '^worker_processes 1;' "$R/etc/nginx/nginx.conf" || die "nginx.conf: worker_processes not set"
 mkdir -p "$R/run/nginx"
 
 # --- PhonixPBX image integration --------------------------------------------
+# overlay, console, nginx, symlinks to /data, runlevels: the same script sets
+# up an LXC container again after a package update (priv install-update)
 msg "[$BOARD] system integration"
-cp -a "$SYS/rootfs/." "$R/"
-# cp -a keeps the checkout's modes (group writable with umask 002)
-chmod 755 "$R"
-(cd "$SYS/rootfs" && find . -mindepth 1 ! -type l) | while read -r _p; do chmod go-w "$R/$_p"; done
-chmod 644 "$R/etc/inittab" "$R/etc/fstab"
-for t in $SERIAL_TTYS; do
-	sed -i "/^::ctrlaltdel/i ::respawn:/usr/libexec/phonix/console $t" "$R/etc/inittab"
-done
-if [ "${CONTAINER:-0}" = 1 ]; then
-	# container console (incus console, lxc-console -t 0, pct console with
-	# cmode=console); tty1 stays for lxc-console / pct console (cmode=tty)
-	sed -i "/^::ctrlaltdel/i ::respawn:/usr/libexec/phonix/console console" "$R/etc/inittab"
-	sed -i 's/^# \/etc\/inittab - PhonixPBX appliance/# \/etc\/inittab - PhonixPBX system container/' "$R/etc/inittab"
-	# Proxmox VE appends "ttyN::respawn:/sbin/getty" lines to the inittab of
-	# Alpine containers at every start; a getty on tty1 next to the console
-	# menu makes both fight over the terminal
-	: >"$R/etc/.pve-ignore.inittab"
-	sed -i '1s/.*/# Default for system containers: DHCP on eth0. Not managed by PhonixPBX;\n# Proxmox VE rewrites this file from the container settings./' \
-		"$R/etc/network/interfaces"
-	cat >"$R/etc/fstab" <<'FSTAB'
-# PhonixPBX system container: the root file system and /data are set up by
-# the container host (LXC, Incus, Proxmox VE).
-FSTAB
-	cat >"$R/etc/motd" <<'MOTD'
+PHONIX_FIXUP_BUILD=1 PHONIX_ROOTFS_SRC="$SYS/rootfs" PHONIX_SERIAL_TTYS="$SERIAL_TTYS" \
+	PHONIX_CLOCK_SERVICE="$CLOCK_SERVICE" \
+	PHONIX_APK_REPOS="$(printf '%s\n' "$ALPINE_MIRROR/$ALPINE_BRANCH/main" "$ALPINE_MIRROR/$ALPINE_BRANCH/community")" \
+	sh "$SYS/libexec/rootfs-fixup" "$R" "$BOARD" "$VERSION"
 
-PhonixPBX system container. Configuration lives in /data/phonix.db; use the
-web interface or the "phonix" command. Files that PhonixPBX generates (e.g.
-/etc/asterisk) are rewritten at every start. Network and host name are
-configured on the container host.
-
-MOTD
-fi
-
-# Asterisk: the configuration is generated at boot (phonix apply)
-rm -rf "$R/etc/asterisk"
-install -d -m 0750 "$R/etc/asterisk"
-chown 200:102 "$R/etc/asterisk"
-install -d -m 0750 -o 200 -g 102 "$R/etc/phonix"
-mkdir -p "$R/var/lib/asterisk/keys"
-chown -R 101:102 "$R/var/lib/asterisk" "$R/var/spool/asterisk" "$R/var/log/asterisk" 2>/dev/null || true
-
-# board, version, update key
-echo "$BOARD" >"$R/etc/phonix/board"
+# version, update key
 cp "$KEYS_DIR/update-key.pub" "$R/etc/phonix/update-key.pub"
-chmod 644 "$R/etc/phonix/board" "$R/etc/phonix/update-key.pub"
+chmod 644 "$R/etc/phonix/update-key.pub"
 mkdir -p "$R/usr/share/phonix"
 cat >"$R/usr/share/phonix/image-info" <<INFO
 PHONIX_VERSION="$VERSION"
@@ -147,54 +108,6 @@ PHONIX_KERNEL="$KVER"
 PHONIX_CONTAINER="${CONTAINER:-0}"
 PHONIX_BUILD_DATE="$(date -u -d "@$SOURCE_DATE_EPOCH" +%Y-%m-%dT%H:%M:%SZ)"
 INFO
-sed -i "s/^PRETTY_NAME=.*/PRETTY_NAME=\"PhonixPBX $VERSION (Alpine Linux $(cat "$R/etc/alpine-release"))\"/" \
-	"$R/etc/os-release"
-
-# persistent state on /data
-mkdir -p "$R/data" "$R/media/boot"
-[ "${CONTAINER:-0}" = 1 ] || mkdir -p "$R/media/root-ro" "$R/media/overlay"
-if [ "${CONTAINER:-0}" = 1 ]; then
-	# no bind mount needed: voicemail and other spool data live on /data
-	rm -rf "$R/var/spool/asterisk"
-	ln -s /data/spool "$R/var/spool/asterisk"
-fi
-rm -rf "$R/etc/dropbear"
-ln -s /data/ssh/dropbear "$R/etc/dropbear"
-install -d -m 0700 "$R/root/.ssh"
-ln -sfn /data/ssh/authorized_keys "$R/root/.ssh/authorized_keys"
-
-# apk is not used on the read-only system; point it at the real repositories
-printf '%s\n' "$ALPINE_MIRROR/$ALPINE_BRANCH/main" "$ALPINE_MIRROR/$ALPINE_BRANCH/community" \
-	>"$R/etc/apk/repositories"
-
-# --- services -----------------------------------------------------------------
-rl() { # runlevel service...
-	_lvl=$1
-	shift
-	mkdir -p "$R/etc/runlevels/$_lvl"
-	for _s in "$@"; do
-		[ -e "$R/etc/init.d/$_s" ] || die "missing service $_s"
-		ln -sfn "/etc/init.d/$_s" "$R/etc/runlevels/$_lvl/$_s"
-	done
-}
-rm -rf "$R/etc/runlevels"
-if [ "${CONTAINER:-0}" = 1 ]; then
-	# no devices, modules, sysctl, kernel log, hardware clock, ACPI or entropy
-	# seeding (the host's business); time comes from the host (no chronyd);
-	# no A/B slots (no phonix-healthcheck); the host mounts the file systems
-	# and sets the host name (lxc.uts.name)
-	mkdir -p "$R/etc/runlevels/sysinit"
-	rl boot bootmisc syslog phonix-firstboot phonix-apply nftables networking
-	rl default crond asterisk phonix-web nginx phonix-monitor
-	rl shutdown killprocs savecache
-else
-	rl sysinit devfs dmesg mdev hwdrivers
-	rl boot modules sysctl hostname bootmisc syslog klogd seedrng "$CLOCK_SERVICE" \
-		phonix-firstboot phonix-apply nftables networking
-	rl default acpid crond chronyd asterisk phonix-web nginx phonix-monitor phonix-healthcheck
-	rl shutdown killprocs savecache mount-ro
-fi
-mkdir -p "$R/etc/runlevels/nonetwork"
 
 # --- trim ---------------------------------------------------------------------
 # kernel, device trees and firmware blobs go to the boot partition
