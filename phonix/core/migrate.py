@@ -4,15 +4,19 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
+from typing import TYPE_CHECKING
 
-from alembic import command
-from alembic.config import Config
-from alembic.runtime.migration import MigrationContext
-from alembic.script import ScriptDirectory
-from sqlalchemy import Connection, text
+from sqlalchemy import Connection, inspect, text
 
 from phonix.core.db import get_engine
+
+if TYPE_CHECKING:
+    from alembic.config import Config
+
+# alembic (and mako) are only imported to actually migrate: the web process
+# checks needs_upgrade() on startup and must not carry them (~10 MB)
 
 MIGRATIONS_DIR = Path(__file__).parent / "migrations"
 
@@ -21,12 +25,16 @@ SQUASHED_REVISIONS = {"0003": "0001"}
 
 
 def alembic_config() -> Config:
+    from alembic.config import Config
+
     cfg = Config()
     cfg.set_main_option("script_location", str(MIGRATIONS_DIR))
     return cfg
 
 
 def upgrade(revision: str = "head") -> None:
+    from alembic import command
+
     cfg = alembic_config()
     with get_engine().begin() as conn:
         cfg.attributes["connection"] = conn
@@ -35,18 +43,37 @@ def upgrade(revision: str = "head") -> None:
 
 
 def _restamp_squashed(conn: Connection) -> None:
-    current = MigrationContext.configure(conn).get_current_revision()
+    current = _revision(conn)
     if current in SQUASHED_REVISIONS:
         conn.execute(text("UPDATE alembic_version SET version_num = :new"), {"new": SQUASHED_REVISIONS[current]})
 
 
+def _revision(conn: Connection) -> str | None:
+    if not inspect(conn).has_table("alembic_version"):
+        return None
+    return conn.scalar(text("SELECT version_num FROM alembic_version"))
+
+
 def current_revision() -> str | None:
     with get_engine().connect() as conn:
-        return MigrationContext.configure(conn).get_current_revision()
+        return _revision(conn)
+
+
+_REVISION_RE = re.compile(r'^(down_revision|revision)\s*=\s*(?:"([^"]+)"|None)', re.M)
 
 
 def head_revision() -> str | None:
-    return ScriptDirectory.from_config(alembic_config()).get_current_head()
+    """The newest revision of the (linear) history, without loading alembic."""
+    revisions: set[str] = set()
+    parents: set[str] = set()
+    for path in (MIGRATIONS_DIR / "versions").glob("*.py"):
+        for key, value in _REVISION_RE.findall(path.read_text()):
+            if value:
+                (revisions if key == "revision" else parents).add(value)
+    heads = revisions - parents
+    if len(heads) > 1:
+        raise RuntimeError(f"multiple migration heads: {sorted(heads)}")
+    return heads.pop() if heads else None
 
 
 def needs_upgrade() -> bool:

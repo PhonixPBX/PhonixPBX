@@ -4,6 +4,14 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- Lower memory use. Web passwords are hashed with argon2id at 19 MiB instead of 64 MiB per
+  hash (existing hashes are upgraded at the next login), so the web application peaks at
+  about 90 MB instead of 150 MB. nginx runs one worker process instead of one per CPU core.
+
 ## [1.2.0] - 2026-10-14
 
 ### Added

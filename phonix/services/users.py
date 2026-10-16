@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import contextlib
+import functools
 import re
 
 from argon2 import PasswordHasher
@@ -17,12 +18,18 @@ from phonix.core.models import User, utcnow
 from phonix.i18n import _
 from phonix.services.common import NotFound, ServiceError, audit, generate_secret
 
-_hasher = PasswordHasher()
+# OWASP minimum for argon2id (19 MiB): the library default (64 MiB per hash)
+# dominates the peak memory of the web process on small boxes. Hashes with
+# other parameters still verify and are rehashed on the next login.
+_hasher = PasswordHasher(time_cost=2, memory_cost=19 * 1024, parallelism=1)
 _USERNAME = re.compile(r"^[a-z][a-z0-9._-]{0,31}$")
 MIN_PASSWORD = 8
 
-# a valid hash used to equalise timing when the user does not exist
-_DUMMY_HASH = _hasher.hash("dummy-password-for-timing")
+
+@functools.cache
+def _dummy_hash() -> str:
+    """A valid hash used to equalise timing when the user does not exist."""
+    return _hasher.hash("dummy-password-for-timing")
 
 
 def hash_password(password: str) -> str:
@@ -40,7 +47,7 @@ def authenticate(session: Session, username: str, password: str) -> User | None:
     user = session.scalar(select(User).where(User.username == username.strip().lower()))
     if user is None:
         with contextlib.suppress(VerificationError):
-            _hasher.verify(_DUMMY_HASH, password)
+            _hasher.verify(_dummy_hash(), password)
         return None
     try:
         _hasher.verify(user.password_hash, password)

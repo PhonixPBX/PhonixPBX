@@ -86,6 +86,9 @@ else
 	[ -s "$R/lib/modules/$KVER/modules.dep" ] || depmod -b "$R" "$KVER"
 fi
 rm -f "$R/etc/nginx/http.d/default.conf"
+# one worker serves the admin UI; "auto" starts one per CPU core (RAM)
+sed -i 's/^worker_processes .*/worker_processes 1;/' "$R/etc/nginx/nginx.conf"
+grep -q '^worker_processes 1;' "$R/etc/nginx/nginx.conf" || die "nginx.conf: worker_processes not set"
 mkdir -p "$R/run/nginx"
 
 # --- PhonixPBX image integration --------------------------------------------

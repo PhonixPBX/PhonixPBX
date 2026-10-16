@@ -48,7 +48,9 @@ RUN apk add --no-cache \
         py3-cryptography py3-zstandard py3-httpx \
         nginx msmtp nftables sox doas su-exec tini logrotate lego \
         tzdata ca-certificates-bundle iproute2 curl \
-    && rm -f /etc/nginx/http.d/default.conf
+    && rm -f /etc/nginx/http.d/default.conf \
+    && sed -i 's/^worker_processes .*/worker_processes 1;/' /etc/nginx/nginx.conf \
+    && grep -q '^worker_processes 1;' /etc/nginx/nginx.conf
 
 COPY --from=build /staging/ /
 COPY system/ /tmp/system/
