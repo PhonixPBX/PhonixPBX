@@ -25,6 +25,7 @@ We are reviving the product on current technology:
 - **Hardware:** v1 supports SIP and IAX only.
   - Analog and ISDN lines are reached through SIP ATAs or gateways.
   - These are dropped: DAHDI, mISDN, Redfone, GSM, the Pika and COMpact platform code, the LCD, and the reset button.
+- **Memory:** the system must run in 256 MB of RAM (a container); 512 MB is recommended. The smallest supported board, the Raspberry Pi Zero 2 W, has 512 MB.
 - **Repository:** the old tree moves to `legacy/` and is kept as reference. The new code goes at the repository root.
 
 ## 1. Architecture

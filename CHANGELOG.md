@@ -11,6 +11,7 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 - Lower memory use. Web passwords are hashed with argon2id at 19 MiB instead of 64 MiB per
   hash (existing hashes are upgraded at the next login), so the web application peaks at
   about 90 MB instead of 150 MB. nginx runs one worker process instead of one per CPU core.
+  Containers now need at least 256 MB RAM (512 MB recommended) instead of 512 MB (1 GB).
 
 ## [1.2.0] - 2026-10-14
 

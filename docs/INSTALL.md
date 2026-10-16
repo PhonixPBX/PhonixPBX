@@ -187,7 +187,7 @@ Differences to the appliance:
 - **Console menu** runs on the container console (`/dev/console`) and on `tty1`.
 - **mDNS** (`<hostname>.local`) works when the container is on a bridge of your LAN. It uses the host name from *System → General*, not the container's host name.
 
-The containers run unprivileged. Give them at least 512 MB RAM (1 GB recommended) and 2 GB disk plus the data volume. For telephones on your LAN, attach the container to a bridge of your LAN so it gets its own address (`eth0`). Phones and providers then reach SIP (5060) and RTP (10000-20000/udp) directly.
+The containers run unprivileged. Give them at least 256 MB RAM (512 MB recommended) and 2 GB disk plus the data volume. For telephones on your LAN, attach the container to a bridge of your LAN so it gets its own address (`eth0`). Phones and providers then reach SIP (5060) and RTP (10000-20000/udp) directly.
 
 ### Proxmox VE
 
@@ -203,7 +203,7 @@ The containers run unprivileged. Give them at least 512 MB RAM (1 GB recommended
    ```sh
    pct create 120 local:vztmpl/phonix-<version>-lxc-amd64.tar.xz \
      --hostname pbx --ostype alpine --unprivileged 1 \
-     --cores 2 --memory 1024 --swap 512 \
+     --cores 2 --memory 512 --swap 256 \
      --rootfs local-lvm:2 --mp0 local-lvm:8,mp=/data \
      --net0 name=eth0,bridge=vmbr0,ip=dhcp \
      --cmode console --onboot 1
