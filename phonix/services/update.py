@@ -29,6 +29,8 @@ from phonix.services import platform, privileged
 from phonix.services.common import ServiceError
 
 MAX_BUNDLE = 1024**3
+MAX_MANIFEST = 1024**2
+MAX_SIGNATURE = 1024
 
 # PEP 440 (1.2.0, 1.2.0rc1, 1.2.0.post1, 1.3.0.dev0), with an optional "v" prefix; the
 # semver spellings 1.2.0-rc.1 and 1.2.0-alpha normalise the same way. Local versions (+build) are ignored.
@@ -113,6 +115,9 @@ def verify_bundle(path: Path) -> BundleInfo:
         with tarfile.open(path, mode="r:") as tar:
             names = {m.name: m for m in tar.getmembers()}
             if "manifest.json" not in names or "manifest.sig" not in names:
+                raise ServiceError(_("Not a PhonixPBX update bundle"))
+            # read into memory before the signature check: same limits as verify-manifest
+            if names["manifest.json"].size > MAX_MANIFEST or names["manifest.sig"].size > MAX_SIGNATURE:
                 raise ServiceError(_("Not a PhonixPBX update bundle"))
             manifest_raw = tar.extractfile(names["manifest.json"]).read()  # type: ignore[union-attr]
             signature = tar.extractfile(names["manifest.sig"]).read()  # type: ignore[union-attr]
