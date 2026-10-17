@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-16 14:15+0200\n"
+"POT-Creation-Date: 2026-10-17 10:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1481,6 +1481,9 @@ msgstr ""
 msgid "Maximum expiry (s)"
 msgstr ""
 
+msgid "May place calls"
+msgstr ""
+
 msgid "Media"
 msgstr ""
 
@@ -2248,6 +2251,12 @@ msgstr ""
 msgid "Ringing"
 msgstr ""
 
+msgid ""
+"Rings a phone and dials a number from it (POST /api/v1/calls, MCP tool "
+"originate_call), also with a read-only token. Calls to external numbers "
+"may cost money."
+msgstr ""
+
 #, python-format
 msgid "Route %(num)s: %(error)s"
 msgstr ""
@@ -3012,6 +3021,9 @@ msgid "call group %(name)s"
 msgstr ""
 
 msgid "call parking"
+msgstr ""
+
+msgid "calls"
 msgstr ""
 
 msgid "changed"

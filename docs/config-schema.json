@@ -1475,6 +1475,11 @@
     "TokenDoc": {
       "additionalProperties": false,
       "properties": {
+        "allow_calls": {
+          "default": false,
+          "title": "Allow Calls",
+          "type": "boolean"
+        },
         "created_at": {
           "anyOf": [
             {

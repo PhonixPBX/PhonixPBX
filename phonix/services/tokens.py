@@ -39,6 +39,7 @@ def create(
     user: User,
     name: str,
     read_only: bool = True,
+    allow_calls: bool = False,
     expires_in_days: int | None = None,
     actor: str = "",
 ) -> tuple[ApiToken, str]:
@@ -55,6 +56,7 @@ def create(
         token_hash=_hash(plain),
         prefix=plain[:12],
         read_only=read_only,
+        allow_calls=allow_calls,
         enabled=True,
         user=user,
         created_at=now,
@@ -63,6 +65,8 @@ def create(
     session.add(token)
     session.flush()
     access = "read-only" if read_only else "read-write"
+    if allow_calls:
+        access += ", calls"
     audit(session, actor or user.username, "create", "api_token", token.id, f"{name} ({access})")
     return token, plain
 
@@ -112,6 +116,7 @@ def to_dict(token: ApiToken) -> dict[str, Any]:
         "name": token.name,
         "prefix": token.prefix,
         "read_only": token.read_only,
+        "allow_calls": token.allow_calls,
         "enabled": token.enabled,
         "status": status(token),
         "user": token.user.username,

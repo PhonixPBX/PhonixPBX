@@ -212,7 +212,13 @@ def cmd_token(args: argparse.Namespace) -> int:
                     print(f"ERROR no administrator {args.user!r}", file=sys.stderr)
                     return 1
                 _token, plain = tokens.create(
-                    session, user, args.name, read_only=args.read_only, expires_in_days=args.expires_days, actor="cli"
+                    session,
+                    user,
+                    args.name,
+                    read_only=args.read_only,
+                    allow_calls=args.allow_calls,
+                    expires_in_days=args.expires_days,
+                    actor="cli",
                 )
                 print(plain)
             elif args.action == "list":
@@ -220,7 +226,7 @@ def cmd_token(args: argparse.Namespace) -> int:
                     d = tokens.to_dict(t)
                     last = d["last_used_at"].strftime("%Y-%m-%d %H:%M") if d["last_used_at"] else "never"
                     until = d["expires_at"].strftime("%Y-%m-%d") if d["expires_at"] else "unlimited"
-                    access = "ro" if d["read_only"] else "rw"
+                    access = ("ro" if d["read_only"] else "rw") + ("+calls" if d["allow_calls"] else "")
                     print(
                         f"{d['id']:>4}  {d['name']:<24} {d['prefix']}  {access}  {d['status']:<8}  {d['user']:<12}"
                         f"  last used {last:<16}  valid until {until}"
@@ -360,6 +366,7 @@ def build_parser() -> argparse.ArgumentParser:
     t.add_argument("name", nargs="?", help="token name (create) or id (enable/disable/delete)")
     t.add_argument("--user", default="admin", help="owning administrator (create)")
     t.add_argument("--read-only", action="store_true", help="GET requests only (create)")
+    t.add_argument("--allow-calls", action="store_true", help="may place calls via the API and MCP (create)")
     t.add_argument("--expires-days", type=int, help="validity in days (create); default unlimited")
     t.set_defaults(func=cmd_token)
 

@@ -3,7 +3,7 @@
 {% set state = token_status(t) %}
 <tr id="token-{{ t.id }}"{% if state != "active" %} class="text-secondary"{% endif %}>
   <td><div class="fw-bold">{{ t.name }}</div><div class="small text-secondary font-monospace">{{ t.prefix }}&hellip;</div></td>
-  <td>{% if t.read_only %}<span class="badge bg-blue-lt">{{ _("read-only") }}</span>{% else %}<span class="badge bg-orange-lt">{{ _("read-write") }}</span>{% endif %}</td>
+  <td>{% if t.read_only %}<span class="badge bg-blue-lt">{{ _("read-only") }}</span>{% else %}<span class="badge bg-orange-lt">{{ _("read-write") }}</span>{% endif %}{% if t.allow_calls %} <span class="badge bg-purple-lt">{{ _("calls") }}</span>{% endif %}</td>
   <td>{% if state == "active" %}<span class="badge bg-green-lt">{{ _("active") }}</span>{% elif state == "expired" %}<span class="badge bg-red-lt">{{ _("expired") }}</span>{% else %}<span class="badge bg-secondary-lt">{{ _("disabled") }}</span>{% endif %}</td>
   <td>{{ t.user.username }}</td>
   <td class="text-secondary">{{ t.created_at.strftime("%Y-%m-%d") }}</td>

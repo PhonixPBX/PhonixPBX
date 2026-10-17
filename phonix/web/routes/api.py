@@ -13,15 +13,17 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import PlainTextResponse, Response
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from phonix.core.models import User
 from phonix.services import apply as apply_svc
+from phonix.services import calls as calls_svc
 from phonix.services import settings_api
 from phonix.services import status as status_svc
 from phonix.services.common import NotFound, ServiceError, dirty_areas
 from phonix.services.resources import RESOURCES, Resource
-from phonix.web.deps import api_user, get_db
+from phonix.web.deps import api_caller, api_user, get_db
 
 router = APIRouter(prefix="/api/v1", tags=["api"])
 
@@ -152,3 +154,31 @@ def metrics(user: User = Depends(api_user), db: Session = Depends(get_db)) -> Re
 @router.get("/status", tags=["status"])
 def status(user: User = Depends(api_user)) -> dict[str, Any]:
     return {"system": status_svc.system_info(), "asterisk": status_svc.asterisk_status()}
+
+
+class CallRequest(BaseModel):
+    extension: str = Field(description="Extension of the SIP or IAX phone to ring first", examples=["100"])
+    number: str = Field(description="Number to dial from that phone: digits, *, # and +", examples=["0441234567"])
+
+
+class CallResult(BaseModel):
+    extension: str
+    number: str
+    status: str = Field(description="'ringing': the phone rings; the number is dialled when it is answered")
+
+
+@router.post(
+    "/calls",
+    tags=["calls"],
+    status_code=202,
+    response_model=CallResult,
+    summary="Ring a phone, then dial a number from it",
+)
+def originate_call(body: CallRequest, user: User = Depends(api_caller), db: Session = Depends(get_db)) -> Any:
+    """Click-to-call. The number is dialled with the phone's own outgoing rules and caller ID.
+    Bearer tokens need "may place calls"; read-only tokens with it are accepted."""
+    try:
+        return calls_svc.originate(db, body.extension, body.number, user.username, via="API")
+    except ServiceError as exc:
+        db.rollback()
+        raise _error(exc) from None

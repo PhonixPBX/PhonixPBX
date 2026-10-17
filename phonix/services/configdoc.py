@@ -131,6 +131,7 @@ class TokenDoc(BaseModel):
     token_hash: str = Field(pattern=r"^[0-9a-f]{64}$")
     prefix: str = Field(max_length=16)
     read_only: bool = True
+    allow_calls: bool = False
     enabled: bool = True
     created_at: dt.datetime | None = None
     expires_at: dt.datetime | None = None
@@ -251,6 +252,7 @@ def export(session: Session) -> dict[str, Any]:
                 "token_hash": t.token_hash,
                 "prefix": t.prefix,
                 "read_only": t.read_only,
+                "allow_calls": t.allow_calls,
                 "enabled": t.enabled,
                 "created_at": _ts(t.created_at),
                 "expires_at": _ts(t.expires_at),
@@ -545,6 +547,7 @@ class _Importer:
                     token_hash=t.token_hash,
                     prefix=t.prefix,
                     read_only=t.read_only,
+                    allow_calls=t.allow_calls,
                     enabled=t.enabled,
                     expires_at=_naive_utc(t.expires_at) if t.expires_at else None,
                 )

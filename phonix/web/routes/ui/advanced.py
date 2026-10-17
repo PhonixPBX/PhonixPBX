@@ -328,7 +328,7 @@ def admin_delete(username: str, user: User = Depends(ui_user), db: Session = Dep
 
 # --- API tokens ----------------------------------------------------------------------------
 
-TOKEN_DEFAULTS = {"access": "read", "expires_in_days": ""}
+TOKEN_DEFAULTS = {"access": "read", "expires_in_days": "", "allow_calls": False}
 
 
 def _tokens_page(request: Request, db: Session, status_code: int = 200, **ctx: Any) -> Response:
@@ -358,6 +358,7 @@ async def api_token_create(request: Request, user: User = Depends(ui_user), db: 
         "name": name,
         "access": "write" if form.get("access") == "write" else "read",
         "expires_in_days": expires,
+        "allow_calls": form.get("allow_calls") == "true",
     }
     try:
         # empty = unlimited, like "phonix token create" without --expires-days
@@ -367,7 +368,13 @@ async def api_token_create(request: Request, user: User = Depends(ui_user), db: 
                 raise ServiceError(fields={"expires_in_days": _("Enter a number of days")})
             days = int(expires)
         token, plain = tokens.create(
-            db, user, name, read_only=values["access"] == "read", expires_in_days=days, actor=user.username
+            db,
+            user,
+            name,
+            read_only=values["access"] == "read",
+            allow_calls=values["allow_calls"],
+            expires_in_days=days,
+            actor=user.username,
         )
     except ServiceError as exc:
         db.rollback()

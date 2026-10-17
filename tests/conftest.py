@@ -51,3 +51,33 @@ def empty_session(runtime: config.RuntimeConfig) -> Iterator[Session]:
     migrate.upgrade()
     with db.session_scope() as s:
         yield s
+
+
+class FakeAmi:
+    """Stands in for ``ami.AmiClient`` in the calls service; records the actions."""
+
+    actions: list = []
+    response = {"Response": "Success", "Message": "Originate successfully queued"}
+
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        pass
+
+    def action(self, name, **fields):
+        FakeAmi.actions.append((name, fields))
+        return FakeAmi.response
+
+
+@pytest.fixture
+def fake_ami(monkeypatch):
+    from phonix.services import calls
+
+    FakeAmi.actions = []
+    FakeAmi.response = {"Response": "Success", "Message": "Originate successfully queued"}
+    monkeypatch.setattr(calls.ami, "AmiClient", FakeAmi)
+    return FakeAmi
