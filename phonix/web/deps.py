@@ -90,6 +90,20 @@ async def api_user(request: Request, db: Session = Depends(get_db)) -> User:
     return user
 
 
+async def api_caller(request: Request, db: Session = Depends(get_db)) -> User:
+    """Placing calls: a bearer token with ``allow_calls`` (read-only or not), or the UI session."""
+    auth = request.headers.get("authorization", "")
+    if auth:
+        scheme, _, credentials = auth.partition(" ")
+        if scheme.lower() != "bearer":
+            raise HTTPException(401, "use a bearer token (Advanced > API tokens)", headers=BEARER)
+        token = _bearer_token(request, db, credentials)
+        if not token.allow_calls:
+            raise HTTPException(403, "token may not place calls")
+        return token.user
+    return await api_user(request, db)
+
+
 async def mcp_token(request: Request, db: Session = Depends(get_db)) -> ApiToken:
     """MCP auth: bearer token only. Every MCP request is a POST, so read-only
     tokens are checked per tool instead of per HTTP method."""

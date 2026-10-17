@@ -15,6 +15,10 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   you to take a snapshot on the container host first. OCI containers are still updated by
   replacing the image. Containers created from 1.2.0 or older must be replaced once to get
   this feature.
+- Click-to-call: `POST /api/v1/calls` and the MCP tool `originate_call` ring a phone and, when
+  it is answered, dial a number from it with the phone's outgoing rules and caller ID. Only
+  API tokens with the new *May place calls* option can use them (off by default, also on
+  read-only tokens; `phonix token create --allow-calls`).
 
 ### Changed
 

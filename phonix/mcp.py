@@ -21,6 +21,7 @@ import phonix
 from phonix import config
 from phonix.core.models import User
 from phonix.services import apply as apply_svc
+from phonix.services import calls as calls_svc
 from phonix.services import settings_api
 from phonix.services import status as status_svc
 from phonix.services.common import ServiceError, dirty_areas
@@ -34,7 +35,8 @@ INSTRUCTIONS = (
     "PhonixPBX is an Asterisk based PBX appliance. Changes made with the create_*, update_*, "
     "delete_*, set_*_enabled and update_settings tools are stored but not active until "
     "apply_changes runs; get_pending_changes and preview_apply show what is outstanding. "
-    "Secrets are never returned: an empty secret keeps the stored one."
+    "Secrets are never returned: an empty secret keeps the stored one. "
+    "originate_call (tokens that may place calls) rings a phone and dials a number from it."
 )
 
 PARSE_ERROR = -32700
@@ -51,6 +53,7 @@ class Context:
     db: Session
     user: User
     read_only: bool
+    allow_calls: bool = False
 
     @property
     def actor(self) -> str:
@@ -74,6 +77,8 @@ class Tool:
     write: bool = False
     destructive: bool = False
     idempotent: bool = True
+    # places calls: only for tokens with allow_calls
+    calls: bool = False
     defs: dict[str, Any] = field(default_factory=dict)
 
     def describe(self) -> dict[str, Any]:
@@ -90,7 +95,7 @@ class Tool:
                 "readOnlyHint": not self.write,
                 "destructiveHint": self.destructive,
                 "idempotentHint": self.idempotent,
-                "openWorldHint": False,
+                "openWorldHint": self.calls,
             },
         }
 
@@ -263,6 +268,14 @@ def tail_log(ctx: Context, args: dict[str, Any]) -> Any:
     return {"log": log, "path": str(path), "lines": status_svc.tail(path, lines)}
 
 
+def originate_call(ctx: Context, args: dict[str, Any]) -> Any:
+    return calls_svc.originate(ctx.db, _str(args, "extension"), _str(args, "number"), ctx.actor, via="MCP")
+
+
+def _hidden(tool: Tool, ctx: Context) -> bool:
+    return (tool.write and ctx.read_only) or (tool.calls and not ctx.allow_calls)
+
+
 def _tools() -> dict[str, Tool]:
     tools = [t for res in RESOURCES for t in _resource_tools(res)]
     tools += [
@@ -302,6 +315,19 @@ def _tools() -> dict[str, Tool]:
                 "lines": {"type": "integer", "minimum": 1, "maximum": LOG_LINES_MAX, "default": 200},
             },
             ("log",),
+        ),
+        Tool(
+            "originate_call",
+            "Ring the phone with the given extension; when it is answered, dial the number from that phone "
+            "(its outgoing rules and caller ID apply). Calls to external numbers may cost money.",
+            originate_call,
+            {
+                "extension": {"type": "string", "description": "Extension of the SIP or IAX phone to ring first"},
+                "number": {"type": "string", "description": "Number to dial: digits, *, # and +"},
+            },
+            ("extension", "number"),
+            idempotent=False,
+            calls=True,
         ),
     ]
     return {t.name: t for t in tools}
@@ -350,6 +376,8 @@ def _call(ctx: Context, params: dict[str, Any], msg_id: Any) -> dict[str, Any]:
         return error(msg_id, INVALID_PARAMS, "arguments must be an object")
     if tool.write and ctx.read_only:
         return _result(msg_id, _content({"error": "token is read-only"}, is_error=True))
+    if tool.calls and not ctx.allow_calls:
+        return _result(msg_id, _content({"error": "token may not place calls"}, is_error=True))
     try:
         data = tool.handler(ctx, args)
     except ToolInputError as exc:
@@ -392,7 +420,7 @@ def handle(message: Any, ctx: Context) -> dict[str, Any] | None:
     if method == "ping":
         return _result(msg_id, {})
     if method == "tools/list":
-        listed = [t.describe() for t in tools().values() if not (t.write and ctx.read_only)]
+        listed = [t.describe() for t in tools().values() if not _hidden(t, ctx)]
         return _result(msg_id, {"tools": listed})
     if method == "tools/call":
         return _call(ctx, params, msg_id)

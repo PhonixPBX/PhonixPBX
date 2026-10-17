@@ -75,6 +75,8 @@ class ApiToken(Base):
     # start of the token, to recognise it in lists
     prefix: Mapped[str] = mapped_column(String(16))
     read_only: Mapped[bool] = mapped_column(Boolean, default=True)
+    # may place calls (POST /api/v1/calls, MCP originate_call), independent of read_only
+    allow_calls: Mapped[bool] = mapped_column(Boolean, default=False)
     enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     created_at: Mapped[dt.datetime] = mapped_column(DateTime, default=utcnow)

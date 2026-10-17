@@ -1,6 +1,6 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
-{% from "macros/forms.html" import csrf, input, radios, form_errors with context %}
+{% from "macros/forms.html" import csrf, input, radios, checkbox, form_errors with context %}
 {% from "macros/ui.html" import empty with context %}
 {% block content %}
 {% if new_token %}
@@ -38,6 +38,7 @@
         {{ form_errors(errors) }}
         {{ input("name", _("Name"), values, errors, required=True, placeholder=_("e.g. monitoring")) }}
         {{ radios("access", _("Access"), values, errors, [("read", _("Read-only")), ("write", _("Read-write"))], help=_("Read-only tokens can only use GET requests and the read-only MCP tools.")) }}
+        {{ checkbox("allow_calls", _("May place calls"), values, errors, help=_("Rings a phone and dials a number from it (POST /api/v1/calls, MCP tool originate_call), also with a read-only token. Calls to external numbers may cost money.")) }}
         {{ input("expires_in_days", _("Expires in (days)"), values, errors, type="number", placeholder=_("unlimited"), attrs='min="1" max="' ~ max_days ~ '"', help=_("1 to %(max)s days. Empty: the token does not expire.", max=max_days)) }}
         <p class="text-secondary small mb-0">{{ _('Send the token in the <code>Authorization: Bearer</code> header. See the <a href="/api/docs">API documentation</a>.') }}</p>
         <p class="text-secondary small mb-0 mt-2">{{ _("AI assistants connect over the Model Context Protocol (MCP) to <code>%(url)s</code> with the same header.", url=request.base_url ~ "api/mcp") }}</p>

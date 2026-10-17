@@ -26,13 +26,18 @@ def csrf(c, url="/login"):
     return re.search(r'name="csrf-token" content="([^"]+)"', c.get(url).text).group(1)
 
 
-def bearer(read_only=False, expires_in_days=None, name="test"):
+def bearer(read_only=False, expires_in_days=None, name="test", allow_calls=False):
     """Authorization header with a new API token of ``admin``."""
     from phonix.services import tokens
 
     with session_scope() as s:
         _, plain = tokens.create(
-            s, users.get_by_name(s, "admin"), name, read_only=read_only, expires_in_days=expires_in_days
+            s,
+            users.get_by_name(s, "admin"),
+            name,
+            read_only=read_only,
+            allow_calls=allow_calls,
+            expires_in_days=expires_in_days,
         )
     return {"Authorization": f"Bearer {plain}"}
 
@@ -368,8 +373,12 @@ def test_token_ui(client):
         data={**data, "name": "deploy", "access": "write", "expires_in_days": ""},
     )
     assert r.status_code == 200 and "unlimited" in r.text and "read-write" in r.text
+    r = client.post("/advanced/tokens", data={**data, "name": "dialer", "expires_in_days": "", "allow_calls": "true"})
+    assert r.status_code == 200 and "calls" in r.text
     with session_scope() as s:
+        assert s.query(ApiToken).filter_by(name="dialer").one().allow_calls is True
         token = s.query(ApiToken).filter_by(name="monitoring").one()
+        assert token.allow_calls is False
         token_id = token.id
         assert (token.expires_at - token.created_at).days == 30
     headers = {"X-CSRF-Token": csrf(client, "/advanced/tokens"), "HX-Request": "true"}
@@ -504,3 +513,43 @@ def test_application_logs(client, runtime, tmp_path):
     assert r.status_code == 200
     assert "INFO: started &lt;server&gt;" in r.text
     assert "/status/logs?log=monitor" in r.text
+
+
+def test_api_calls(client, fake_ami):
+    from sqlalchemy import select
+
+    from phonix.core.models import AuditLog, Phone
+
+    body = {"extension": "101", "number": "0441234567"}
+    assert client.post("/api/v1/calls", json=body).status_code == 401
+    assert client.post("/api/v1/calls", json=body, headers=bearer()).status_code == 403
+    r = client.post("/api/v1/calls", json=body, headers=bearer(read_only=True, allow_calls=True))
+    assert r.status_code == 202, r.text
+    assert r.json() == {"extension": "101", "number": "0441234567", "status": "ringing"}
+    name, fields = fake_ami.actions[0]
+    assert name == "Originate"
+    assert fields["Channel"] == "PJSIP/101" and fields["Context"] == "phone-101" and fields["Exten"] == "0441234567"
+    with session_scope() as s:
+        assert s.query(AuditLog).filter_by(action="originate").one().summary == "101 -> 0441234567 (API)"
+
+    auth = bearer(allow_calls=True)
+    r = client.post("/api/v1/calls", json={**body, "number": "1\r\nAction: Command"}, headers=auth)
+    assert r.status_code == 422 and "number" in r.json()["detail"]["fields"]
+    assert client.post("/api/v1/calls", json={**body, "extension": "999"}, headers=auth).status_code == 404
+    with session_scope() as s:
+        s.scalar(select(Phone).where(Phone.extension == "102")).enabled = False
+    assert client.post("/api/v1/calls", json={**body, "extension": "102"}, headers=auth).status_code == 422
+    r = client.post("/api/v1/calls", json={**body, "extension": "103"}, headers=auth)
+    assert r.status_code == 202 and fake_ami.actions[-1][1]["Channel"] == "IAX2/103"
+    fake_ami.response = {"Response": "Error", "Message": "Extension does not exist."}
+    r = client.post("/api/v1/calls", json=body, headers=auth)
+    assert r.status_code == 422 and "Extension does not exist" in r.json()["detail"]["message"]
+
+    fake_ami.response = {"Response": "Success"}
+    login(client)
+    assert client.post("/api/v1/calls", json=body).status_code == 403  # CSRF
+    r = client.post("/api/v1/calls", json=body, headers={"X-CSRF-Token": csrf(client, "/")})
+    assert r.status_code == 202
+
+    schema = client.get("/api/v1/openapi.json").json()
+    assert "/api/v1/calls" in schema["paths"]

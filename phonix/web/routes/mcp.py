@@ -41,7 +41,7 @@ async def mcp_post(request: Request, token: ApiToken = Depends(mcp_token), db: S
         return JSONResponse(mcp.error(None, mcp.PARSE_ERROR, "parse error"), status_code=400)
     if isinstance(message, list):
         return JSONResponse(mcp.error(None, mcp.INVALID_REQUEST, "batches are not supported"), status_code=400)
-    ctx = mcp.Context(db=db, user=token.user, read_only=token.read_only)
+    ctx = mcp.Context(db=db, user=token.user, read_only=token.read_only, allow_calls=token.allow_calls)
     response = await run_in_threadpool(mcp.handle, message, ctx)
     if response is None:
         return Response(status_code=202)

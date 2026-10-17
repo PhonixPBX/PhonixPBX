@@ -193,3 +193,26 @@ def test_read_only_tokens_get_no_pins(client):
     assert all("vm_pin" not in p for p in client.get("/api/v1/phones", headers=ro).json())
     assert "pin" not in client.get(f"/api/v1/conferences/{rooms[0]['id']}", headers=ro).json()
     assert "pin" in client.get(f"/api/v1/conferences/{rooms[0]['id']}", headers=bearer()).json()
+
+
+def test_originate_call(client, fake_ami):
+    tools = {t["name"]: t for t in rpc(client, "tools/list").json()["result"]["tools"]}
+    assert "originate_call" not in tools
+    result = call(client, "originate_call", extension="101", number="0441234567")
+    assert result["isError"] is True and "may not place calls" in result["content"][0]["text"]
+    assert fake_ami.actions == []
+
+    auth = bearer(read_only=True, allow_calls=True)
+    tools = {t["name"]: t for t in rpc(client, "tools/list", headers=auth).json()["result"]["tools"]}
+    assert tools["originate_call"]["annotations"]["openWorldHint"] is True
+    assert "create_phone" not in tools
+    result = call(client, "originate_call", auth, extension="101", number="0441234567")
+    assert "isError" not in result
+    assert result["structuredContent"] == {"extension": "101", "number": "0441234567", "status": "ringing"}
+    assert fake_ami.actions[0][1]["Context"] == "phone-101"
+    with session_scope() as s:
+        audit = s.scalar(select(AuditLog).where(AuditLog.action == "originate"))
+        assert audit.summary == "101 -> 0441234567 (MCP)" and audit.username == "admin (mcp)"
+
+    for args in ({"extension": "101", "number": "abc"}, {"extension": "999", "number": "1"}, {"extension": "101"}):
+        assert call(client, "originate_call", auth, **args)["isError"] is True
