@@ -1,12 +1,34 @@
-PhonixPBX
-=========
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="phonix/web/static/img/logo-sidebar.svg">
+    <img src="phonix/web/static/img/logo.svg" alt="PhonixPBX" width="340">
+  </picture>
+</p>
+
+<p align="center">
+  The appliance PBX on Alpine Linux and Asterisk 22, successor of AskoziaPBX.
+</p>
+
+<p align="center">
+  <a href="https://github.com/PhonixPBX/PhonixPBX/actions/workflows/ci.yml"><img src="https://github.com/PhonixPBX/PhonixPBX/actions/workflows/ci.yml/badge.svg" alt="ci"></a>
+  <a href="https://github.com/PhonixPBX/PhonixPBX/actions/workflows/image.yml"><img src="https://github.com/PhonixPBX/PhonixPBX/actions/workflows/image.yml/badge.svg" alt="image"></a>
+  <a href="https://github.com/PhonixPBX/PhonixPBX/actions/workflows/container.yml"><img src="https://github.com/PhonixPBX/PhonixPBX/actions/workflows/container.yml/badge.svg" alt="container"></a>
+  <a href="https://github.com/PhonixPBX/PhonixPBX/releases"><img src="https://img.shields.io/github/v/release/PhonixPBX/PhonixPBX?sort=semver" alt="release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/PhonixPBX/PhonixPBX" alt="license"></a>
+</p>
 
 PhonixPBX is the successor of AskoziaPBX (2007–2011): an appliance PBX built on Alpine
 Linux, Asterisk 22 (PJSIP), Python (FastAPI) and SQLite, with a Tabler + htmx 4 web
-interface in the classic AskoziaPBX colours. Bootable images are built for Raspberry Pi
-(arm64), amd64 and x86; the same system also ships as LXC/Incus/Proxmox VE system
-container and as OCI image for Docker/Podman. Configurations of AskoziaPBX 2.x systems
+interface in the classic AskoziaPBX colours. Configurations of AskoziaPBX 2.x systems
 can be imported.
+
+It ships as
+
+- bootable disk images for Raspberry Pi (arm64), PCs and VMs (amd64, x86),
+- LXC system containers for Incus and Proxmox VE,
+- an OCI image for Docker and Podman.
+
+## Documentation and downloads
 
 - Specification: [docs/SPEC.md](docs/SPEC.md)
 - Installation: [docs/INSTALL.md](docs/INSTALL.md)
