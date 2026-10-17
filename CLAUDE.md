@@ -69,4 +69,6 @@ CI (`.github/workflows/ci.yml`) runs ruff, mypy and pytest.
 ## Conventions
 
 - Commit messages: `area: lowercase summary` (e.g. `certificate: ...`, `ui: ...`, `nginx: ...`).
+- Every user-visible change gets an entry in `CHANGELOG.md` under `## [Unreleased]` (Keep a Changelog sections: Added, Changed, Fixed, Removed, Security), committed together with the change itself. Write it for administrators: what they can now do or what behaves differently, with menu paths (e.g. *Dialplan → IVR Menus*), and call out anything that needs action (incompatible `config.json` versions, upgrades, replaced containers). Internal refactors and tests get no entry.
+- Keep `docs/SPEC.md` in step with features and design decisions (data model, feature scope, API/MCP, backup format, implementation notes).
 - Ruff line length is 120.
