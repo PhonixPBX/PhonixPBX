@@ -14,7 +14,7 @@ SRC="$ROOT/docs/manual"
 DEST="$ROOT/phonix/web/static/help"
 HUGO=${HUGO:-hugo}
 
-if ! "$HUGO" version 2>/dev/null | grep -q "v$HUGO_VERSION[-+ ]"; then
+if ! "$HUGO" version 2>/dev/null | grep -q "v${HUGO_VERSION}[-+ ]"; then
     echo "error: hugo $HUGO_VERSION required (found: $("$HUGO" version 2>/dev/null || echo none))" >&2
     exit 1
 fi
