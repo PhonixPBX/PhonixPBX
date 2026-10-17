@@ -4,7 +4,7 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.3.0] - 2026-10-17
 
 ### Added
 
@@ -175,6 +175,7 @@ The pre-release database migrations were squashed into a single initial revision
 Nightly installs at the latest pre-release schema are upgraded automatically; older
 nightly databases must be recreated (factory reset).
 
+[1.3.0]: https://github.com/PhonixPBX/PhonixPBX/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/PhonixPBX/PhonixPBX/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/PhonixPBX/PhonixPBX/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/PhonixPBX/PhonixPBX/releases/tag/v1.0.0
