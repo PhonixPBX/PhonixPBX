@@ -63,6 +63,7 @@ RUN set -eu; S=/tmp/system; L=/usr/libexec/phonix; \
     install -Dm644 "$S/nginx/phonix.conf" /usr/share/phonix/nginx-phonix.conf; \
     install -Dm644 "$S/logrotate.d/phonix" /etc/logrotate.d/phonix; \
     install -Dm755 "$S/periodic/phonix-cert" /etc/periodic/daily/phonix-cert; \
+    install -Dm755 "$S/periodic/phonix-update" /etc/periodic/daily/phonix-update; \
     install -Dm644 "$S/rootfs/etc/nftables.nft" /etc/nftables.nft; \
     rm -rf "$S"; \
     pyver=$(python3 -c 'import sys; print(f"{sys.version_info[0]}.{sys.version_info[1]}")'); \

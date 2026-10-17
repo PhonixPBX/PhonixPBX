@@ -38,14 +38,16 @@ def test_dialplan_semantics(session):
     ext = render(session)["/etc/asterisk/extensions.conf"].content
     assert "Macro(" not in ext and "MeetMe(" not in ext
     # outgoing: 49+0|1XX. -> strip 1 digit, prepend 49
-    assert "Dial(PJSIP/49${EXTEN:1}@prov-1,,T)" in ext
+    # the internal caller may disconnect with *0 (H)
+    assert "Dial(PJSIP/49${EXTEN:1}@prov-1,,TH)" in ext
     # Bob blocked the IAX trunk
     bob = ext.split("[phone-102-out]")[1].split("\n\n")[0]
     assert "prov-3-out" not in bob and "Bob <4930123457>" in bob
     # failover from IAX trunk to the SIP trunk
     assert "prov-1-out,${EXTEN},1" in ext.split("[prov-3-out]")[1]
-    # public call group from outside: no transfer for the caller (t, not tT)
-    assert "Gosub(sub-dial,s,1(PJSIP/101&PJSIP/102,101,t,))" in ext
+    # public call group from outside: no transfer or disconnect for the caller (th, not tThH)
+    assert "Gosub(sub-dial,s,1(PJSIP/101&PJSIP/102,101,th,))" in ext
+    assert ",tThH," in ext
 
 
 def test_pjsip(session):
@@ -57,6 +59,7 @@ def test_pjsip(session):
     assert "context=prov-host-0-in" in conf
     assert "mailboxes=101@default" in conf
     assert "max_contacts=2" in conf
+    assert "minimum_expiration=60" in conf and "maximum_expiration=7200" in conf
 
 
 def test_nat_settings(session):
@@ -98,6 +101,15 @@ def test_firewall(session):
     assert "ip6 saddr @admin6" in nft
     assert "ip saddr @sip4 udp dport 5060 accept" in nft
     assert "policy drop" in nft
+    assert "5038" not in nft
+
+
+def test_firewall_ami(session):
+    # the sample "monitor" manager user may connect from 192.168.1.0/24
+    sample_pbx(session)
+    nft = render(session)["/etc/nftables.nft"].content
+    assert "elements = { 192.168.1.0/24 }" in nft.split("set ami4")[1]
+    assert "ip saddr @ami4 tcp dport 5038 accept" in nft
 
 
 def test_privileged_flags(session):
@@ -163,3 +175,15 @@ def test_notification_languages(session):
     st.save(session, vm.model_copy(update={"templates": {"de": st.NotificationTexts(vm_subject="VM ${VM_MAILBOX}")}}))
     notify = json.loads(render(session)["/etc/asterisk/phonix-notify.json"].content)
     assert notify["languages"]["de"]["vm_subject"] == "VM ${VM_MAILBOX}"
+
+
+def test_pjsip_srv_lookup(session):
+    sample_pbx(session)
+    assert "server_uri=sip:sip.example.com\n" in render(session)["/etc/asterisk/pjsip.conf"].content
+    sip = st.load(session, st.SipSettings)
+    sip.srv_lookup = False
+    st.save(session, sip)
+    conf = render(session)["/etc/asterisk/pjsip.conf"].content
+    # an explicit port skips the DNS SRV lookup (RFC 3263)
+    assert "server_uri=sip:sip.example.com:5060\n" in conf and "contact=sip:sip.example.com:5060\n" in conf
+    assert "match=sip.example.com\n" in conf

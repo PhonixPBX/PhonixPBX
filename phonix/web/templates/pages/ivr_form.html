@@ -1,6 +1,7 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
 {% from "macros/forms.html" import csrf, input, checkbox, select, radios, form_errors, submit, dest_select with context %}
+{% block help_anchor %}edit{% endblock %}
 {% block page_title %}{{ _("New IVR menu") if is_new else _("Edit IVR menu %(name)s", name=values.name) }}{% endblock %}
 {% block content %}
 <form method="post" action="/dialplan/ivr/{{ 'new' if is_new else menu_id }}" id="ivr-form">

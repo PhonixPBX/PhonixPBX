@@ -23,6 +23,8 @@ import json
 import logging
 import re
 import tarfile
+import time
+import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -41,6 +43,7 @@ log = logging.getLogger(__name__)
 MAX_BUNDLE = 1024**3
 MAX_MANIFEST = 1024**2
 MAX_SIGNATURE = 1024
+CHECK_STATE = "update-check.json"  # result of the last online check (state dir)
 
 # PEP 440 (1.2.0, 1.2.0rc1, 1.2.0.post1, 1.3.0.dev0), with an optional "v" prefix; the
 # semver spellings 1.2.0-rc.1 and 1.2.0-alpha normalise the same way. Local versions (+build) are ignored.
@@ -81,6 +84,48 @@ def is_newer(latest: str, current: str) -> bool:
     if a is None or b is None:
         return latest.removeprefix("v") != current.removeprefix("v")
     return a > b
+
+
+@dataclass
+class Release:
+    version: str
+    url: str
+
+
+def check_online(url: str) -> Release:
+    """Ask the update information URL (GitHub "latest release" API or ``{"version", "url"}``)
+    for the newest release and remember the answer for the dashboard."""
+    if not url.startswith("https://"):
+        raise ServiceError(_("Configure an https:// update check URL first."))
+    req = urllib.request.Request(  # noqa: S310 - https only, admin configured
+        url, headers={"User-Agent": f"phonix/{__version__}", "Accept": "application/vnd.github+json, application/json"}
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:  # noqa: S310 - https only, admin configured
+            data = json.loads(resp.read(1024 * 1024))
+        if "tag_name" in data:  # GitHub release (api.github.com/repos/<owner>/<repo>/releases/latest)
+            release = Release(str(data["tag_name"]).removeprefix("v"), str(data.get("html_url", "")))
+        else:  # plain {"version": ..., "url": ...}
+            release = Release(str(data.get("version") or ""), str(data.get("url", "")))
+        if not release.version:
+            raise ValueError("the response contains no version")
+    except (OSError, ValueError, AttributeError) as exc:
+        raise ServiceError(_("Update check failed: %(error)s", error=exc)) from exc
+    state = config.get().state_dir
+    state.mkdir(parents=True, exist_ok=True)
+    data = {"version": release.version, "url": release.url, "checked": int(time.time())}
+    (state / CHECK_STATE).write_text(json.dumps(data) + "\n")
+    return release
+
+
+def available() -> Release | None:
+    """The newer release found by the last online check, if any."""
+    try:
+        data = json.loads((config.get().state_dir / CHECK_STATE).read_text())
+        release = Release(str(data["version"]), str(data.get("url", "")))
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+    return release if is_newer(release.version, __version__) else None
 
 
 @dataclass

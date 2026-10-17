@@ -9,10 +9,10 @@ cookie plus the ``X-CSRF-Token`` header.
 # NOTE: no "from __future__ import annotations" here - FastAPI must see the real
 # pydantic classes of the generated CRUD endpoints (closure locals).
 
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import PlainTextResponse, Response
+from fastapi.responses import JSONResponse, PlainTextResponse, Response
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
@@ -24,7 +24,7 @@ from phonix.services import settings_api
 from phonix.services import status as status_svc
 from phonix.services.common import NotFound, ServiceError, dirty_areas
 from phonix.services.resources import RESOURCES, Resource
-from phonix.web.deps import api_caller, api_user, get_db
+from phonix.web.deps import api_caller, api_user, api_writer, get_db
 
 router = APIRouter(prefix="/api/v1", tags=["api"])
 
@@ -164,6 +164,48 @@ def apply(user: User = Depends(api_user), db: Session = Depends(get_db)) -> dict
         "actions": result.actions,
         "errors": result.errors,
     }
+
+
+MAX_LEGACY_XML = 10 * 1024 * 1024
+
+
+@router.post(
+    "/legacy/import",
+    tags=["legacy"],
+    summary="Import an AskoziaPBX config.xml (request body); only a preview unless dry_run=false",
+    responses={422: {"description": "the file has errors; nothing was imported"}},
+)
+async def legacy_import(
+    request: Request,
+    dry_run: bool = True,
+    mode: Literal["replace", "merge"] = "replace",
+    user: User = Depends(api_user),
+) -> Any:
+    from phonix.legacy import importer
+
+    data = b""
+    async for chunk in request.stream():
+        data += chunk
+        if len(data) > MAX_LEGACY_XML:
+            raise HTTPException(413, "config.xml is larger than 10 MB")
+    report = importer.import_bytes(data, mode=mode, dry_run=dry_run, user=user.username)
+    return JSONResponse(report.to_dict(), status_code=200 if report.ok else 422)
+
+
+@router.get(
+    "/legacy/export",
+    tags=["legacy"],
+    summary="The configuration as AskoziaPBX config.xml (contains plaintext secrets; not for read-only tokens)",
+    response_class=Response,
+    responses={200: {"content": {"application/xml": {}}}},
+)
+def legacy_export(user: User = Depends(api_writer), db: Session = Depends(get_db)) -> Response:
+    from phonix.legacy import exporter
+
+    xml, _report = exporter.export(db, user=user.username)
+    return Response(
+        xml, media_type="application/xml", headers={"Content-Disposition": 'attachment; filename="config.xml"'}
+    )
 
 
 @router.get(

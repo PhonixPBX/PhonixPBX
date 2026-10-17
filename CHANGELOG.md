@@ -6,6 +6,46 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- User manual in English and German, available on the PBX under `/help/` without logging in. It explains
+  every page of the web interface and has a chapter for phone users with all dial codes (transfer, pickup,
+  parking, voicemail, call forwarding, conference rooms).
+- A help button (?) in the header of every page opens the matching chapter of the manual in a new tab, in
+  German when German is your interface language and in English otherwise. Create and edit forms jump straight
+  to the description of their fields. The footer and the login page link to the manual too.
+- *System → Firmware → Check automatically* now works: once a day the PBX asks the update information URL
+  for the newest release. When a check (daily or *Check now*) finds a newer version, *Status → Summary*
+  shows a notice with a link to *System → Firmware*. Nothing is downloaded or installed automatically.
+  `phonix update check` runs the check from the command line.
+- REST API for AskoziaPBX configurations: `POST /api/v1/legacy/import` (preview by default,
+  `?dry_run=false&mode=replace|merge` to import) and `GET /api/v1/legacy/export`. The export contains
+  plaintext secrets and is refused for read-only tokens.
+- When a `config.xml` on the boot partition was imported at first boot, *Status → Summary* now shows the
+  import report until you dismiss it.
+
+### Changed
+
+- The SIP registration timers under *Advanced → SIP* now take effect: phones that ask for a registration
+  interval outside *Minimum expiry*–*Maximum expiry* get the nearest limit, and phones that ask for none
+  get *Default expiry*. Check the values after upgrading if your phones use unusual intervals.
+- Turning off *Use DNS SRV lookups* under *Advanced → SIP* now works: providers without a port are
+  contacted directly on port 5060 (TLS: 5061) instead of looking up DNS SRV records.
+- Changes to the automatic blocking under *Advanced → Firewall* apply within about a minute; before, they
+  needed a restart of the security monitor.
+
+### Removed
+
+- *Advanced → GUI Options → Always expand advanced sections*: it had no effect, since the forms show all
+  fields in tabs. The value is still accepted in `config.json`.
+
+### Fixed
+
+- The disconnect code (*Dialplan → Transfers & Parking*, default `*0`) now ends the call; it had no effect
+  before. On calls from providers only the internal phone can use it.
+- Manager (AMI) users with permitted networks other than localhost can connect with the firewall enabled:
+  port 5038 is now opened for those IPv4 networks (after *Apply changes*).
+
 ## [1.3.0] - 2026-10-17
 
 ### Added

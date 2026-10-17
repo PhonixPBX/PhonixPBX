@@ -36,6 +36,15 @@ def nftables(snap: Snapshot) -> str:
         rules.append(f"tcp dport {sip.tls_port}")
     if snap.iax.enabled:
         rules.append(f"udp dport {snap.iax.port}")
+    # manager (AMI) users that may connect from elsewhere (Asterisk binds 0.0.0.0 then, IPv4 only)
+    ami4 = sorted(
+        {
+            str(net)
+            for user in snap.ami_users
+            for net in (ipaddress.ip_network(n, strict=False) for n in user.permit)
+            if net.version == 4 and not net.subnet_of(ipaddress.IPv4Network("127.0.0.0/8"))
+        }
+    )
     return render(
         "system/nftables.nft.j2",
         fw=fw,
@@ -47,6 +56,7 @@ def nftables(snap: Snapshot) -> str:
         sip6=sip6,
         admin_ports=admin_ports,
         sip_rules=rules,
+        ami4=ami4,
         rtp=snap.rtp,
     )
 

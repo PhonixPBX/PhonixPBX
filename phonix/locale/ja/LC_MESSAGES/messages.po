@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-17 09:53+0200\n"
+"POT-Creation-Date: 2026-10-17 16:06+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ja\n"
@@ -322,9 +322,6 @@ msgstr "詳細: 1 行に 1 つの key=value を記述します。生成された
 
 msgid "Advanced: one key=value per line, appended to the generated section."
 msgstr "詳細: 1 行に 1 つの key=value を記述します。生成されたセクションに追加されます。"
-
-msgid "Always expand advanced sections"
-msgstr "詳細セクションを常に展開する"
 
 msgid "An Asterisk sound in the prompt language of the system, e.g. welcome. You can also type the name of another sound."
 msgstr "システムのガイダンス言語の Asterisk サウンドです（例: welcome）。他のサウンド名を入力することもできます。"
@@ -961,6 +958,9 @@ msgstr "IP アドレスで認証するプロバイダーでは無効にしてく
 msgid "Disconnect"
 msgstr "切断"
 
+msgid "Dismiss"
+msgstr "閉じる"
+
 msgid "Domain"
 msgstr "ドメイン"
 
@@ -1343,6 +1343,9 @@ msgstr ""
 "-- \n"
 "PhonixPBX\n"
 
+msgid "Help"
+msgstr "ヘルプ"
+
 msgid "Holidays and closing days"
 msgstr "祝日と休業日"
 
@@ -1685,6 +1688,9 @@ msgstr "マネージャーユーザーが見つかりません"
 
 msgid "Manager users"
 msgstr "マネージャーユーザー"
+
+msgid "Manual"
+msgstr "マニュアル"
 
 msgid "Max. message length (s)"
 msgstr "メッセージの最大長（秒）"
@@ -2221,6 +2227,10 @@ msgstr "電話機とプロバイダー"
 
 msgid "Phones and providers. Empty = everyone (recommended only with strong passwords)."
 msgstr "電話機とプロバイダー。空欄 = すべて許可（強力なパスワードを使用している場合のみ推奨）。"
+
+#, python-format
+msgid "PhonixPBX %(version)s is available. <a href=\"/system/firmware\">Update the system</a>."
+msgstr "PhonixPBX %(version)s が利用可能です。<a href=\"/system/firmware\">システムを更新</a>。"
 
 msgid "PhonixPBX home"
 msgstr "PhonixPBX ホーム"
@@ -2800,6 +2810,11 @@ msgstr "テストメッセージを %(to)s に送信しました。"
 
 msgid "Thailand"
 msgstr "タイ"
+
+msgid ""
+"The AskoziaPBX configuration (config.xml) found on the boot partition was imported at first boot. Check the report "
+"and the imported settings."
+msgstr "ブートパーティションにあった AskoziaPBX の設定 (config.xml) を初回起動時にインポートしました。レポートとインポートされた設定を確認してください。"
 
 msgid ""
 "The Asterisk Manager Interface (TCP port 5038) lets external software (CTI, dashboards) control the PBX. Only add "

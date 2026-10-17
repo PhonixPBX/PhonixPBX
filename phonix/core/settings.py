@@ -394,6 +394,7 @@ class AcmeSettings(SettingsGroup):
 
 class GuiSettings(SettingsGroup):
     group: str = Field(default="gui", exclude=True)
+    # no longer shown (forms use tabs, nothing is collapsed); kept so config.json stays compatible
     expand_advanced: bool = False
     session_minutes: int = Field(default=60, ge=5, le=24 * 60)
 

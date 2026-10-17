@@ -159,8 +159,9 @@ def ring_steps(target: RingTarget, from_public: bool, linear: list[RingTarget] |
         steps.append(f"Set(NOTIFY_EMAIL={target.notify_email})")
         steps.append(f"Set(NOTIFY_TARGET={target.notify_target})")
         steps.append("Set(CHANNEL(hangup_handler_push)=sub-missed-call,s,1)")
-    # callers coming from outside must not get the transfer feature (legacy "t" vs "tT")
-    options = "t" if from_public else "tT"
+    # callers coming from outside must not get the transfer and disconnect features (legacy "t" vs "tT");
+    # h/H enable the disconnect code (*0) for the called / calling phone
+    options = "th" if from_public else "tThH"
     timeout = str(target.ringlength) if target.ringlength else ""
     if linear:
         for member in linear:
@@ -618,9 +619,9 @@ class DialplanBuilder:
             pattern, prefix, strip = parse_dialpattern(dp.pattern)
             number = prefix + (f"${{EXTEN:{strip}}}" if strip else "${EXTEN}")
             if provider.tech == "iax":
-                dial = f"Dial(IAX2/prov-{provider.id}/{number},,T)"
+                dial = f"Dial(IAX2/prov-{provider.id}/{number},,TH)"
             else:
-                dial = f"Dial(PJSIP/{number}@prov-{provider.id},,T)"
+                dial = f"Dial(PJSIP/{number}@prov-{provider.id},,TH)"
             steps = [f"NoOp(Outgoing call via {provider.name})", "Set(CDR(userfield)=outbound)", dial]
             if failover is not None:
                 steps += [

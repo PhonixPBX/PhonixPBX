@@ -1,6 +1,7 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
 {% from "macros/forms.html" import csrf, input, secret, textarea, select, form_errors, submit with context %}
+{% block help_anchor %}edit{% endblock %}
 {% block page_title %}{{ _("New manager user") if is_new else _("Edit manager user %(name)s", name=values.username) }}{% endblock %}
 {% block content %}
 <form method="post" action="/advanced/manager/{{ 'new' if is_new else obj_id }}" class="card">

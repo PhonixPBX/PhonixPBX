@@ -170,7 +170,7 @@ class SecurityHeaders(BaseHTTPMiddleware):
             )
         for key, value in headers.items():
             response.headers.setdefault(key, value)
-        if request.url.path.startswith("/static/"):
+        if request.url.path.startswith(("/static/", "/help/")):
             response.headers.setdefault("Cache-Control", "public, max-age=3600")
         else:
             response.headers.setdefault("Cache-Control", "no-store")

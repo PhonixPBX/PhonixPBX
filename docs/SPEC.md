@@ -171,7 +171,7 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 - PJSIP: transports, NAT and external IP, TLS/SRTP toggle
 - IAX
 - AMI users
-- GUI options
+- GUI options (inactivity logout; `expand_advanced` is a legacy field kept for `config.json` compatibility and not shown)
 
 **Console**
 - A small Python TUI on tty1 replaces `rc.initial`. It offers: show IP, set LAN IP, reset password, factory reset, reboot.
@@ -246,9 +246,9 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 - **UI:** the System → Backup/Restore page gets a "Legacy AskoziaPBX" card.
   - Import uses a Dropzone upload, then shows the dry-run report in a Tabler table with warnings and errors badges, then asks for the mode and confirmation.
   - Export is a download button with its report.
-- **API:** `POST /api/v1/legacy/import?dry_run=true|false&mode=replace|merge`, `GET /api/v1/legacy/export`.
+- **API:** `POST /api/v1/legacy/import?dry_run=true|false&mode=replace|merge` with the file as request body (at most 10 MB; `dry_run` defaults to true; returns the report, 422 when it has errors), `GET /api/v1/legacy/export` (refused for read-only tokens even though it is a GET, because of the plaintext secrets).
 - **CLI:** `phonix legacy import <file> [--dry-run] [--merge]` and `phonix legacy export <file>`.
-- **First-boot convenience:** if `PHXBOOT/config.xml` is present on the boot partition at first boot, it is imported automatically (Replace), the report is saved and shown on first login, and the file is renamed to `config.xml.imported`. This matches where users put the file on old boxes, under `conf/config.xml` on partition 1, which is also checked.
+- **First-boot convenience:** if `PHXBOOT/config.xml` is present on the boot partition at first boot, it is imported automatically (Replace), the report is saved to `state/legacy-import-report.json` and shown on the dashboard until an administrator dismisses it, and the file is renamed to `config.xml.imported`. This matches where users put the file on old boxes, under `conf/config.xml` on partition 1, which is also checked.
 
 **Tests**
 - **Fixtures:** every `legacy/target/*/config.xml`, plus realistic synthetic configs covering each section, older versions such as 2.0, and malformed or hostile XML.
@@ -322,7 +322,8 @@ Everything hardware-specific listed in the confirmed decisions, plus Humbug anal
 
 **Firewall and SIP**
 - An nftables ruleset is generated from settings.
-- The SIP port is open only to the configured networks and providers. An optional fail2ban equivalent bans IPs on Asterisk security events from AMI.
+- The SIP port is open only to the configured networks and providers. An optional fail2ban equivalent bans IPs on Asterisk security events from AMI; the monitor re-reads its settings at most a minute after a change, keeping its counters.
+- The AMI port 5038 is opened only for the IPv4 networks of the manager users (loopback excluded); Asterisk binds to all addresses only when such a user exists.
 - `alwaysauthreject` is enabled, and anonymous inbound is off by default.
 
 **Updates**
@@ -366,6 +367,12 @@ Everything hardware-specific listed in the confirmed decisions, plus Humbug anal
 - Dark mode uses Tabler's built-in theme with the same primary color.
 - Forms use Tabler form controls, with validation errors shown inline next to each field.
 
+**User manual**
+- An end-user and administrator manual in English and German is written in Markdown under `docs/manual/` (Hugo, own minimal layout on top of the vendored Tabler CSS, no external theme). Its chapter paths mirror the menu URLs (`/accounts/phones` → `docs/manual/content/<lang>/accounts/phones.md`; the dashboard `/` → `status/summary`), plus *Getting started*, *Using your phone* (dial codes for phone users) and *Reference* (CLI, API/MCP, AskoziaPBX migration, troubleshooting).
+- `scripts/help-build.sh` renders it with a pinned Hugo version into `phonix/web/static/help/`, which is committed like the vendored assets, so packages and images need no Hugo. CI (`scripts/help-build.sh check`) fails when the committed output is stale.
+- It is served without login under `/help/` (English) and `/help/de/` (German): by nginx from the static directory on the appliance, by a `StaticFiles` mount in development.
+- Every page below the sidebar layout has a help button (`?`) in the page header that opens the chapter of the active menu item in a new tab, in the manual language matching the interface language (English for languages without a manual). Create/edit forms link to the chapter's `#edit` section; templates set `help_page`/`help_anchor` blocks to point elsewhere. Section anchors are explicit (`{#edit}`) and identical in all languages. `tests/test_help.py` checks that every menu item has a chapter in every manual language and that all linked anchors exist.
+
 **Translation**
 - The web interface uses gettext catalogs in `phonix/locale/<lang>/LC_MESSAGES/messages.po`. They are read and compiled in memory at runtime by `phonix/i18n.py`, so there is no `.mo` build step.
 - Languages: English (source), English (UK) (uses the English text), German, French, Spanish, Italian, Dutch, Danish, Swedish, Polish, Portuguese (Brazil), Russian, Japanese. These are the languages of the legacy GUI that also exist as prompt languages.
@@ -392,6 +399,7 @@ packaging/apk/APKBUILD   # builds phonix as an Alpine package (abuild, signed)
 image/                   # image build: build.sh, per-board profiles (rpi-arm64, pc-amd64, pc-x86), partition layout
 dev/                     # docker compose dev env (Asterisk 22 + app, hot reload)
 docs/SPEC.md             # this spec (committed)
+docs/manual/             # user manual (Hugo, en/de); built into phonix/web/static/help/ by scripts/help-build.sh
 .github/workflows/       # lint, test, build apk + images, QEMU boot smoke test
 ```
 
@@ -473,7 +481,7 @@ This replaces the old `/cf` and `/offload` scheme and meets the goals of the `st
 - Root actions go through doas to `system/container/priv`, which only does what belongs inside a container.
 
 ### Updates
-- The UI uploads a bundle or downloads it from a URL. The ed25519 signature is verified in Python with `cryptography`, using `py3-cryptography`.
+- The UI uploads a bundle. *Check now*, and with *Check automatically* a daily job (`/etc/periodic/daily/phonix-update` → `phonix update check --auto`), ask the update information URL (GitHub "latest release" API or `{"version", "url"}`) for the newest release; the answer is kept in `state/update-check.json` and the dashboard shows a notice while it is newer than the running version. Nothing is downloaded automatically. The ed25519 signature is verified in Python with `cryptography`, using `py3-cryptography`.
 - `priv install-update` writes the squashfs and kernel to the inactive slot and sets the next boot to try that slot.
 - LXC boards get a package bundle instead: `packages.tar` (an apk repository with every package of the release; the index is unsigned because the manifest covers the whole tar), `world` and `image-info`.
   - `priv install-update` replaces `/etc/apk/world` and runs `apk upgrade --available` against that repository only.
@@ -541,4 +549,6 @@ Each phase ends shippable and tested.
 - IVR menus and business hours are generated twice: `ivr-<id>` / `hours-<id>` for internal callers and `-pub` variants for calls from providers, which only include `public-direct-dial` and ring targets without the transfer feature (`t` instead of `tT`).
 - The business hours mode is runtime state, not configuration: `DB(phonix-hours/<id>)` holds `open` or `closed` (no entry = automatic). The services read and write it with the `database get/put/del` CLI commands over AMI, so it changes without an apply, survives restarts (`astdbdir` is on `/data`) and is not part of backups; ids change on a restore, so a forced mode is lost then.
 - `GotoIfTime()` includes the end minute and rejects `24:00`, while PhonixPBX stores exclusive ends: the generator writes `17:30` as `17:29` and `24:00` as `23:59`.
+- Dial options: `tThH` for internal callers and `th` for calls from providers (the callee may transfer, only internal parties get the disconnect code `*0`); outgoing provider calls use `TH`. The `h`/`H` options are what activates `features.conf`'s `disconnect` code.
+- PJSIP registration timers: phone AORs get `default_expiration`/`minimum_expiration`/`maximum_expiration` from the SIP settings, provider registrations use the default expiry. With *DNS SRV lookups* off, providers without a port get the transport's standard port (5060, TLS 5061) written into `server_uri`/`contact`, because PJSIP has no SRV switch and an explicit port skips the SRV lookup (RFC 3263).
 - Click-to-call and the IVR test call use AMI `Originate` (async, 30 s ring time) into `phone-<ext>` or `ivr-<id>`, so the dialplan decides what the phone may reach.

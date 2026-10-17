@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-17 09:53+0200\n"
+"POT-Creation-Date: 2026-10-17 16:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -332,9 +332,6 @@ msgid "Advanced: one key=value per line, appended to the generated endpoint/peer
 msgstr ""
 
 msgid "Advanced: one key=value per line, appended to the generated section."
-msgstr ""
-
-msgid "Always expand advanced sections"
 msgstr ""
 
 msgid ""
@@ -982,6 +979,9 @@ msgstr ""
 msgid "Disconnect"
 msgstr ""
 
+msgid "Dismiss"
+msgstr ""
+
 msgid "Domain"
 msgstr ""
 
@@ -1356,6 +1356,9 @@ msgid ""
 "PhonixPBX\n"
 msgstr ""
 
+msgid "Help"
+msgstr ""
+
 msgid "Holidays and closing days"
 msgstr ""
 
@@ -1705,6 +1708,9 @@ msgid "Manager user not found"
 msgstr ""
 
 msgid "Manager users"
+msgstr ""
+
+msgid "Manual"
 msgstr ""
 
 msgid "Max. message length (s)"
@@ -2261,6 +2267,12 @@ msgstr ""
 msgid ""
 "Phones and providers. Empty = everyone (recommended only with strong "
 "passwords)."
+msgstr ""
+
+#, python-format
+msgid ""
+"PhonixPBX %(version)s is available. <a href=\"/system/firmware\">Update "
+"the system</a>."
 msgstr ""
 
 msgid "PhonixPBX home"
@@ -2847,6 +2859,11 @@ msgid "Test message sent to %(to)s."
 msgstr ""
 
 msgid "Thailand"
+msgstr ""
+
+msgid ""
+"The AskoziaPBX configuration (config.xml) found on the boot partition was"
+" imported at first boot. Check the report and the imported settings."
 msgstr ""
 
 msgid ""

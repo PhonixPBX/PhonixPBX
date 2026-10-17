@@ -1,0 +1,79 @@
+/* PhonixPBX manual: layout on top of Tabler and /static/phonix.css */
+.manual-content {
+  max-width: 52rem;
+  line-height: 1.6;
+}
+.manual-content h2 {
+  margin-top: 2rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--tblr-border-color);
+}
+.manual-content h3 {
+  margin-top: 1.5rem;
+}
+.manual-content h2,
+.manual-content h3 {
+  scroll-margin-top: 1rem;
+}
+.manual-content :target {
+  background: var(--tblr-primary-lt);
+  border-radius: 4px;
+}
+.manual-content table {
+  width: 100%;
+  margin-bottom: 1rem;
+  border-collapse: collapse;
+}
+.manual-content th,
+.manual-content td {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--tblr-border-color);
+  vertical-align: top;
+}
+.manual-content th {
+  background: var(--tblr-bg-surface-secondary);
+}
+.manual-content code {
+  white-space: nowrap;
+}
+.manual-content pre code {
+  white-space: pre;
+}
+.manual-content blockquote {
+  padding: 0.5rem 1rem;
+  border-left: 4px solid var(--tblr-primary);
+  background: var(--tblr-bg-surface);
+}
+.manual-content kbd {
+  font-size: 0.85em;
+}
+.manual-toc {
+  position: sticky;
+  top: 1rem;
+  font-size: 0.875rem;
+}
+.manual-toc ul {
+  padding-left: 1rem;
+  list-style: none;
+}
+.manual-toc > nav > ul {
+  padding-left: 0;
+}
+.manual-subnav {
+  padding: 0 0 0.5rem 1.5rem;
+}
+.manual-subnav .dropdown-item {
+  color: rgba(255, 255, 255, 0.86);
+  padding: 0.3rem 0.75rem;
+  white-space: normal;
+}
+.manual-subnav .dropdown-item.active,
+.manual-subnav .dropdown-item:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+@media print {
+  .page-wrapper {
+    margin: 0 !important;
+  }
+}

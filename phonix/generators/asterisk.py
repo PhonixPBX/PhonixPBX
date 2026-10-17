@@ -7,6 +7,7 @@ from __future__ import annotations
 import ipaddress
 import json
 
+from phonix.core.models import Provider
 from phonix.generators import dialplan
 from phonix.generators.base import DATA, GeneratedFile, Snapshot, render
 
@@ -49,7 +50,18 @@ def transports(snap: Snapshot) -> list[dict[str, object]]:
     return out
 
 
+# standard port per provider transport (RFC 3263: an explicit port skips the DNS SRV lookup)
+SIP_PORTS = {"udp": 5060, "tcp": 5060, "tls": 5061}
+
+
+def provider_hostport(snap: Snapshot, provider: Provider) -> str:
+    """host[:port] of a PJSIP provider; with SRV lookups off the port is always given."""
+    port = provider.port or (None if snap.sip.srv_lookup else SIP_PORTS.get(provider.transport, 5060))
+    return f"{provider.host}:{port}" if port else provider.host
+
+
 def pjsip_conf(snap: Snapshot) -> str:
+    providers = [p for p in snap.active_providers if p.tech == "pjsip"]
     return render(
         "asterisk/pjsip.conf.j2",
         sip=snap.sip,
@@ -58,7 +70,8 @@ def pjsip_conf(snap: Snapshot) -> str:
         tls_cert=f"{snap.facts.data_dir}/tls/server.crt",
         tls_key=f"{snap.facts.data_dir}/tls/server.key",
         srtp=snap.sip.srtp == "optional",
-        providers=[p for p in snap.active_providers if p.tech == "pjsip"],
+        providers=providers,
+        hostport={p.id: provider_hostport(snap, p) for p in providers},
         phones=[p for p in snap.active_phones if p.tech == "pjsip"],
         provider_context=dialplan.provider_contexts(snap),
         identify=dialplan.identify_providers(snap),

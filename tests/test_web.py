@@ -434,6 +434,7 @@ def test_firmware_check_github_release(client, monkeypatch):
     import json
 
     from phonix.core import settings as st
+    from phonix.services import update as update_svc
     from phonix.web.routes.ui import system as system_routes
 
     requests = []
@@ -442,7 +443,7 @@ def test_firmware_check_github_release(client, monkeypatch):
         requests.append(req)
         return io.BytesIO(json.dumps(payload).encode())
 
-    monkeypatch.setattr(system_routes.urllib.request, "urlopen", fake_urlopen)
+    monkeypatch.setattr(update_svc.urllib.request, "urlopen", fake_urlopen)
     login(client)
     token = csrf(client, "/system/firmware")
     headers = {"HX-Request": "true", "X-CSRF-Token": token}
@@ -453,6 +454,8 @@ def test_firmware_check_github_release(client, monkeypatch):
     assert "releases/tag/v9.9.9" in r.text
     assert requests[0].full_url == st.DEFAULT_UPDATE_CHECK_URL
     assert requests[0].get_header("User-agent").startswith("phonix/")
+    # the dashboard shows the result of the last check
+    assert "PhonixPBX 9.9.9 is available" in client.get("/").text
 
     payload = {"version": "9.9.8", "url": "https://updates.example.com/phonix-9.9.8.update"}
     r = client.post("/system/firmware/check", headers=headers)
@@ -553,3 +556,46 @@ def test_api_calls(client, fake_ami):
 
     schema = client.get("/api/v1/openapi.json").json()
     assert "/api/v1/calls" in schema["paths"]
+
+
+def test_api_legacy_import_export(client):
+    from pathlib import Path
+
+    from sqlalchemy import func, select
+
+    from phonix.core.models import Phone
+
+    xml = (Path(__file__).parent / "legacy" / "fixtures" / "generic-pc.xml").read_bytes()
+    auth = bearer()
+    with session_scope() as s:
+        before = s.scalar(select(func.count()).select_from(Phone))
+    # preview by default: nothing changes
+    r = client.post("/api/v1/legacy/import", content=xml, headers=auth)
+    assert r.status_code == 200 and r.json()["ok"] and r.json()["dry_run"]
+    with session_scope() as s:
+        assert s.scalar(select(func.count()).select_from(Phone)) == before
+    assert client.post("/api/v1/legacy/import", content=b"<nope/>", headers=auth).status_code == 422
+    read_only = bearer(read_only=True)
+    assert client.post("/api/v1/legacy/import?dry_run=false", content=xml, headers=read_only).status_code == 403
+    r = client.post("/api/v1/legacy/import?dry_run=false&mode=replace", content=xml, headers=auth)
+    assert r.status_code == 200 and not r.json()["dry_run"]
+    # the export has plaintext secrets: no read-only tokens, even though it is a GET
+    assert client.get("/api/v1/legacy/export", headers=read_only).status_code == 403
+    r = client.get("/api/v1/legacy/export", headers=auth)
+    assert r.status_code == 200 and r.headers["content-type"] == "application/xml"
+    assert r.content.startswith(b"<?xml")
+
+
+def test_firstboot_legacy_report_on_dashboard(client, runtime):
+    import json
+
+    report = {"ok": True, "dry_run": False, "mode": "replace", "source_version": "2.2", "items": [], "summary": {}}
+    report |= {"counts": {"phones": {"create": 3}}, "dropped_sections": ["isdn"]}
+    runtime.state_dir.mkdir(parents=True, exist_ok=True)
+    (runtime.state_dir / "legacy-import-report.json").write_text(json.dumps(report))
+    login(client)
+    page = client.get("/").text
+    assert "was imported at first boot" in page and "config.xml version 2.2" in page and "isdn" in page
+    r = client.post("/legacy-report/dismiss", data={"csrf_token": csrf(client, "/")}, follow_redirects=False)
+    assert r.status_code == 303
+    assert "was imported at first boot" not in client.get("/").text

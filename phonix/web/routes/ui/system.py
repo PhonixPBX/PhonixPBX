@@ -5,13 +5,11 @@
 from __future__ import annotations
 
 import contextlib
-import json
 import os
 import secrets
 import shutil
 import tempfile
 import time
-import urllib.request
 from pathlib import Path
 from typing import Any
 
@@ -190,25 +188,11 @@ async def firmware_settings(request: Request, user: User = Depends(ui_user), db:
 
 @router.post("/firmware/check")
 def firmware_check(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
-    url = st.load(db, st.UpdateSettings).check_url
-    if not url.startswith("https://"):
-        return _alert(request, "warning", _("Configure an https:// update check URL first."))
-    req = urllib.request.Request(  # noqa: S310 - https only, admin configured
-        url, headers={"User-Agent": f"phonix/{__version__}", "Accept": "application/vnd.github+json, application/json"}
-    )
     try:
-        with urllib.request.urlopen(req, timeout=15) as resp:  # noqa: S310 - https only, admin configured
-            data = json.loads(resp.read(1024 * 1024))
-        if "tag_name" in data:  # GitHub release (api.github.com/repos/<owner>/<repo>/releases/latest)
-            latest = str(data["tag_name"]).removeprefix("v")
-            download = data.get("html_url", "")
-        else:  # plain {"version": ..., "url": ...}
-            latest = str(data.get("version") or "")
-            download = data.get("url", "")
-        if not latest:
-            raise ValueError("the response contains no version")
-    except (OSError, ValueError, AttributeError) as exc:
-        return _alert(request, "danger", _("Update check failed: %(error)s", error=exc))
+        release = update.check_online(st.load(db, st.UpdateSettings).check_url)
+    except ServiceError as exc:
+        return _alert(request, "danger", str(exc))
+    latest, download = release.version, release.url
     if not update.is_newer(latest, __version__):
         return _alert(request, "success", _("You are running the latest version (%(version)s).", version=__version__))
     return _alert(

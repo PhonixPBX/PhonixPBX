@@ -9,7 +9,7 @@ import json
 from collections.abc import AsyncIterator
 
 from fastapi import APIRouter, Depends, Request
-from fastapi.responses import JSONResponse, Response, StreamingResponse
+from fastapi.responses import JSONResponse, RedirectResponse, Response, StreamingResponse
 from markupsafe import escape
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -39,9 +39,18 @@ def dashboard(request: Request, user: User = Depends(ui_user), db: Session = Dep
         phone_count=len(phones.list_phones(db)),
         provider_count=len(providers.list_providers(db)),
         update=update.status(),
+        update_available=update.available(),
         cert=tls.certificate_info(),
         initial_password=firstboot.initial_password() is not None,
+        legacy_report=firstboot.legacy_import_report(),
     )
+
+
+@router.post("/legacy-report/dismiss")
+def legacy_report_dismiss(request: Request, user: User = Depends(ui_user)) -> Response:
+    """Hide the report of the config.xml imported at first boot."""
+    firstboot.dismiss_legacy_import_report()
+    return RedirectResponse("/", status_code=303)
 
 
 @router.get("/status/asterisk")

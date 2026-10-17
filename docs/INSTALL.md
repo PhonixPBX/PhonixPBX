@@ -121,7 +121,7 @@ SSH is off by default. When you switch it on under *System → General*:
 
 PhonixPBX uses two system slots, A and B. An update is written to the slot that is not running. Your configuration and data on `PHXDATA` are never touched.
 
-1. Go to *System → Firmware*. Upload `phonix-<version>-<board>.update`, or let the box download it.
+1. Download `phonix-<version>-<board>.update` from the releases page and upload it under *System → Firmware*. *Check now* there, or the daily check when *Check automatically* is on, tells you when a new version is out; the dashboard then shows a notice.
 2. The bundle is checked before anything is written. Bundles that fail any check are refused:
    - the ed25519 signature, against the public key built into the image
    - the board type
@@ -423,7 +423,7 @@ Some messages look alarming but are expected and harmless:
 2. Flash the new image.
 3. Before the first boot, copy `config.xml` to the root of the `PHXBOOT` partition.
 4. At the first boot the file is imported and renamed to `config.xml.imported`.
-5. The import report is shown at the first login. It lists the features that were not carried over, such as analog/ISDN hardware and DAHDI.
+5. After logging in, the dashboard shows the import report until you dismiss it. It lists the features that were not carried over, such as analog/ISDN hardware and DAHDI.
 
 You can also import the file later under *System → Backup/Restore*.
 

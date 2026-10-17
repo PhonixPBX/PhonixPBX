@@ -1,5 +1,5 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
-{% set rd = report.to_dict() %}
+{% set rd = rd or report.to_dict() %}
 <div class="card {{ 'border-success' if rd.ok else 'border-danger' }}">
   <div class="card-body">
     <h4>{{ _("Preview") if dry_run else _("Import result") }} &mdash; {{ _("config.xml version %(version)s", version=rd.source_version) }}</h4>

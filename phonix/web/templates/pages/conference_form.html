@@ -1,6 +1,7 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
 {% from "macros/forms.html" import csrf, input, checkbox, form_errors, submit with context %}
+{% block help_anchor %}edit{% endblock %}
 {% block page_title %}{{ _("New conference room") if is_new else _("Edit conference room %(name)s", name=values.name) }}{% endblock %}
 {% block content %}
 <form method="post" action="/services/conferencing/{{ 'new' if is_new else obj_id }}" class="card">

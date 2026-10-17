@@ -16,6 +16,7 @@ UPDATE_GOLDEN=1 .venv/bin/pytest tests/test_generators.py tests/legacy   # accep
 .venv/bin/mypy phonix
 dev/test-asterisk.sh                                  # Asterisk/SIPp integration tests in the Alpine dev container
 dev/run.sh                                            # full dev container on :8000 (dev/console.sh = console menu)
+scripts/help-build.sh                                 # rebuild the user manual (Hugo) into phonix/web/static/help
 ```
 
 To run the app locally without root (privileged actions are only recorded):
@@ -55,6 +56,11 @@ CI (`.github/workflows/ci.yml`) runs ruff, mypy and pytest.
   - The OCI image doesn't use OpenRC: `system/container/entrypoint` duplicates the directory setup and service start.
   - The app is packaged as an apk (`packaging/apk/phonix/APKBUILD`; runtime deps are Alpine `py3-*` packages, so a new Python dependency must exist in Alpine 3.24). `Containerfile` and `dev/Containerfile` keep their own copies of the package lists.
   - `/data` is the persistent partition (DB, `tls/`, `acme/`, media, backups). The rootfs is a read-only squashfs.
+
+## User manual
+
+- The manual is Hugo Markdown in `docs/manual/content/{en,de}/`. Its paths mirror the menu URLs, and the help button in `base.html` links to `help_url(active_item.url)`. Forms set `{% block help_anchor %}edit{% endblock %}`.
+- Every user-visible UI change updates the matching chapter in both languages. Use the exact UI labels (German from the `de` catalog), keep the explicit heading anchors (`## … {#edit}`) identical in both languages, then run `scripts/help-build.sh` and commit the output in `phonix/web/static/help/`. A new menu item needs a new chapter (`tests/test_help.py`).
 
 ## Translations
 

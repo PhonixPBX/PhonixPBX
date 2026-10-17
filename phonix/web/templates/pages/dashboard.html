@@ -7,6 +7,23 @@
   {{ icon("key", "me-1") }} {{ _('You are still using the initial administrator password. <a href="/password">Change it now</a>.') }}
 </div>
 {% endif %}
+{% if legacy_report %}
+<div class="mb-3">
+  <div class="alert alert-info d-flex align-items-center" role="alert">
+    <div class="flex-fill">{{ icon("file-import", "me-1") }} {{ _("The AskoziaPBX configuration (config.xml) found on the boot partition was imported at first boot. Check the report and the imported settings.") }}</div>
+    <form method="post" action="/legacy-report/dismiss" class="m-0 ms-2">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button class="btn btn-sm" type="submit">{{ _("Dismiss") }}</button>
+    </form>
+  </div>
+  {% with rd=legacy_report, dry_run=False, token="" %}{% include "partials/legacy_report.html" %}{% endwith %}
+</div>
+{% endif %}
+{% if update_available %}
+<div class="alert alert-info" role="alert">
+  {{ icon("download", "me-1") }} {{ _('PhonixPBX %(version)s is available. <a href="/system/firmware">Update the system</a>.', version=update_available.version) }}
+</div>
+{% endif %}
 {% if cert and cert.self_signed == "True" %}
 <div class="alert alert-info" role="alert">
   {{ icon("certificate", "me-1") }} {{ _('The web interface uses a self-signed certificate. <a href="/advanced/certificate">Get one from Let\'s Encrypt or upload your own</a> to get rid of browser warnings.') }}

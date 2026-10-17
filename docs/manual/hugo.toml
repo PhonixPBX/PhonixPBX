@@ -1,0 +1,39 @@
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0
+# PhonixPBX user manual, served by the appliance under /help/.
+# Build with scripts/help-build.sh; the output in phonix/web/static/help/ is committed.
+baseURL = "/help/"
+title = "PhonixPBX"
+defaultContentLanguage = "en"
+defaultContentLanguageInSubdir = false
+disableKinds = ["taxonomy", "term", "rss", "sitemap", "robotstxt", "404"]
+enableGitInfo = false
+enableRobotsTXT = false
+disableAliases = true
+
+[languages.en]
+contentDir = "content/en"
+label = "English"
+locale = "en"
+title = "PhonixPBX Manual"
+weight = 1
+
+[languages.de]
+contentDir = "content/de"
+label = "Deutsch"
+locale = "de"
+title = "PhonixPBX Handbuch"
+weight = 2
+
+[markup.goldmark.parser.attribute]
+title = true
+block = true
+
+[markup.goldmark.renderer]
+unsafe = false
+
+[markup.tableOfContents]
+startLevel = 2
+endLevel = 3
+
+[minify]
+minifyOutput = true

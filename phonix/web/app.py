@@ -66,6 +66,8 @@ def create_app() -> FastAPI:
         max_age=None,
     )
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+    # user manual (docs/manual, built by scripts/help-build.sh); nginx serves it directly on the appliance
+    app.mount("/help", StaticFiles(directory=str(STATIC_DIR / "help"), html=True, check_dir=False), name="help")
     app.include_router(ui.router)
     app.include_router(api.router)
     app.include_router(mcp.router)

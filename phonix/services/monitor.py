@@ -29,6 +29,7 @@ FAILURE_EVENTS = {
     "RequestNotAllowed",
 }
 WINDOW = 600  # seconds in which ban_threshold failures lead to a ban
+RELOAD = 60  # seconds after which the firewall settings are read again
 
 
 def remote_ip(address: str) -> str | None:
@@ -47,11 +48,14 @@ def remote_ip(address: str) -> str | None:
 
 class Banner:
     def __init__(self, threshold: int, seconds: int, whitelist: list[str]) -> None:
+        self.configure(threshold, seconds, whitelist)
+        self.failures: dict[str, deque[float]] = defaultdict(deque)
+        self.banned: dict[str, float] = {}
+
+    def configure(self, threshold: int, seconds: int, whitelist: list[str]) -> None:
         self.threshold = threshold
         self.seconds = seconds
         self.whitelist = [ipaddress.ip_network(n, strict=False) for n in whitelist]
-        self.failures: dict[str, deque[float]] = defaultdict(deque)
-        self.banned: dict[str, float] = {}
 
     def whitelisted(self, ip: str) -> bool:
         addr = ipaddress.ip_address(ip)
@@ -73,7 +77,9 @@ class Banner:
         return False
 
 
-def _load() -> Banner | None:
+def _load(previous: Banner | None = None) -> Banner | None:
+    """Banner for the current firewall settings (None: banning is off); keeps the
+    failure counters and bans of *previous*."""
     with session_scope() as session:
         fw = st.load(session, st.FirewallSettings)
         net = st.load(session, st.NetworkSettings)
@@ -82,21 +88,31 @@ def _load() -> Banner | None:
     whitelist = list(fw.admin_allowed_networks)
     if net.mode == "static":
         whitelist.append(f"{net.address}/{net.prefix}")
-    return Banner(fw.ban_threshold, fw.ban_seconds, whitelist)
+    if previous is None:
+        return Banner(fw.ban_threshold, fw.ban_seconds, whitelist)
+    previous.configure(fw.ban_threshold, fw.ban_seconds, whitelist)
+    return previous
 
 
 def run_forever() -> None:
+    banner: Banner | None = None
     while True:
-        banner = _load()
+        banner = _load(banner)
         if banner is None:
             time.sleep(60)
             continue
+        loaded = time.monotonic()
         try:
             with ami.AmiClient() as client:
                 log.info("watching Asterisk security events")
                 for event in client.events():
                     if event.get("Event") not in FAILURE_EVENTS:
                         continue
+                    if time.monotonic() - loaded > RELOAD:
+                        # settings changed in the web interface apply without a restart
+                        banner, loaded = _load(banner), time.monotonic()
+                        if banner is None:
+                            break
                     ip = remote_ip(event.get("RemoteAddress", ""))
                     if ip and banner.record(ip):
                         log.warning("banning %s for %ss", ip, banner.seconds)

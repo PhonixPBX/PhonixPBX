@@ -4,10 +4,12 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any
 
 from phonix import config
 from phonix.core import settings as st
@@ -32,6 +34,22 @@ def legacy_config_candidates() -> list[Path]:
     return [boot / "config.xml", boot / "conf" / "config.xml"]
 
 
+# report of the config.xml imported at first boot, shown on the dashboard until dismissed
+LEGACY_REPORT = "legacy-import-report.json"
+
+
+def legacy_import_report() -> dict[str, Any] | None:
+    try:
+        data = json.loads((config.get().state_dir / LEGACY_REPORT).read_text())
+    except (OSError, ValueError):
+        return None
+    return data if isinstance(data, dict) else None
+
+
+def dismiss_legacy_import_report() -> None:
+    (config.get().state_dir / LEGACY_REPORT).unlink(missing_ok=True)
+
+
 def run() -> FirstbootResult:
     cfg = config.get()
     result = FirstbootResult()
@@ -47,7 +65,7 @@ def run() -> FirstbootResult:
 
                 report = importer.import_file(candidate, mode="replace", user="firstboot")
                 result.legacy_import = str(candidate)
-                (cfg.state_dir / "legacy-import-report.json").write_text(report.to_json())
+                (cfg.state_dir / LEGACY_REPORT).write_text(report.to_json())
                 candidate.rename(candidate.with_name("config.xml.imported"))
                 result.messages.append(f"imported legacy configuration {candidate}")
             except Exception as exc:  # report but never block booting

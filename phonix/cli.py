@@ -259,6 +259,27 @@ def cmd_cert(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_update(args: argparse.Namespace) -> int:
+    from phonix.core import settings as st
+    from phonix.services import update
+    from phonix.services.common import ServiceError
+
+    with _session() as session:
+        settings = st.load(session, st.UpdateSettings)
+    if args.auto and not settings.auto_check:
+        return 0
+    try:
+        release = update.check_online(settings.check_url)
+    except ServiceError as exc:
+        print(f"ERROR {exc}", file=sys.stderr)
+        return 1
+    if update.is_newer(release.version, __version__):
+        print(f"version {release.version} is available (running {__version__}): {release.url}")
+    else:
+        print(f"running the latest version ({__version__})")
+    return 0
+
+
 def cmd_web(args: argparse.Namespace) -> int:
     import uvicorn
 
@@ -374,6 +395,11 @@ def build_parser() -> argparse.ArgumentParser:
     c.add_argument("action", choices=["renew"])
     c.add_argument("--force", action="store_true", help="request a new certificate even if not due")
     c.set_defaults(func=cmd_cert)
+
+    up = sub.add_parser("update", help="firmware updates")
+    up.add_argument("action", choices=["check"])
+    up.add_argument("--auto", action="store_true", help="only if automatic checks are enabled (periodic job)")
+    up.set_defaults(func=cmd_update)
 
     w = sub.add_parser("web", help="run the web interface")
     w.add_argument("--uds", help="listen on a unix socket")

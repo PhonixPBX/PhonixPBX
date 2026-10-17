@@ -58,9 +58,9 @@ rewrite_contact=yes
 type=registration
 transport=transport-{{ p.transport }}
 outbound_auth=prov-{{ p.id }}-auth
-server_uri=sip:{{ p.host }}{% if p.port %}:{{ p.port }}{% endif %}{% if p.transport == "tcp" %};transport=tcp{% endif %}
+server_uri=sip:{{ hostport[p.id] }}{% if p.transport == "tcp" %};transport=tcp{% endif %}
 
-client_uri=sip:{{ p.username }}@{{ p.host }}{% if p.port %}:{{ p.port }}{% endif %}
+client_uri=sip:{{ p.username }}@{{ hostport[p.id] }}
 
 contact_user={{ p.username }}
 expiration={{ sip.default_expiry }}
@@ -80,7 +80,7 @@ password={{ p.secret }}
 
 [prov-{{ p.id }}]
 type=aor
-contact=sip:{{ p.host }}{% if p.port %}:{{ p.port }}{% endif %}
+contact=sip:{{ hostport[p.id] }}
 
 qualify_frequency={{ p.qualify }}
 
@@ -168,6 +168,9 @@ password={{ p.secret }}
 type=aor
 max_contacts={{ p.max_contacts }}
 remove_existing=yes
+default_expiration={{ sip.default_expiry }}
+minimum_expiration={{ sip.min_expiry }}
+maximum_expiration={{ sip.max_expiry }}
 qualify_frequency={{ p.qualify }}
 
 {% endfor %}

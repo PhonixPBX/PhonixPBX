@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-17 09:53+0200\n"
+"POT-Creation-Date: 2026-10-17 16:06+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: sv\n"
@@ -333,9 +333,6 @@ msgstr "Avancerat: en key=value per rad, läggs till i den genererade endpointen
 
 msgid "Advanced: one key=value per line, appended to the generated section."
 msgstr "Avancerat: en key=value per rad, läggs till i den genererade sektionen."
-
-msgid "Always expand advanced sections"
-msgstr "Visa alltid avancerade sektioner expanderade"
 
 msgid "An Asterisk sound in the prompt language of the system, e.g. welcome. You can also type the name of another sound."
 msgstr "Ett Asterisk-ljud på systemets promptspråk, t.ex. welcome. Du kan också skriva namnet på ett annat ljud."
@@ -976,6 +973,9 @@ msgstr "Inaktivera för leverantörer som autentiserar via IP-adress."
 msgid "Disconnect"
 msgstr "Koppla ner"
 
+msgid "Dismiss"
+msgstr "Dölj"
+
 msgid "Domain"
 msgstr "Domän"
 
@@ -1359,6 +1359,9 @@ msgstr ""
 "-- \n"
 "PhonixPBX\n"
 
+msgid "Help"
+msgstr "Hjälp"
+
 msgid "Holidays and closing days"
 msgstr "Helgdagar och stängda dagar"
 
@@ -1704,6 +1707,9 @@ msgstr "Manager-användaren hittades inte"
 
 msgid "Manager users"
 msgstr "Manager-användare"
+
+msgid "Manual"
+msgstr "Handbok"
 
 msgid "Max. message length (s)"
 msgstr "Max. meddelandelängd (s)"
@@ -2247,6 +2253,10 @@ msgstr "Telefoner och leverantörer"
 
 msgid "Phones and providers. Empty = everyone (recommended only with strong passwords)."
 msgstr "Telefoner och leverantörer. Tomt = alla (rekommenderas endast med starka lösenord)."
+
+#, python-format
+msgid "PhonixPBX %(version)s is available. <a href=\"/system/firmware\">Update the system</a>."
+msgstr "PhonixPBX %(version)s finns tillgänglig. <a href=\"/system/firmware\">Uppdatera systemet</a>."
 
 msgid "PhonixPBX home"
 msgstr "PhonixPBX startsida"
@@ -2842,6 +2852,13 @@ msgstr "Testmeddelandet har skickats till %(to)s."
 
 msgid "Thailand"
 msgstr "Thailand"
+
+msgid ""
+"The AskoziaPBX configuration (config.xml) found on the boot partition was imported at first boot. Check the report "
+"and the imported settings."
+msgstr ""
+"AskoziaPBX-konfigurationen (config.xml) på startpartitionen importerades vid första start. Kontrollera rapporten och "
+"de importerade inställningarna."
 
 msgid ""
 "The Asterisk Manager Interface (TCP port 5038) lets external software (CTI, dashboards) control the PBX. Only add "

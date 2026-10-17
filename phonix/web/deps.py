@@ -104,6 +104,20 @@ async def api_caller(request: Request, db: Session = Depends(get_db)) -> User:
     return await api_user(request, db)
 
 
+async def api_writer(request: Request, db: Session = Depends(get_db)) -> User:
+    """Like ``api_user``, but a read-only token is refused even for GET (exports with secrets)."""
+    auth = request.headers.get("authorization", "")
+    if auth:
+        scheme, _, credentials = auth.partition(" ")
+        if scheme.lower() != "bearer":
+            raise HTTPException(401, "use a bearer token (Advanced > API tokens)", headers=BEARER)
+        token = _bearer_token(request, db, credentials)
+        if token.read_only:
+            raise HTTPException(403, "token is read-only")
+        return token.user
+    return await api_user(request, db)
+
+
 async def mcp_token(request: Request, db: Session = Depends(get_db)) -> ApiToken:
     """MCP auth: bearer token only. Every MCP request is a POST, so read-only
     tokens are checked per tool instead of per HTTP method."""

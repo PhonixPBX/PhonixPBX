@@ -41,6 +41,13 @@ table inet phonix {
 		elements = { {{ sip6 | join(", ") }} }
 	}
 {% endif %}
+{% if ami4 %}
+	set ami4 {
+		type ipv4_addr
+		flags interval
+		elements = { {{ ami4 | join(", ") }} }
+	}
+{% endif %}
 
 	chain input {
 		type filter hook input priority filter; policy {{ "drop" if fw.enabled else "accept" }};
@@ -87,6 +94,12 @@ table inet phonix {
 		{{ rule }} accept
 {% endif %}
 {% endfor %}
+
+{% if ami4 %}
+
+		# manager interface (AMI) for the networks of the manager users
+		ip saddr @ami4 tcp dport 5038 accept
+{% endif %}
 
 		# media
 		udp dport {{ rtp.port_start }}-{{ rtp.port_end }} accept

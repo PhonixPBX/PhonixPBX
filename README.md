@@ -30,6 +30,8 @@ It ships as
 
 ## Documentation and downloads
 
+- User manual (English, German): on every PBX under `https://<pbx>/help/` and behind the help button on
+  each page; sources in [docs/manual/](docs/manual/)
 - Specification: [docs/SPEC.md](docs/SPEC.md)
 - Installation: [docs/INSTALL.md](docs/INSTALL.md)
   - [Raspberry Pi, PC and VM disk images](docs/INSTALL.md#1-write-the-image)
@@ -70,6 +72,7 @@ Old AskoziaPBX configurations can still be imported. The spelling *Phonix* inste
 | `system/`, `packaging/`, `image/` | files installed into the image, the APKBUILD and the image builder |
 | `Containerfile`, `system/container/` | OCI image (`ghcr.io/phonixpbx/phonix`): entry point, root helper, health check |
 | `tests/` | unit, web and golden-file tests; `tests/integration` runs against real Asterisk |
+| `docs/manual` | user manual (Hugo, en/de), built into `phonix/web/static/help` by `scripts/help-build.sh` |
 
 ## Quick start: run it locally in a container
 

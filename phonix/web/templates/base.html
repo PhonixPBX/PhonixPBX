@@ -1,6 +1,9 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "layout.html" %}
 {% from "macros/ui.html" import flash_messages with context %}
+{# manual chapter (menu URL, default: the active menu item) and section for the help button #}
+{% block help_page %}{% endblock %}
+{% block help_anchor %}{% endblock %}
 {% block body %}
 <div class="page">
   <aside class="navbar navbar-vertical navbar-expand-lg phonix-sidebar" data-bs-theme="dark">
@@ -71,6 +74,12 @@
             <h2 class="page-title">{% block page_title %}{{ _(active_item.title) if active_item else "" }}{% endblock %}</h2>
           </div>
           <div class="col-auto ms-auto d-print-none">{% block actions %}{% endblock %}</div>
+          <div class="col-auto d-print-none">
+            {% block help %}
+            <a href="{{ help_url(self.help_page() | trim or (active_item.url if active_item else None), self.help_anchor() | trim) }}" class="btn btn-icon btn-ghost-secondary"
+               target="_blank" rel="noopener" title="{{ _('Help') }}" aria-label="{{ _('Help') }}" data-bs-toggle="tooltip">{{ icon("help") }}</a>
+            {% endblock %}
+          </div>
         </div>
       </div>
     </div>
@@ -83,7 +92,7 @@
     <footer class="footer footer-transparent d-print-none">
       <div class="container-xl">
         <div class="row text-center align-items-center">
-          <div class="col-12">PhonixPBX {{ VERSION }} &middot; <a href="/api/docs" class="link-secondary">API</a></div>
+          <div class="col-12">PhonixPBX {{ VERSION }} &middot; <a href="{{ help_url() }}" class="link-secondary" target="_blank" rel="noopener">{{ _("Manual") }}</a> &middot; <a href="/api/docs" class="link-secondary">API</a></div>
         </div>
       </div>
     </footer>

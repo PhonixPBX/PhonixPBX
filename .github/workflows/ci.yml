@@ -47,10 +47,22 @@ jobs:
             image/test-lxc.sh image/test-oci.sh \
             system/container/entrypoint system/container/priv system/container/healthcheck \
             dev/run.sh dev/entrypoint.sh dev/console.sh dev/test-asterisk.sh dev/libexec/priv \
-            scripts/release.sh
+            system/periodic/phonix-update \
+            scripts/release.sh scripts/help-build.sh
           for f in system/openrc/init.d/*; do shellcheck -s sh -S warning -e SC1091,SC2034,SC2154,SC2317,SC3043 "$f"; done
       - name: python helpers
         run: python3 -m py_compile system/libexec/verify-manifest image/lib/qemutest.py
+
+  manual:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: committed manual matches docs/manual
+        run: |
+          v=$(sed -n 's/^HUGO_VERSION=//p' scripts/help-build.sh)
+          curl -fsSL "https://github.com/gohugoio/hugo/releases/download/v$v/hugo_${v}_linux-amd64.tar.gz" \
+            | sudo tar xz -C /usr/local/bin hugo
+          scripts/help-build.sh check
 
   asterisk:
     # generated configuration must load in the Asterisk 22 of the appliance

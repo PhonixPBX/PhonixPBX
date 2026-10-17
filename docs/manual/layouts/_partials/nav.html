@@ -1,0 +1,32 @@
+<aside class="navbar navbar-vertical navbar-expand-lg phonix-sidebar d-print-none" data-bs-theme="dark">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu"
+            aria-controls="sidebar-menu" aria-expanded="false" aria-label="{{ i18n "toggle_navigation" }}">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-brand phonix-brand">
+      <a href="{{ site.Home.RelPermalink }}"><img src="/static/img/logo-sidebar.svg" width="170" height="46" alt="PhonixPBX"></a>
+    </div>
+    <div class="collapse navbar-collapse" id="sidebar-menu">
+      <ul class="navbar-nav pt-lg-3">
+        {{ $current := . }}
+        {{ range site.Home.Sections.ByWeight }}
+        {{ $open := or (eq $current .) ($current.IsDescendant .) }}
+        <li class="nav-item{{ if $open }} active{{ end }}">
+          <a class="nav-link" href="{{ .RelPermalink }}">
+            {{ with .Params.icon }}<span class="nav-link-icon"><i class="ti ti-{{ . }}" aria-hidden="true"></i></span>{{ end }}
+            <span class="nav-link-title">{{ .Title }}</span>
+          </a>
+          {{ if and $open .RegularPages }}
+          <div class="manual-subnav">
+            {{ range .RegularPages.ByWeight }}
+            <a class="dropdown-item{{ if eq $current . }} active{{ end }}" href="{{ .RelPermalink }}">{{ .Title }}</a>
+            {{ end }}
+          </div>
+          {{ end }}
+        </li>
+        {{ end }}
+      </ul>
+    </div>
+  </div>
+</aside>

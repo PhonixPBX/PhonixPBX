@@ -131,6 +131,19 @@ def active_item(path: str) -> tuple[MenuSection | None, MenuItem | None]:
     return best[1], best[2]
 
 
+# manual languages besides English (docs/manual/hugo.toml); other UI languages link to English
+HELP_LANGUAGES = ("de",)
+
+
+def help_url(page: str | None = None, anchor: str = "") -> str:
+    """URL of the manual chapter for a menu URL (docs/manual mirrors the menu paths) in the UI language."""
+    lang = i18n.get_language().split("_")[0]
+    url = "/help/" + (f"{lang}/" if lang in HELP_LANGUAGES else "")
+    if page is not None:
+        url += (page.strip("/") or "status/summary") + "/"
+    return f"{url}#{anchor}" if anchor else url
+
+
 def flash(request: Request, message: str, level: str = "success") -> None:
     messages = request.session.setdefault("flash", [])
     messages.append({"level": level, "message": message})
@@ -209,6 +222,7 @@ templates.env.globals.update(
         "VERSION": __version__,
         "icon": _icon,
         "asset": _asset,
+        "help_url": help_url,
         "options": _options,
         "LANGUAGES": v.LANGUAGES,
         "TONEZONES": v.TONEZONES,

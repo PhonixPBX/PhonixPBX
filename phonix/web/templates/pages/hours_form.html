@@ -1,6 +1,7 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
 {% from "macros/forms.html" import csrf, input, form_errors, submit, dest_select with context %}
+{% block help_anchor %}edit{% endblock %}
 {% block page_title %}{{ _("New business hours") if is_new else _("Edit business hours %(name)s", name=values.name) }}{% endblock %}
 
 {% macro range_row(day, idx, r) %}

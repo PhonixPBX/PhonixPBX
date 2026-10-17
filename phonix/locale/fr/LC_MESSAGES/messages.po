@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-17 09:53+0200\n"
+"POT-Creation-Date: 2026-10-17 16:06+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: fr\n"
@@ -333,9 +333,6 @@ msgstr "Avancé : une ligne key=value par ligne, ajoutée à l'endpoint/au pair
 
 msgid "Advanced: one key=value per line, appended to the generated section."
 msgstr "Avancé : une ligne key=value par ligne, ajoutée à la section générée."
-
-msgid "Always expand advanced sections"
-msgstr "Toujours déplier les sections avancées"
 
 msgid "An Asterisk sound in the prompt language of the system, e.g. welcome. You can also type the name of another sound."
 msgstr ""
@@ -980,6 +977,9 @@ msgstr "À désactiver pour les opérateurs qui authentifient par adresse IP."
 msgid "Disconnect"
 msgstr "Raccrocher"
 
+msgid "Dismiss"
+msgstr "Masquer"
+
 msgid "Domain"
 msgstr "Domaine"
 
@@ -1365,6 +1365,9 @@ msgstr ""
 "-- \n"
 "PhonixPBX\n"
 
+msgid "Help"
+msgstr "Aide"
+
 msgid "Holidays and closing days"
 msgstr "Jours fériés et jours de fermeture"
 
@@ -1712,6 +1715,9 @@ msgstr "Utilisateur manager introuvable"
 
 msgid "Manager users"
 msgstr "Utilisateurs manager"
+
+msgid "Manual"
+msgstr "Manuel"
 
 msgid "Max. message length (s)"
 msgstr "Durée max. d'un message (s)"
@@ -2259,6 +2265,10 @@ msgstr "Téléphones et opérateurs"
 
 msgid "Phones and providers. Empty = everyone (recommended only with strong passwords)."
 msgstr "Téléphones et opérateurs. Vide = tout le monde (recommandé uniquement avec des mots de passe robustes)."
+
+#, python-format
+msgid "PhonixPBX %(version)s is available. <a href=\"/system/firmware\">Update the system</a>."
+msgstr "PhonixPBX %(version)s est disponible. <a href=\"/system/firmware\">Mettre à jour le système</a>."
 
 msgid "PhonixPBX home"
 msgstr "Accueil PhonixPBX"
@@ -2856,6 +2866,13 @@ msgstr "Message de test envoyé à %(to)s."
 
 msgid "Thailand"
 msgstr "Thaïlande"
+
+msgid ""
+"The AskoziaPBX configuration (config.xml) found on the boot partition was imported at first boot. Check the report "
+"and the imported settings."
+msgstr ""
+"La configuration AskoziaPBX (config.xml) trouvée sur la partition de démarrage a été importée au premier démarrage. "
+"Vérifiez le rapport et les paramètres importés."
 
 msgid ""
 "The Asterisk Manager Interface (TCP port 5038) lets external software (CTI, dashboards) control the PBX. Only add "

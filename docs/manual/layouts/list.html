@@ -1,0 +1,13 @@
+{{ define "main" }}
+{{ .Content }}
+{{ with .Pages }}
+<div class="list-group list-group-flush manual-children mt-4">
+  {{ range .ByWeight }}
+  <a class="list-group-item list-group-item-action" href="{{ .RelPermalink }}">
+    <div class="fw-bold">{{ .Title }}</div>
+    {{ with .Description }}<div class="text-secondary small">{{ . }}</div>{{ end }}
+  </a>
+  {{ end }}
+</div>
+{{ end }}
+{{ end }}
