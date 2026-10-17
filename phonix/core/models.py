@@ -16,6 +16,7 @@ from typing import Any
 from sqlalchemy import (
     JSON,
     Boolean,
+    Date,
     DateTime,
     ForeignKey,
     Integer,
@@ -40,11 +41,11 @@ DTMF_MODES = ("rfc4733", "inband", "info", "auto")
 EXTERNAL_DIAL_TYPES = ("sip_uri", "iax_uri", "provider")
 CALLERID_SOURCES = ("phones", "string")
 INCOMING_CID_OVERRIDES = ("", "replacenamewithnum", "replace", "prepend")
-DESTINATION_TYPES = ("phone", "callgroup", "application", "conference")
+DESTINATION_TYPES = ("phone", "callgroup", "application", "conference", "ivr", "hours")
 CALLGROUP_STRATEGIES = ("ringall", "linear")
 IAX_AUTH = ("md5", "plaintext", "rsa")
 SIP_TRANSPORTS = ("udp", "tcp", "tls")
-MEDIA_KINDS = ("moh", "vm_greeting", "prompt")
+MEDIA_KINDS = ("moh", "vm_greeting", "ivr_prompt")
 
 
 class User(Base):
@@ -302,6 +303,118 @@ class Application(Base):
     public_access: Mapped[bool] = mapped_column(Boolean, default=False)
     public_name: Mapped[str] = mapped_column(String(64), default="")
     legacy_uniqid: Mapped[str | None] = mapped_column(String(64), nullable=True)
+
+
+class IvrMenu(Base):
+    """Voice menu (auto attendant): an announcement, then one destination per key.
+
+    Destinations are ``(type, id)`` pairs like provider incoming routes (see
+    ``phonix.services.destinations``); ``repeat`` and ``hangup`` need no id.
+    """
+
+    __tablename__ = "ivr_menus"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(80))
+    extension: Mapped[str | None] = mapped_column(String(32), unique=True, nullable=True)
+    description: Mapped[str] = mapped_column(String(255), default="")
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+    public_access: Mapped[bool] = mapped_column(Boolean, default=False)
+    public_name: Mapped[str] = mapped_column(String(64), default="")
+    # announcement: an uploaded prompt (media file) or an Asterisk sound
+    prompt_mode: Mapped[str] = mapped_column(String(16), default="upload")
+    prompt_media_id: Mapped[int | None] = mapped_column(
+        ForeignKey("media_files.id", ondelete="SET NULL"), nullable=True
+    )
+    prompt_sound: Mapped[str] = mapped_column(String(64), default="")
+    # recording script for the announcement (text only, not played)
+    prompt_text: Mapped[str] = mapped_column(Text, default="")
+    # seconds to wait for a key after the announcement
+    timeout: Mapped[int] = mapped_column(Integer, default=5)
+    # how often the announcement is repeated before the timeout destination
+    repeats: Mapped[int] = mapped_column(Integer, default=2)
+    # callers may dial internal (or, from outside, public) numbers directly
+    direct_dial: Mapped[bool] = mapped_column(Boolean, default=False)
+    timeout_dest_type: Mapped[str] = mapped_column(String(16), default="hangup")
+    timeout_dest_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    invalid_dest_type: Mapped[str] = mapped_column(String(16), default="repeat")
+    invalid_dest_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    legacy_uniqid: Mapped[str | None] = mapped_column(String(64), nullable=True)
+
+    options: Mapped[list[IvrOption]] = relationship(
+        cascade="all, delete-orphan", order_by="IvrOption.position", lazy="selectin"
+    )
+    prompt_media: Mapped[MediaFile | None] = relationship(lazy="selectin")
+
+
+class IvrOption(Base):
+    __tablename__ = "ivr_options"
+    __table_args__ = (UniqueConstraint("menu_id", "key"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    menu_id: Mapped[int] = mapped_column(ForeignKey("ivr_menus.id", ondelete="CASCADE"))
+    # 0-9, * or #
+    key: Mapped[str] = mapped_column(String(1))
+    label: Mapped[str] = mapped_column(String(80), default="")
+    dest_type: Mapped[str] = mapped_column(String(16))
+    dest_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # order of the announcement (and of the list in the UI)
+    position: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class BusinessHours(Base):
+    """Time switch: one destination while open, another while closed.
+
+    The live mode (automatic, forced open, forced closed) is runtime state in the
+    Asterisk database, like call forwarding, so a feature code can switch it
+    without an apply.
+    """
+
+    __tablename__ = "business_hours"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(80))
+    description: Mapped[str] = mapped_column(String(255), default="")
+    # dialled on an internal phone: toggles between automatic and closed ("" = none)
+    feature_code: Mapped[str | None] = mapped_column(String(16), unique=True, nullable=True)
+    open_dest_type: Mapped[str] = mapped_column(String(16))
+    open_dest_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    closed_dest_type: Mapped[str] = mapped_column(String(16))
+    closed_dest_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    legacy_uniqid: Mapped[str | None] = mapped_column(String(64), nullable=True)
+
+    ranges: Mapped[list[BusinessHoursRange]] = relationship(
+        cascade="all, delete-orphan",
+        order_by="(BusinessHoursRange.weekday, BusinessHoursRange.start)",
+        lazy="selectin",
+    )
+    holidays: Mapped[list[BusinessHoursHoliday]] = relationship(
+        cascade="all, delete-orphan", order_by="BusinessHoursHoliday.date", lazy="selectin"
+    )
+
+
+class BusinessHoursRange(Base):
+    """Open from ``start`` to ``end`` ("HH:MM", end exclusive) on ``weekday`` (0 = Monday)."""
+
+    __tablename__ = "business_hours_ranges"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    hours_id: Mapped[int] = mapped_column(ForeignKey("business_hours.id", ondelete="CASCADE"))
+    weekday: Mapped[int] = mapped_column(Integer)
+    start: Mapped[str] = mapped_column(String(5))
+    end: Mapped[str] = mapped_column(String(5))
+
+
+class BusinessHoursHoliday(Base):
+    """Closed all day; ``yearly`` holidays repeat on the same day every year."""
+
+    __tablename__ = "business_hours_holidays"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    hours_id: Mapped[int] = mapped_column(ForeignKey("business_hours.id", ondelete="CASCADE"))
+    date: Mapped[dt.date] = mapped_column(Date)
+    name: Mapped[str] = mapped_column(String(80), default="")
+    yearly: Mapped[bool] = mapped_column(Boolean, default=False)
 
 
 class AmiUser(Base):

@@ -11,6 +11,7 @@ Asterisk with it and use SIPp to register phones and place calls.
 from __future__ import annotations
 
 import os
+import re
 import shutil
 import subprocess
 import time
@@ -21,7 +22,7 @@ import pytest
 
 from phonix import ami, config
 from phonix.core import db
-from phonix.services import apply, dialplan, phones, setup
+from phonix.services import apply, dialplan, hours, ivr, phones, setup
 
 pytestmark = [
     pytest.mark.asterisk,
@@ -74,6 +75,33 @@ def pbx(tmp_path_factory: pytest.TempPathFactory) -> Iterator[Path]:
                 ),
             )
         dialplan.create_callgroup(session, dialplan.CallGroupIn(name="Both", extension="300", member_ids=[1, 2]))
+        menu = ivr.create_menu(
+            session,
+            ivr.IvrMenuIn(
+                name="Main",
+                extension="600",
+                prompt_mode="sound",
+                prompt_sound="beep",
+                timeout=2,
+                repeats=0,
+                options=[
+                    ivr.IvrOptionIn(key="1", label="Bob", dest_type="phone", dest_id=2),
+                    ivr.IvrOptionIn(key="#", label="Again", dest_type="repeat"),
+                ],
+            ),
+        )
+        hours.create_hours(
+            session,
+            hours.BusinessHoursIn(
+                name="Office",
+                feature_code="*31",
+                open_dest_type="ivr",
+                open_dest_id=menu.id,
+                closed_dest_type="hangup",
+                ranges=[{"weekday": d, "start": "00:00", "end": "24:00"} for d in range(7)],
+                holidays=[{"date": "2026-12-25", "name": "Christmas", "yearly": True}],
+            ),
+        )
         result = apply.apply(session, boot=True)
         assert result.ok
     shutil.rmtree("/etc/asterisk", ignore_errors=True)
@@ -221,3 +249,75 @@ def test_reload_after_change(pbx: Path) -> None:
     assert "asterisk:pjsip" in result.components and "dialplan reload" in result.actions
     assert "103/103" in cli("pjsip show endpoints")
     assert "'103'" in cli("dialplan show 103@internal")
+
+
+def console(since: int) -> str:
+    """The Asterisk output since ``since``, without colours."""
+    return re.sub(r"\x1b\[[0-9;]*m", "", Path("/srv/phonix-test/asterisk-console.log").read_text()[since:])
+
+
+def console_size() -> int:
+    return len(Path("/srv/phonix-test/asterisk-console.log").read_text())
+
+
+def wait_for(text: str, since: int, timeout: float = 10) -> str:
+    end = time.time() + timeout
+    while time.time() < end:
+        out = console(since)
+        if text in out:
+            return out
+        time.sleep(0.3)
+    raise AssertionError(f"{text!r} not in the Asterisk output:\n{console(since)[-3000:]}")
+
+
+def test_ivr_and_hours_loaded(pbx: Path) -> None:
+    out = cli("dialplan show ivr-1")
+    for exten in ("'s'", "'1'", "'#'", "'i'", "'t'"):
+        assert exten in out, out
+    assert "'s'" in cli("dialplan show hours-1-pub")
+    assert "'600'" in cli("dialplan show 600@internal")
+    assert "'*31'" in cli("dialplan show *31@internal")
+
+
+def test_ivr_call_is_answered(pbx: Path) -> None:
+    register("101", 5071)
+    since = console_size()
+    result = sipp("call.xml", 5071, "-au", "101", "-ap", PHONES["101"], "-key", "from", "101", "-key", "to", "600")
+    assert result.returncode == 0, result.stdout + result.stderr
+    out = wait_for("WaitExten", since)
+    assert 'BackGround("PJSIP/101' in out and "IVR menu Main" in out
+
+
+def test_ivr_keys_and_timeout(pbx: Path) -> None:
+    # a key: the option's destination runs (Bob is not registered, the call ends)
+    since = console_size()
+    cli("channel originate Local/1@ivr-1 application Wait 1")
+    wait_for("1@ivr-1:2", since)
+    # no key: after the announcement and the wait the timeout path hangs up
+    since = console_size()
+    cli("channel originate Local/s@ivr-1 application Wait 8")
+    out = wait_for("t@ivr-1:3", since, timeout=20)
+    assert "Hangup" in out
+
+
+def test_business_hours_mode_and_feature_code(pbx: Path) -> None:
+    with db.session_scope() as session:
+        office = hours.list_hours(session)[0]
+        assert hours.get_mode(office.id) == "auto"
+        # open around the clock: calls go to the menu
+        since = console_size()
+        cli(f"channel originate Local/s@hours-{office.id} application Wait 1")
+        wait_for("Goto (ivr-1,s,1)", since)
+        # the feature code closes, dialling it again switches back to automatic
+        register("101", 5071)
+        result = sipp("call.xml", 5071, "-au", "101", "-ap", PHONES["101"], "-key", "from", "101", "-key", "to", "*31")
+        assert result.returncode == 0, result.stdout + result.stderr
+        assert hours.get_mode(office.id) == "closed"
+        assert hours.live_status(session, office.id)["open"] is False
+        result = sipp("call.xml", 5071, "-au", "101", "-ap", PHONES["101"], "-key", "from", "101", "-key", "to", "*31")
+        assert result.returncode == 0, result.stdout + result.stderr
+        assert hours.get_mode(office.id) == "auto"
+        hours.set_mode(session, office.id, "open")
+        assert "open" in cli(f"database get phonix-hours {office.id}")
+        hours.set_mode(session, office.id, "auto")
+        assert hours.get_mode(office.id) == "auto"

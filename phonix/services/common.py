@@ -15,9 +15,11 @@ from sqlalchemy.orm import Session
 from phonix.core.models import (
     Application,
     AuditLog,
+    BusinessHours,
     CallGroup,
     ConferenceRoom,
     Dirty,
+    IvrMenu,
     Phone,
     utcnow,
 )
@@ -191,6 +193,12 @@ def extension_owner(session: Session, number: str) -> str | None:
     app = session.scalar(select(Application).where(Application.extension == number))
     if app:
         return _("application %(name)s", name=app.name)
+    menu = session.scalar(select(IvrMenu).where(IvrMenu.extension == number))
+    if menu:
+        return _("IVR menu %(name)s", name=menu.name)
+    hours = session.scalar(select(BusinessHours).where(BusinessHours.feature_code == number))
+    if hours:
+        return _("the feature code of business hours %(name)s", name=hours.name)
     features = load_settings(session, FeatureSettings)
     if number == features.park_ext:
         return _("call parking")
@@ -206,6 +214,8 @@ def ensure_extension_free(session: Session, number: str, field: str, own: tuple[
         (CallGroup, CallGroup.extension),
         (ConferenceRoom, ConferenceRoom.number),
         (Application, Application.extension),
+        (IvrMenu, IvrMenu.extension),
+        (BusinessHours, BusinessHours.feature_code),
     ]
     for model, column in owners:
         obj = session.scalar(select(model).where(column == number))

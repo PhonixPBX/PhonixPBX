@@ -54,10 +54,11 @@ def empty_session(runtime: config.RuntimeConfig) -> Iterator[Session]:
 
 
 class FakeAmi:
-    """Stands in for ``ami.AmiClient`` in the calls service; records the actions."""
+    """Stands in for ``ami.AmiClient``; records the actions and keeps an Asterisk database."""
 
     actions: list = []
     response = {"Response": "Success", "Message": "Originate successfully queued"}
+    astdb: dict = {}
 
     def __init__(self, *args, **kwargs):
         pass
@@ -72,12 +73,27 @@ class FakeAmi:
         FakeAmi.actions.append((name, fields))
         return FakeAmi.response
 
+    def command(self, cli):
+        FakeAmi.actions.append(("Command", {"Command": cli}))
+        words = cli.split()
+        if words[:2] == ["database", "get"]:
+            value = FakeAmi.astdb.get((words[2], words[3]))
+            return f"Value: {value}\n" if value else "Database entry not found.\n"
+        if words[:2] == ["database", "put"]:
+            FakeAmi.astdb[(words[2], words[3])] = words[4]
+            return "Updated database successfully\n"
+        if words[:2] == ["database", "del"]:
+            FakeAmi.astdb.pop((words[2], words[3]), None)
+            return "Database entry removed.\n"
+        return ""
+
 
 @pytest.fixture
 def fake_ami(monkeypatch):
     from phonix.services import calls
 
     FakeAmi.actions = []
+    FakeAmi.astdb = {}
     FakeAmi.response = {"Response": "Success", "Message": "Originate successfully queued"}
     monkeypatch.setattr(calls.ami, "AmiClient", FakeAmi)
     return FakeAmi

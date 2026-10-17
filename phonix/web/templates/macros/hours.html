@@ -1,0 +1,7 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+{# `st`: services.hours.status() / live_status() #}
+{% macro hours_status(st) %}
+{% if st.open %}<span class="badge bg-green-lt">{{ _("open now") }}</span>{% else %}<span class="badge bg-orange-lt">{{ _("closed now") }}</span>{% endif %}
+{% if st.reason == "forced" %}<span class="small text-secondary">{{ _("switched manually") }}</span>
+{% elif st.reason == "holiday" %}<span class="small text-secondary">{{ st.holiday or _("holiday") }}</span>{% endif %}
+{% endmacro %}

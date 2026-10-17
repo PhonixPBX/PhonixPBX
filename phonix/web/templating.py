@@ -70,6 +70,8 @@ MENU: list[MenuSection] = [
         [
             MenuItem(N_("Applications"), "/dialplan/applications"),
             MenuItem(N_("Call Groups"), "/dialplan/callgroups"),
+            MenuItem(N_("IVR Menus"), "/dialplan/ivr"),
+            MenuItem(N_("Business Hours"), "/dialplan/hours"),
             MenuItem(N_("Transfers & Parking"), "/dialplan/transfers"),
             MenuItem(N_("Overview (print)"), "/dialplan/print"),
         ],

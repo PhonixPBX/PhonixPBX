@@ -23,13 +23,13 @@ from sqlalchemy.orm import Session
 
 from phonix import config
 from phonix.core import settings as st
-from phonix.core.models import MediaFile
+from phonix.core.models import IvrMenu, MediaFile
 from phonix.i18n import N_, _
 from phonix.services.common import NotFound, ServiceError, audit, mark_dirty
 
 MAX_UPLOAD = 64 * 1024 * 1024
 TARGET_RATE = 8000
-KINDS = {"moh": N_("Music on hold"), "vm_greeting": N_("Voicemail greeting")}
+KINDS = {"moh": N_("Music on hold"), "vm_greeting": N_("Voicemail greeting"), "ivr_prompt": N_("IVR announcement")}
 SINGLE = {"vm_greeting"}  # kinds with only one file
 
 
@@ -143,15 +143,18 @@ def add_media(session: Session, kind: str, filename: str, data: bytes, user: str
     rel = str(target.relative_to(cfg.media_dir))
     media = MediaFile(kind=kind, name=Path(filename).name[:128], path=rel, size=target.stat().st_size)
     session.add(media)
-    media_settings = st.load(session, st.MediaSettings)
-    if kind == "moh":
-        media_settings.custom_moh = True
-    else:
-        media_settings.custom_vm_greeting = True
-    st.save(session, media_settings)
+    if kind in ("moh", "vm_greeting"):
+        media_settings = st.load(session, st.MediaSettings)
+        if kind == "moh":
+            media_settings.custom_moh = True
+        else:
+            media_settings.custom_vm_greeting = True
+        st.save(session, media_settings)
     session.flush()
     audit(session, user, "upload", "media", media.id, f"{KINDS[kind]}: {media.name}")
-    mark_dirty(session, "services")
+    # IVR announcements only matter once a menu uses them (that marks the dialplan)
+    if kind != "ivr_prompt":
+        mark_dirty(session, "services")
     return media
 
 
@@ -164,9 +167,12 @@ def delete_media(session: Session, media_id: int, user: str = "") -> None:
         path.unlink()
     kind = media.kind
     audit(session, user, "delete", "media", media.id, media.name)
+    used = session.scalars(select(IvrMenu).where(IvrMenu.prompt_media_id == media.id)).first() is not None
     session.delete(media)
     session.flush()
-    if not list_media(session, kind):
+    if used:
+        mark_dirty(session, "dialplan")
+    if kind in ("moh", "vm_greeting") and not list_media(session, kind):
         media_settings = st.load(session, st.MediaSettings)
         if kind == "moh":
             media_settings.custom_moh = False

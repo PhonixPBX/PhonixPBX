@@ -18,8 +18,10 @@ from phonix.core import settings as st
 from phonix.core.models import (
     AmiUser,
     Application,
+    BusinessHours,
     CallGroup,
     ConferenceRoom,
+    IvrMenu,
     MediaFile,
     Phone,
     Provider,
@@ -72,6 +74,8 @@ class Snapshot:
     applications: list[Application]
     ami_users: list[AmiUser]
     media_files: list[MediaFile]
+    ivr_menus: list[IvrMenu] = field(default_factory=list)
+    business_hours: list[BusinessHours] = field(default_factory=list)
     facts: Facts = field(default_factory=Facts)
     secrets: Secrets = field(default_factory=Secrets)
 
@@ -115,6 +119,8 @@ def build_snapshot(session: Session, facts: Facts | None = None, secrets: Secret
         applications=ordered(Application, Application.id),
         ami_users=ordered(AmiUser, AmiUser.id),
         media_files=ordered(MediaFile, MediaFile.id),
+        ivr_menus=ordered(IvrMenu, IvrMenu.id),
+        business_hours=ordered(BusinessHours, BusinessHours.id),
         facts=facts or Facts(),
         secrets=secrets or Secrets(),
     )

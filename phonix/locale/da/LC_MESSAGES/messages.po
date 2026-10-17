@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-17 10:06+0200\n"
+"POT-Creation-Date: 2026-10-17 09:53+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: da\n"
@@ -17,6 +17,14 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
+
+#, python-format
+msgid "%(day)s, from"
+msgstr "%(day)s, fra"
+
+#, python-format
+msgid "%(day)s, until"
+msgstr "%(day)s, til"
 
 #, python-format
 msgid "%(domain)s is not a public DNS name. Enter the names the PBX is reached by."
@@ -67,6 +75,10 @@ msgid "%(object)s: reference to unknown %(type)s %(id)s"
 msgstr "%(object)s: henvisning til ukendt %(type)s %(id)s"
 
 #, python-format
+msgid "%(object)s: unknown media file %(path)s"
+msgstr "%(object)s: ukendt mediefil %(path)s"
+
+#, python-format
 msgid "%(used)s of %(total)s"
 msgstr "%(used)s af %(total)s"
 
@@ -105,6 +117,9 @@ msgstr "(intet at genindlæse)"
 
 msgid "- choose -"
 msgstr "- vælg -"
+
+msgid "- choose an uploaded file -"
+msgstr "- vælg en uploadet fil -"
 
 msgid "- none -"
 msgstr "- ingen -"
@@ -235,6 +250,9 @@ msgstr "Aktive kanaler"
 msgid "Add"
 msgstr "Tilføj"
 
+msgid "Add a SIP or IAX phone to test the menu."
+msgstr "Tilføj en SIP- eller IAX-telefon for at teste menuen."
+
 msgid "Add a call group"
 msgstr "Tilføj en opkaldsgruppe"
 
@@ -250,11 +268,26 @@ msgstr "Tilføj et rum"
 msgid "Add administrator"
 msgstr "Tilføj administrator"
 
+msgid "Add an IVR menu"
+msgstr "Tilføj en IVR-menu"
+
 msgid "Add an application"
 msgstr "Tilføj en applikation"
 
+msgid "Add business hours"
+msgstr "Tilføj åbningstider"
+
+msgid "Add day"
+msgstr "Tilføj dag"
+
+msgid "Add option"
+msgstr "Tilføj valgmulighed"
+
 msgid "Add route"
 msgstr "Tilføj rute"
+
+msgid "Add time range"
+msgstr "Tilføj tidsrum"
 
 msgid "Add your SIP trunk or VoIP provider account to make and receive external calls."
 msgstr "Tilføj din SIP-trunk eller VoIP-udbyderkonto for at foretage og modtage eksterne opkald."
@@ -304,11 +337,20 @@ msgstr "Avanceret: én key=value pr. linje, tilføjes til den genererede sektion
 msgid "Always expand advanced sections"
 msgstr "Vis altid avancerede sektioner udfoldet"
 
+msgid "An Asterisk sound in the prompt language of the system, e.g. welcome. You can also type the name of another sound."
+msgstr "En Asterisk-lyd på systemets promptsprog, f.eks. welcome. Du kan også skrive navnet på en anden lyd."
+
+msgid "An IVR menu plays an announcement and lets callers choose with a key, e.g. 1 for sales and 2 for support."
+msgstr "En IVR-menu afspiller en meddelelse og lader opkaldere vælge med en tast, f.eks. 1 for salg og 2 for support."
+
 msgid "An e-mail address is required for the ACME account"
 msgstr "En e-mailadresse er påkrævet til ACME-kontoen"
 
 msgid "Announce on the local network (mDNS)"
 msgstr "Annoncér på det lokale netværk (mDNS)"
+
+msgid "Announcement"
+msgstr "Meddelelse"
 
 msgid "Application"
 msgstr "Applikation"
@@ -348,6 +390,9 @@ msgstr "Anvendelse mislykkedes: %(errors)s"
 msgid "Applying the configuration failed."
 msgstr "Konfigurationen kunne ikke anvendes."
 
+msgid "As saved."
+msgstr "Som gemt."
+
 msgid "Asterisk database"
 msgstr "Asterisk-database"
 
@@ -357,6 +402,13 @@ msgstr "Asterisk nede"
 #, python-format
 msgid "Asterisk is not reachable: %(error)s"
 msgstr "Asterisk kan ikke nås: %(error)s"
+
+#, python-format
+msgid "Asterisk is not running, the mode cannot be changed: %(error)s"
+msgstr "Asterisk kører ikke, tilstanden kan ikke ændres: %(error)s"
+
+msgid "Asterisk is not running: the current mode is unknown and cannot be changed."
+msgstr "Asterisk kører ikke: den aktuelle tilstand er ukendt og kan ikke ændres."
 
 msgid "Asterisk manager users"
 msgstr "Asterisk manager-brugere"
@@ -413,6 +465,9 @@ msgstr "Godkendelsesbruger"
 
 msgid "Auto"
 msgstr "Auto"
+
+msgid "Automatic"
+msgstr "Automatisk"
 
 msgid "Automatic (SLAAC)"
 msgstr "Automatisk (SLAAC)"
@@ -494,6 +549,33 @@ msgstr "Brasilien"
 msgid "Brute force protection"
 msgstr "Beskyttelse mod brute force"
 
+msgid "Built-in sound"
+msgstr "Indbygget lyd"
+
+msgid "Business Hours"
+msgstr "Åbningstider"
+
+msgid "Business hours"
+msgstr "Åbningstider"
+
+#, python-format
+msgid "Business hours %(name)s"
+msgstr "Åbningstider %(name)s"
+
+#, python-format
+msgid "Business hours %(name)s saved."
+msgstr "Åbningstider %(name)s gemt."
+
+msgid "Business hours not found"
+msgstr "Åbningstider ikke fundet"
+
+msgid ""
+"Business hours send calls to one destination while you are open and to another one while you are closed, e.g. an "
+"after-hours menu."
+msgstr ""
+"Åbningstider sender opkald til én destination, mens I har åbent, og til en anden, mens I har lukket, f.eks. en menu "
+"uden for åbningstid."
+
 msgid "Busy"
 msgstr "Optaget"
 
@@ -505,6 +587,9 @@ msgstr "CPU-belastning"
 
 msgid "Call Groups"
 msgstr "Opkaldsgrupper"
+
+msgid "Call flow"
+msgstr "Opkaldsforløb"
 
 msgid "Call group"
 msgstr "Opkaldsgruppe"
@@ -525,6 +610,9 @@ msgstr "Opkaldsgrupper"
 
 msgid "Call groups ring several phones at once or one after another."
 msgstr "Opkaldsgrupper ringer til flere telefoner på én gang eller efter hinanden."
+
+msgid "Call me"
+msgstr "Ring til mig"
 
 msgid "Call parking"
 msgstr "Parkering af opkald"
@@ -550,8 +638,14 @@ msgstr "Navn til opkalds-ID"
 msgid "Caller ID text"
 msgstr "Opkalds-ID-tekst"
 
+msgid "Callers from outside reach only numbers that are reachable from outside."
+msgstr "Opkaldere udefra når kun numre, der kan nås udefra."
+
 msgid "Callers from providers or SIP URIs may call this phone directly."
 msgstr "Opkaldere fra udbydere eller SIP-URI'er må ringe direkte til denne telefon."
+
+msgid "Callers may dial extensions directly"
+msgstr "Opkaldere må ringe direkte til lokalnumre"
 
 msgid "Calls & Registrations"
 msgstr "Opkald og registreringer"
@@ -610,14 +704,43 @@ msgstr "Vælg 1 til %(max)s dage"
 msgid "Choose a DNS provider"
 msgstr "Vælg en DNS-udbyder"
 
+msgid "Choose a destination"
+msgstr "Vælg en destination"
+
+msgid "Choose a destination…"
+msgstr "Vælg en destination…"
+
 msgid "Choose a different password"
 msgstr "Vælg en anden adgangskode"
+
+msgid "Choose a key from 0-9, * or #"
+msgstr "Vælg en tast fra 0-9, * eller #"
+
+msgid "Choose a sound"
+msgstr "Vælg en lyd"
+
+msgid "Choose or upload an announcement"
+msgstr "Vælg eller upload en meddelelse"
 
 msgid "Client ID"
 msgstr "Klient-ID"
 
 msgid "Client secret"
 msgstr "Klienthemmelighed"
+
+msgid "Closed"
+msgstr "Lukket"
+
+msgid "Closed all day"
+msgstr "Lukket hele dagen"
+
+msgid "Closed all day, whatever the weekly hours say. Days that move every year, like Easter, are entered once per year."
+msgstr ""
+"Lukket hele dagen, uanset de ugentlige åbningstider. Dage, der flytter sig hvert år, som påske, indtastes én gang om "
+"året."
+
+msgid "Closed until switched back, e.g. when the office closes early."
+msgstr "Lukket, indtil der skiftes tilbage, f.eks. når kontoret lukker tidligt."
 
 msgid "Cloud API token"
 msgstr "Cloud API-token"
@@ -627,6 +750,10 @@ msgstr "Codecs"
 
 msgid "Codecs &amp; advanced"
 msgstr "Codecs &amp; avanceret"
+
+#, python-format
+msgid "Codes starting with %(code)s are used for call pickup"
+msgstr "Koder, der begynder med %(code)s, bruges til overtagelse af opkald"
 
 msgid "Conference"
 msgstr "Konference"
@@ -764,6 +891,9 @@ msgstr "Mørk tilstand"
 msgid "Data partition"
 msgstr "Datapartition"
 
+msgid "Date"
+msgstr "Dato"
+
 msgid "Default expiry (s)"
 msgstr "Standardudløbstid (s)"
 
@@ -792,6 +922,9 @@ msgstr "Danmark"
 
 msgid "Description"
 msgstr "Beskrivelse"
+
+msgid "Destination"
+msgstr "Destination"
 
 msgid "Destination does not exist"
 msgstr "Destinationen findes ikke"
@@ -858,6 +991,12 @@ msgstr "Nede"
 #, python-format
 msgid "Download %(name)s"
 msgstr "Download %(name)s"
+
+msgid "Drag to change the order"
+msgstr "Træk for at ændre rækkefølgen"
+
+msgid "Drop an audio file here or click to upload (WAV, MP3, OGG or FLAC, converted to 8 kHz)"
+msgstr "Slip en lydfil her, eller klik for at uploade (WAV, MP3, OGG eller FLAC, konverteres til 8 kHz)"
 
 msgid "Drop audio files here or click to upload"
 msgstr "Slip lydfiler her, eller klik for at uploade"
@@ -931,8 +1070,16 @@ msgid "Edit %(tech)s provider %(name)s"
 msgstr "Rediger %(tech)s-udbyder %(name)s"
 
 #, python-format
+msgid "Edit IVR menu %(name)s"
+msgstr "Rediger IVR-menu %(name)s"
+
+#, python-format
 msgid "Edit application %(name)s"
 msgstr "Rediger applikation %(name)s"
+
+#, python-format
+msgid "Edit business hours %(name)s"
+msgstr "Rediger åbningstider %(name)s"
 
 #, python-format
 msgid "Edit call group %(name)s"
@@ -1012,8 +1159,14 @@ msgstr "Angiv et navn på op til 64 tegn"
 msgid "Enter a number of days"
 msgstr "Angiv et antal dage"
 
+msgid "Enter a time as HH:MM"
+msgstr "Angiv et klokkeslæt som HH:MM"
+
 msgid "Enter the directory URL of the ACME server"
 msgstr "Angiv ACME-serverens katalog-URL"
+
+msgid "Enter the name of an Asterisk sound, e.g. welcome"
+msgstr "Angiv navnet på en Asterisk-lyd, f.eks. welcome"
 
 msgid "Error"
 msgstr "Fejl"
@@ -1061,6 +1214,9 @@ msgstr "Failover-udbyder"
 msgid "Failures within 10 minutes"
 msgstr "Fejl inden for 10 minutter"
 
+msgid "Feature code"
+msgstr "Funktionskode"
+
 msgid "Feature codes"
 msgstr "Funktionskoder"
 
@@ -1088,6 +1244,13 @@ msgstr "Første plads"
 msgid "Fixed caller ID"
 msgstr "Fast opkalds-ID"
 
+msgid "Follow the opening hours and holidays."
+msgstr "Følg åbningstider og helligdage."
+
+#, python-format
+msgid "For %(what)s, press %(key)s."
+msgstr "Tryk %(key)s for %(what)s."
+
 msgid "For 'one after another', phones ring in this order."
 msgstr "Ved 'én efter én' ringer telefonerne i denne rækkefølge."
 
@@ -1105,6 +1268,9 @@ msgstr "Frankrig"
 
 msgid "French"
 msgstr "Fransk"
+
+msgid "Friday"
+msgstr "Fredag"
 
 msgid "From domain"
 msgstr "From-domæne"
@@ -1142,8 +1308,14 @@ msgstr "Graferne samples, mens en side med grafer er åben (op til de seneste 12
 msgid "Greece"
 msgstr "Grækenland"
 
+msgid "Green: open."
+msgstr "Grøn: åbent."
+
 msgid "HTTP (port 80)"
 msgstr "HTTP (port 80)"
+
+msgid "Hang up"
+msgstr "Læg på"
 
 #, python-brace-format
 msgid ""
@@ -1187,6 +1359,9 @@ msgstr ""
 "-- \n"
 "PhonixPBX\n"
 
+msgid "Holidays and closing days"
+msgstr "Helligdage og lukkedage"
+
 msgid "Host"
 msgstr "Vært"
 
@@ -1226,6 +1401,33 @@ msgstr "IAX-udbyder"
 msgid "IP address"
 msgstr "IP-adresse"
 
+msgid "IVR Menus"
+msgstr "IVR-menuer"
+
+msgid "IVR announcement"
+msgstr "IVR-meddelelse"
+
+msgid "IVR menu"
+msgstr "IVR-menu"
+
+#, python-format
+msgid "IVR menu %(name)s"
+msgstr "IVR-menu %(name)s"
+
+#, python-format
+msgid "IVR menu %(name)s <%(number)s>"
+msgstr "IVR-menu %(name)s <%(number)s>"
+
+#, python-format
+msgid "IVR menu %(name)s saved."
+msgstr "IVR-menu %(name)s gemt."
+
+msgid "IVR menu not found"
+msgstr "IVR-menu ikke fundet"
+
+msgid "IVR menus"
+msgstr "IVR-menuer"
+
 msgid "If the new version does not work, roll back to the snapshot you took on the container host."
 msgstr "Hvis den nye version ikke virker, så rul tilbage til det snapshot, du tog på containerværten."
 
@@ -1254,6 +1456,13 @@ msgid ""
 msgstr ""
 "I en konference tryk <kbd>*</kbd> for menuen, <kbd>1</kbd> for at slå lyden fra, <kbd>8</kbd> for at forlade den. "
 "Administratorer (administrator-PIN) kan låse rummet (<kbd>2</kbd>) og smide den sidste opkalder ud (<kbd>3</kbd>)."
+
+msgid ""
+"In the time zone of the system. A day can have several time ranges, e.g. for a lunch break; the end is the first "
+"minute you are closed."
+msgstr ""
+"I systemets tidszone. En dag kan have flere tidsrum, f.eks. for en frokostpause; slutningen er det første minut, hvor"
+" der er lukket."
 
 msgid "In use"
 msgstr "I brug"
@@ -1374,11 +1583,30 @@ msgstr "Behold de nuværende webbrugere og API-tokens"
 msgid "Kernel"
 msgstr "Kerne"
 
+msgid "Key"
+msgstr "Tast"
+
+#, python-format
+msgid "Key %(key)s is used more than once"
+msgstr "Tasten %(key)s bruges mere end én gang"
+
+msgid "Key options"
+msgstr "Tastvalg"
+
+msgid "Keys"
+msgstr "Taster"
+
 msgid "LAN interface"
 msgstr "LAN-interface"
 
 msgid "LXC / Incus system container"
 msgstr "LXC / Incus-systemcontainer"
+
+msgid "Label"
+msgstr "Betegnelse"
+
+msgid "Label, e.g. Sales"
+msgstr "Betegnelse, f.eks. Salg"
 
 msgid "Lagged"
 msgstr "Forsinket"
@@ -1416,6 +1644,9 @@ msgstr "Lys tilstand"
 
 msgid "Light/dark theme: use the moon/sun icon in the top bar."
 msgstr "Lyst/mørkt tema: brug måne-/solikonet i topbjælken."
+
+msgid "Listen to the announcement"
+msgstr "Lyt til meddelelsen"
 
 msgid "Lithuania"
 msgstr "Litauen"
@@ -1529,8 +1760,17 @@ msgstr "Manglende loginoplysninger til DNS-udbyder: %(names)s"
 msgid "Mode"
 msgstr "Tilstand"
 
+msgid "Monday"
+msgstr "Mandag"
+
 msgid "Monitor"
 msgstr "Monitor"
+
+msgid "Move down"
+msgstr "Flyt ned"
+
+msgid "Move up"
+msgstr "Flyt op"
 
 msgid "Music on hold"
 msgstr "Ventemusik"
@@ -1602,6 +1842,9 @@ msgstr "Navneserver (host eller host:port)"
 msgid "Name shown to called parties."
 msgstr "Navn, der vises for den opkaldte part."
 
+msgid "Name, e.g. Christmas Day"
+msgstr "Navn, f.eks. juledag"
+
 msgid "Names"
 msgstr "Navne"
 
@@ -1637,11 +1880,17 @@ msgstr "Ny %(tech)s-telefon"
 msgid "New %(tech)s provider"
 msgstr "Ny %(tech)s-udbyder"
 
+msgid "New IVR menu"
+msgstr "Ny IVR-menu"
+
 msgid "New Zealand"
 msgstr "New Zealand"
 
 msgid "New application"
 msgstr "Ny applikation"
+
+msgid "New business hours"
+msgstr "Nye åbningstider"
 
 msgid "New call group"
 msgstr "Ny opkaldsgruppe"
@@ -1668,6 +1917,9 @@ msgstr "Nyere"
 msgid "No API tokens"
 msgstr "Ingen API-tokens"
 
+msgid "No IVR menus"
+msgstr "Ingen IVR-menuer"
+
 msgid "No active calls."
 msgstr "Ingen aktive opkald."
 
@@ -1679,6 +1931,9 @@ msgstr "Ingen applikationer"
 
 msgid "No backups yet. Backups contain the configuration with all passwords, the media files and the TLS certificate."
 msgstr "Ingen backups endnu. Backups indeholder konfigurationen med alle adgangskoder, mediefilerne og TLS-certifikatet."
+
+msgid "No business hours"
+msgstr "Ingen åbningstider"
 
 msgid "No call groups"
 msgstr "Ingen opkaldsgrupper"
@@ -1697,6 +1952,12 @@ msgstr "Ingen poster."
 
 msgid "No files uploaded."
 msgstr "Ingen filer uploadet."
+
+msgid "No key options yet."
+msgstr "Ingen tastvalg endnu."
+
+msgid "No key pressed"
+msgstr "Ingen tast trykket"
 
 msgid "No manager users"
 msgstr "Ingen manager-brugere"
@@ -1751,6 +2012,9 @@ msgstr "Notifikationsadresse"
 
 msgid "Notifications"
 msgstr "Notifikationer"
+
+msgid "Now"
+msgstr "Nu"
 
 msgid "Number"
 msgstr "Nummer"
@@ -1832,17 +2096,29 @@ msgstr "Kun hvis forskellig fra brugernavnet."
 msgid "Only web interface, SSH (if enabled), SIP/IAX and RTP are reachable."
 msgstr "Kun webgrænseflade, SSH (hvis aktiveret), SIP/IAX og RTP kan nås."
 
+msgid "Open"
+msgstr "Åbent"
+
+msgid "Open until switched back, e.g. for a special event."
+msgstr "Åbent, indtil der skiftes tilbage, f.eks. ved et særligt arrangement."
+
 msgid "Open user menu"
 msgstr "Åbn brugermenu"
 
 msgid "Optional - groups can also be used only as provider destinations."
 msgstr "Valgfrit - grupper kan også kun bruges som destinationer for udbydere."
 
+msgid "Optional - menus can also be used only as destinations."
+msgstr "Valgfrit - menuer kan også kun bruges som destinationer."
+
 msgid "Optional alias used in the public context (e.g. 'sales' for sip:sales@pbx). Defaults to the extension."
 msgstr "Valgfrit alias, der bruges i den offentlige kontekst (f.eks. 'sales' for sip:sales@pbx). Standard er lokalnummeret."
 
 msgid "Optional. Callers must enter it to join."
 msgstr "Valgfrit. Opkaldere skal indtaste den for at deltage."
+
+msgid "Optional. Dialled on an internal phone, it switches between “Automatic” and “Closed”."
+msgstr "Valgfrit. Når den kaldes fra en intern telefon, skifter den mellem »Automatisk« og »Lukket«."
 
 msgid "Optional. Joins as moderator."
 msgstr "Valgfrit. Deltager som moderator."
@@ -1853,6 +2129,9 @@ msgid ""
 msgstr ""
 "Valgfrit; tilsidesætter udbyderens opkalds-ID-indstilling for opkald fra denne telefon. Format: <code>Name "
 "&lt;number&gt;</code>."
+
+msgid "Other"
+msgstr "Andet"
 
 msgid "Other ACME server"
 msgstr "Anden ACME-server"
@@ -1940,6 +2219,10 @@ msgid "Phone %(extension)s created."
 msgstr "Telefon %(extension)s oprettet."
 
 #, python-format
+msgid "Phone %(extension)s is ringing. Answer it to hear the menu as it was last applied."
+msgstr "Telefon %(extension)s ringer. Besvar opkaldet for at høre menuen, som den sidst blev anvendt."
+
+#, python-format
 msgid "Phone %(extension)s saved."
 msgstr "Telefon %(extension)s gemt."
 
@@ -1992,6 +2275,9 @@ msgstr "Klartekst"
 
 msgid "Platform"
 msgstr "Platform"
+
+msgid "Played when the call reaches the menu. Callers can press a key while it plays."
+msgstr "Afspilles, når opkaldet når menuen. Opkaldere kan trykke på en tast, mens den afspilles."
 
 msgid "Please choose your own password before continuing."
 msgstr "Vælg din egen adgangskode, før du fortsætter."
@@ -2147,6 +2433,9 @@ msgstr ""
 "Anbefales, når backuppen stammer fra et andet system eller netværk: dens IP-adresse, firewallregler eller SSH-"
 "indstillinger kan låse dig ude."
 
+msgid "Recording script"
+msgstr "Indtalingsmanuskript"
+
 msgid "Region"
 msgstr "Region"
 
@@ -2169,14 +2458,26 @@ msgstr "Afvist"
 msgid "Reloading the web server failed: %(error)s"
 msgstr "Genindlæsning af webserveren mislykkedes: %(error)s"
 
+msgid "Remove day"
+msgstr "Fjern dag"
+
+msgid "Remove option"
+msgstr "Fjern valgmulighed"
+
 msgid "Remove the password (key logins only)"
 msgstr "Fjern adgangskoden (kun login med nøgle)"
+
+msgid "Remove time range"
+msgstr "Fjern tidsrum"
 
 msgid "Renewed daily when it expires in less than 30 days."
 msgstr "Fornyes dagligt, når det udløber om mindre end 30 dage."
 
 msgid "Repeat new password"
 msgstr "Gentag ny adgangskode"
+
+msgid "Repeat the menu"
+msgstr "Gentag menuen"
 
 msgid "Replace current configuration (backup first)"
 msgstr "Erstat den aktuelle konfiguration (backup først)"
@@ -2230,11 +2531,17 @@ msgstr ""
 msgid "Restoring the files failed, nothing was changed: %(error)s"
 msgstr "Gendannelsen af filerne mislykkedes, intet blev ændret: %(error)s"
 
+msgid "Right now"
+msgstr "Lige nu"
+
 msgid "Ring"
 msgstr "Kalder"
 
 msgid "Ring all at once"
 msgstr "Ring til alle på én gang"
+
+msgid "Ring phone"
+msgstr "Ring til telefon"
 
 msgid "Ring strategy"
 msgstr "Ringestrategi"
@@ -2255,6 +2562,9 @@ msgstr ""
 "Ringer en telefon op og ringer derfra til et nummer (POST /api/v1/calls, MCP-værktøjet originate_call), også med et "
 "skrivebeskyttet token. Opkald til eksterne numre kan koste penge."
 
+msgid "Rings your phone and connects it to this menu as it was last applied."
+msgstr "Ringer til din telefon og forbinder den med denne menu, som den sidst blev anvendt."
+
 #, python-format
 msgid "Route %(num)s: %(error)s"
 msgstr "Rute %(num)s: %(error)s"
@@ -2265,6 +2575,9 @@ msgid ""
 msgstr ""
 "Rut indgående opkald efter det kaldte nummer (DID). Lad mønsteret være tomt for at fange alle opkald. Flere "
 "destinationer med samme mønster ringer parallelt."
+
+msgid "Routing"
+msgstr "Routing"
 
 msgid "Russia"
 msgstr "Rusland"
@@ -2311,6 +2624,9 @@ msgstr "STARTTLS (port 587)"
 
 msgid "Same as phone language"
 msgstr "Samme som telefonens sprog"
+
+msgid "Saturday"
+msgstr "Lørdag"
 
 msgid "Save"
 msgstr "Gem"
@@ -2372,6 +2688,9 @@ msgstr "Serveren kræver godkendelse"
 msgid "Services"
 msgstr "Tjenester"
 
+msgid "Settings"
+msgstr "Indstillinger"
+
 msgid "Settings groups"
 msgstr "Indstillingsgrupper"
 
@@ -2401,6 +2720,12 @@ msgstr "Størrelse"
 
 msgid "Something went wrong"
 msgstr "Noget gik galt"
+
+msgid "Sound"
+msgstr "Lyd"
+
+msgid "Source"
+msgstr "Kilde"
 
 msgid "South Africa"
 msgstr "Sydafrika"
@@ -2438,11 +2763,17 @@ msgstr "Abonnements-ID"
 msgid "Summary"
 msgstr "Oversigt"
 
+msgid "Sunday"
+msgstr "Søndag"
+
 msgid "Sweden"
 msgstr "Sverige"
 
 msgid "Swedish"
 msgstr "Svensk"
+
+msgid "Switch now"
+msgstr "Skift nu"
 
 msgid "Switzerland"
 msgstr "Schweiz"
@@ -2490,11 +2821,17 @@ msgstr "Taiwan"
 msgid "Take a snapshot of the container first"
 msgstr "Tag først et snapshot af containeren"
 
+msgid "Takes effect immediately, without applying the configuration."
+msgstr "Træder i kraft med det samme, uden at konfigurationen anvendes."
+
 msgid "Telephony"
 msgstr "Telefoni"
 
 msgid "Tenant ID"
 msgstr "Tenant-ID"
+
+msgid "Test call"
+msgstr "Testopkald"
 
 #, python-format
 msgid "Test message sent to %(to)s."
@@ -2538,6 +2875,9 @@ msgstr ""
 msgid "The directory URL must start with https://"
 msgstr "Katalog-URL'en skal starte med https://"
 
+msgid "The end must be after the start"
+msgstr "Slutningen skal ligge efter starten"
+
 msgid "The end port must be greater than the start port."
 msgstr "Slutporten skal være større end startporten."
 
@@ -2565,6 +2905,9 @@ msgstr "Den sidste administrator kan ikke slettes"
 
 msgid "The lego ACME client is not installed."
 msgstr "ACME-klienten lego er ikke installeret."
+
+msgid "The line is now."
+msgstr "Stregen markerer nu."
 
 msgid "The log is empty or not available."
 msgstr "Loggen er tom eller ikke tilgængelig."
@@ -2594,6 +2937,9 @@ msgstr "Systemet lukker ned."
 msgid "The text must not contain control characters"
 msgstr "Teksten må ikke indeholde kontroltegn"
 
+msgid "The text to record for this menu. It is not played; record it and upload the file above."
+msgstr "Teksten, der skal indtales til denne menu. Den afspilles ikke; indtal den, og upload filen ovenfor."
+
 msgid "The uploaded file expired, please upload it again."
 msgstr "Den uploadede fil er udløbet, upload den igen."
 
@@ -2606,6 +2952,9 @@ msgstr ""
 
 msgid "This backup was made by an older PhonixPBX release in a format that can no longer be restored."
 msgstr "Denne backup blev lavet af en ældre PhonixPBX-version i et format, der ikke længere kan gendannes."
+
+msgid "This day is listed more than once"
+msgstr "Denne dag er angivet mere end én gang"
 
 msgid ""
 "This erases the complete configuration, voicemail, media and backups on this system and reboots. Download a backup "
@@ -2623,8 +2972,14 @@ msgstr "Dette er ikke en PhonixPBX-konfigurationsfil"
 msgid "This phone cannot place outgoing calls through the selected providers."
 msgstr "Denne telefon kan ikke foretage udgående opkald via de valgte udbydere."
 
+msgid "This phone has no voicemail box"
+msgstr "Denne telefon har ingen telefonsvarer"
+
 msgid "This username is reserved"
 msgstr "Dette brugernavn er reserveret"
+
+msgid "Thursday"
+msgstr "Torsdag"
 
 msgid "Time (UTC)"
 msgstr "Tid (UTC)"
@@ -2634,6 +2989,23 @@ msgstr "Tidsservere"
 
 msgid "Time zone"
 msgstr "Tidszone"
+
+msgid ""
+"To answer calls from outside with a menu, mark it as reachable from outside or choose it as the destination of a "
+"provider’s incoming route. Use <a href=\"/dialplan/hours\">business hours</a> to play another menu while the office "
+"is closed."
+msgstr ""
+"For at besvare opkald udefra med en menu skal du markere den som »Kan nås udefra« eller vælge den som destination for"
+" en udbyders indgående rute. Brug <a href=\"/dialplan/hours\">åbningstider</a> til at afspille en anden menu, mens "
+"kontoret er lukket."
+
+#, python-format
+msgid "To end the call, press %(key)s."
+msgstr "Tryk %(key)s for at afslutte opkaldet."
+
+#, python-format
+msgid "To hear these options again, press %(key)s."
+msgstr "Tryk %(key)s for at høre valgmulighederne igen."
 
 msgid "Toggle navigation"
 msgstr "Skift navigation"
@@ -2671,6 +3043,9 @@ msgstr "Viderestilling og parkering"
 
 msgid "Transport"
 msgstr "Transport"
+
+msgid "Tuesday"
+msgstr "Tirsdag"
 
 msgid "Turn on automatic certificates to request one."
 msgstr "Slå automatiske certifikater til for at anmode om et."
@@ -2816,6 +3191,9 @@ msgstr "Upload din egen ventemusik. Filer konverteres til 8 kHz mono WAV. Uden u
 msgid "Uploaded"
 msgstr "Uploadet"
 
+msgid "Uploaded audio"
+msgstr "Uploadet lyd"
+
 msgid "Uploaded files"
 msgstr "Uploadede filer"
 
@@ -2825,8 +3203,14 @@ msgstr "Oppetid"
 msgid "Use DNS SRV lookups"
 msgstr "Brug DNS SRV-opslag"
 
+msgid "Use business hours as the destination of a provider’s incoming route or of an IVR key."
+msgstr "Brug åbningstider som destination for en udbyders indgående rute eller for en IVR-tast."
+
 msgid "Use lowercase letters, digits, '.', '_' or '-'"
 msgstr "Brug små bogstaver, cifre, '.', '_' eller '-'"
+
+msgid "Use “Repeat the menu” to play this menu again"
+msgstr "Brug »Gentag menuen« for at afspille denne menu igen"
 
 msgid "Used by PhonixPBX (certificate, Asterisk). The host name of the container itself is set on the container host."
 msgstr "Bruges af PhonixPBX (certifikat, Asterisk). Selve containerens værtsnavn angives på containerværten."
@@ -2930,6 +3314,10 @@ msgstr ""
 "E-mails om talebeskeder og mistede opkald sendes på hver telefons e-mailsprog (Konti > Telefoner). Teksterne nedenfor"
 " gælder for det valgte sprog; ret dem for at tilpasse e-mailene."
 
+#, python-format
+msgid "Voicemail box %(number)s (%(name)s)"
+msgstr "Telefonsvarer %(number)s (%(name)s)"
+
 msgid ""
 "Voicemail can be read by dialing <strong>000086</strong>. Configure <a href=\"/services/email\">e-mail "
 "notifications</a> to receive messages by e-mail."
@@ -2943,6 +3331,9 @@ msgstr "Telefonsvarerhilsen"
 msgid "Voicemail, conferencing and media"
 msgstr "Telefonsvarer, konferencer og medier"
 
+msgid "Wait for a key (s)"
+msgstr "Vent på tast (s)"
+
 msgid "Web application"
 msgstr "Webapplikation"
 
@@ -2952,6 +3343,34 @@ msgstr "Webgrænseflade og SSH. Én CIDR pr. linje, f.eks. 192.168.1.0/24. Tom =
 msgid "Web users"
 msgstr "Webbrugere"
 
+msgid "Wednesday"
+msgstr "Onsdag"
+
+msgid "Week at a glance"
+msgstr "Ugeoversigt"
+
+msgid "Weekly opening hours"
+msgstr "Ugentlige åbningstider"
+
+msgid ""
+"What happens when the caller presses a key. Drag the handle (or use the arrows) to change the order in which the "
+"options are announced."
+msgstr ""
+"Hvad der sker, når opkalderen trykker på en tast. Træk i håndtaget (eller brug pilene) for at ændre den rækkefølge, "
+"valgmulighederne oplæses i."
+
+msgid "When an unknown key is pressed"
+msgstr "Når der trykkes på en ukendt tast"
+
+msgid "When closed"
+msgstr "Når lukket"
+
+msgid "When no key is pressed"
+msgstr "Når der ikke trykkes på nogen tast"
+
+msgid "When open"
+msgstr "Når åbent"
+
 msgid "Wildcard domains need DNS validation"
 msgstr "Wildcard-domæner kræver DNS-validering"
 
@@ -2960,6 +3379,9 @@ msgstr "Wildcards '.' og '!' er ikke tilladt før '|'"
 
 msgid "Write"
 msgstr "Skrive"
+
+msgid "Write from options"
+msgstr "Skriv ud fra valgmuligheder"
 
 msgid "Write permissions"
 msgstr "Skriverettigheder"
@@ -3013,6 +3435,14 @@ msgid "application %(name)s"
 msgstr "applikation %(name)s"
 
 #, python-format
+msgid "back to %(name)s"
+msgstr "tilbage til %(name)s"
+
+#, python-format
+msgid "business hours %(name)s"
+msgstr "åbningstider %(name)s"
+
+#, python-format
 msgid "call group %(name)s"
 msgstr "opkaldsgruppe %(name)s"
 
@@ -3027,6 +3457,9 @@ msgstr "ændret"
 
 msgid "close"
 msgstr "luk"
+
+msgid "closed now"
+msgstr "lukket nu"
 
 #, python-format
 msgid "conference room %(name)s"
@@ -3060,6 +3493,9 @@ msgstr "f.eks. powerdns"
 msgid "enabled"
 msgstr "aktiveret"
 
+msgid "every year"
+msgstr "hvert år"
+
 msgid "expired"
 msgstr "udløbet"
 
@@ -3071,6 +3507,9 @@ msgstr "først = foretrukket"
 
 msgid "fixed caller ID"
 msgstr "fast opkalds-ID"
+
+msgid "holiday"
+msgstr "helligdag"
 
 msgid "incoming number pattern"
 msgstr "mønster for indgående nummer"
@@ -3135,6 +3574,9 @@ msgstr "én efter én"
 
 msgid "open"
 msgstr "åben"
+
+msgid "open now"
+msgstr "åben nu"
 
 msgid ""
 "or <em>Snapshots &rarr; Take Snapshot</em> in the Proxmox VE web interface; roll back with <code>pct rollback "
@@ -3213,9 +3655,25 @@ msgstr "selvsigneret"
 msgid "skip"
 msgstr "spring over"
 
+msgid "star"
+msgstr "stjerne"
+
+msgid "switched manually"
+msgstr "skiftet manuelt"
+
 #, python-format
 msgid "the configuration has been changed (%(areas)s). Apply to activate."
 msgstr "konfigurationen er blevet ændret (%(areas)s). Anvend for at aktivere."
+
+#, python-format
+msgid "the feature code of business hours %(name)s"
+msgstr "funktionskoden for åbningstider %(name)s"
+
+msgid "the hash key"
+msgstr "firkant"
+
+msgid "times, when no key is pressed"
+msgstr "gange, når der ikke trykkes på nogen tast"
 
 #, python-format
 msgid "token %(name)s"
@@ -3247,4 +3705,7 @@ msgstr "brugt"
 
 msgid "yes"
 msgstr "ja"
+
+msgid "“Repeat the menu” says that the option is invalid and plays the menu again."
+msgstr "»Gentag menuen« siger, at valget er ugyldigt, og afspiller menuen igen."
 

@@ -1,0 +1,24 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+{# one key option of an IVR menu; `o` is None in the template for new rows, `idx` the row index #}
+{% from "macros/forms.html" import dest_options with context %}
+{% set row_errors = [] %}
+{% for k, e in (errors or {}).items() if k == "options." ~ idx or k.startswith("options." ~ idx ~ ".") %}{% set _unused = row_errors.append(e) %}{% endfor %}
+<div class="dyn-row ivr-option{% if row_errors %} is-invalid{% endif %}" data-sortable-item>
+  <span class="ivr-handle" data-sortable-handle title="{{ _("Drag to change the order") }}" aria-hidden="true">{{ icon("grip-vertical") }}</span>
+  <select class="form-select ivr-key" name="opt_key_{{ idx }}" aria-label="{{ _("Key") }}" data-unique="ivr-key">
+    {% for k in keys %}<option value="{{ k }}" {% if o and o.key == k %}selected{% endif %}>{{ k }}</option>{% endfor %}
+  </select>
+  <input class="form-control ivr-label" name="opt_label_{{ idx }}" value="{{ o.label if o else '' }}" placeholder="{{ _("Label, e.g. Sales") }}" aria-label="{{ _("Label") }}" maxlength="80">
+  <div class="ivr-dest">
+    <select class="form-select" name="opt_dest_{{ idx }}" data-tom aria-label="{{ _("Destination") }}">
+      <option value="">{{ _("Choose a destination…") }}</option>
+      {{ dest_options(option_choices, dest_value(o.dest_type, o.dest_id) if o and o.dest_type else "") }}
+    </select>
+  </div>
+  <div class="ivr-move">
+    <button type="button" class="btn btn-ghost-secondary btn-icon btn-sm" data-move="up" aria-label="{{ _("Move up") }}">{{ icon("chevron-up") }}</button>
+    <button type="button" class="btn btn-ghost-secondary btn-icon btn-sm" data-move="down" aria-label="{{ _("Move down") }}">{{ icon("chevron-down") }}</button>
+  </div>
+  <button type="button" class="btn btn-ghost-danger btn-icon btn-sm ivr-remove" data-remove-row aria-label="{{ _("Remove option") }}">{{ icon("x") }}</button>
+  {% if row_errors %}<div class="invalid-feedback d-block ivr-error">{{ row_errors | join(" ") }}</div>{% endif %}
+</div>

@@ -1,0 +1,32 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+{% extends "base.html" %}
+{% from "macros/ui.html" import delete_button, empty with context %}
+{% from "macros/hours.html" import hours_status with context %}
+{% block actions %}<a href="/dialplan/hours/new" class="btn btn-primary">{{ icon("plus") }}{{ _("Business hours") }}</a>{% endblock %}
+{% block content %}
+<div class="card">
+  {% if items %}
+  <div class="table-responsive">
+  <table class="table table-vcenter card-table table-hover">
+    <thead><tr><th>{{ _("Name") }}</th><th>{{ _("Now") }}</th><th>{{ _("When open") }}</th><th>{{ _("When closed") }}</th><th>{{ _("Feature code") }}</th><th></th></tr></thead>
+    <tbody>
+    {% for h, st in items %}
+    <tr>
+      <td><a href="/dialplan/hours/{{ h.id }}" class="fw-bold">{{ h.name }}</a>{% if h.description %}<div class="small text-secondary">{{ h.description }}</div>{% endif %}</td>
+      <td>{{ hours_status(st) }}</td>
+      <td class="small">{{ dest_label(h.open_dest_type, h.open_dest_id) }}</td>
+      <td class="small">{{ dest_label(h.closed_dest_type, h.closed_dest_id) }}</td>
+      <td class="font-monospace">{{ h.feature_code or "–" }}</td>
+      <td class="table-actions">
+        <a href="/dialplan/hours/{{ h.id }}" class="btn btn-ghost-primary btn-icon btn-sm" aria-label="{{ _("Edit %(name)s", name=h.name) }}">{{ icon("edit") }}</a>
+        {{ delete_button("/dialplan/hours/" ~ h.id, _("business hours %(name)s", name=h.name)) }}
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}{{ empty(_("No business hours"), _("Business hours send calls to one destination while you are open and to another one while you are closed, e.g. an after-hours menu."), "/dialplan/hours/new", _("Add business hours")) }}{% endif %}
+</div>
+<p class="text-secondary small mt-3">{{ _("Use business hours as the destination of a provider’s incoming route or of an IVR key.") }}</p>
+{% endblock %}

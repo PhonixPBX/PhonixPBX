@@ -1,0 +1,105 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+{% extends "base.html" %}
+{% from "macros/forms.html" import csrf, input, form_errors, submit, dest_select with context %}
+{% block page_title %}{{ _("New business hours") if is_new else _("Edit business hours %(name)s", name=values.name) }}{% endblock %}
+
+{% macro range_row(day, idx, r) %}
+{% set err = (errors or {}).get("ranges." ~ idx) or (errors or {}).get("ranges." ~ idx ~ ".start") or (errors or {}).get("ranges." ~ idx ~ ".end") %}
+<div class="dyn-row hours-range">
+  <input type="hidden" name="range_day_{{ idx }}" value="{{ day }}">
+  <input type="time" class="form-control{% if err %} is-invalid{% endif %}" name="range_start_{{ idx }}" value="{{ r.start if r else '08:00' }}" aria-label="{{ _("%(day)s, from", day=_(weekdays[day])) }}" required>
+  <span aria-hidden="true">–</span>
+  <input type="time" class="form-control{% if err %} is-invalid{% endif %}" name="range_end_{{ idx }}" value="{{ ('23:59' if r.end == '24:00' else r.end) if r else '17:00' }}" aria-label="{{ _("%(day)s, until", day=_(weekdays[day])) }}" required>
+  <button type="button" class="btn btn-ghost-danger btn-icon btn-sm" data-remove-row aria-label="{{ _("Remove time range") }}">{{ icon("x") }}</button>
+  {% if err %}<div class="invalid-feedback d-block w-100">{{ err }}</div>{% endif %}
+</div>
+{% endmacro %}
+
+{% macro holiday_row(idx, h) %}
+{% set err = (errors or {}).get("holidays." ~ idx) or (errors or {}).get("holidays." ~ idx ~ ".date") or (errors or {}).get("holidays." ~ idx ~ ".name") %}
+<div class="dyn-row hours-holiday">
+  <input type="date" class="form-control{% if err %} is-invalid{% endif %}" name="hol_date_{{ idx }}" value="{{ h.date if h else '' }}" aria-label="{{ _("Date") }}">
+  <input class="form-control hours-holiday-name" name="hol_name_{{ idx }}" value="{{ h.name if h else '' }}" placeholder="{{ _("Name, e.g. Christmas Day") }}" aria-label="{{ _("Name") }}" maxlength="80">
+  <label class="form-check mb-0 text-nowrap"><input class="form-check-input" type="checkbox" name="hol_yearly_{{ idx }}" value="true" {% if h and h.yearly %}checked{% endif %}><span class="form-check-label">{{ _("every year") }}</span></label>
+  <button type="button" class="btn btn-ghost-danger btn-icon btn-sm" data-remove-row aria-label="{{ _("Remove day") }}">{{ icon("x") }}</button>
+  {% if err %}<div class="invalid-feedback d-block w-100">{{ err }}</div>{% endif %}
+</div>
+{% endmacro %}
+
+{% block content %}
+{% include "partials/hours_mode.html" %}
+<form method="post" action="/dialplan/hours/{{ 'new' if is_new else hours_id }}">
+  {{ csrf() }}
+  {{ form_errors(errors) }}
+  <div class="row row-cards">
+    <div class="col-lg-8">
+      <div class="card mb-3">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">{{ _("Weekly opening hours") }}</h3>
+            <div class="card-subtitle">{{ _("In the time zone of the system. A day can have several time ranges, e.g. for a lunch break; the end is the first minute you are closed.") }}</div>
+          </div>
+        </div>
+        <div class="card-body py-2">
+          {% for day in range(7) %}
+          <div class="hours-day{% if day == today %} is-today{% endif %}">
+            <div class="hours-day-name">{{ _(weekdays[day]) }}</div>
+            <div>
+              <div class="hours-ranges" id="day-{{ day }}">{% for r in week[day].ranges %}{{ range_row(day, r.idx, r) }}{% endfor %}</div>
+              <div class="hours-closed text-secondary">{{ _("Closed all day") }}</div>
+              <button type="button" class="btn btn-ghost-primary btn-sm mt-1" data-add-row="#range-template-{{ day }}" data-into="#day-{{ day }}">{{ icon("plus") }}{{ _("Add time range") }}</button>
+              <template id="range-template-{{ day }}">{{ range_row(day, "__INDEX__", None) }}</template>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">{{ _("Holidays and closing days") }}</h3>
+            <div class="card-subtitle">{{ _("Closed all day, whatever the weekly hours say. Days that move every year, like Easter, are entered once per year.") }}</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div id="holidays">{% for h in values.holidays or [] %}{{ holiday_row(loop.index0, h) }}{% endfor %}</div>
+          <button type="button" class="btn mt-2" data-add-row="#holiday-template" data-into="#holidays">{{ icon("plus") }}{{ _("Add day") }}</button>
+          <template id="holiday-template">{{ holiday_row("__INDEX__", None) }}</template>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card mb-3">
+        <div class="card-header"><h3 class="card-title">{{ _("Routing") }}</h3></div>
+        <div class="card-body">
+          {{ input("name", _("Name"), values, errors, required=True) }}
+          {{ input("description", _("Description"), values, errors) }}
+          {{ dest_select("open_dest", _("When open"), dest_value(values.open_dest_type, values.open_dest_id) if values.open_dest_type else "", choices, errors) }}
+          {{ dest_select("closed_dest", _("When closed"), dest_value(values.closed_dest_type, values.closed_dest_id) if values.closed_dest_type else "hangup", choices, errors) }}
+          {{ input("feature_code", _("Feature code"), values, errors, placeholder="*31", attrs='inputmode="tel" data-mask="dialcode"', help=_("Optional. Dialled on an internal phone, it switches between “Automatic” and “Closed”.")) }}
+        </div>
+        {{ submit(_("Create") if is_new else _("Save"), cancel="/dialplan/hours") }}
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div><h3 class="card-title">{{ _("Week at a glance") }}</h3><div class="card-subtitle">{{ _("Green: open.") }}{% if not is_new %} {{ _("The line is now.") }}{% endif %}</div></div></div>
+        <div class="card-body">
+          {% for day in range(7) %}
+          <div class="hours-week-row{% if day == today %} is-today{% endif %}">
+            <span>{{ _(weekdays[day])[:3] }}</span>
+            <div class="hours-track">
+              {% for b in week[day].bars %}<span class="hours-bar" style="left: {{ b.left }}%; width: {{ b.width }}%"></span>{% endfor %}
+              {% if day == today and not is_new %}<span class="hours-now" style="left: {{ now_pct }}%"></span>{% endif %}
+            </div>
+          </div>
+          {% endfor %}
+          <div class="hours-week-row hours-ticks"><span></span><div><span>0</span><span>6</span><span>12</span><span>18</span><span>24</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+{% endblock %}

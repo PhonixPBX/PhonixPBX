@@ -30,8 +30,10 @@ from phonix.core import settings as st
 from phonix.core.models import (
     AmiUser,
     Application,
+    BusinessHours,
     CallGroup,
     ConferenceRoom,
+    IvrMenu,
     Phone,
     Provider,
     User,
@@ -110,9 +112,20 @@ def build_tree(session: Session, report: ExportReport) -> dict[str, Any]:
         for pr in providers:
             if pr.tech != tech:
                 continue
-            routes = [(r.pattern, r.dest_type, r.dest_id) for r in pr.incoming_routes]
+            routes = []
+            for r in pr.incoming_routes:
+                if r.dest_type in ("ivr", "hours"):
+                    what = "IVR menu" if r.dest_type == "ivr" else "business hours"
+                    report.omit("provider", pr.name, f"incoming route {r.pattern or '(all)'} to {what}")
+                    continue
+                routes.append((r.pattern, r.dest_type, r.dest_id))
             out.append(m.provider_out(pr, uid, routes, report))
         return out
+
+    for menu in session.scalars(select(IvrMenu)):
+        report.omit("ivr", menu.name, "IVR menus have no legacy equivalent")
+    for hours in session.scalars(select(BusinessHours)):
+        report.omit("business_hours", hours.name, "business hours have no legacy equivalent")
 
     cfg = st.load_all(session)
     tree: dict[str, Any] = {

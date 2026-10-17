@@ -1,0 +1,8 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+{% from "macros/forms.html" import select with context %}
+{% set options = [] %}
+{% for p in prompts %}{% set _unused = options.append((p.id, p.name)) %}{% endfor %}
+{{ select("prompt_media_id", _("Announcement"), values, errors, options, empty=_("- choose an uploaded file -")) }}
+{% if values.prompt_media_id %}
+<audio class="w-100 mb-3" controls preload="none" src="/services/media/file/{{ values.prompt_media_id }}" aria-label="{{ _("Listen to the announcement") }}"></audio>
+{% endif %}

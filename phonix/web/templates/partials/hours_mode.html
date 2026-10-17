@@ -1,0 +1,27 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+{# the live status and mode switch of business hours; `live`: services.hours.live_status() #}
+{% from "macros/hours.html" import hours_status with context %}
+{% if live %}
+<div class="card mb-3" id="hours-mode">
+  <form class="card-body d-flex flex-wrap align-items-center gap-3" hx-post="/dialplan/hours/{{ live.id }}/mode" hx-target="#hours-mode" hx-swap="outerHTML" hx-disable="find button">
+    <div><div class="text-secondary small">{{ _("Right now") }}</div><div>{{ hours_status(live) }}</div></div>
+    {% if live.mode is none %}
+    <div class="text-warning">{{ _("Asterisk is not running: the current mode is unknown and cannot be changed.") }}</div>
+    {% else %}
+    <div class="btn-group" role="group" aria-label="{{ _("Mode") }}">
+      {% for value, title, help in [
+        ("auto", _("Automatic"), _("Follow the opening hours and holidays.")),
+        ("open", _("Open"), _("Open until switched back, e.g. for a special event.")),
+        ("closed", _("Closed"), _("Closed until switched back, e.g. when the office closes early.")),
+      ] %}
+      <input type="radio" class="btn-check" name="mode" id="mode-{{ value }}" value="{{ value }}" autocomplete="off" {% if live.mode == value %}checked{% endif %}>
+      <label class="btn" for="mode-{{ value }}" title="{{ help }}">{{ title }}</label>
+      {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary">{{ _("Switch now") }}</button>
+    <div class="small text-secondary">{{ _("Takes effect immediately, without applying the configuration.") }}</div>
+    {% endif %}
+    {% if mode_error %}<div class="alert alert-danger mb-0 w-100">{{ mode_error }}</div>{% endif %}
+  </form>
+</div>
+{% endif %}

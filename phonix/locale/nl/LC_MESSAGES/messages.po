@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-17 10:06+0200\n"
+"POT-Creation-Date: 2026-10-17 09:53+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: nl\n"
@@ -17,6 +17,14 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
+
+#, python-format
+msgid "%(day)s, from"
+msgstr "%(day)s, van"
+
+#, python-format
+msgid "%(day)s, until"
+msgstr "%(day)s, tot"
 
 #, python-format
 msgid "%(domain)s is not a public DNS name. Enter the names the PBX is reached by."
@@ -67,6 +75,10 @@ msgid "%(object)s: reference to unknown %(type)s %(id)s"
 msgstr "%(object)s: verwijzing naar onbekend %(type)s %(id)s"
 
 #, python-format
+msgid "%(object)s: unknown media file %(path)s"
+msgstr "%(object)s: onbekend mediabestand %(path)s"
+
+#, python-format
 msgid "%(used)s of %(total)s"
 msgstr "%(used)s van %(total)s"
 
@@ -105,6 +117,9 @@ msgstr "(niets te herladen)"
 
 msgid "- choose -"
 msgstr "- kiezen -"
+
+msgid "- choose an uploaded file -"
+msgstr "- kies een geüpload bestand -"
 
 msgid "- none -"
 msgstr "- geen -"
@@ -235,6 +250,9 @@ msgstr "Actieve kanalen"
 msgid "Add"
 msgstr "Toevoegen"
 
+msgid "Add a SIP or IAX phone to test the menu."
+msgstr "Voeg een SIP- of IAX-telefoon toe om het menu te testen."
+
 msgid "Add a call group"
 msgstr "Belgroep toevoegen"
 
@@ -250,11 +268,26 @@ msgstr "Ruimte toevoegen"
 msgid "Add administrator"
 msgstr "Beheerder toevoegen"
 
+msgid "Add an IVR menu"
+msgstr "Een IVR-menu toevoegen"
+
 msgid "Add an application"
 msgstr "Applicatie toevoegen"
 
+msgid "Add business hours"
+msgstr "Openingstijden toevoegen"
+
+msgid "Add day"
+msgstr "Dag toevoegen"
+
+msgid "Add option"
+msgstr "Optie toevoegen"
+
 msgid "Add route"
 msgstr "Route toevoegen"
+
+msgid "Add time range"
+msgstr "Tijdvak toevoegen"
 
 msgid "Add your SIP trunk or VoIP provider account to make and receive external calls."
 msgstr "Voeg uw SIP-trunk of VoIP-provideraccount toe om externe gesprekken te voeren en te ontvangen."
@@ -304,11 +337,22 @@ msgstr "Geavanceerd: één key=value per regel, toegevoegd aan de gegenereerde s
 msgid "Always expand advanced sections"
 msgstr "Geavanceerde secties altijd uitklappen"
 
+msgid "An Asterisk sound in the prompt language of the system, e.g. welcome. You can also type the name of another sound."
+msgstr ""
+"Een Asterisk-geluid in de meldingstaal van het systeem, bijv. welcome. U kunt ook de naam van een ander geluid "
+"invoeren."
+
+msgid "An IVR menu plays an announcement and lets callers choose with a key, e.g. 1 for sales and 2 for support."
+msgstr "Een IVR-menu speelt een aankondiging af en laat bellers met een toets kiezen, bijv. 1 voor verkoop en 2 voor support."
+
 msgid "An e-mail address is required for the ACME account"
 msgstr "Voor het ACME-account is een e-mailadres vereist"
 
 msgid "Announce on the local network (mDNS)"
 msgstr "Aankondigen op het lokale netwerk (mDNS)"
+
+msgid "Announcement"
+msgstr "Aankondiging"
 
 msgid "Application"
 msgstr "Applicatie"
@@ -348,6 +392,9 @@ msgstr "Toepassen mislukt: %(errors)s"
 msgid "Applying the configuration failed."
 msgstr "Het toepassen van de configuratie is mislukt."
 
+msgid "As saved."
+msgstr "Zoals opgeslagen."
+
 msgid "Asterisk database"
 msgstr "Asterisk-database"
 
@@ -357,6 +404,13 @@ msgstr "Asterisk niet actief"
 #, python-format
 msgid "Asterisk is not reachable: %(error)s"
 msgstr "Asterisk is niet bereikbaar: %(error)s"
+
+#, python-format
+msgid "Asterisk is not running, the mode cannot be changed: %(error)s"
+msgstr "Asterisk draait niet, de modus kan niet worden gewijzigd: %(error)s"
+
+msgid "Asterisk is not running: the current mode is unknown and cannot be changed."
+msgstr "Asterisk draait niet: de huidige modus is onbekend en kan niet worden gewijzigd."
 
 msgid "Asterisk manager users"
 msgstr "Asterisk-managergebruikers"
@@ -413,6 +467,9 @@ msgstr "Authenticatiegebruiker"
 
 msgid "Auto"
 msgstr "Auto"
+
+msgid "Automatic"
+msgstr "Automatisch"
 
 msgid "Automatic (SLAAC)"
 msgstr "Automatisch (SLAAC)"
@@ -494,6 +551,33 @@ msgstr "Brazilië"
 msgid "Brute force protection"
 msgstr "Bescherming tegen brute force"
 
+msgid "Built-in sound"
+msgstr "Ingebouwd geluid"
+
+msgid "Business Hours"
+msgstr "Openingstijden"
+
+msgid "Business hours"
+msgstr "Openingstijden"
+
+#, python-format
+msgid "Business hours %(name)s"
+msgstr "Openingstijden %(name)s"
+
+#, python-format
+msgid "Business hours %(name)s saved."
+msgstr "Openingstijden %(name)s opgeslagen."
+
+msgid "Business hours not found"
+msgstr "Openingstijden niet gevonden"
+
+msgid ""
+"Business hours send calls to one destination while you are open and to another one while you are closed, e.g. an "
+"after-hours menu."
+msgstr ""
+"Openingstijden sturen gesprekken naar de ene bestemming zolang u open bent en naar een andere zolang u gesloten bent,"
+" bijv. een menu buiten kantooruren."
+
 msgid "Busy"
 msgstr "Bezet"
 
@@ -505,6 +589,9 @@ msgstr "CPU-belasting"
 
 msgid "Call Groups"
 msgstr "Belgroepen"
+
+msgid "Call flow"
+msgstr "Gespreksverloop"
 
 msgid "Call group"
 msgstr "Belgroep"
@@ -525,6 +612,9 @@ msgstr "Belgroepen"
 
 msgid "Call groups ring several phones at once or one after another."
 msgstr "Belgroepen laten meerdere telefoons tegelijk of na elkaar overgaan."
+
+msgid "Call me"
+msgstr "Bel mij"
 
 msgid "Call parking"
 msgstr "Gesprek parkeren"
@@ -550,8 +640,14 @@ msgstr "Beller-ID-naam"
 msgid "Caller ID text"
 msgstr "Beller-ID-tekst"
 
+msgid "Callers from outside reach only numbers that are reachable from outside."
+msgstr "Bellers van buitenaf bereiken alleen nummers die van buitenaf bereikbaar zijn."
+
 msgid "Callers from providers or SIP URIs may call this phone directly."
 msgstr "Bellers via providers of SIP-URI's mogen deze telefoon rechtstreeks bellen."
+
+msgid "Callers may dial extensions directly"
+msgstr "Bellers mogen extensies direct kiezen"
 
 msgid "Calls & Registrations"
 msgstr "Gesprekken & registraties"
@@ -610,14 +706,43 @@ msgstr "Kies 1 tot %(max)s dagen"
 msgid "Choose a DNS provider"
 msgstr "Kies een DNS-provider"
 
+msgid "Choose a destination"
+msgstr "Kies een bestemming"
+
+msgid "Choose a destination…"
+msgstr "Kies een bestemming…"
+
 msgid "Choose a different password"
 msgstr "Kies een ander wachtwoord"
+
+msgid "Choose a key from 0-9, * or #"
+msgstr "Kies een toets uit 0-9, * of #"
+
+msgid "Choose a sound"
+msgstr "Kies een geluid"
+
+msgid "Choose or upload an announcement"
+msgstr "Kies of upload een aankondiging"
 
 msgid "Client ID"
 msgstr "Client-ID"
 
 msgid "Client secret"
 msgstr "Clientgeheim"
+
+msgid "Closed"
+msgstr "Gesloten"
+
+msgid "Closed all day"
+msgstr "De hele dag gesloten"
+
+msgid "Closed all day, whatever the weekly hours say. Days that move every year, like Easter, are entered once per year."
+msgstr ""
+"De hele dag gesloten, ongeacht de wekelijkse openingstijden. Dagen die elk jaar verschuiven, zoals Pasen, worden per "
+"jaar ingevoerd."
+
+msgid "Closed until switched back, e.g. when the office closes early."
+msgstr "Gesloten tot er wordt teruggeschakeld, bijv. als het kantoor eerder sluit."
 
 msgid "Cloud API token"
 msgstr "Cloud-API-token"
@@ -627,6 +752,10 @@ msgstr "Codecs"
 
 msgid "Codecs &amp; advanced"
 msgstr "Codecs &amp; geavanceerd"
+
+#, python-format
+msgid "Codes starting with %(code)s are used for call pickup"
+msgstr "Codes die met %(code)s beginnen worden gebruikt voor gesprek overnemen"
 
 msgid "Conference"
 msgstr "Vergadering"
@@ -764,6 +893,9 @@ msgstr "Donkere modus"
 msgid "Data partition"
 msgstr "Datapartitie"
 
+msgid "Date"
+msgstr "Datum"
+
 msgid "Default expiry (s)"
 msgstr "Standaard verlooptijd (s)"
 
@@ -792,6 +924,9 @@ msgstr "Denemarken"
 
 msgid "Description"
 msgstr "Omschrijving"
+
+msgid "Destination"
+msgstr "Bestemming"
 
 msgid "Destination does not exist"
 msgstr "Bestemming bestaat niet"
@@ -858,6 +993,12 @@ msgstr "Niet actief"
 #, python-format
 msgid "Download %(name)s"
 msgstr "%(name)s downloaden"
+
+msgid "Drag to change the order"
+msgstr "Sleep om de volgorde te wijzigen"
+
+msgid "Drop an audio file here or click to upload (WAV, MP3, OGG or FLAC, converted to 8 kHz)"
+msgstr "Sleep een audiobestand hierheen of klik om te uploaden (WAV, MP3, OGG of FLAC, omgezet naar 8 kHz)"
 
 msgid "Drop audio files here or click to upload"
 msgstr "Sleep audiobestanden hierheen of klik om te uploaden"
@@ -931,8 +1072,16 @@ msgid "Edit %(tech)s provider %(name)s"
 msgstr "%(tech)s-provider %(name)s bewerken"
 
 #, python-format
+msgid "Edit IVR menu %(name)s"
+msgstr "IVR-menu %(name)s bewerken"
+
+#, python-format
 msgid "Edit application %(name)s"
 msgstr "Applicatie %(name)s bewerken"
+
+#, python-format
+msgid "Edit business hours %(name)s"
+msgstr "Openingstijden %(name)s bewerken"
 
 #, python-format
 msgid "Edit call group %(name)s"
@@ -1012,8 +1161,14 @@ msgstr "Voer een naam in van maximaal 64 tekens"
 msgid "Enter a number of days"
 msgstr "Voer een aantal dagen in"
 
+msgid "Enter a time as HH:MM"
+msgstr "Voer een tijd in als HH:MM"
+
 msgid "Enter the directory URL of the ACME server"
 msgstr "Voer de directory-URL van de ACME-server in"
+
+msgid "Enter the name of an Asterisk sound, e.g. welcome"
+msgstr "Voer de naam van een Asterisk-geluid in, bijv. welcome"
 
 msgid "Error"
 msgstr "Fout"
@@ -1061,6 +1216,9 @@ msgstr "Uitwijkprovider"
 msgid "Failures within 10 minutes"
 msgstr "Mislukte pogingen binnen 10 minuten"
 
+msgid "Feature code"
+msgstr "Functiecode"
+
 msgid "Feature codes"
 msgstr "Functiecodes"
 
@@ -1088,6 +1246,13 @@ msgstr "Eerste plaats"
 msgid "Fixed caller ID"
 msgstr "Vaste beller-ID"
 
+msgid "Follow the opening hours and holidays."
+msgstr "De openingstijden en feestdagen volgen."
+
+#, python-format
+msgid "For %(what)s, press %(key)s."
+msgstr "Voor %(what)s, toets %(key)s."
+
 msgid "For 'one after another', phones ring in this order."
 msgstr "Bij 'na elkaar' gaan de telefoons in deze volgorde over."
 
@@ -1105,6 +1270,9 @@ msgstr "Frankrijk"
 
 msgid "French"
 msgstr "Frans"
+
+msgid "Friday"
+msgstr "Vrijdag"
 
 msgid "From domain"
 msgstr "From-domein"
@@ -1142,8 +1310,14 @@ msgstr "Grafiekgegevens worden verzameld zolang een pagina met grafieken geopend
 msgid "Greece"
 msgstr "Griekenland"
 
+msgid "Green: open."
+msgstr "Groen: open."
+
 msgid "HTTP (port 80)"
 msgstr "HTTP (poort 80)"
+
+msgid "Hang up"
+msgstr "Ophangen"
 
 #, python-brace-format
 msgid ""
@@ -1187,6 +1361,9 @@ msgstr ""
 "-- \n"
 "PhonixPBX\n"
 
+msgid "Holidays and closing days"
+msgstr "Feestdagen en sluitingsdagen"
+
 msgid "Host"
 msgstr "Host"
 
@@ -1226,6 +1403,33 @@ msgstr "IAX-provider"
 msgid "IP address"
 msgstr "IP-adres"
 
+msgid "IVR Menus"
+msgstr "IVR-menu’s"
+
+msgid "IVR announcement"
+msgstr "IVR-aankondiging"
+
+msgid "IVR menu"
+msgstr "IVR-menu"
+
+#, python-format
+msgid "IVR menu %(name)s"
+msgstr "IVR-menu %(name)s"
+
+#, python-format
+msgid "IVR menu %(name)s <%(number)s>"
+msgstr "IVR-menu %(name)s <%(number)s>"
+
+#, python-format
+msgid "IVR menu %(name)s saved."
+msgstr "IVR-menu %(name)s opgeslagen."
+
+msgid "IVR menu not found"
+msgstr "IVR-menu niet gevonden"
+
+msgid "IVR menus"
+msgstr "IVR-menu’s"
+
 msgid "If the new version does not work, roll back to the snapshot you took on the container host."
 msgstr "Als de nieuwe versie niet werkt, ga dan terug naar de snapshot die u op de containerhost hebt gemaakt."
 
@@ -1255,6 +1459,13 @@ msgstr ""
 "Druk in een vergadering op <kbd>*</kbd> voor het menu, <kbd>1</kbd> om te dempen, <kbd>8</kbd> om te vertrekken. "
 "Beheerders (beheerders-PIN) kunnen de ruimte vergrendelen (<kbd>2</kbd>) en de laatste beller verwijderen "
 "(<kbd>3</kbd>)."
+
+msgid ""
+"In the time zone of the system. A day can have several time ranges, e.g. for a lunch break; the end is the first "
+"minute you are closed."
+msgstr ""
+"In de tijdzone van het systeem. Een dag kan meerdere tijdvakken hebben, bijv. voor een lunchpauze; het einde is de "
+"eerste minuut waarin u gesloten bent."
 
 msgid "In use"
 msgstr "In gebruik"
@@ -1375,11 +1586,30 @@ msgstr "Huidige webgebruikers en API-tokens behouden"
 msgid "Kernel"
 msgstr "Kernel"
 
+msgid "Key"
+msgstr "Toets"
+
+#, python-format
+msgid "Key %(key)s is used more than once"
+msgstr "Toets %(key)s wordt meer dan eens gebruikt"
+
+msgid "Key options"
+msgstr "Toetsopties"
+
+msgid "Keys"
+msgstr "Toetsen"
+
 msgid "LAN interface"
 msgstr "LAN-interface"
 
 msgid "LXC / Incus system container"
 msgstr "LXC / Incus-systeemcontainer"
+
+msgid "Label"
+msgstr "Label"
+
+msgid "Label, e.g. Sales"
+msgstr "Label, bijv. Verkoop"
 
 msgid "Lagged"
 msgstr "Vertraagd"
@@ -1417,6 +1647,9 @@ msgstr "Lichte modus"
 
 msgid "Light/dark theme: use the moon/sun icon in the top bar."
 msgstr "Licht/donker thema: gebruik het maan-/zonpictogram in de bovenbalk."
+
+msgid "Listen to the announcement"
+msgstr "Aankondiging beluisteren"
 
 msgid "Lithuania"
 msgstr "Litouwen"
@@ -1530,8 +1763,17 @@ msgstr "Ontbrekende inloggegevens voor de DNS-provider: %(names)s"
 msgid "Mode"
 msgstr "Modus"
 
+msgid "Monday"
+msgstr "Maandag"
+
 msgid "Monitor"
 msgstr "Monitor"
+
+msgid "Move down"
+msgstr "Omlaag"
+
+msgid "Move up"
+msgstr "Omhoog"
 
 msgid "Music on hold"
 msgstr "Wachtmuziek"
@@ -1603,6 +1845,9 @@ msgstr "Naamserver (host of host:poort)"
 msgid "Name shown to called parties."
 msgstr "Naam die aan gebelde partijen wordt getoond."
 
+msgid "Name, e.g. Christmas Day"
+msgstr "Naam, bijv. Eerste Kerstdag"
+
 msgid "Names"
 msgstr "Namen"
 
@@ -1638,11 +1883,17 @@ msgstr "Nieuwe %(tech)s-telefoon"
 msgid "New %(tech)s provider"
 msgstr "Nieuwe %(tech)s-provider"
 
+msgid "New IVR menu"
+msgstr "Nieuw IVR-menu"
+
 msgid "New Zealand"
 msgstr "Nieuw-Zeeland"
 
 msgid "New application"
 msgstr "Nieuwe applicatie"
+
+msgid "New business hours"
+msgstr "Nieuwe openingstijden"
 
 msgid "New call group"
 msgstr "Nieuwe belgroep"
@@ -1669,6 +1920,9 @@ msgstr "Nieuwer"
 msgid "No API tokens"
 msgstr "Geen API-tokens"
 
+msgid "No IVR menus"
+msgstr "Geen IVR-menu’s"
+
 msgid "No active calls."
 msgstr "Geen actieve gesprekken."
 
@@ -1680,6 +1934,9 @@ msgstr "Geen applicaties"
 
 msgid "No backups yet. Backups contain the configuration with all passwords, the media files and the TLS certificate."
 msgstr "Nog geen back-ups. Back-ups bevatten de configuratie met alle wachtwoorden, de mediabestanden en het TLS-certificaat."
+
+msgid "No business hours"
+msgstr "Geen openingstijden"
 
 msgid "No call groups"
 msgstr "Geen belgroepen"
@@ -1698,6 +1955,12 @@ msgstr "Geen items."
 
 msgid "No files uploaded."
 msgstr "Geen bestanden geüpload."
+
+msgid "No key options yet."
+msgstr "Nog geen toetsopties."
+
+msgid "No key pressed"
+msgstr "Geen toets ingedrukt"
 
 msgid "No manager users"
 msgstr "Geen managergebruikers"
@@ -1752,6 +2015,9 @@ msgstr "Meldingsadres"
 
 msgid "Notifications"
 msgstr "Meldingen"
+
+msgid "Now"
+msgstr "Nu"
 
 msgid "Number"
 msgstr "Nummer"
@@ -1833,17 +2099,29 @@ msgstr "Alleen als deze afwijkt van de gebruikersnaam."
 msgid "Only web interface, SSH (if enabled), SIP/IAX and RTP are reachable."
 msgstr "Alleen de webinterface, SSH (indien ingeschakeld), SIP/IAX en RTP zijn bereikbaar."
 
+msgid "Open"
+msgstr "Open"
+
+msgid "Open until switched back, e.g. for a special event."
+msgstr "Open tot er wordt teruggeschakeld, bijv. voor een speciaal evenement."
+
 msgid "Open user menu"
 msgstr "Gebruikersmenu openen"
 
 msgid "Optional - groups can also be used only as provider destinations."
 msgstr "Optioneel - groepen kunnen ook alleen als providerbestemming worden gebruikt."
 
+msgid "Optional - menus can also be used only as destinations."
+msgstr "Optioneel - menu’s kunnen ook alleen als bestemming worden gebruikt."
+
 msgid "Optional alias used in the public context (e.g. 'sales' for sip:sales@pbx). Defaults to the extension."
 msgstr "Optionele alias in de openbare context (bijv. 'sales' voor sip:sales@pbx). Standaard de extensie."
 
 msgid "Optional. Callers must enter it to join."
 msgstr "Optioneel. Bellers moeten deze invoeren om deel te nemen."
+
+msgid "Optional. Dialled on an internal phone, it switches between “Automatic” and “Closed”."
+msgstr "Optioneel. Gekozen op een intern toestel schakelt deze tussen ‘Automatisch’ en ‘Gesloten’."
 
 msgid "Optional. Joins as moderator."
 msgstr "Optioneel. Neemt deel als moderator."
@@ -1854,6 +2132,9 @@ msgid ""
 msgstr ""
 "Optioneel; overschrijft de beller-ID-instelling van de provider voor gesprekken vanaf deze telefoon. Formaat: "
 "<code>Naam &lt;nummer&gt;</code>."
+
+msgid "Other"
+msgstr "Overig"
 
 msgid "Other ACME server"
 msgstr "Andere ACME-server"
@@ -1941,6 +2222,10 @@ msgid "Phone %(extension)s created."
 msgstr "Telefoon %(extension)s aangemaakt."
 
 #, python-format
+msgid "Phone %(extension)s is ringing. Answer it to hear the menu as it was last applied."
+msgstr "Telefoon %(extension)s gaat over. Neem op om het menu te horen zoals het het laatst is toegepast."
+
+#, python-format
 msgid "Phone %(extension)s saved."
 msgstr "Telefoon %(extension)s opgeslagen."
 
@@ -1993,6 +2278,9 @@ msgstr "Platte tekst"
 
 msgid "Platform"
 msgstr "Platform"
+
+msgid "Played when the call reaches the menu. Callers can press a key while it plays."
+msgstr "Wordt afgespeeld wanneer het gesprek het menu bereikt. Bellers kunnen tijdens het afspelen een toets indrukken."
 
 msgid "Please choose your own password before continuing."
 msgstr "Kies een eigen wachtwoord voordat u verdergaat."
@@ -2148,6 +2436,9 @@ msgstr ""
 "Aanbevolen als de back-up van een ander systeem of netwerk komt: het IP-adres, de firewallregels of de SSH-"
 "instellingen daarvan kunnen u buitensluiten."
 
+msgid "Recording script"
+msgstr "Tekst voor de opname"
+
 msgid "Region"
 msgstr "Regio"
 
@@ -2170,14 +2461,26 @@ msgstr "Geweigerd"
 msgid "Reloading the web server failed: %(error)s"
 msgstr "Herladen van de webserver mislukt: %(error)s"
 
+msgid "Remove day"
+msgstr "Dag verwijderen"
+
+msgid "Remove option"
+msgstr "Optie verwijderen"
+
 msgid "Remove the password (key logins only)"
 msgstr "Wachtwoord verwijderen (alleen aanmelden met sleutel)"
+
+msgid "Remove time range"
+msgstr "Tijdvak verwijderen"
 
 msgid "Renewed daily when it expires in less than 30 days."
 msgstr "Wordt dagelijks vernieuwd zodra het binnen 30 dagen verloopt."
 
 msgid "Repeat new password"
 msgstr "Nieuw wachtwoord herhalen"
+
+msgid "Repeat the menu"
+msgstr "Menu herhalen"
 
 msgid "Replace current configuration (backup first)"
 msgstr "Huidige configuratie vervangen (eerst back-up)"
@@ -2231,11 +2534,17 @@ msgstr ""
 msgid "Restoring the files failed, nothing was changed: %(error)s"
 msgstr "Het terugzetten van de bestanden is mislukt, er is niets gewijzigd: %(error)s"
 
+msgid "Right now"
+msgstr "Op dit moment"
+
 msgid "Ring"
 msgstr "Overgaan"
 
 msgid "Ring all at once"
 msgstr "Alle tegelijk laten overgaan"
+
+msgid "Ring phone"
+msgstr "Telefoon laten overgaan"
 
 msgid "Ring strategy"
 msgstr "Belstrategie"
@@ -2256,6 +2565,9 @@ msgstr ""
 "Laat een telefoon overgaan en kiest daarvandaan een nummer (POST /api/v1/calls, MCP-tool originate_call), ook met een"
 " alleen-lezen token. Gesprekken naar externe nummers kunnen geld kosten."
 
+msgid "Rings your phone and connects it to this menu as it was last applied."
+msgstr "Laat uw telefoon overgaan en verbindt deze met dit menu zoals het het laatst is toegepast."
+
 #, python-format
 msgid "Route %(num)s: %(error)s"
 msgstr "Route %(num)s: %(error)s"
@@ -2266,6 +2578,9 @@ msgid ""
 msgstr ""
 "Routeer inkomende gesprekken op basis van het gekozen nummer (DID). Laat het patroon leeg om alle gesprekken op te "
 "vangen. Meerdere bestemmingen met hetzelfde patroon gaan tegelijk over."
+
+msgid "Routing"
+msgstr "Routering"
 
 msgid "Russia"
 msgstr "Rusland"
@@ -2312,6 +2627,9 @@ msgstr "STARTTLS (poort 587)"
 
 msgid "Same as phone language"
 msgstr "Zelfde als taal van de telefoon"
+
+msgid "Saturday"
+msgstr "Zaterdag"
 
 msgid "Save"
 msgstr "Opslaan"
@@ -2373,6 +2691,9 @@ msgstr "Server vereist authenticatie"
 msgid "Services"
 msgstr "Diensten"
 
+msgid "Settings"
+msgstr "Instellingen"
+
 msgid "Settings groups"
 msgstr "Instellingsgroepen"
 
@@ -2402,6 +2723,12 @@ msgstr "Grootte"
 
 msgid "Something went wrong"
 msgstr "Er is iets misgegaan"
+
+msgid "Sound"
+msgstr "Geluid"
+
+msgid "Source"
+msgstr "Bron"
 
 msgid "South Africa"
 msgstr "Zuid-Afrika"
@@ -2439,11 +2766,17 @@ msgstr "Abonnements-ID"
 msgid "Summary"
 msgstr "Samenvatting"
 
+msgid "Sunday"
+msgstr "Zondag"
+
 msgid "Sweden"
 msgstr "Zweden"
 
 msgid "Swedish"
 msgstr "Zweeds"
+
+msgid "Switch now"
+msgstr "Nu omschakelen"
 
 msgid "Switzerland"
 msgstr "Zwitserland"
@@ -2491,11 +2824,17 @@ msgstr "Taiwan"
 msgid "Take a snapshot of the container first"
 msgstr "Maak eerst een snapshot van de container"
 
+msgid "Takes effect immediately, without applying the configuration."
+msgstr "Werkt direct, zonder de configuratie toe te passen."
+
 msgid "Telephony"
 msgstr "Telefonie"
 
 msgid "Tenant ID"
 msgstr "Tenant-ID"
+
+msgid "Test call"
+msgstr "Testgesprek"
 
 #, python-format
 msgid "Test message sent to %(to)s."
@@ -2539,6 +2878,9 @@ msgstr ""
 msgid "The directory URL must start with https://"
 msgstr "De directory-URL moet met https:// beginnen"
 
+msgid "The end must be after the start"
+msgstr "Het einde moet na het begin liggen"
+
 msgid "The end port must be greater than the start port."
 msgstr "De eindpoort moet groter zijn dan de beginpoort."
 
@@ -2566,6 +2908,9 @@ msgstr "De laatste beheerder kan niet worden verwijderd"
 
 msgid "The lego ACME client is not installed."
 msgstr "De lego-ACME-client is niet geïnstalleerd."
+
+msgid "The line is now."
+msgstr "De lijn geeft het huidige moment aan."
 
 msgid "The log is empty or not available."
 msgstr "Het log is leeg of niet beschikbaar."
@@ -2595,6 +2940,11 @@ msgstr "Het systeem wordt uitgeschakeld."
 msgid "The text must not contain control characters"
 msgstr "De tekst mag geen stuurtekens bevatten"
 
+msgid "The text to record for this menu. It is not played; record it and upload the file above."
+msgstr ""
+"De tekst die voor dit menu moet worden ingesproken. Deze wordt niet afgespeeld; neem hem op en upload het bestand "
+"hierboven."
+
 msgid "The uploaded file expired, please upload it again."
 msgstr "Het geüploade bestand is verlopen, upload het opnieuw."
 
@@ -2607,6 +2957,9 @@ msgstr ""
 
 msgid "This backup was made by an older PhonixPBX release in a format that can no longer be restored."
 msgstr "Deze back-up is gemaakt met een oudere PhonixPBX-versie in een formaat dat niet meer kan worden hersteld."
+
+msgid "This day is listed more than once"
+msgstr "Deze dag staat er meer dan eens in"
 
 msgid ""
 "This erases the complete configuration, voicemail, media and backups on this system and reboots. Download a backup "
@@ -2624,8 +2977,14 @@ msgstr "Dit is geen PhonixPBX-configuratiebestand"
 msgid "This phone cannot place outgoing calls through the selected providers."
 msgstr "Deze telefoon kan via de geselecteerde providers geen uitgaande gesprekken voeren."
 
+msgid "This phone has no voicemail box"
+msgstr "Deze telefoon heeft geen voicemailbox"
+
 msgid "This username is reserved"
 msgstr "Deze gebruikersnaam is gereserveerd"
+
+msgid "Thursday"
+msgstr "Donderdag"
 
 msgid "Time (UTC)"
 msgstr "Tijd (UTC)"
@@ -2635,6 +2994,23 @@ msgstr "Tijdservers"
 
 msgid "Time zone"
 msgstr "Tijdzone"
+
+msgid ""
+"To answer calls from outside with a menu, mark it as reachable from outside or choose it as the destination of a "
+"provider’s incoming route. Use <a href=\"/dialplan/hours\">business hours</a> to play another menu while the office "
+"is closed."
+msgstr ""
+"Om gesprekken van buitenaf met een menu te beantwoorden, markeert u het als van buitenaf bereikbaar of kiest u het "
+"als bestemming van de inkomende route van een provider. Gebruik <a href=\"/dialplan/hours\">openingstijden</a> om een"
+" ander menu af te spelen zolang het kantoor gesloten is."
+
+#, python-format
+msgid "To end the call, press %(key)s."
+msgstr "Om het gesprek te beëindigen, toets %(key)s."
+
+#, python-format
+msgid "To hear these options again, press %(key)s."
+msgstr "Om deze opties opnieuw te horen, toets %(key)s."
 
 msgid "Toggle navigation"
 msgstr "Navigatie in-/uitklappen"
@@ -2672,6 +3048,9 @@ msgstr "Doorverbinden & parkeren"
 
 msgid "Transport"
 msgstr "Transport"
+
+msgid "Tuesday"
+msgstr "Dinsdag"
 
 msgid "Turn on automatic certificates to request one."
 msgstr "Schakel automatische certificaten in om er een aan te vragen."
@@ -2822,6 +3201,9 @@ msgstr ""
 msgid "Uploaded"
 msgstr "Geüpload"
 
+msgid "Uploaded audio"
+msgstr "Geüploade audio"
+
 msgid "Uploaded files"
 msgstr "Geüploade bestanden"
 
@@ -2831,8 +3213,14 @@ msgstr "Uptime"
 msgid "Use DNS SRV lookups"
 msgstr "DNS-SRV-lookups gebruiken"
 
+msgid "Use business hours as the destination of a provider’s incoming route or of an IVR key."
+msgstr "Gebruik openingstijden als bestemming van de inkomende route van een provider of van een IVR-toets."
+
 msgid "Use lowercase letters, digits, '.', '_' or '-'"
 msgstr "Gebruik kleine letters, cijfers, '.', '_' of '-'"
+
+msgid "Use “Repeat the menu” to play this menu again"
+msgstr "Gebruik ‘Menu herhalen’ om dit menu opnieuw af te spelen"
 
 msgid "Used by PhonixPBX (certificate, Asterisk). The host name of the container itself is set on the container host."
 msgstr ""
@@ -2940,6 +3328,10 @@ msgstr ""
 "Voicemail- en gemiste-oproepe-mails worden verstuurd in de e-mailtaal van elke telefoon (Accounts > Telefoons). De "
 "teksten hieronder gelden voor de gekozen taal; pas ze aan om de e-mails te wijzigen."
 
+#, python-format
+msgid "Voicemail box %(number)s (%(name)s)"
+msgstr "Voicemailbox %(number)s (%(name)s)"
+
 msgid ""
 "Voicemail can be read by dialing <strong>000086</strong>. Configure <a href=\"/services/email\">e-mail "
 "notifications</a> to receive messages by e-mail."
@@ -2953,6 +3345,9 @@ msgstr "Voicemailbegroeting"
 msgid "Voicemail, conferencing and media"
 msgstr "Voicemail, vergaderingen en media"
 
+msgid "Wait for a key (s)"
+msgstr "Wachten op een toets (s)"
+
 msgid "Web application"
 msgstr "Webapplicatie"
 
@@ -2962,6 +3357,34 @@ msgstr "Webinterface en SSH. Eén CIDR per regel, bijv. 192.168.1.0/24. Leeg = i
 msgid "Web users"
 msgstr "Webgebruikers"
 
+msgid "Wednesday"
+msgstr "Woensdag"
+
+msgid "Week at a glance"
+msgstr "Weekoverzicht"
+
+msgid "Weekly opening hours"
+msgstr "Wekelijkse openingstijden"
+
+msgid ""
+"What happens when the caller presses a key. Drag the handle (or use the arrows) to change the order in which the "
+"options are announced."
+msgstr ""
+"Wat er gebeurt als de beller een toets indrukt. Sleep de greep (of gebruik de pijlen) om de volgorde te wijzigen "
+"waarin de opties worden genoemd."
+
+msgid "When an unknown key is pressed"
+msgstr "Als een onbekende toets wordt ingedrukt"
+
+msgid "When closed"
+msgstr "Indien gesloten"
+
+msgid "When no key is pressed"
+msgstr "Als er geen toets wordt ingedrukt"
+
+msgid "When open"
+msgstr "Indien open"
+
 msgid "Wildcard domains need DNS validation"
 msgstr "Wildcarddomeinen vereisen DNS-validatie"
 
@@ -2970,6 +3393,9 @@ msgstr "Jokertekens '.' en '!' zijn niet toegestaan vóór '|'"
 
 msgid "Write"
 msgstr "Schrijven"
+
+msgid "Write from options"
+msgstr "Genereren uit opties"
 
 msgid "Write permissions"
 msgstr "Schrijfrechten"
@@ -3023,6 +3449,14 @@ msgid "application %(name)s"
 msgstr "applicatie %(name)s"
 
 #, python-format
+msgid "back to %(name)s"
+msgstr "terug naar %(name)s"
+
+#, python-format
+msgid "business hours %(name)s"
+msgstr "openingstijden %(name)s"
+
+#, python-format
 msgid "call group %(name)s"
 msgstr "belgroep %(name)s"
 
@@ -3037,6 +3471,9 @@ msgstr "gewijzigd"
 
 msgid "close"
 msgstr "sluiten"
+
+msgid "closed now"
+msgstr "nu gesloten"
 
 #, python-format
 msgid "conference room %(name)s"
@@ -3070,6 +3507,9 @@ msgstr "bijv. powerdns"
 msgid "enabled"
 msgstr "ingeschakeld"
 
+msgid "every year"
+msgstr "elk jaar"
+
 msgid "expired"
 msgstr "verlopen"
 
@@ -3081,6 +3521,9 @@ msgstr "eerste = voorkeur"
 
 msgid "fixed caller ID"
 msgstr "vaste beller-ID"
+
+msgid "holiday"
+msgstr "feestdag"
 
 msgid "incoming number pattern"
 msgstr "patroon voor inkomend nummer"
@@ -3145,6 +3588,9 @@ msgstr "na elkaar"
 
 msgid "open"
 msgstr "open"
+
+msgid "open now"
+msgstr "nu open"
 
 msgid ""
 "or <em>Snapshots &rarr; Take Snapshot</em> in the Proxmox VE web interface; roll back with <code>pct rollback "
@@ -3223,9 +3669,25 @@ msgstr "zelfondertekend"
 msgid "skip"
 msgstr "overslaan"
 
+msgid "star"
+msgstr "sterretje"
+
+msgid "switched manually"
+msgstr "handmatig omgeschakeld"
+
 #, python-format
 msgid "the configuration has been changed (%(areas)s). Apply to activate."
 msgstr "de configuratie is gewijzigd (%(areas)s). Pas toe om te activeren."
+
+#, python-format
+msgid "the feature code of business hours %(name)s"
+msgstr "de functiecode van openingstijden %(name)s"
+
+msgid "the hash key"
+msgstr "hekje"
+
+msgid "times, when no key is pressed"
+msgstr "keer, als er geen toets wordt ingedrukt"
 
 #, python-format
 msgid "token %(name)s"
@@ -3257,4 +3719,7 @@ msgstr "gebruikt"
 
 msgid "yes"
 msgstr "ja"
+
+msgid "“Repeat the menu” says that the option is invalid and plays the menu again."
+msgstr "‘Menu herhalen’ meldt dat de optie ongeldig is en speelt het menu opnieuw af."
 

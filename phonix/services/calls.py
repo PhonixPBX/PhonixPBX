@@ -16,7 +16,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from phonix import ami
-from phonix.core.models import Phone
+from phonix.core.models import IvrMenu, Phone
 from phonix.services.common import NotFound, ServiceError, audit
 
 NUMBER_RE = re.compile(r"^[0-9*#+]{1,32}$")
@@ -62,3 +62,10 @@ def originate(session: Session, extension: str, number: str, actor: str, via: st
     _originate(phone, f"phone-{phone.extension}", number, f'"Call to {number}" <{number}>')
     audit(session, actor, "originate", "phone", phone.id, f"{phone.extension} -> {number} ({via})")
     return {"extension": phone.extension, "number": number, "status": "ringing"}
+
+
+def test_menu(session: Session, extension: str, menu: IvrMenu, actor: str) -> None:
+    """Ring the phone and connect it to the (applied) IVR menu, as an internal caller."""
+    phone = _phone(session, extension)
+    _originate(phone, f"ivr-{menu.id}", "s", f'"IVR test" <{menu.extension or "ivr"}>')
+    audit(session, actor, "originate", "ivr", menu.id, f"{phone.extension} -> IVR menu {menu.name} (test)")

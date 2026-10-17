@@ -19,6 +19,19 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   it is answered, dial a number from it with the phone's outgoing rules and caller ID. Only
   API tokens with the new *May place calls* option can use them (off by default, also on
   read-only tokens; `phonix token create --allow-calls`).
+- IVR menus (Dialplan → IVR Menus): an announcement, uploaded or one of Asterisk's sounds, then
+  one destination per key (0-9, `*`, `#`), such as a phone, call group, voicemail box,
+  conference, another menu or business hours. Drag the options (or use the arrows) to change
+  the order in which they are announced; *Write from options* turns that order into a
+  recording script. Each menu sets the wait time, the repeats, where calls go when no key or
+  an unknown key is pressed, and whether callers may dial extensions directly. The editor
+  shows the call flow and can ring your phone to test the menu.
+- Business hours (Dialplan → Business Hours): weekly opening hours with several ranges per day,
+  holidays (once or every year), and a destination while open and while closed. They can be
+  used as the destination of a provider's incoming route or of an IVR key. The page, the REST
+  API, the MCP tool `set_business_hours_mode` and an optional feature code dialled on a phone
+  switch between automatic, open and closed at once, without applying the configuration.
+- Provider incoming routes can lead to IVR menus and business hours.
 
 ### Changed
 
@@ -28,6 +41,11 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   Containers now need at least 256 MB RAM (512 MB recommended) instead of 512 MB (1 GB).
 - The `pc-x86` image needs a CPU with SSE2. PC Engines ALIX boards (AMD Geode) are not
   supported; move their AskoziaPBX `config.xml` to supported hardware.
+- Configuration files (`config.json`, also in backups) are now version 3: they include IVR
+  menus, business hours and the *May place calls* option of API tokens. Older systems refuse
+  them; version 1 and 2 files are still imported.
+- The AskoziaPBX `config.xml` export leaves out IVR menus, business hours and the incoming
+  routes that lead to them, and lists them in the export report.
 
 ## [1.2.0] - 2026-10-14
 

@@ -4,8 +4,8 @@
 
 from fastapi import APIRouter
 
-from phonix.web.routes.ui import accounts, advanced, apply, auth, dialplan, services, status, system
+from phonix.web.routes.ui import accounts, advanced, apply, auth, dialplan, ivr, services, status, system
 
 router = APIRouter(include_in_schema=False)
-for module in (auth, apply, status, accounts, dialplan, services, system, advanced):
+for module in (auth, apply, status, accounts, dialplan, ivr, services, system, advanced):
     router.include_router(module.router)
