@@ -1,0 +1,5 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+{% from "macros/forms.html" import textarea with context %}
+<div id="ivr-script">
+{{ textarea("prompt_text", _("Recording script"), values, errors, rows=4, help=_("The text to record for this menu. It is not played; record it and upload the file above.")) }}
+</div>

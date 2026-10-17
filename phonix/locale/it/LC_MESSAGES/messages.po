@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-17 10:06+0200\n"
+"POT-Creation-Date: 2026-10-17 09:53+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: it\n"
@@ -17,6 +17,14 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
+
+#, python-format
+msgid "%(day)s, from"
+msgstr "%(day)s, dalle"
+
+#, python-format
+msgid "%(day)s, until"
+msgstr "%(day)s, alle"
 
 #, python-format
 msgid "%(domain)s is not a public DNS name. Enter the names the PBX is reached by."
@@ -67,6 +75,10 @@ msgid "%(object)s: reference to unknown %(type)s %(id)s"
 msgstr "%(object)s: riferimento a %(type)s %(id)s sconosciuto"
 
 #, python-format
+msgid "%(object)s: unknown media file %(path)s"
+msgstr "%(object)s: file audio sconosciuto %(path)s"
+
+#, python-format
 msgid "%(used)s of %(total)s"
 msgstr "%(used)s di %(total)s"
 
@@ -105,6 +117,9 @@ msgstr "(niente da ricaricare)"
 
 msgid "- choose -"
 msgstr "- scegliere -"
+
+msgid "- choose an uploaded file -"
+msgstr "- scegliere un file caricato -"
 
 msgid "- none -"
 msgstr "- nessuno -"
@@ -235,6 +250,9 @@ msgstr "Canali attivi"
 msgid "Add"
 msgstr "Aggiungi"
 
+msgid "Add a SIP or IAX phone to test the menu."
+msgstr "Aggiunga un telefono SIP o IAX per provare il menu."
+
 msgid "Add a call group"
 msgstr "Aggiungi un gruppo di chiamata"
 
@@ -250,11 +268,26 @@ msgstr "Aggiungi una sala"
 msgid "Add administrator"
 msgstr "Aggiungi amministratore"
 
+msgid "Add an IVR menu"
+msgstr "Aggiungi un menu IVR"
+
 msgid "Add an application"
 msgstr "Aggiungi un'applicazione"
 
+msgid "Add business hours"
+msgstr "Aggiungi orari di apertura"
+
+msgid "Add day"
+msgstr "Aggiungi giorno"
+
+msgid "Add option"
+msgstr "Aggiungi opzione"
+
 msgid "Add route"
 msgstr "Aggiungi instradamento"
+
+msgid "Add time range"
+msgstr "Aggiungi fascia oraria"
 
 msgid "Add your SIP trunk or VoIP provider account to make and receive external calls."
 msgstr "Aggiunga il Suo trunk SIP o l'account del Suo provider VoIP per effettuare e ricevere chiamate esterne."
@@ -304,11 +337,24 @@ msgstr "Avanzato: una coppia chiave=valore per riga, aggiunta alla sezione gener
 msgid "Always expand advanced sections"
 msgstr "Espandi sempre le sezioni avanzate"
 
+msgid "An Asterisk sound in the prompt language of the system, e.g. welcome. You can also type the name of another sound."
+msgstr ""
+"Un suono Asterisk nella lingua degli annunci del sistema, ad es. welcome. Può anche digitare il nome di un altro "
+"suono."
+
+msgid "An IVR menu plays an announcement and lets callers choose with a key, e.g. 1 for sales and 2 for support."
+msgstr ""
+"Un menu IVR riproduce un annuncio e permette ai chiamanti di scegliere con un tasto, ad es. 1 per l'ufficio vendite e"
+" 2 per l'assistenza."
+
 msgid "An e-mail address is required for the ACME account"
 msgstr "Per l'account ACME è necessario un indirizzo e-mail"
 
 msgid "Announce on the local network (mDNS)"
 msgstr "Annuncia sulla rete locale (mDNS)"
+
+msgid "Announcement"
+msgstr "Annuncio"
 
 msgid "Application"
 msgstr "Applicazione"
@@ -348,6 +394,9 @@ msgstr "Applicazione non riuscita: %(errors)s"
 msgid "Applying the configuration failed."
 msgstr "L'applicazione della configurazione non è riuscita."
 
+msgid "As saved."
+msgstr "Come salvato."
+
 msgid "Asterisk database"
 msgstr "Database di Asterisk"
 
@@ -357,6 +406,13 @@ msgstr "Asterisk non attivo"
 #, python-format
 msgid "Asterisk is not reachable: %(error)s"
 msgstr "Asterisk non è raggiungibile: %(error)s"
+
+#, python-format
+msgid "Asterisk is not running, the mode cannot be changed: %(error)s"
+msgstr "Asterisk non è in esecuzione, la modalità non può essere modificata: %(error)s"
+
+msgid "Asterisk is not running: the current mode is unknown and cannot be changed."
+msgstr "Asterisk non è in esecuzione: la modalità attuale è sconosciuta e non può essere modificata."
 
 msgid "Asterisk manager users"
 msgstr "Utenti Asterisk Manager"
@@ -413,6 +469,9 @@ msgstr "Utente di autenticazione"
 
 msgid "Auto"
 msgstr "Auto"
+
+msgid "Automatic"
+msgstr "Automatico"
 
 msgid "Automatic (SLAAC)"
 msgstr "Automatico (SLAAC)"
@@ -494,6 +553,33 @@ msgstr "Brasile"
 msgid "Brute force protection"
 msgstr "Protezione da attacchi brute force"
 
+msgid "Built-in sound"
+msgstr "Suono integrato"
+
+msgid "Business Hours"
+msgstr "Orari di apertura"
+
+msgid "Business hours"
+msgstr "Orari di apertura"
+
+#, python-format
+msgid "Business hours %(name)s"
+msgstr "Orari di apertura %(name)s"
+
+#, python-format
+msgid "Business hours %(name)s saved."
+msgstr "Orari di apertura %(name)s salvati."
+
+msgid "Business hours not found"
+msgstr "Orari di apertura non trovati"
+
+msgid ""
+"Business hours send calls to one destination while you are open and to another one while you are closed, e.g. an "
+"after-hours menu."
+msgstr ""
+"Gli orari di apertura inviano le chiamate a una destinazione durante l'apertura e a un'altra durante la chiusura, ad "
+"es. a un menu fuori orario."
+
 msgid "Busy"
 msgstr "Occupato"
 
@@ -505,6 +591,9 @@ msgstr "Carico CPU"
 
 msgid "Call Groups"
 msgstr "Gruppi di chiamata"
+
+msgid "Call flow"
+msgstr "Flusso di chiamata"
 
 msgid "Call group"
 msgstr "Gruppo di chiamata"
@@ -525,6 +614,9 @@ msgstr "Gruppi di chiamata"
 
 msgid "Call groups ring several phones at once or one after another."
 msgstr "I gruppi di chiamata fanno squillare più telefoni contemporaneamente o uno dopo l'altro."
+
+msgid "Call me"
+msgstr "Chiamami"
 
 msgid "Call parking"
 msgstr "Parcheggio chiamate"
@@ -550,8 +642,14 @@ msgstr "Nome ID chiamante"
 msgid "Caller ID text"
 msgstr "Testo ID chiamante"
 
+msgid "Callers from outside reach only numbers that are reachable from outside."
+msgstr "I chiamanti esterni raggiungono solo i numeri raggiungibili dall'esterno."
+
 msgid "Callers from providers or SIP URIs may call this phone directly."
 msgstr "I chiamanti provenienti dai provider o da URI SIP possono chiamare direttamente questo telefono."
+
+msgid "Callers may dial extensions directly"
+msgstr "I chiamanti possono comporre direttamente un interno"
 
 msgid "Calls & Registrations"
 msgstr "Chiamate e registrazioni"
@@ -610,14 +708,43 @@ msgstr "Scelga da 1 a %(max)s giorni"
 msgid "Choose a DNS provider"
 msgstr "Scelga un provider DNS"
 
+msgid "Choose a destination"
+msgstr "Scelga una destinazione"
+
+msgid "Choose a destination…"
+msgstr "Scegliere una destinazione…"
+
 msgid "Choose a different password"
 msgstr "Scelga una password diversa"
+
+msgid "Choose a key from 0-9, * or #"
+msgstr "Scelga un tasto tra 0-9, * o #"
+
+msgid "Choose a sound"
+msgstr "Scelga un suono"
+
+msgid "Choose or upload an announcement"
+msgstr "Scelga o carichi un annuncio"
 
 msgid "Client ID"
 msgstr "ID client"
 
 msgid "Client secret"
 msgstr "Segreto client"
+
+msgid "Closed"
+msgstr "Chiuso"
+
+msgid "Closed all day"
+msgstr "Chiuso tutto il giorno"
+
+msgid "Closed all day, whatever the weekly hours say. Days that move every year, like Easter, are entered once per year."
+msgstr ""
+"Chiuso tutto il giorno, indipendentemente dagli orari settimanali. I giorni che cambiano ogni anno, come Pasqua, "
+"vanno inseriti una volta all'anno."
+
+msgid "Closed until switched back, e.g. when the office closes early."
+msgstr "Chiuso fino al ripristino manuale, ad es. quando l'ufficio chiude prima."
 
 msgid "Cloud API token"
 msgstr "Token API cloud"
@@ -627,6 +754,10 @@ msgstr "Codec"
 
 msgid "Codecs &amp; advanced"
 msgstr "Codec e avanzate"
+
+#, python-format
+msgid "Codes starting with %(code)s are used for call pickup"
+msgstr "I codici che iniziano con %(code)s sono usati per la risposta per assente"
 
 msgid "Conference"
 msgstr "Conferenza"
@@ -764,6 +895,9 @@ msgstr "Modalità scura"
 msgid "Data partition"
 msgstr "Partizione dati"
 
+msgid "Date"
+msgstr "Data"
+
 msgid "Default expiry (s)"
 msgstr "Scadenza predefinita (s)"
 
@@ -792,6 +926,9 @@ msgstr "Danimarca"
 
 msgid "Description"
 msgstr "Descrizione"
+
+msgid "Destination"
+msgstr "Destinazione"
 
 msgid "Destination does not exist"
 msgstr "La destinazione non esiste"
@@ -858,6 +995,12 @@ msgstr "Inattivo"
 #, python-format
 msgid "Download %(name)s"
 msgstr "Scarica %(name)s"
+
+msgid "Drag to change the order"
+msgstr "Trascini per cambiare l'ordine"
+
+msgid "Drop an audio file here or click to upload (WAV, MP3, OGG or FLAC, converted to 8 kHz)"
+msgstr "Trascini qui un file audio o clicchi per caricarlo (WAV, MP3, OGG o FLAC, convertito a 8 kHz)"
 
 msgid "Drop audio files here or click to upload"
 msgstr "Trascini qui i file audio o faccia clic per caricarli"
@@ -931,8 +1074,16 @@ msgid "Edit %(tech)s provider %(name)s"
 msgstr "Modifica provider %(tech)s %(name)s"
 
 #, python-format
+msgid "Edit IVR menu %(name)s"
+msgstr "Modifica menu IVR %(name)s"
+
+#, python-format
 msgid "Edit application %(name)s"
 msgstr "Modifica applicazione %(name)s"
+
+#, python-format
+msgid "Edit business hours %(name)s"
+msgstr "Modifica orari di apertura %(name)s"
 
 #, python-format
 msgid "Edit call group %(name)s"
@@ -1012,8 +1163,14 @@ msgstr "Inserisca un nome di massimo 64 caratteri"
 msgid "Enter a number of days"
 msgstr "Inserisca un numero di giorni"
 
+msgid "Enter a time as HH:MM"
+msgstr "Inserisca un orario nel formato HH:MM"
+
 msgid "Enter the directory URL of the ACME server"
 msgstr "Inserisca l'URL della directory del server ACME"
+
+msgid "Enter the name of an Asterisk sound, e.g. welcome"
+msgstr "Inserisca il nome di un suono Asterisk, ad es. welcome"
 
 msgid "Error"
 msgstr "Errore"
@@ -1061,6 +1218,9 @@ msgstr "Provider di riserva"
 msgid "Failures within 10 minutes"
 msgstr "Errori entro 10 minuti"
 
+msgid "Feature code"
+msgstr "Codice funzione"
+
 msgid "Feature codes"
 msgstr "Codici funzione"
 
@@ -1088,6 +1248,13 @@ msgstr "Prima posizione"
 msgid "Fixed caller ID"
 msgstr "ID chiamante fisso"
 
+msgid "Follow the opening hours and holidays."
+msgstr "Segue gli orari di apertura e i giorni festivi."
+
+#, python-format
+msgid "For %(what)s, press %(key)s."
+msgstr "Per %(what)s, prema %(key)s."
+
 msgid "For 'one after another', phones ring in this order."
 msgstr "Con 'uno dopo l'altro' i telefoni squillano in questo ordine."
 
@@ -1105,6 +1272,9 @@ msgstr "Francia"
 
 msgid "French"
 msgstr "Francese"
+
+msgid "Friday"
+msgstr "Venerdì"
 
 msgid "From domain"
 msgstr "Dominio From"
@@ -1142,8 +1312,14 @@ msgstr "I grafici vengono campionati mentre è aperta una pagina con grafici (fi
 msgid "Greece"
 msgstr "Grecia"
 
+msgid "Green: open."
+msgstr "Verde: aperto."
+
 msgid "HTTP (port 80)"
 msgstr "HTTP (porta 80)"
+
+msgid "Hang up"
+msgstr "Riaggancia"
 
 #, python-brace-format
 msgid ""
@@ -1187,6 +1363,9 @@ msgstr ""
 "-- \n"
 "PhonixPBX\n"
 
+msgid "Holidays and closing days"
+msgstr "Festività e giorni di chiusura"
+
 msgid "Host"
 msgstr "Host"
 
@@ -1226,6 +1405,33 @@ msgstr "Provider IAX"
 msgid "IP address"
 msgstr "Indirizzo IP"
 
+msgid "IVR Menus"
+msgstr "Menu IVR"
+
+msgid "IVR announcement"
+msgstr "Annuncio IVR"
+
+msgid "IVR menu"
+msgstr "Menu IVR"
+
+#, python-format
+msgid "IVR menu %(name)s"
+msgstr "Menu IVR %(name)s"
+
+#, python-format
+msgid "IVR menu %(name)s <%(number)s>"
+msgstr "Menu IVR %(name)s <%(number)s>"
+
+#, python-format
+msgid "IVR menu %(name)s saved."
+msgstr "Menu IVR %(name)s salvato."
+
+msgid "IVR menu not found"
+msgstr "Menu IVR non trovato"
+
+msgid "IVR menus"
+msgstr "Menu IVR"
+
 msgid "If the new version does not work, roll back to the snapshot you took on the container host."
 msgstr "Se la nuova versione non funziona, torni allo snapshot creato sull'host del container."
 
@@ -1255,6 +1461,13 @@ msgstr ""
 "In conferenza prema <kbd>*</kbd> per il menu, <kbd>1</kbd> per disattivare il microfono, <kbd>8</kbd> per uscire. Gli"
 " amministratori (PIN amministratore) possono bloccare la sala (<kbd>2</kbd>) ed espellere l'ultimo chiamante "
 "(<kbd>3</kbd>)."
+
+msgid ""
+"In the time zone of the system. A day can have several time ranges, e.g. for a lunch break; the end is the first "
+"minute you are closed."
+msgstr ""
+"Nel fuso orario del sistema. Un giorno può avere più fasce orarie, ad es. per la pausa pranzo; la fine è il primo "
+"minuto di chiusura."
 
 msgid "In use"
 msgstr "In uso"
@@ -1375,11 +1588,30 @@ msgstr "Mantieni gli utenti web e i token API attuali"
 msgid "Kernel"
 msgstr "Kernel"
 
+msgid "Key"
+msgstr "Tasto"
+
+#, python-format
+msgid "Key %(key)s is used more than once"
+msgstr "Il tasto %(key)s è usato più volte"
+
+msgid "Key options"
+msgstr "Opzioni dei tasti"
+
+msgid "Keys"
+msgstr "Tasti"
+
 msgid "LAN interface"
 msgstr "Interfaccia LAN"
 
 msgid "LXC / Incus system container"
 msgstr "Container di sistema LXC / Incus"
+
+msgid "Label"
+msgstr "Etichetta"
+
+msgid "Label, e.g. Sales"
+msgstr "Etichetta, ad es. Vendite"
 
 msgid "Lagged"
 msgstr "In ritardo"
@@ -1417,6 +1649,9 @@ msgstr "Modalità chiara"
 
 msgid "Light/dark theme: use the moon/sun icon in the top bar."
 msgstr "Tema chiaro/scuro: usi l'icona luna/sole nella barra superiore."
+
+msgid "Listen to the announcement"
+msgstr "Ascolta l'annuncio"
 
 msgid "Lithuania"
 msgstr "Lituania"
@@ -1532,8 +1767,17 @@ msgstr "Credenziali del provider DNS mancanti: %(names)s"
 msgid "Mode"
 msgstr "Modalità"
 
+msgid "Monday"
+msgstr "Lunedì"
+
 msgid "Monitor"
 msgstr "Monitor"
+
+msgid "Move down"
+msgstr "Sposta giù"
+
+msgid "Move up"
+msgstr "Sposta su"
 
 msgid "Music on hold"
 msgstr "Musica di attesa"
@@ -1605,6 +1849,9 @@ msgstr "Name server (host o host:porta)"
 msgid "Name shown to called parties."
 msgstr "Nome mostrato ai chiamati."
 
+msgid "Name, e.g. Christmas Day"
+msgstr "Nome, ad es. Natale"
+
 msgid "Names"
 msgstr "Nomi"
 
@@ -1640,11 +1887,17 @@ msgstr "Nuovo telefono %(tech)s"
 msgid "New %(tech)s provider"
 msgstr "Nuovo provider %(tech)s"
 
+msgid "New IVR menu"
+msgstr "Nuovo menu IVR"
+
 msgid "New Zealand"
 msgstr "Nuova Zelanda"
 
 msgid "New application"
 msgstr "Nuova applicazione"
+
+msgid "New business hours"
+msgstr "Nuovi orari di apertura"
 
 msgid "New call group"
 msgstr "Nuovo gruppo di chiamata"
@@ -1671,6 +1924,9 @@ msgstr "Più recenti"
 msgid "No API tokens"
 msgstr "Nessun token API"
 
+msgid "No IVR menus"
+msgstr "Nessun menu IVR"
+
 msgid "No active calls."
 msgstr "Nessuna chiamata attiva."
 
@@ -1682,6 +1938,9 @@ msgstr "Nessuna applicazione"
 
 msgid "No backups yet. Backups contain the configuration with all passwords, the media files and the TLS certificate."
 msgstr "Ancora nessun backup. I backup contengono la configurazione con tutte le password, i file audio e il certificato TLS."
+
+msgid "No business hours"
+msgstr "Nessun orario di apertura"
 
 msgid "No call groups"
 msgstr "Nessun gruppo di chiamata"
@@ -1700,6 +1959,12 @@ msgstr "Nessuna voce."
 
 msgid "No files uploaded."
 msgstr "Nessun file caricato."
+
+msgid "No key options yet."
+msgstr "Ancora nessuna opzione dei tasti."
+
+msgid "No key pressed"
+msgstr "Nessun tasto premuto"
 
 msgid "No manager users"
 msgstr "Nessun utente manager"
@@ -1754,6 +2019,9 @@ msgstr "Indirizzo di notifica"
 
 msgid "Notifications"
 msgstr "Notifiche"
+
+msgid "Now"
+msgstr "Adesso"
 
 msgid "Number"
 msgstr "Numero"
@@ -1834,17 +2102,29 @@ msgstr "Solo se diverso dal nome utente."
 msgid "Only web interface, SSH (if enabled), SIP/IAX and RTP are reachable."
 msgstr "Sono raggiungibili solo l'interfaccia web, SSH (se attivo), SIP/IAX e RTP."
 
+msgid "Open"
+msgstr "Aperto"
+
+msgid "Open until switched back, e.g. for a special event."
+msgstr "Aperto fino al ripristino manuale, ad es. per un evento speciale."
+
 msgid "Open user menu"
 msgstr "Apri menu utente"
 
 msgid "Optional - groups can also be used only as provider destinations."
 msgstr "Facoltativo - i gruppi possono anche essere usati solo come destinazioni dei provider."
 
+msgid "Optional - menus can also be used only as destinations."
+msgstr "Facoltativo - i menu possono anche essere usati solo come destinazioni."
+
 msgid "Optional alias used in the public context (e.g. 'sales' for sip:sales@pbx). Defaults to the extension."
 msgstr "Alias facoltativo usato nel contesto pubblico (ad es. 'sales' per sip:sales@pbx). Predefinito: l'interno."
 
 msgid "Optional. Callers must enter it to join."
 msgstr "Facoltativo. I chiamanti devono inserirlo per partecipare."
+
+msgid "Optional. Dialled on an internal phone, it switches between “Automatic” and “Closed”."
+msgstr "Facoltativo. Composto su un telefono interno, commuta tra «Automatico» e «Chiuso»."
 
 msgid "Optional. Joins as moderator."
 msgstr "Facoltativo. Partecipa come moderatore."
@@ -1855,6 +2135,9 @@ msgid ""
 msgstr ""
 "Facoltativo; sostituisce l'impostazione ID chiamante del provider per le chiamate da questo telefono. Formato: "
 "<code>Nome &lt;numero&gt;</code>."
+
+msgid "Other"
+msgstr "Altro"
 
 msgid "Other ACME server"
 msgstr "Altro server ACME"
@@ -1942,6 +2225,10 @@ msgid "Phone %(extension)s created."
 msgstr "Telefono %(extension)s creato."
 
 #, python-format
+msgid "Phone %(extension)s is ringing. Answer it to hear the menu as it was last applied."
+msgstr "Il telefono %(extension)s sta squillando. Risponda per ascoltare il menu come è stato applicato l'ultima volta."
+
+#, python-format
 msgid "Phone %(extension)s saved."
 msgstr "Telefono %(extension)s salvato."
 
@@ -1994,6 +2281,9 @@ msgstr "Testo in chiaro"
 
 msgid "Platform"
 msgstr "Piattaforma"
+
+msgid "Played when the call reaches the menu. Callers can press a key while it plays."
+msgstr "Riprodotto quando la chiamata raggiunge il menu. I chiamanti possono premere un tasto durante la riproduzione."
 
 msgid "Please choose your own password before continuing."
 msgstr "Scelga una password personale prima di continuare."
@@ -2149,6 +2439,9 @@ msgstr ""
 "Consigliato se il backup proviene da un altro sistema o da un'altra rete: il suo indirizzo IP, le regole del firewall"
 " o le impostazioni SSH potrebbero bloccarti l'accesso."
 
+msgid "Recording script"
+msgstr "Testo da registrare"
+
 msgid "Region"
 msgstr "Regione"
 
@@ -2171,14 +2464,26 @@ msgstr "Rifiutato"
 msgid "Reloading the web server failed: %(error)s"
 msgstr "Ricaricamento del server web non riuscito: %(error)s"
 
+msgid "Remove day"
+msgstr "Rimuovi giorno"
+
+msgid "Remove option"
+msgstr "Rimuovi opzione"
+
 msgid "Remove the password (key logins only)"
 msgstr "Rimuovi la password (solo accesso con chiave)"
+
+msgid "Remove time range"
+msgstr "Rimuovi fascia oraria"
 
 msgid "Renewed daily when it expires in less than 30 days."
 msgstr "Rinnovato quotidianamente quando scade entro 30 giorni."
 
 msgid "Repeat new password"
 msgstr "Ripeta la nuova password"
+
+msgid "Repeat the menu"
+msgstr "Ripeti il menu"
 
 msgid "Replace current configuration (backup first)"
 msgstr "Sostituisci la configurazione attuale (prima viene creato un backup)"
@@ -2232,11 +2537,17 @@ msgstr ""
 msgid "Restoring the files failed, nothing was changed: %(error)s"
 msgstr "Ripristino dei file non riuscito, non è stato modificato nulla: %(error)s"
 
+msgid "Right now"
+msgstr "In questo momento"
+
 msgid "Ring"
 msgstr "Squillo"
 
 msgid "Ring all at once"
 msgstr "Squillano tutti insieme"
+
+msgid "Ring phone"
+msgstr "Fai squillare il telefono"
 
 msgid "Ring strategy"
 msgstr "Strategia di squillo"
@@ -2257,6 +2568,9 @@ msgstr ""
 "Fa squillare un telefono e poi compone un numero da esso (POST /api/v1/calls, strumento MCP originate_call), anche "
 "con un token di sola lettura. Le chiamate verso numeri esterni possono avere un costo."
 
+msgid "Rings your phone and connects it to this menu as it was last applied."
+msgstr "Fa squillare il Suo telefono e lo collega a questo menu come è stato applicato l'ultima volta."
+
 #, python-format
 msgid "Route %(num)s: %(error)s"
 msgstr "Instradamento %(num)s: %(error)s"
@@ -2267,6 +2581,9 @@ msgid ""
 msgstr ""
 "Instrada le chiamate in entrata in base al numero composto (DID). Lasci vuota la regola per accettare tutte le "
 "chiamate. Più destinazioni con la stessa regola squillano in parallelo."
+
+msgid "Routing"
+msgstr "Instradamento"
 
 msgid "Russia"
 msgstr "Russia"
@@ -2313,6 +2630,9 @@ msgstr "STARTTLS (porta 587)"
 
 msgid "Same as phone language"
 msgstr "Come la lingua del telefono"
+
+msgid "Saturday"
+msgstr "Sabato"
 
 msgid "Save"
 msgstr "Salva"
@@ -2376,6 +2696,9 @@ msgstr "Il server richiede l'autenticazione"
 msgid "Services"
 msgstr "Servizi"
 
+msgid "Settings"
+msgstr "Impostazioni"
+
 msgid "Settings groups"
 msgstr "Gruppi di impostazioni"
 
@@ -2405,6 +2728,12 @@ msgstr "Dimensione"
 
 msgid "Something went wrong"
 msgstr "Si è verificato un errore"
+
+msgid "Sound"
+msgstr "Suono"
+
+msgid "Source"
+msgstr "Origine"
 
 msgid "South Africa"
 msgstr "Sudafrica"
@@ -2442,11 +2771,17 @@ msgstr "ID sottoscrizione"
 msgid "Summary"
 msgstr "Riepilogo"
 
+msgid "Sunday"
+msgstr "Domenica"
+
 msgid "Sweden"
 msgstr "Svezia"
 
 msgid "Swedish"
 msgstr "Svedese"
+
+msgid "Switch now"
+msgstr "Commuta ora"
 
 msgid "Switzerland"
 msgstr "Svizzera"
@@ -2494,11 +2829,17 @@ msgstr "Taiwan"
 msgid "Take a snapshot of the container first"
 msgstr "Crei prima uno snapshot del container"
 
+msgid "Takes effect immediately, without applying the configuration."
+msgstr "Ha effetto immediato, senza applicare la configurazione."
+
 msgid "Telephony"
 msgstr "Telefonia"
 
 msgid "Tenant ID"
 msgstr "ID tenant"
+
+msgid "Test call"
+msgstr "Chiamata di prova"
 
 #, python-format
 msgid "Test message sent to %(to)s."
@@ -2542,6 +2883,9 @@ msgstr ""
 msgid "The directory URL must start with https://"
 msgstr "L'URL della directory deve iniziare con https://"
 
+msgid "The end must be after the start"
+msgstr "La fine deve essere successiva all'inizio"
+
 msgid "The end port must be greater than the start port."
 msgstr "La porta finale deve essere maggiore della porta iniziale."
 
@@ -2569,6 +2913,9 @@ msgstr "L'ultimo amministratore non può essere eliminato"
 
 msgid "The lego ACME client is not installed."
 msgstr "Il client ACME lego non è installato."
+
+msgid "The line is now."
+msgstr "La linea indica l'ora attuale."
 
 msgid "The log is empty or not available."
 msgstr "Il registro è vuoto o non disponibile."
@@ -2598,6 +2945,9 @@ msgstr "Il sistema si sta spegnendo."
 msgid "The text must not contain control characters"
 msgstr "Il testo non deve contenere caratteri di controllo"
 
+msgid "The text to record for this menu. It is not played; record it and upload the file above."
+msgstr "Il testo da registrare per questo menu. Non viene riprodotto; lo registri e carichi il file qui sopra."
+
 msgid "The uploaded file expired, please upload it again."
 msgstr "Il file caricato è scaduto, lo carichi di nuovo."
 
@@ -2612,6 +2962,9 @@ msgid "This backup was made by an older PhonixPBX release in a format that can n
 msgstr ""
 "Questo backup è stato creato da una versione precedente di PhonixPBX in un formato che non può più essere "
 "ripristinato."
+
+msgid "This day is listed more than once"
+msgstr "Questo giorno è elencato più volte"
 
 msgid ""
 "This erases the complete configuration, voicemail, media and backups on this system and reboots. Download a backup "
@@ -2629,8 +2982,14 @@ msgstr "Non è un file di configurazione PhonixPBX"
 msgid "This phone cannot place outgoing calls through the selected providers."
 msgstr "Questo telefono non può effettuare chiamate in uscita tramite i provider selezionati."
 
+msgid "This phone has no voicemail box"
+msgstr "Questo telefono non ha una casella vocale"
+
 msgid "This username is reserved"
 msgstr "Questo nome utente è riservato"
+
+msgid "Thursday"
+msgstr "Giovedì"
 
 msgid "Time (UTC)"
 msgstr "Ora (UTC)"
@@ -2640,6 +2999,23 @@ msgstr "Server orario"
 
 msgid "Time zone"
 msgstr "Fuso orario"
+
+msgid ""
+"To answer calls from outside with a menu, mark it as reachable from outside or choose it as the destination of a "
+"provider’s incoming route. Use <a href=\"/dialplan/hours\">business hours</a> to play another menu while the office "
+"is closed."
+msgstr ""
+"Per rispondere alle chiamate esterne con un menu, lo contrassegni come raggiungibile dall'esterno o lo scelga come "
+"destinazione dell'instradamento in entrata di un provider. Usi gli <a href=\"/dialplan/hours\">orari di apertura</a> "
+"per riprodurre un altro menu quando l'ufficio è chiuso."
+
+#, python-format
+msgid "To end the call, press %(key)s."
+msgstr "Per terminare la chiamata, prema %(key)s."
+
+#, python-format
+msgid "To hear these options again, press %(key)s."
+msgstr "Per riascoltare queste opzioni, prema %(key)s."
 
 msgid "Toggle navigation"
 msgstr "Mostra/nascondi navigazione"
@@ -2677,6 +3053,9 @@ msgstr "Trasferimenti e parcheggio"
 
 msgid "Transport"
 msgstr "Trasporto"
+
+msgid "Tuesday"
+msgstr "Martedì"
 
 msgid "Turn on automatic certificates to request one."
 msgstr "Attivi i certificati automatici per richiederne uno."
@@ -2827,6 +3206,9 @@ msgstr ""
 msgid "Uploaded"
 msgstr "Caricato"
 
+msgid "Uploaded audio"
+msgstr "Audio caricato"
+
 msgid "Uploaded files"
 msgstr "File caricati"
 
@@ -2836,8 +3218,14 @@ msgstr "Tempo di attività"
 msgid "Use DNS SRV lookups"
 msgstr "Usa ricerche DNS SRV"
 
+msgid "Use business hours as the destination of a provider’s incoming route or of an IVR key."
+msgstr "Usi gli orari di apertura come destinazione dell'instradamento in entrata di un provider o di un tasto IVR."
+
 msgid "Use lowercase letters, digits, '.', '_' or '-'"
 msgstr "Usi lettere minuscole, cifre, '.', '_' o '-'"
+
+msgid "Use “Repeat the menu” to play this menu again"
+msgstr "Usi «Ripeti il menu» per riprodurre di nuovo questo menu"
 
 msgid "Used by PhonixPBX (certificate, Asterisk). The host name of the container itself is set on the container host."
 msgstr "Usato da PhonixPBX (certificato, Asterisk). Il nome host del container stesso viene impostato sull'host del container."
@@ -2941,6 +3329,10 @@ msgstr ""
 "Le e-mail di segreteria e delle chiamate perse vengono inviate nella lingua e-mail di ciascun telefono (Account > "
 "Telefoni). I testi qui sotto valgono per la lingua selezionata; modificali per personalizzare le e-mail."
 
+#, python-format
+msgid "Voicemail box %(number)s (%(name)s)"
+msgstr "Casella vocale %(number)s (%(name)s)"
+
 msgid ""
 "Voicemail can be read by dialing <strong>000086</strong>. Configure <a href=\"/services/email\">e-mail "
 "notifications</a> to receive messages by e-mail."
@@ -2954,6 +3346,9 @@ msgstr "Messaggio di benvenuto della casella vocale"
 msgid "Voicemail, conferencing and media"
 msgstr "Casella vocale, conferenze e file audio"
 
+msgid "Wait for a key (s)"
+msgstr "Attesa di un tasto (s)"
+
 msgid "Web application"
 msgstr "Applicazione web"
 
@@ -2963,6 +3358,34 @@ msgstr "Interfaccia web e SSH. Un CIDR per riga, ad es. 192.168.1.0/24. Vuoto = 
 msgid "Web users"
 msgstr "Utenti web"
 
+msgid "Wednesday"
+msgstr "Mercoledì"
+
+msgid "Week at a glance"
+msgstr "Settimana in sintesi"
+
+msgid "Weekly opening hours"
+msgstr "Orari settimanali"
+
+msgid ""
+"What happens when the caller presses a key. Drag the handle (or use the arrows) to change the order in which the "
+"options are announced."
+msgstr ""
+"Cosa succede quando il chiamante preme un tasto. Trascini la maniglia (o usi le frecce) per cambiare l'ordine in cui "
+"vengono annunciate le opzioni."
+
+msgid "When an unknown key is pressed"
+msgstr "Se viene premuto un tasto non valido"
+
+msgid "When closed"
+msgstr "Se chiuso"
+
+msgid "When no key is pressed"
+msgstr "Se non viene premuto alcun tasto"
+
+msgid "When open"
+msgstr "Se aperto"
+
 msgid "Wildcard domains need DNS validation"
 msgstr "I domini wildcard richiedono la validazione DNS"
 
@@ -2971,6 +3394,9 @@ msgstr "I caratteri jolly '.' e '!' non sono consentiti prima di '|'"
 
 msgid "Write"
 msgstr "Scrittura"
+
+msgid "Write from options"
+msgstr "Genera dalle opzioni"
 
 msgid "Write permissions"
 msgstr "Permessi di scrittura"
@@ -3024,6 +3450,14 @@ msgid "application %(name)s"
 msgstr "applicazione %(name)s"
 
 #, python-format
+msgid "back to %(name)s"
+msgstr "torna a %(name)s"
+
+#, python-format
+msgid "business hours %(name)s"
+msgstr "orari di apertura %(name)s"
+
+#, python-format
 msgid "call group %(name)s"
 msgstr "gruppo di chiamata %(name)s"
 
@@ -3038,6 +3472,9 @@ msgstr "modificato"
 
 msgid "close"
 msgstr "chiudi"
+
+msgid "closed now"
+msgstr "chiuso ora"
 
 #, python-format
 msgid "conference room %(name)s"
@@ -3071,6 +3508,9 @@ msgstr "ad es. powerdns"
 msgid "enabled"
 msgstr "attivo"
 
+msgid "every year"
+msgstr "ogni anno"
+
 msgid "expired"
 msgstr "scaduto"
 
@@ -3082,6 +3522,9 @@ msgstr "primo = preferito"
 
 msgid "fixed caller ID"
 msgstr "ID chiamante fisso"
+
+msgid "holiday"
+msgstr "festivo"
 
 msgid "incoming number pattern"
 msgstr "regola del numero in entrata"
@@ -3146,6 +3589,9 @@ msgstr "uno dopo l'altro"
 
 msgid "open"
 msgstr "aperta"
+
+msgid "open now"
+msgstr "aperto ora"
 
 msgid ""
 "or <em>Snapshots &rarr; Take Snapshot</em> in the Proxmox VE web interface; roll back with <code>pct rollback "
@@ -3224,9 +3670,25 @@ msgstr "autofirmato"
 msgid "skip"
 msgstr "salta"
 
+msgid "star"
+msgstr "asterisco"
+
+msgid "switched manually"
+msgstr "commutato manualmente"
+
 #, python-format
 msgid "the configuration has been changed (%(areas)s). Apply to activate."
 msgstr "la configurazione è stata modificata (%(areas)s). Applichi per attivarla."
+
+#, python-format
+msgid "the feature code of business hours %(name)s"
+msgstr "codice funzione degli orari di apertura %(name)s"
+
+msgid "the hash key"
+msgstr "cancelletto"
+
+msgid "times, when no key is pressed"
+msgstr "volte, se non viene premuto alcun tasto"
 
 #, python-format
 msgid "token %(name)s"
@@ -3258,4 +3720,7 @@ msgstr "utilizzato"
 
 msgid "yes"
 msgstr "sì"
+
+msgid "“Repeat the menu” says that the option is invalid and plays the menu again."
+msgstr "«Ripeti il menu» annuncia che la scelta non è valida e riproduce di nuovo il menu."
 

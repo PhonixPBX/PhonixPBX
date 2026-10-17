@@ -12,15 +12,13 @@ from sqlalchemy.orm import Session
 
 from phonix.core import validation as v
 from phonix.core.models import (
-    Application,
-    CallGroup,
-    ConferenceRoom,
     Phone,
     Provider,
     ProviderDialPattern,
     ProviderIncomingRoute,
 )
 from phonix.i18n import N_, _
+from phonix.services import destinations as dst
 from phonix.services.common import (
     NotFound,
     ServiceError,
@@ -37,7 +35,7 @@ class IncomingRouteIn(BaseModel):
     model_config = ConfigDict(extra="ignore")
     # empty pattern = catch-all
     pattern: str = ""
-    dest_type: Literal["phone", "callgroup", "application", "conference"]
+    dest_type: dst.RouteType
     dest_id: int
 
     @field_validator("pattern")
@@ -234,42 +232,16 @@ def to_dict(p: Provider, with_secret: bool = False) -> dict[str, Any]:
     return data
 
 
-DEST_MODELS: dict[str, type] = {
-    "phone": Phone,
-    "callgroup": CallGroup,
-    "application": Application,
-    "conference": ConferenceRoom,
-}
+DEST_MODELS: dict[str, type] = {t: dst.MODELS[t] for t in dst.ROUTE_TYPES}
 
 
 def destination_label(session: Session, dest_type: str, dest_id: int) -> str:
-    model = DEST_MODELS.get(dest_type)
-    obj = session.get(model, dest_id) if model else None
-    if obj is None:
-        return _("(missing %(type)s)", type=dest_type)
-    if isinstance(obj, Phone):
-        return f"{obj.callerid} <{obj.extension}>"
-    if isinstance(obj, ConferenceRoom):
-        return _("Conference %(name)s <%(number)s>", name=obj.name, number=obj.number)
-    if isinstance(obj, CallGroup):
-        if obj.extension:
-            return _("Call group %(name)s <%(number)s>", name=obj.name, number=obj.extension)
-        return _("Call group %(name)s", name=obj.name)
-    return _("Application %(name)s <%(number)s>", name=obj.name, number=obj.extension)
+    return dst.label(session, dest_type, dest_id)
 
 
 def destinations(session: Session) -> list[tuple[str, str]]:
     """All possible incoming destinations as (``type:id``, label) for pickers."""
-    out: list[tuple[str, str]] = []
-    for phone in session.scalars(select(Phone).order_by(Phone.extension)):
-        out.append((f"phone:{phone.id}", f"{phone.callerid} <{phone.extension}>"))
-    for group in session.scalars(select(CallGroup).order_by(CallGroup.name)):
-        out.append((f"callgroup:{group.id}", destination_label(session, "callgroup", group.id)))
-    for room in session.scalars(select(ConferenceRoom).order_by(ConferenceRoom.number)):
-        out.append((f"conference:{room.id}", destination_label(session, "conference", room.id)))
-    for app in session.scalars(select(Application).order_by(Application.extension)):
-        out.append((f"application:{app.id}", destination_label(session, "application", app.id)))
-    return out
+    return dst.flat_choices(session, dst.ROUTE_TYPES)
 
 
 def _check_refs(session: Session, data: ProviderIn, own_id: int | None) -> None:

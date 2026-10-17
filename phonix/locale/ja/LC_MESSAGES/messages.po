@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-17 10:06+0200\n"
+"POT-Creation-Date: 2026-10-17 09:53+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ja\n"
@@ -17,6 +17,14 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
+
+#, python-format
+msgid "%(day)s, from"
+msgstr "%(day)s、開始"
+
+#, python-format
+msgid "%(day)s, until"
+msgstr "%(day)s、終了"
 
 #, python-format
 msgid "%(domain)s is not a public DNS name. Enter the names the PBX is reached by."
@@ -65,6 +73,10 @@ msgid "%(object)s: reference to unknown %(type)s %(id)s"
 msgstr "%(object)s: 不明な %(type)s %(id)s への参照です"
 
 #, python-format
+msgid "%(object)s: unknown media file %(path)s"
+msgstr "%(object)s: 不明なメディアファイル %(path)s"
+
+#, python-format
 msgid "%(used)s of %(total)s"
 msgstr "%(used)s / %(total)s"
 
@@ -100,6 +112,9 @@ msgstr "（リロード対象なし）"
 
 msgid "- choose -"
 msgstr "- 選択 -"
+
+msgid "- choose an uploaded file -"
+msgstr "- アップロード済みファイルを選択 -"
 
 msgid "- none -"
 msgstr "- なし -"
@@ -224,6 +239,9 @@ msgstr "アクティブなチャンネル"
 msgid "Add"
 msgstr "追加"
 
+msgid "Add a SIP or IAX phone to test the menu."
+msgstr "メニューをテストするには、SIP または IAX の電話機を追加してください。"
+
 msgid "Add a call group"
 msgstr "コールグループを追加"
 
@@ -239,11 +257,26 @@ msgstr "会議室を追加"
 msgid "Add administrator"
 msgstr "管理者を追加"
 
+msgid "Add an IVR menu"
+msgstr "IVR メニューを追加"
+
 msgid "Add an application"
 msgstr "アプリケーションを追加"
 
+msgid "Add business hours"
+msgstr "営業時間を追加"
+
+msgid "Add day"
+msgstr "日を追加"
+
+msgid "Add option"
+msgstr "選択肢を追加"
+
 msgid "Add route"
 msgstr "ルートを追加"
+
+msgid "Add time range"
+msgstr "時間帯を追加"
 
 msgid "Add your SIP trunk or VoIP provider account to make and receive external calls."
 msgstr "外線の発着信を行うには、SIP トランクまたは VoIP プロバイダーのアカウントを追加してください。"
@@ -293,11 +326,20 @@ msgstr "詳細: 1 行に 1 つの key=value を記述します。生成された
 msgid "Always expand advanced sections"
 msgstr "詳細セクションを常に展開する"
 
+msgid "An Asterisk sound in the prompt language of the system, e.g. welcome. You can also type the name of another sound."
+msgstr "システムのガイダンス言語の Asterisk サウンドです（例: welcome）。他のサウンド名を入力することもできます。"
+
+msgid "An IVR menu plays an announcement and lets callers choose with a key, e.g. 1 for sales and 2 for support."
+msgstr "IVR メニューはアナウンスを再生し、発信者がキーで選択できるようにします（例: 1 で営業、2 でサポート）。"
+
 msgid "An e-mail address is required for the ACME account"
 msgstr "ACME アカウントにはメールアドレスが必要です"
 
 msgid "Announce on the local network (mDNS)"
 msgstr "ローカルネットワークに公開する (mDNS)"
+
+msgid "Announcement"
+msgstr "アナウンス"
 
 msgid "Application"
 msgstr "アプリケーション"
@@ -337,6 +379,9 @@ msgstr "適用に失敗しました: %(errors)s"
 msgid "Applying the configuration failed."
 msgstr "設定の適用に失敗しました。"
 
+msgid "As saved."
+msgstr "保存済みの内容です。"
+
 msgid "Asterisk database"
 msgstr "Asterisk データベース"
 
@@ -346,6 +391,13 @@ msgstr "Asterisk 停止中"
 #, python-format
 msgid "Asterisk is not reachable: %(error)s"
 msgstr "Asterisk に接続できません: %(error)s"
+
+#, python-format
+msgid "Asterisk is not running, the mode cannot be changed: %(error)s"
+msgstr "Asterisk が動作していないため、モードを変更できません: %(error)s"
+
+msgid "Asterisk is not running: the current mode is unknown and cannot be changed."
+msgstr "Asterisk が動作していません。現在のモードは不明で、変更できません。"
 
 msgid "Asterisk manager users"
 msgstr "Asterisk マネージャーユーザー"
@@ -401,6 +453,9 @@ msgid "Authentication user"
 msgstr "認証ユーザー"
 
 msgid "Auto"
+msgstr "自動"
+
+msgid "Automatic"
 msgstr "自動"
 
 msgid "Automatic (SLAAC)"
@@ -483,6 +538,31 @@ msgstr "ブラジル"
 msgid "Brute force protection"
 msgstr "ブルートフォース攻撃対策"
 
+msgid "Built-in sound"
+msgstr "組み込みサウンド"
+
+msgid "Business Hours"
+msgstr "営業時間"
+
+msgid "Business hours"
+msgstr "営業時間"
+
+#, python-format
+msgid "Business hours %(name)s"
+msgstr "営業時間 %(name)s"
+
+#, python-format
+msgid "Business hours %(name)s saved."
+msgstr "営業時間 %(name)s を保存しました。"
+
+msgid "Business hours not found"
+msgstr "営業時間が見つかりません"
+
+msgid ""
+"Business hours send calls to one destination while you are open and to another one while you are closed, e.g. an "
+"after-hours menu."
+msgstr "営業時間は、営業中の着信をある宛先に、営業時間外の着信を別の宛先（例: 時間外メニュー）に転送します。"
+
 msgid "Busy"
 msgstr "話中"
 
@@ -494,6 +574,9 @@ msgstr "CPU 負荷"
 
 msgid "Call Groups"
 msgstr "コールグループ"
+
+msgid "Call flow"
+msgstr "通話フロー"
 
 msgid "Call group"
 msgstr "コールグループ"
@@ -514,6 +597,9 @@ msgstr "コールグループ"
 
 msgid "Call groups ring several phones at once or one after another."
 msgstr "コールグループは、複数の電話機を同時または順番に呼び出します。"
+
+msgid "Call me"
+msgstr "自分に発信"
 
 msgid "Call parking"
 msgstr "コールパーク"
@@ -539,8 +625,14 @@ msgstr "発信者 ID 名"
 msgid "Caller ID text"
 msgstr "発信者 ID テキスト"
 
+msgid "Callers from outside reach only numbers that are reachable from outside."
+msgstr "外部からの発信者は、外部から到達可能な番号にのみ接続できます。"
+
 msgid "Callers from providers or SIP URIs may call this phone directly."
 msgstr "プロバイダーや SIP URI からの発信者がこの電話機に直接発信できます。"
+
+msgid "Callers may dial extensions directly"
+msgstr "発信者が内線番号を直接ダイヤルできる"
 
 msgid "Calls & Registrations"
 msgstr "通話と登録"
@@ -599,14 +691,41 @@ msgstr "1～%(max)s 日を指定してください"
 msgid "Choose a DNS provider"
 msgstr "DNS プロバイダーを選択してください"
 
+msgid "Choose a destination"
+msgstr "宛先を選択してください"
+
+msgid "Choose a destination…"
+msgstr "宛先を選択…"
+
 msgid "Choose a different password"
 msgstr "別のパスワードを指定してください"
+
+msgid "Choose a key from 0-9, * or #"
+msgstr "0-9、*、# からキーを選択してください"
+
+msgid "Choose a sound"
+msgstr "サウンドを選択してください"
+
+msgid "Choose or upload an announcement"
+msgstr "アナウンスを選択またはアップロードしてください"
 
 msgid "Client ID"
 msgstr "クライアント ID"
 
 msgid "Client secret"
 msgstr "クライアントシークレット"
+
+msgid "Closed"
+msgstr "営業時間外"
+
+msgid "Closed all day"
+msgstr "終日休業"
+
+msgid "Closed all day, whatever the weekly hours say. Days that move every year, like Easter, are entered once per year."
+msgstr "週間の営業時間にかかわらず終日休業します。イースターのように毎年日付が変わる日は、年ごとに入力してください。"
+
+msgid "Closed until switched back, e.g. when the office closes early."
+msgstr "元に戻すまで営業時間外になります（例: 早めに閉める場合）。"
 
 msgid "Cloud API token"
 msgstr "Cloud API トークン"
@@ -616,6 +735,10 @@ msgstr "コーデック"
 
 msgid "Codecs &amp; advanced"
 msgstr "コーデックと詳細設定"
+
+#, python-format
+msgid "Codes starting with %(code)s are used for call pickup"
+msgstr "%(code)s で始まるコードはコールピックアップに使用されています"
 
 msgid "Conference"
 msgstr "会議"
@@ -753,6 +876,9 @@ msgstr "ダークモード"
 msgid "Data partition"
 msgstr "データパーティション"
 
+msgid "Date"
+msgstr "日付"
+
 msgid "Default expiry (s)"
 msgstr "デフォルトの有効期限（秒）"
 
@@ -781,6 +907,9 @@ msgstr "デンマーク"
 
 msgid "Description"
 msgstr "説明"
+
+msgid "Destination"
+msgstr "宛先"
 
 msgid "Destination does not exist"
 msgstr "宛先が存在しません"
@@ -847,6 +976,12 @@ msgstr "ダウン"
 #, python-format
 msgid "Download %(name)s"
 msgstr "%(name)s をダウンロード"
+
+msgid "Drag to change the order"
+msgstr "ドラッグして順序を変更"
+
+msgid "Drop an audio file here or click to upload (WAV, MP3, OGG or FLAC, converted to 8 kHz)"
+msgstr "音声ファイルをここにドロップするか、クリックしてアップロード（WAV、MP3、OGG、FLAC。8 kHz に変換されます）"
 
 msgid "Drop audio files here or click to upload"
 msgstr "音声ファイルをここにドロップするか、クリックしてアップロード"
@@ -920,8 +1055,16 @@ msgid "Edit %(tech)s provider %(name)s"
 msgstr "%(tech)s プロバイダー %(name)s の編集"
 
 #, python-format
+msgid "Edit IVR menu %(name)s"
+msgstr "IVR メニュー %(name)s を編集"
+
+#, python-format
 msgid "Edit application %(name)s"
 msgstr "アプリケーション %(name)s の編集"
+
+#, python-format
+msgid "Edit business hours %(name)s"
+msgstr "営業時間 %(name)s を編集"
 
 #, python-format
 msgid "Edit call group %(name)s"
@@ -1001,8 +1144,14 @@ msgstr "64 文字以内で名前を入力してください"
 msgid "Enter a number of days"
 msgstr "日数を入力してください"
 
+msgid "Enter a time as HH:MM"
+msgstr "時刻を HH:MM で入力してください"
+
 msgid "Enter the directory URL of the ACME server"
 msgstr "ACME サーバーのディレクトリ URL を入力してください"
+
+msgid "Enter the name of an Asterisk sound, e.g. welcome"
+msgstr "Asterisk サウンドの名前を入力してください（例: welcome）"
 
 msgid "Error"
 msgstr "エラー"
@@ -1050,6 +1199,9 @@ msgstr "フェイルオーバー先プロバイダー"
 msgid "Failures within 10 minutes"
 msgstr "10 分以内の失敗回数"
 
+msgid "Feature code"
+msgstr "機能コード"
+
 msgid "Feature codes"
 msgstr "機能コード"
 
@@ -1077,6 +1229,13 @@ msgstr "開始スロット"
 msgid "Fixed caller ID"
 msgstr "固定の発信者 ID"
 
+msgid "Follow the opening hours and holidays."
+msgstr "営業時間と休日に従います。"
+
+#, python-format
+msgid "For %(what)s, press %(key)s."
+msgstr "%(what)s は %(key)s を押してください。"
+
 msgid "For 'one after another', phones ring in this order."
 msgstr "「順番に」の場合、この順序で電話機を呼び出します。"
 
@@ -1094,6 +1253,9 @@ msgstr "フランス"
 
 msgid "French"
 msgstr "フランス語"
+
+msgid "Friday"
+msgstr "金曜日"
 
 msgid "From domain"
 msgstr "From ドメイン"
@@ -1131,8 +1293,14 @@ msgstr "グラフは、グラフを含むページを開いている間に取得
 msgid "Greece"
 msgstr "ギリシャ"
 
+msgid "Green: open."
+msgstr "緑: 営業中。"
+
 msgid "HTTP (port 80)"
 msgstr "HTTP（ポート 80）"
+
+msgid "Hang up"
+msgstr "通話を終了"
 
 #, python-brace-format
 msgid ""
@@ -1175,6 +1343,9 @@ msgstr ""
 "-- \n"
 "PhonixPBX\n"
 
+msgid "Holidays and closing days"
+msgstr "祝日と休業日"
+
 msgid "Host"
 msgstr "ホスト"
 
@@ -1214,6 +1385,33 @@ msgstr "IAX プロバイダー"
 msgid "IP address"
 msgstr "IP アドレス"
 
+msgid "IVR Menus"
+msgstr "IVR メニュー"
+
+msgid "IVR announcement"
+msgstr "IVR アナウンス"
+
+msgid "IVR menu"
+msgstr "IVR メニュー"
+
+#, python-format
+msgid "IVR menu %(name)s"
+msgstr "IVR メニュー %(name)s"
+
+#, python-format
+msgid "IVR menu %(name)s <%(number)s>"
+msgstr "IVR メニュー %(name)s <%(number)s>"
+
+#, python-format
+msgid "IVR menu %(name)s saved."
+msgstr "IVR メニュー %(name)s を保存しました。"
+
+msgid "IVR menu not found"
+msgstr "IVR メニューが見つかりません"
+
+msgid "IVR menus"
+msgstr "IVR メニュー"
+
 msgid "If the new version does not work, roll back to the snapshot you took on the container host."
 msgstr "新しいバージョンが動作しない場合は、コンテナーホストで作成したスナップショットにロールバックしてください。"
 
@@ -1242,6 +1440,11 @@ msgid ""
 msgstr ""
 "会議中に <kbd>*</kbd> を押すとメニュー、<kbd>1</kbd> でミュート、<kbd>8</kbd> で退出します。管理者（管理者 "
 "PIN）は会議室をロック（<kbd>2</kbd>）したり、最後に参加した発信者を退出させる（<kbd>3</kbd>）ことができます。"
+
+msgid ""
+"In the time zone of the system. A day can have several time ranges, e.g. for a lunch break; the end is the first "
+"minute you are closed."
+msgstr "システムのタイムゾーンで指定します。1 日に複数の時間帯を設定できます（例: 昼休み）。終了時刻は営業時間外となる最初の分です。"
 
 msgid "In use"
 msgstr "使用中"
@@ -1362,11 +1565,30 @@ msgstr "現在の Web ユーザーと API トークンを保持する"
 msgid "Kernel"
 msgstr "カーネル"
 
+msgid "Key"
+msgstr "キー"
+
+#, python-format
+msgid "Key %(key)s is used more than once"
+msgstr "キー %(key)s が複数回使用されています"
+
+msgid "Key options"
+msgstr "キーの選択肢"
+
+msgid "Keys"
+msgstr "キー"
+
 msgid "LAN interface"
 msgstr "LAN インターフェース"
 
 msgid "LXC / Incus system container"
 msgstr "LXC / Incus システムコンテナー"
+
+msgid "Label"
+msgstr "ラベル"
+
+msgid "Label, e.g. Sales"
+msgstr "ラベル（例: 営業）"
 
 msgid "Lagged"
 msgstr "遅延"
@@ -1404,6 +1626,9 @@ msgstr "ライトモード"
 
 msgid "Light/dark theme: use the moon/sun icon in the top bar."
 msgstr "ライト/ダークテーマ: 上部バーの月/太陽アイコンで切り替えます。"
+
+msgid "Listen to the announcement"
+msgstr "アナウンスを聞く"
 
 msgid "Lithuania"
 msgstr "リトアニア"
@@ -1517,8 +1742,17 @@ msgstr "DNS プロバイダーの認証情報が不足しています: %(names)s
 msgid "Mode"
 msgstr "モード"
 
+msgid "Monday"
+msgstr "月曜日"
+
 msgid "Monitor"
 msgstr "モニター"
+
+msgid "Move down"
+msgstr "下へ移動"
+
+msgid "Move up"
+msgstr "上へ移動"
 
 msgid "Music on hold"
 msgstr "保留音"
@@ -1590,6 +1824,9 @@ msgstr "ネームサーバー（host または host:port）"
 msgid "Name shown to called parties."
 msgstr "着信側に表示される名前です。"
 
+msgid "Name, e.g. Christmas Day"
+msgstr "名前（例: 元日）"
+
 msgid "Names"
 msgstr "名前"
 
@@ -1625,11 +1862,17 @@ msgstr "新しい %(tech)s 電話機"
 msgid "New %(tech)s provider"
 msgstr "新しい %(tech)s プロバイダー"
 
+msgid "New IVR menu"
+msgstr "新しい IVR メニュー"
+
 msgid "New Zealand"
 msgstr "ニュージーランド"
 
 msgid "New application"
 msgstr "新しいアプリケーション"
+
+msgid "New business hours"
+msgstr "新しい営業時間"
 
 msgid "New call group"
 msgstr "新しいコールグループ"
@@ -1656,6 +1899,9 @@ msgstr "新しい順"
 msgid "No API tokens"
 msgstr "API トークンはありません"
 
+msgid "No IVR menus"
+msgstr "IVR メニューはありません"
+
 msgid "No active calls."
 msgstr "アクティブな通話はありません。"
 
@@ -1667,6 +1913,9 @@ msgstr "アプリケーションはありません"
 
 msgid "No backups yet. Backups contain the configuration with all passwords, the media files and the TLS certificate."
 msgstr "バックアップはまだありません。バックアップには、すべてのパスワードを含む設定、メディアファイル、TLS 証明書が含まれます。"
+
+msgid "No business hours"
+msgstr "営業時間はありません"
 
 msgid "No call groups"
 msgstr "コールグループはありません"
@@ -1685,6 +1934,12 @@ msgstr "エントリはありません。"
 
 msgid "No files uploaded."
 msgstr "アップロードされたファイルはありません。"
+
+msgid "No key options yet."
+msgstr "キーの選択肢はまだありません。"
+
+msgid "No key pressed"
+msgstr "キー入力なし"
 
 msgid "No manager users"
 msgstr "マネージャーユーザーはいません"
@@ -1739,6 +1994,9 @@ msgstr "通知先アドレス"
 
 msgid "Notifications"
 msgstr "通知"
+
+msgid "Now"
+msgstr "現在"
 
 msgid "Number"
 msgstr "番号"
@@ -1819,17 +2077,29 @@ msgstr "ユーザー名と異なる場合のみ。"
 msgid "Only web interface, SSH (if enabled), SIP/IAX and RTP are reachable."
 msgstr "Web インターフェース、SSH（有効な場合）、SIP/IAX、RTP のみアクセス可能になります。"
 
+msgid "Open"
+msgstr "営業中"
+
+msgid "Open until switched back, e.g. for a special event."
+msgstr "元に戻すまで営業中になります（例: 特別なイベント）。"
+
 msgid "Open user menu"
 msgstr "ユーザーメニューを開く"
 
 msgid "Optional - groups can also be used only as provider destinations."
 msgstr "任意 - グループはプロバイダーの着信先としてのみ使用することもできます。"
 
+msgid "Optional - menus can also be used only as destinations."
+msgstr "任意 - メニューは宛先としてのみ使用することもできます。"
+
 msgid "Optional alias used in the public context (e.g. 'sales' for sip:sales@pbx). Defaults to the extension."
 msgstr "public コンテキストで使用する任意のエイリアス（例: sip:sales@pbx の場合は 'sales'）。省略時は内線番号が使用されます。"
 
 msgid "Optional. Callers must enter it to join."
 msgstr "任意。参加時に発信者が入力する必要があります。"
+
+msgid "Optional. Dialled on an internal phone, it switches between “Automatic” and “Closed”."
+msgstr "任意。内線電話でダイヤルすると、「自動」と「営業時間外」を切り替えます。"
 
 msgid "Optional. Joins as moderator."
 msgstr "任意。モデレーターとして参加します。"
@@ -1838,6 +2108,9 @@ msgid ""
 "Optional; overrides the provider's caller ID setting for calls from this phone. Format: <code>Name "
 "&lt;number&gt;</code>."
 msgstr "任意。この電話機からの発信について、プロバイダーの発信者 ID 設定を上書きします。形式: <code>Name &lt;number&gt;</code>。"
+
+msgid "Other"
+msgstr "その他"
 
 msgid "Other ACME server"
 msgstr "その他の ACME サーバー"
@@ -1923,6 +2196,10 @@ msgid "Phone %(extension)s created."
 msgstr "電話機 %(extension)s を作成しました。"
 
 #, python-format
+msgid "Phone %(extension)s is ringing. Answer it to hear the menu as it was last applied."
+msgstr "電話機 %(extension)s を呼び出しています。応答すると、最後に適用されたメニューを聞くことができます。"
+
+#, python-format
 msgid "Phone %(extension)s saved."
 msgstr "電話機 %(extension)s を保存しました。"
 
@@ -1972,6 +2249,9 @@ msgstr "平文"
 
 msgid "Platform"
 msgstr "プラットフォーム"
+
+msgid "Played when the call reaches the menu. Callers can press a key while it plays."
+msgstr "着信がメニューに到達したときに再生されます。発信者は再生中にキーを押すことができます。"
 
 msgid "Please choose your own password before continuing."
 msgstr "続行する前に、ご自身のパスワードを設定してください。"
@@ -2125,6 +2405,9 @@ msgid ""
 "could lock you out."
 msgstr "バックアップが別のシステムまたはネットワークのものである場合に推奨します。その IP アドレス、ファイアウォールルール、SSH 設定によってアクセスできなくなる可能性があります。"
 
+msgid "Recording script"
+msgstr "録音用原稿"
+
 msgid "Region"
 msgstr "リージョン"
 
@@ -2147,14 +2430,26 @@ msgstr "拒否"
 msgid "Reloading the web server failed: %(error)s"
 msgstr "Web サーバーのリロードに失敗しました: %(error)s"
 
+msgid "Remove day"
+msgstr "日を削除"
+
+msgid "Remove option"
+msgstr "選択肢を削除"
+
 msgid "Remove the password (key logins only)"
 msgstr "パスワードを削除する（鍵によるログインのみ）"
+
+msgid "Remove time range"
+msgstr "時間帯を削除"
 
 msgid "Renewed daily when it expires in less than 30 days."
 msgstr "有効期限まで 30 日を切ると、毎日更新を試みます。"
 
 msgid "Repeat new password"
 msgstr "新しいパスワード（確認）"
+
+msgid "Repeat the menu"
+msgstr "メニューを繰り返す"
 
 msgid "Replace current configuration (backup first)"
 msgstr "現在の設定を置き換える（事前にバックアップ）"
@@ -2206,11 +2501,17 @@ msgstr "復元すると、下で保持を選んだ部分を除いて設定が置
 msgid "Restoring the files failed, nothing was changed: %(error)s"
 msgstr "ファイルを復元できませんでした。何も変更されていません: %(error)s"
 
+msgid "Right now"
+msgstr "現在"
+
 msgid "Ring"
 msgstr "呼出"
 
 msgid "Ring all at once"
 msgstr "すべて同時に呼び出す"
+
+msgid "Ring phone"
+msgstr "電話機を呼び出す"
 
 msgid "Ring strategy"
 msgstr "呼出方式"
@@ -2229,6 +2530,9 @@ msgid ""
 "Calls to external numbers may cost money."
 msgstr "電話機を呼び出し、応答後にその電話機から番号を発信します（POST /api/v1/calls、MCP ツール originate_call）。読み取り専用トークンでも利用できます。外部番号への通話には料金がかかる場合があります。"
 
+msgid "Rings your phone and connects it to this menu as it was last applied."
+msgstr "お使いの電話機を呼び出し、最後に適用された状態のこのメニューに接続します。"
+
 #, python-format
 msgid "Route %(num)s: %(error)s"
 msgstr "ルート %(num)s: %(error)s"
@@ -2237,6 +2541,9 @@ msgid ""
 "Route incoming calls by the dialed number (DID). Leave the pattern empty to catch all calls. Several destinations "
 "with the same pattern ring in parallel."
 msgstr "着信をダイヤルされた番号（DID）で振り分けます。すべての着信を受けるにはパターンを空欄にしてください。同じパターンの宛先が複数ある場合は同時に呼び出します。"
+
+msgid "Routing"
+msgstr "ルーティング"
 
 msgid "Russia"
 msgstr "ロシア"
@@ -2281,6 +2588,9 @@ msgstr "STARTTLS（ポート 587）"
 
 msgid "Same as phone language"
 msgstr "電話機の言語と同じ"
+
+msgid "Saturday"
+msgstr "土曜日"
 
 msgid "Save"
 msgstr "保存"
@@ -2340,6 +2650,9 @@ msgstr "サーバーで認証が必要"
 msgid "Services"
 msgstr "サービス"
 
+msgid "Settings"
+msgstr "設定"
+
 msgid "Settings groups"
 msgstr "設定グループ"
 
@@ -2369,6 +2682,12 @@ msgstr "サイズ"
 
 msgid "Something went wrong"
 msgstr "問題が発生しました"
+
+msgid "Sound"
+msgstr "サウンド"
+
+msgid "Source"
+msgstr "ソース"
 
 msgid "South Africa"
 msgstr "南アフリカ"
@@ -2406,11 +2725,17 @@ msgstr "サブスクリプション ID"
 msgid "Summary"
 msgstr "概要"
 
+msgid "Sunday"
+msgstr "日曜日"
+
 msgid "Sweden"
 msgstr "スウェーデン"
 
 msgid "Swedish"
 msgstr "スウェーデン語"
+
+msgid "Switch now"
+msgstr "今すぐ切り替え"
 
 msgid "Switzerland"
 msgstr "スイス"
@@ -2457,11 +2782,17 @@ msgstr "台湾"
 msgid "Take a snapshot of the container first"
 msgstr "最初にコンテナーのスナップショットを作成してください"
 
+msgid "Takes effect immediately, without applying the configuration."
+msgstr "設定を適用しなくても、すぐに有効になります。"
+
 msgid "Telephony"
 msgstr "電話"
 
 msgid "Tenant ID"
 msgstr "テナント ID"
+
+msgid "Test call"
+msgstr "テスト通話"
 
 #, python-format
 msgid "Test message sent to %(to)s."
@@ -2501,6 +2832,9 @@ msgstr "この設定は PhonixPBX %(release)s で作成されており、この�
 msgid "The directory URL must start with https://"
 msgstr "ディレクトリ URL は https:// で始まる必要があります"
 
+msgid "The end must be after the start"
+msgstr "終了は開始より後にしてください"
+
 msgid "The end port must be greater than the start port."
 msgstr "終了ポートは開始ポートより大きくしてください。"
 
@@ -2528,6 +2862,9 @@ msgstr "最後の管理者は削除できません"
 
 msgid "The lego ACME client is not installed."
 msgstr "lego ACME クライアントがインストールされていません。"
+
+msgid "The line is now."
+msgstr "線は現在時刻です。"
 
 msgid "The log is empty or not available."
 msgstr "ログが空か、利用できません。"
@@ -2557,6 +2894,9 @@ msgstr "システムをシャットダウンしています。"
 msgid "The text must not contain control characters"
 msgstr "テキストに制御文字を含めることはできません"
 
+msgid "The text to record for this menu. It is not played; record it and upload the file above."
+msgstr "このメニュー用に録音するテキストです。再生はされません。録音して、上でファイルをアップロードしてください。"
+
 msgid "The uploaded file expired, please upload it again."
 msgstr "アップロードしたファイルの有効期限が切れました。もう一度アップロードしてください。"
 
@@ -2569,6 +2909,9 @@ msgstr ""
 
 msgid "This backup was made by an older PhonixPBX release in a format that can no longer be restored."
 msgstr "このバックアップは古い PhonixPBX リリースで作成されたもので、その形式はもう復元できません。"
+
+msgid "This day is listed more than once"
+msgstr "この日が複数回指定されています"
 
 msgid ""
 "This erases the complete configuration, voicemail, media and backups on this system and reboots. Download a backup "
@@ -2584,8 +2927,14 @@ msgstr "PhonixPBX の設定ファイルではありません"
 msgid "This phone cannot place outgoing calls through the selected providers."
 msgstr "この電話機は、選択したプロバイダー経由で発信できません。"
 
+msgid "This phone has no voicemail box"
+msgstr "この電話機にはボイスメールボックスがありません"
+
 msgid "This username is reserved"
 msgstr "このユーザー名は予約されています"
+
+msgid "Thursday"
+msgstr "木曜日"
 
 msgid "Time (UTC)"
 msgstr "日時（UTC）"
@@ -2595,6 +2944,22 @@ msgstr "タイムサーバー"
 
 msgid "Time zone"
 msgstr "タイムゾーン"
+
+msgid ""
+"To answer calls from outside with a menu, mark it as reachable from outside or choose it as the destination of a "
+"provider’s incoming route. Use <a href=\"/dialplan/hours\">business hours</a> to play another menu while the office "
+"is closed."
+msgstr ""
+"外部からの着信にメニューで応答するには、メニューを外部から到達可能にするか、プロバイダーの着信ルートの宛先として選択してください。<a "
+"href=\"/dialplan/hours\">営業時間</a>を使うと、営業時間外に別のメニューを再生できます。"
+
+#, python-format
+msgid "To end the call, press %(key)s."
+msgstr "通話を終了するには、%(key)s を押してください。"
+
+#, python-format
+msgid "To hear these options again, press %(key)s."
+msgstr "もう一度お聞きになるには、%(key)s を押してください。"
 
 msgid "Toggle navigation"
 msgstr "ナビゲーションの切り替え"
@@ -2632,6 +2997,9 @@ msgstr "転送とパーク"
 
 msgid "Transport"
 msgstr "トランスポート"
+
+msgid "Tuesday"
+msgstr "火曜日"
 
 msgid "Turn on automatic certificates to request one."
 msgstr "証明書をリクエストするには、自動証明書を有効にしてください。"
@@ -2776,6 +3144,9 @@ msgstr "独自の保留音をアップロードできます。ファイルは 8 
 msgid "Uploaded"
 msgstr "アップロード日時"
 
+msgid "Uploaded audio"
+msgstr "アップロードした音声"
+
 msgid "Uploaded files"
 msgstr "アップロード済みファイル"
 
@@ -2785,8 +3156,14 @@ msgstr "稼働時間"
 msgid "Use DNS SRV lookups"
 msgstr "DNS SRV ルックアップを使用する"
 
+msgid "Use business hours as the destination of a provider’s incoming route or of an IVR key."
+msgstr "営業時間は、プロバイダーの着信ルートや IVR キーの宛先として使用します。"
+
 msgid "Use lowercase letters, digits, '.', '_' or '-'"
 msgstr "英小文字、数字、'.'、'_'、'-' を使用してください"
+
+msgid "Use “Repeat the menu” to play this menu again"
+msgstr "このメニューをもう一度再生するには「メニューを繰り返す」を使用してください"
 
 msgid "Used by PhonixPBX (certificate, Asterisk). The host name of the container itself is set on the container host."
 msgstr "PhonixPBX（証明書、Asterisk）で使用されます。コンテナー自体のホスト名はコンテナーホストで設定します。"
@@ -2886,6 +3263,10 @@ msgid ""
 "are used for the selected language; change them to customise the e-mails."
 msgstr "ボイスメールと不在着信のメールは、各電話機のメール言語で送信されます (アカウント > 電話機)。以下の文面は選択した言語に使われます。メールをカスタマイズするには変更してください。"
 
+#, python-format
+msgid "Voicemail box %(number)s (%(name)s)"
+msgstr "ボイスメールボックス %(number)s（%(name)s）"
+
 msgid ""
 "Voicemail can be read by dialing <strong>000086</strong>. Configure <a href=\"/services/email\">e-mail "
 "notifications</a> to receive messages by e-mail."
@@ -2897,6 +3278,9 @@ msgstr "ボイスメール応答メッセージ"
 msgid "Voicemail, conferencing and media"
 msgstr "ボイスメール、電話会議、メディア"
 
+msgid "Wait for a key (s)"
+msgstr "キー入力の待ち時間（秒）"
+
 msgid "Web application"
 msgstr "Webアプリケーション"
 
@@ -2906,6 +3290,32 @@ msgstr "Web インターフェースと SSH。1 行に 1 つの CIDR を記述�
 msgid "Web users"
 msgstr "Web ユーザー"
 
+msgid "Wednesday"
+msgstr "水曜日"
+
+msgid "Week at a glance"
+msgstr "週間の概要"
+
+msgid "Weekly opening hours"
+msgstr "週間の営業時間"
+
+msgid ""
+"What happens when the caller presses a key. Drag the handle (or use the arrows) to change the order in which the "
+"options are announced."
+msgstr "発信者がキーを押したときの動作です。ハンドルをドラッグ（または矢印を使用）して、選択肢が案内される順序を変更できます。"
+
+msgid "When an unknown key is pressed"
+msgstr "無効なキーが押されたとき"
+
+msgid "When closed"
+msgstr "営業時間外"
+
+msgid "When no key is pressed"
+msgstr "キーが押されなかったとき"
+
+msgid "When open"
+msgstr "営業中"
+
 msgid "Wildcard domains need DNS validation"
 msgstr "ワイルドカードドメインには DNS 検証が必要です"
 
@@ -2914,6 +3324,9 @@ msgstr "ワイルドカード '.' と '!' は '|' の前に使用できません
 
 msgid "Write"
 msgstr "書き込み"
+
+msgid "Write from options"
+msgstr "選択肢から作成"
 
 msgid "Write permissions"
 msgstr "書き込み権限"
@@ -2967,6 +3380,14 @@ msgid "application %(name)s"
 msgstr "アプリケーション %(name)s"
 
 #, python-format
+msgid "back to %(name)s"
+msgstr "%(name)s に戻る"
+
+#, python-format
+msgid "business hours %(name)s"
+msgstr "営業時間 %(name)s"
+
+#, python-format
 msgid "call group %(name)s"
 msgstr "コールグループ %(name)s"
 
@@ -2981,6 +3402,9 @@ msgstr "変更"
 
 msgid "close"
 msgstr "閉じる"
+
+msgid "closed now"
+msgstr "営業時間外"
 
 #, python-format
 msgid "conference room %(name)s"
@@ -3014,6 +3438,9 @@ msgstr "例: powerdns"
 msgid "enabled"
 msgstr "有効"
 
+msgid "every year"
+msgstr "毎年"
+
 msgid "expired"
 msgstr "期限切れ"
 
@@ -3025,6 +3452,9 @@ msgstr "先頭 = 優先"
 
 msgid "fixed caller ID"
 msgstr "固定の発信者 ID"
+
+msgid "holiday"
+msgstr "休日"
 
 msgid "incoming number pattern"
 msgstr "着信番号パターン"
@@ -3089,6 +3519,9 @@ msgstr "順番に"
 
 msgid "open"
 msgstr "オープン"
+
+msgid "open now"
+msgstr "営業中"
 
 msgid ""
 "or <em>Snapshots &rarr; Take Snapshot</em> in the Proxmox VE web interface; roll back with <code>pct rollback "
@@ -3165,9 +3598,25 @@ msgstr "自己署名"
 msgid "skip"
 msgstr "スキップ"
 
+msgid "star"
+msgstr "米印"
+
+msgid "switched manually"
+msgstr "手動で切り替え"
+
 #, python-format
 msgid "the configuration has been changed (%(areas)s). Apply to activate."
 msgstr "設定が変更されました（%(areas)s）。有効にするには適用してください。"
+
+#, python-format
+msgid "the feature code of business hours %(name)s"
+msgstr "営業時間 %(name)s の機能コード"
+
+msgid "the hash key"
+msgstr "シャープ"
+
+msgid "times, when no key is pressed"
+msgstr "回（キーが押されなかった場合）"
 
 #, python-format
 msgid "token %(name)s"
@@ -3199,4 +3648,7 @@ msgstr "使用済み"
 
 msgid "yes"
 msgstr "はい"
+
+msgid "“Repeat the menu” says that the option is invalid and plays the menu again."
+msgstr "「メニューを繰り返す」は、無効な選択であることを伝えてからメニューをもう一度再生します。"
 

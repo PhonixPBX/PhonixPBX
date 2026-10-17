@@ -80,7 +80,7 @@ We are reviving the product on current technology:
 **MCP for AI assistants.**
 - `POST /api/mcp` is a Model Context Protocol server (streamable HTTP, protocol versions 2025-03-26 to 2025-11-25). It is stateless and answers with JSON only: no SSE stream and no `Mcp-Session-Id`, so `GET` and `DELETE` return 405. The protocol is implemented in `phonix/mcp.py`, not with the `mcp` SDK, so it adds no runtime dependency.
 - Clients authenticate with the same bearer tokens; the session cookie is not accepted. Every MCP request is a POST, so a read-only token is enforced per tool: it gets only the read tools in `tools/list`, and write tools return a tool error. Requests with an `Origin` header for another host name are rejected (DNS rebinding); the port is not compared, because nginx passes `Host` without it.
-- Tools: `list_*`, `get_*`, `create_*`, `update_*` (partial: only the given fields change), `delete_*` for phones, providers, call groups, conferences, applications and AMI users, plus `set_phone_enabled` / `set_provider_enabled`; `list_settings_groups`, `get_settings`, `update_settings`; `get_status`, `get_pending_changes`, `preview_apply` (paths and components only, never file content), `apply_changes`; `tail_log` (`asterisk`, `system`, `web` or `monitor`, at most 1000 lines). `originate_call` (the click-to-call above) is listed and callable only for tokens with `allow_calls`.
+- Tools: `list_*`, `get_*`, `create_*`, `update_*` (partial: only the given fields change), `delete_*` for phones, providers, call groups, conferences, applications, IVR menus, business hours and AMI users, plus `set_phone_enabled` / `set_provider_enabled` / `set_ivr_menu_enabled`; `get_business_hours_status` and `set_business_hours_mode` (immediate); `list_settings_groups`, `get_settings`, `update_settings`; `get_status`, `get_pending_changes`, `preview_apply` (paths and components only, never file content), `apply_changes`; `tail_log` (`asterisk`, `system`, `web` or `monitor`, at most 1000 lines). `originate_call` (the click-to-call above) is listed and callable only for tokens with `allow_calls`.
 - Secrets are never returned, and an empty secret keeps the stored one, as in the REST API. Changes are audited as `<user> (mcp)`.
 
 ### Tech choices
@@ -110,14 +110,21 @@ The table list below is derived from the old `config.xml` schema:
 - `applications`: custom dialplan snippets.
   - Columns: id, extension, name, logic (plain text dialplan), enabled.
   - Seed rows port the 7 defaults from the old `config.xml`: Read extension, Read IP, Echo, Milliwatt, Voicemail, Call forwarding, Weasels. Their `applicationlogic` is base64-decoded and rewritten for Asterisk 22 syntax.
+- `ivr_menus`: id, name, extension (optional, unique), public access/name, enabled, the announcement (`prompt_mode` `upload` with `prompt_media_id`, or `sound` with an Asterisk sound name; `prompt_text` is only a recording script), `timeout` (seconds to wait for a key), `repeats`, `direct_dial`, and the destinations for "no key" (`timeout_dest_type/_id`) and "unknown key" (`invalid_dest_type/_id`).
+  - `ivr_options`: menu_id, key (`0-9`, `*`, `#`, unique per menu), label, dest_type, dest_id, position (the order of the announcement).
+- `business_hours`: id, name, optional `feature_code` (unique), and the destinations while open and while closed.
+  - `business_hours_ranges`: hours_id, weekday (0 = Monday), start, end (`HH:MM`, the end is exclusive, `24:00` = midnight).
+  - `business_hours_holidays`: hours_id, date, name, yearly.
 - `ami_users`: id, username, secret, permit network, read/write permission sets.
-- `media_files`: id, kind (`moh|prompt|vm_greeting`), filename, stored path.
+- `media_files`: id, kind (`moh|vm_greeting|ivr_prompt`), filename, stored path.
 - `audit_log`: ts, user, action, object, diff. This is new, so changes can be traced.
 - `dirty`: subsystem, `since`. This drives the "Apply changes" banner.
 
 Every importable entity (phones, providers, call groups, rooms, applications, AMI users) carries a nullable `legacy_uniqid` column. It stores the old `uniqid`, for example `SIP-PHONE-…`, so that cross-references and import/export round-trips stay stable.
 
-Uniqueness of extensions across phones, call groups, rooms and applications is enforced in the service layer. The validation rules port `verify.inc`: extension and dialpattern checks, hostname, IP and so on.
+Uniqueness of extensions across phones, call groups, rooms, applications, IVR menus and the feature codes of business hours is enforced in the service layer.
+
+Destinations (provider incoming routes, IVR keys, business hours) are `(type, id)` pairs, handled in `phonix/services/destinations.py`: `phone`, `callgroup`, `application`, `conference`, `ivr`, `hours`, `voicemail` (the mailbox of a phone), and the actions `repeat` (IVR only) and `hangup` without id. Deleting an object removes the routes and IVR keys that led to it; the fixed destinations of menus and business hours fall back to hanging up. The validation rules port `verify.inc`: extension and dialpattern checks, hostname, IP and so on.
 
 ## 3. Feature scope
 
@@ -141,6 +148,8 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 **Dialplan**
 - Applications, edited in a monospace auto-growing textarea (Tabler's Autosize; CodeMirror is not part of the Tabler-supported libraries) with server-side validation of every line
 - Call groups
+- IVR menus (auto attendant): an announcement (uploaded audio, converted to 8 kHz, or an Asterisk sound), then one destination per key. The key options are reordered by drag and drop (or with up/down buttons); the order is the order of the announcement, and "Write from options" turns it into a recording script in the prompt language. Settings: wait time, repeats, destinations for no key and for an unknown key, direct dialling of extensions. A menu reached from outside (`ivr-<id>-pub`) only allows public direct dial and gives callers no transfer feature. A read-only call flow tree and a test call (Originate into the menu) are on the edit page. Text-to-speech is postponed (piper changed its licence and maintainers; no espeak-ng stopgap); `prompt_mode` leaves room for it.
+- Business hours: weekly time ranges, holidays (one-off or yearly) and a destination while open and while closed; usable as the destination of incoming routes and IVR keys. The live mode (automatic, open, closed) is runtime state in the Asterisk database (`phonix-hours/<id>`): the UI, `PUT /api/v1/business-hours/{id}/mode`, the MCP tool `set_business_hours_mode` and an optional feature code (closed ⇄ automatic) switch it immediately, without an apply. The dialplan uses `GotoIfTime()` (whose end minute is inclusive, so `17:30` becomes `17:29`) and compares the date for holidays.
 - Transfers/Features: feature codes and parking
 - The printable dialplan view stays
 
@@ -149,7 +158,7 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 - Voicemail, with voicemail-to-email
 - Voicemail and missed call e-mails in the e-mail language of each phone (*E-mail language*, default: the phone's language). The built-in texts are translated through the catalogs, and dates are formatted for the language. *Services → Voicemail* overrides the subject and text per language and resets a language to the built-in text; a text equal to the built-in one is not stored, so it keeps following the translations.
 - Conferencing (ConfBridge)
-- Media: music-on-hold upload, custom voicemail greetings, prompt language
+- Media: music-on-hold upload, custom voicemail greetings, IVR announcements, prompt language
 
 **Status**
 - Dashboard: system info, uptime, registrations, active calls
@@ -226,7 +235,7 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 - `exporter.py` performs the inverse mapping:
   - `legacy_uniqid` is reused when present; otherwise a uniqid is generated in the old format.
   - Application logic is base64-encoded again.
-- PhonixPBX-only settings are left out and listed in the export report: TLS/SRTP, nftables, multiple users, and PJSIP-only options.
+- PhonixPBX-only settings are left out and listed in the export report: TLS/SRTP, nftables, multiple users, and PJSIP-only options. IVR menus, business hours and the incoming routes that lead to them have no legacy equivalent and are reported as omitted.
 - PJSIP options that chan_sip understands, such as codecs, nat, qualify and dtmf, are mapped back.
 - The file contains plaintext secrets, as the old format requires. For that reason:
   - only admins can export
@@ -260,7 +269,7 @@ A backup holds the configuration as a document, not as a database file. This kee
 - Not included: the Asterisk database (`asterisk/`, runtime state), voicemail messages (`spool/`), `secrets.json` (machine-local keys), SSH host keys and logs.
 
 **config.json** (`phonix/services/configdoc.py`, schema in `docs/config-schema.json`)
-- `{"format": "phonix-config", "version": 1, "phonix_version", "created", "settings", "users", "providers", "phones", "callgroups", "conferences", "applications", "ami_users", "media"}`.
+- `{"format": "phonix-config", "version": 3, "phonix_version", "created", "settings", "users", "providers", "phones", "callgroups", "conferences", "applications", "ivr_menus", "business_hours", "ami_users", "media"}`. Version 3 added the IVR menus and business hours (optional sections) and the `allow_calls` flag of API tokens. An IVR menu names its announcement by media path (`prompt_media`), since media files have no document id; menus and business hours that point to each other are created first without destinations, which are set in a second pass.
 - Contains every secret: SIP/IAX passwords, voicemail PINs, manager secrets, the e-mail password, the argon2 hashes of the web users and the sha256 hashes of their API tokens.
 - Objects have document-local `id`s that references use (`dial_provider_id`, `member_ids`, `incoming_routes[].dest_id`, …); the field names are those of the REST API. Settings groups that are missing keep their current values.
 - Unknown keys are errors. `version` is bumped whenever the document changes incompatibly; older documents are upgraded step by step (`UPGRADES`), newer ones are refused with the release that made them. A test keeps the checked-in schema current.
@@ -326,11 +335,11 @@ Everything hardware-specific listed in the confirmed decisions, plus Humbug anal
 - **Use the libraries Tabler 1.6.1 itself ships and supports**, at the versions Tabler pins in its `libs.json`/`package.json`, rather than adding third-party alternatives:
   - **ApexCharts**: all charts. This covers dashboard sparklines, the CPU/memory and network traffic graphs, and call volume. Live updates come from an htmx 4 SSE/poll that returns JSON series.
   - **Tom Select**: every non-trivial select. Examples: codec multi-select with ordering, call group member picker, provider/phone pickers, timezone search, incoming-DID target picker.
-  - **Dropzone**: uploads for firmware/update bundles, MOH, greetings and the backup restore.
+  - **Dropzone**: uploads for firmware/update bundles, MOH, greetings, IVR announcements and the backup restore. A `<div data-dropzone data-url>` works inside another form (the IVR editor), where a nested `<form>` is not allowed.
   - **IMask**: masked inputs where useful, such as IP/netmask, port ranges and PINs.
   - **Litepicker**: date ranges for log and CDR filters, if needed.
   - **Tabler Icons** (webfont/SVG sprite): all icons.
-- Library glue lives in a single `phonix/web/static/phonix.js`. It initializes the Tabler libs on `htmx:after:swap` (the htmx 4 event), so swapped-in fragments get Tom Select, ApexCharts and similar applied. It also tears them down before swap to avoid leaks.
+- Library glue lives in a single `phonix/web/static/phonix.js`. It initializes the Tabler libs on `htmx:after:swap` (the htmx 4 event), so swapped-in fragments get Tom Select, ApexCharts and similar applied. It also tears them down before swap to avoid leaks. Reordering rows (IVR key options) uses native HTML5 drag and drop on `[data-sortable-item]` rows, started only from their `[data-sortable-handle]` so the inputs stay usable, plus `data-move` up/down buttons for keyboards and touch screens; no extra library. The rows are submitted in page order.
 - There is no Node build at runtime. Tabler 1.6.1, its libraries above, and the htmx 4 dist files are vendored into `phonix/web/static/vendor/`. The pinned version and SHA256 checksum of each are recorded in `vendor/VERSIONS`, and a `scripts/vendor-update.sh` script refreshes them.
 
 **Layout**
@@ -513,7 +522,7 @@ Each phase ends shippable and tested.
 - **API and UI tests:**
   - FastAPI `TestClient` covers auth, CSRF, CRUD and apply.
   - Playwright smoke tests cover login and the add-phone → apply flow.
-- **Call flow tests:** in docker compose, SIPp registers two PJSIP phones, places a call between them, dials the echo test and joins a conference.
+- **Call flow tests:** in docker compose, SIPp registers two PJSIP phones, places a call between them, dials the echo test and joins a conference. It also calls an IVR menu (answered, announcement, waiting for a key), runs a key and the timeout path through `Local` channels, routes a call through business hours into the menu, and toggles the business hours mode with the feature code, read back over AMI.
 - **Image boot tests:**
   - QEMU boot smoke tests in CI: `qemu-system-x86_64` (UEFI with OVMF, and BIOS), `qemu-system-i386`, and `qemu-system-aarch64 -M virt` for the arm64 rootfs (the generic kernel variant).
   - Each test waits for HTTPS 200 on the login page and for Asterisk to be up.
@@ -529,3 +538,7 @@ Each phase ends shippable and tested.
 - The legacy "direct dial SIP URI" context (`outgoing-uri`) is not ported (toll-fraud risk, no PJSIP equivalent without a fixed domain).
 - Swagger UI at `/api/docs` loads its assets from jsDelivr and therefore needs internet access; `/api/v1/openapi.json` is always available.
 - The system setting `ui_language` (imported from legacy `config.xml`) is no longer shown; the interface language is a per-administrator preference.
+- IVR menus and business hours are generated twice: `ivr-<id>` / `hours-<id>` for internal callers and `-pub` variants for calls from providers, which only include `public-direct-dial` and ring targets without the transfer feature (`t` instead of `tT`).
+- The business hours mode is runtime state, not configuration: `DB(phonix-hours/<id>)` holds `open` or `closed` (no entry = automatic). The services read and write it with the `database get/put/del` CLI commands over AMI, so it changes without an apply, survives restarts (`astdbdir` is on `/data`) and is not part of backups; ids change on a restore, so a forced mode is lost then.
+- `GotoIfTime()` includes the end minute and rejects `24:00`, while PhonixPBX stores exclusive ends: the generator writes `17:30` as `17:29` and `24:00` as `23:59`.
+- Click-to-call and the IVR test call use AMI `Originate` (async, 30 s ring time) into `phone-<ext>` or `ivr-<id>`, so the dialplan decides what the phone may reach.

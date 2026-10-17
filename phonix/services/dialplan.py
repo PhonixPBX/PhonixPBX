@@ -17,9 +17,9 @@ from phonix.core.models import (
     CallGroupMember,
     ConferenceRoom,
     Phone,
-    ProviderIncomingRoute,
 )
 from phonix.i18n import N_, _
+from phonix.services import destinations as dst
 from phonix.services.common import (
     NotFound,
     ServiceError,
@@ -28,13 +28,6 @@ from phonix.services.common import (
     mark_dirty,
 )
 from phonix.services.phones import public_name
-
-
-def _drop_routes(session: Session, dest_type: str, dest_id: int) -> None:
-    session.query(ProviderIncomingRoute).filter(
-        ProviderIncomingRoute.dest_type == dest_type, ProviderIncomingRoute.dest_id == dest_id
-    ).delete()
-
 
 # --- call groups ------------------------------------------------------------
 
@@ -152,7 +145,7 @@ def update_callgroup(session: Session, group_id: int, data: CallGroupIn, user: s
 
 def delete_callgroup(session: Session, group_id: int, user: str = "") -> None:
     group = get_callgroup(session, group_id)
-    _drop_routes(session, "callgroup", group.id)
+    dst.forget(session, "callgroup", group.id)
     audit(session, user, "delete", "callgroup", group.id, group.name)
     session.delete(group)
     session.flush()
@@ -233,7 +226,7 @@ def update_room(session: Session, room_id: int, data: ConferenceRoomIn, user: st
 
 def delete_room(session: Session, room_id: int, user: str = "") -> None:
     room = get_room(session, room_id)
-    _drop_routes(session, "conference", room.id)
+    dst.forget(session, "conference", room.id)
     audit(session, user, "delete", "conference", room.id, room.name)
     session.delete(room)
     session.flush()
@@ -313,7 +306,7 @@ def update_application(session: Session, app_id: int, data: ApplicationIn, user:
 
 def delete_application(session: Session, app_id: int, user: str = "") -> None:
     app = get_application(session, app_id)
-    _drop_routes(session, "application", app.id)
+    dst.forget(session, "application", app.id)
     audit(session, user, "delete", "application", app.id, app.name)
     session.delete(app)
     session.flush()

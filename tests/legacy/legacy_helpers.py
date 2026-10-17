@@ -19,9 +19,11 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from phonix.core import settings as st
-from phonix.core.models import AmiUser, Application, CallGroup, ConferenceRoom, Phone, Provider
+from phonix.core.models import AmiUser, Application, BusinessHours, CallGroup, ConferenceRoom, IvrMenu, Phone, Provider
 from phonix.legacy.parse import Node, decode_b64, parse_bytes
 from phonix.services import dialplan as dp
+from phonix.services import hours as hours_svc
+from phonix.services import ivr as ivr_svc
 from phonix.services import manager as mgr
 from phonix.services import phones as ph
 from phonix.services import providers as pv
@@ -45,11 +47,22 @@ def db_snapshot(session: Session, uniqids: bool = True) -> dict[str, Any]:
     groups = {g.id: g for g in session.scalars(select(CallGroup))}
     rooms = {r.id: r for r in session.scalars(select(ConferenceRoom))}
     apps = {a.id: a for a in session.scalars(select(Application))}
+    menus = {m.id: m for m in session.scalars(select(IvrMenu))}
+    hours = {h.id: h for h in session.scalars(select(BusinessHours))}
 
     def prov(pid: int | None) -> str | None:
         return providers[pid].name if pid else None
 
-    def dest(dest_type: str, dest_id: int) -> str:
+    def dest(dest_type: str, dest_id: int | None) -> str:
+        if dest_type in ("repeat", "hangup"):
+            return dest_type
+        assert dest_id is not None
+        if dest_type == "ivr":
+            return f"ivr:{menus[dest_id].name}"
+        if dest_type == "hours":
+            return f"hours:{hours[dest_id].name}"
+        if dest_type == "voicemail":
+            return f"voicemail:{phones[dest_id].extension}"
         if dest_type == "phone":
             return f"phone:{phones[dest_id].extension}"
         if dest_type == "callgroup":
@@ -89,7 +102,30 @@ def db_snapshot(session: Session, uniqids: bool = True) -> dict[str, Any]:
         d = mgr.to_dict(u)
         d["secret"] = u.secret
         out_ami.append(clean(d, u))
+    out_menus = []
+    for m in menus.values():
+        d = ivr_svc.to_dict(m)
+        for prefix in ("timeout", "invalid"):
+            d[f"{prefix}_dest"] = dest(d.pop(f"{prefix}_dest_type"), d.pop(f"{prefix}_dest_id"))
+        d["options"] = [
+            {"key": o["key"], "label": o["label"], "dest": dest(o["dest_type"], o["dest_id"])} for o in d["options"]
+        ]
+        d["prompt_media_id"] = m.prompt_media.path if m.prompt_media else None
+        out_menus.append(clean(d, m))
+    out_hours = []
+    for h in hours.values():
+        d = hours_svc.to_dict(h)
+        for prefix in ("open", "closed"):
+            d[f"{prefix}_dest"] = dest(d.pop(f"{prefix}_dest_type"), d.pop(f"{prefix}_dest_id"))
+        out_hours.append(clean(d, h))
+    # only when present: legacy configurations have neither (keeps their golden files)
+    extra: dict[str, Any] = {}
+    if out_menus:
+        extra["ivr_menus"] = sorted(out_menus, key=lambda d: d["name"])
+    if out_hours:
+        extra["business_hours"] = sorted(out_hours, key=lambda d: d["name"])
     return {
+        **extra,
         "settings": {name: group.model_dump(mode="json") for name, group in sorted(st.load_all(session).items())},
         "phones": sorted(out_phones, key=lambda d: d["extension"]),
         "providers": sorted(out_providers, key=lambda d: (d["tech"], d["name"])),

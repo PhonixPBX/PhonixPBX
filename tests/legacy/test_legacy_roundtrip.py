@@ -102,9 +102,15 @@ def _ng_subset(snapshot: dict) -> dict:
         phone.pop("legacy_uniqid", None)
         phone.pop("max_contacts")
         phone.pop("qualify")
+    # IVR menus, business hours and the routes to them have no legacy equivalent
+    snap.pop("ivr_menus", None)
+    snap.pop("business_hours", None)
     for provider in snap["providers"]:
         provider.pop("legacy_uniqid", None)
         provider.pop("transport")
+        provider["incoming_routes"] = [
+            r for r in provider["incoming_routes"] if not r["dest"].startswith(("ivr:", "hours:"))
+        ]
     for group in snap["callgroups"]:
         group.pop("legacy_uniqid", None)
         group.pop("strategy")
@@ -125,6 +131,7 @@ def test_import_export_db_round_trip(initialized: config.RuntimeConfig) -> None:
         xml, export_report = exporter.export(session)
     omitted = "\n".join(export_report.omitted)
     assert "max_contacts=2" in omitted and "strategy=linear" in omitted
+    assert "IVR menus have no legacy equivalent" in omitted and "to business hours" in omitted
 
     report = importer.import_bytes(xml, mode="replace")
     assert report.ok, report.to_text()

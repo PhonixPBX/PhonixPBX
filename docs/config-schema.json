@@ -191,6 +191,115 @@
       "title": "ApplicationDoc",
       "type": "object"
     },
+    "BusinessHoursDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "closed_dest_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Closed Dest Id"
+        },
+        "closed_dest_type": {
+          "default": "hangup",
+          "enum": [
+            "phone",
+            "callgroup",
+            "application",
+            "conference",
+            "ivr",
+            "voicemail",
+            "hangup"
+          ],
+          "title": "Closed Dest Type",
+          "type": "string"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "feature_code": {
+          "default": "",
+          "title": "Feature Code",
+          "type": "string"
+        },
+        "holidays": {
+          "items": {
+            "$ref": "#/$defs/HolidayIn"
+          },
+          "maxItems": 200,
+          "title": "Holidays",
+          "type": "array"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "legacy_uniqid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Legacy Uniqid"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "open_dest_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Open Dest Id"
+        },
+        "open_dest_type": {
+          "enum": [
+            "phone",
+            "callgroup",
+            "application",
+            "conference",
+            "ivr",
+            "voicemail",
+            "hangup"
+          ],
+          "title": "Open Dest Type",
+          "type": "string"
+        },
+        "ranges": {
+          "items": {
+            "$ref": "#/$defs/RangeIn"
+          },
+          "maxItems": 70,
+          "title": "Ranges",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "open_dest_type",
+        "id"
+      ],
+      "title": "BusinessHoursDoc",
+      "type": "object"
+    },
     "CallGroupDoc": {
       "additionalProperties": false,
       "properties": {
@@ -515,6 +624,31 @@
       "title": "GuiSettingsDoc",
       "type": "object"
     },
+    "HolidayIn": {
+      "properties": {
+        "date": {
+          "format": "date",
+          "title": "Date",
+          "type": "string"
+        },
+        "name": {
+          "default": "",
+          "maxLength": 80,
+          "title": "Name",
+          "type": "string"
+        },
+        "yearly": {
+          "default": false,
+          "title": "Yearly",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "date"
+      ],
+      "title": "HolidayIn",
+      "type": "object"
+    },
     "IaxSettingsDoc": {
       "additionalProperties": false,
       "properties": {
@@ -560,7 +694,9 @@
             "phone",
             "callgroup",
             "application",
-            "conference"
+            "conference",
+            "ivr",
+            "hours"
           ],
           "title": "Dest Type",
           "type": "string"
@@ -578,13 +714,231 @@
       "title": "IncomingRouteIn",
       "type": "object"
     },
+    "IvrMenuDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        },
+        "direct_dial": {
+          "default": false,
+          "title": "Direct Dial",
+          "type": "boolean"
+        },
+        "enabled": {
+          "default": true,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "extension": {
+          "default": "",
+          "title": "Extension",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "invalid_dest_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Invalid Dest Id"
+        },
+        "invalid_dest_type": {
+          "default": "repeat",
+          "enum": [
+            "phone",
+            "callgroup",
+            "application",
+            "conference",
+            "ivr",
+            "hours",
+            "voicemail",
+            "repeat",
+            "hangup"
+          ],
+          "title": "Invalid Dest Type",
+          "type": "string"
+        },
+        "legacy_uniqid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Legacy Uniqid"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "options": {
+          "items": {
+            "$ref": "#/$defs/IvrOptionIn"
+          },
+          "maxItems": 12,
+          "title": "Options",
+          "type": "array"
+        },
+        "prompt_media": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prompt Media"
+        },
+        "prompt_mode": {
+          "default": "upload",
+          "enum": [
+            "upload",
+            "sound"
+          ],
+          "title": "Prompt Mode",
+          "type": "string"
+        },
+        "prompt_sound": {
+          "default": "",
+          "title": "Prompt Sound",
+          "type": "string"
+        },
+        "prompt_text": {
+          "default": "",
+          "maxLength": 4000,
+          "title": "Prompt Text",
+          "type": "string"
+        },
+        "public_access": {
+          "default": false,
+          "title": "Public Access",
+          "type": "boolean"
+        },
+        "public_name": {
+          "default": "",
+          "title": "Public Name",
+          "type": "string"
+        },
+        "repeats": {
+          "default": 2,
+          "maximum": 9,
+          "minimum": 0,
+          "title": "Repeats",
+          "type": "integer"
+        },
+        "timeout": {
+          "default": 5,
+          "maximum": 60,
+          "minimum": 1,
+          "title": "Timeout",
+          "type": "integer"
+        },
+        "timeout_dest_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Timeout Dest Id"
+        },
+        "timeout_dest_type": {
+          "default": "hangup",
+          "enum": [
+            "phone",
+            "callgroup",
+            "application",
+            "conference",
+            "ivr",
+            "hours",
+            "voicemail",
+            "hangup"
+          ],
+          "title": "Timeout Dest Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "id"
+      ],
+      "title": "IvrMenuDoc",
+      "type": "object"
+    },
+    "IvrOptionIn": {
+      "properties": {
+        "dest_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dest Id"
+        },
+        "dest_type": {
+          "enum": [
+            "phone",
+            "callgroup",
+            "application",
+            "conference",
+            "ivr",
+            "hours",
+            "voicemail",
+            "repeat",
+            "hangup"
+          ],
+          "title": "Dest Type",
+          "type": "string"
+        },
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "label": {
+          "default": "",
+          "maxLength": 80,
+          "title": "Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "dest_type"
+      ],
+      "title": "IvrOptionIn",
+      "type": "object"
+    },
     "MediaDoc": {
       "additionalProperties": false,
       "properties": {
         "kind": {
           "enum": [
             "moh",
-            "vm_greeting"
+            "vm_greeting",
+            "ivr_prompt"
           ],
           "title": "Kind",
           "type": "string"
@@ -1174,6 +1528,31 @@
       "title": "ProviderDoc",
       "type": "object"
     },
+    "RangeIn": {
+      "properties": {
+        "end": {
+          "title": "End",
+          "type": "string"
+        },
+        "start": {
+          "title": "Start",
+          "type": "string"
+        },
+        "weekday": {
+          "maximum": 6,
+          "minimum": 0,
+          "title": "Weekday",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "weekday",
+        "start",
+        "end"
+      ],
+      "title": "RangeIn",
+      "type": "object"
+    },
     "RtpSettingsDoc": {
       "additionalProperties": false,
       "properties": {
@@ -1708,6 +2087,13 @@
       "title": "Applications",
       "type": "array"
     },
+    "business_hours": {
+      "items": {
+        "$ref": "#/$defs/BusinessHoursDoc"
+      },
+      "title": "Business Hours",
+      "type": "array"
+    },
     "callgroups": {
       "items": {
         "$ref": "#/$defs/CallGroupDoc"
@@ -1739,6 +2125,13 @@
       "const": "phonix-config",
       "title": "Format",
       "type": "string"
+    },
+    "ivr_menus": {
+      "items": {
+        "$ref": "#/$defs/IvrMenuDoc"
+      },
+      "title": "Ivr Menus",
+      "type": "array"
     },
     "media": {
       "items": {
@@ -1787,6 +2180,6 @@
     "version",
     "users"
   ],
-  "title": "PhonixPBX configuration, version 2",
+  "title": "PhonixPBX configuration, version 3",
   "type": "object"
 }

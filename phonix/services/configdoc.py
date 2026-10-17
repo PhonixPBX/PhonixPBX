@@ -42,9 +42,14 @@ from phonix.core.models import (
     AmiUser,
     ApiToken,
     Application,
+    BusinessHours,
+    BusinessHoursHoliday,
+    BusinessHoursRange,
     CallGroup,
     CallGroupMember,
     ConferenceRoom,
+    IvrMenu,
+    IvrOption,
     MediaFile,
     Phone,
     PhoneBlockedProvider,
@@ -55,7 +60,10 @@ from phonix.core.models import (
     User,
 )
 from phonix.i18n import _
+from phonix.services import destinations as dst
 from phonix.services import dialplan as dp
+from phonix.services import hours as hours_svc
+from phonix.services import ivr as ivr_svc
 from phonix.services import manager as mgr
 from phonix.services import phones as ph
 from phonix.services import providers as pv
@@ -63,7 +71,7 @@ from phonix.services import users as users_svc
 from phonix.services.common import AREAS, ServiceError, errors_from_validation, mark_dirty, parse
 
 FORMAT = "phonix-config"
-CONFIG_VERSION = 2
+CONFIG_VERSION = 3
 
 
 def _upgrade_1(data: dict[str, Any]) -> dict[str, Any]:
@@ -80,8 +88,13 @@ def _upgrade_1(data: dict[str, Any]) -> dict[str, Any]:
     return data
 
 
+def _upgrade_2(data: dict[str, Any]) -> dict[str, Any]:
+    """2 -> 3: IVR menus and business hours were added (optional sections, nothing to change)."""
+    return data
+
+
 # version n -> n + 1, applied to the plain dict before validation
-UPGRADES: dict[int, Callable[[dict[str, Any]], dict[str, Any]]] = {1: _upgrade_1}
+UPGRADES: dict[int, Callable[[dict[str, Any]], dict[str, Any]]] = {1: _upgrade_1, 2: _upgrade_2}
 
 _FORBID = ConfigDict(extra="forbid")
 
@@ -114,6 +127,21 @@ class ConferenceRoomDoc(dp.ConferenceRoomIn):
 
 
 class ApplicationDoc(dp.ApplicationIn):
+    model_config = _FORBID
+    id: int
+    legacy_uniqid: str | None = None
+
+
+class IvrMenuDoc(ivr_svc.IvrMenuIn):
+    model_config = _FORBID
+    id: int
+    legacy_uniqid: str | None = None
+    # the announcement is referenced by its media path; ids of media files are not exported
+    prompt_media_id: SkipJsonSchema[None] = None
+    prompt_media: str | None = None
+
+
+class BusinessHoursDoc(hours_svc.BusinessHoursIn):
     model_config = _FORBID
     id: int
     legacy_uniqid: str | None = None
@@ -160,7 +188,7 @@ class UserDoc(BaseModel):
 
 class MediaDoc(BaseModel):
     model_config = _FORBID
-    kind: Literal["moh", "vm_greeting"]
+    kind: Literal["moh", "vm_greeting", "ivr_prompt"]
     name: str = Field(max_length=128)
     # below the media directory: <kind>/<file>
     path: str = Field(pattern=r"^[a-z_]+/[A-Za-z0-9_-]+\.wav$")
@@ -210,6 +238,8 @@ class ConfigDocument(BaseModel):
     callgroups: list[CallGroupDoc] = Field(default_factory=list)
     conferences: list[ConferenceRoomDoc] = Field(default_factory=list)
     applications: list[ApplicationDoc] = Field(default_factory=list)
+    ivr_menus: list[IvrMenuDoc] = Field(default_factory=list)
+    business_hours: list[BusinessHoursDoc] = Field(default_factory=list)
     ami_users: list[AmiUserDoc] = Field(default_factory=list)
     media: list[MediaDoc] = Field(default_factory=list)
 
@@ -310,9 +340,19 @@ def export(session: Session) -> dict[str, Any]:
         ],
         "conferences": [entity(dp.room_to_dict(r), r) for r in dp.list_rooms(session)],
         "applications": [entity(dp.application_to_dict(a), a) for a in dp.list_applications(session)],
+        "ivr_menus": [_menu_doc(m) for m in ivr_svc.list_menus(session)],
+        "business_hours": [entity(hours_svc.to_dict(h), h) for h in hours_svc.list_hours(session)],
         "ami_users": ami_users,
         "media": media,
     }
+
+
+def _menu_doc(menu: IvrMenu) -> dict[str, Any]:
+    data = ivr_svc.to_dict(menu)
+    data["prompt_media_id"] = None
+    data["prompt_media"] = menu.prompt_media.path if menu.prompt_media is not None else None
+    data["legacy_uniqid"] = menu.legacy_uniqid
+    return data
 
 
 # --- parse ----------------------------------------------------------------------------
@@ -356,6 +396,11 @@ def parse_document(data: Any) -> ConfigDocument:
 def delete_pbx_objects(session: Session) -> None:
     """Remove phones, providers, call groups, rooms, applications and manager users."""
     for model in (
+        IvrOption,
+        IvrMenu,
+        BusinessHoursRange,
+        BusinessHoursHoliday,
+        BusinessHours,
         CallGroupMember,
         CallGroup,
         ProviderIncomingRoute,
@@ -401,13 +446,14 @@ class _Importer:
         self.user = user
         self.keep = frozenset(keep)
         # document id -> database id, per object type
-        kinds = ("provider", "phone", "callgroup", "conference", "application")
+        kinds = ("provider", "phone", "callgroup", "conference", "application", "ivr", "hours")
         self.ids: dict[str, dict[int, int]] = {kind: {} for kind in kinds}
         self.counts: dict[str, int] = {}
 
     def ref(self, kind: str, doc_id: int, where: str) -> int:
         try:
-            return self.ids[kind][doc_id]
+            # a voicemail destination is the mailbox of a phone
+            return self.ids["phone" if kind == "voicemail" else kind][doc_id]
         except KeyError:
             raise ServiceError(
                 _("%(object)s: reference to unknown %(type)s %(id)s", object=where, type=kind, id=doc_id)
@@ -475,6 +521,14 @@ class _Importer:
             with self.step(where):
                 callgroup = dp.create_callgroup(session, parse(dp.CallGroupIn, data), user)
             self.remember("callgroup", group.id, callgroup, group.legacy_uniqid)
+        # media rows first: IVR menus refer to their announcement
+        media_ids: dict[str, int] = {}
+        for m in doc.media:
+            row = MediaFile(kind=m.kind, name=m.name, path=m.path, size=m.size)
+            session.add(row)
+            session.flush()
+            media_ids[m.path] = row.id
+        self.menus_and_hours(media_ids)
         for p in doc.providers:
             if not p.incoming_routes and p.failover_provider_id is None:
                 continue
@@ -491,8 +545,6 @@ class _Importer:
             with self.step(f"ami_users/{u.username}"):
                 ami = mgr.create_ami_user(session, parse(mgr.AmiUserIn, u.model_dump(exclude={"legacy_uniqid"})), user)
             ami.legacy_uniqid = u.legacy_uniqid or None
-        for m in doc.media:
-            session.add(MediaFile(kind=m.kind, name=m.name, path=m.path, size=m.size))
         session.flush()
         mark_dirty(session, *AREAS)
         self.counts = {
@@ -504,10 +556,64 @@ class _Importer:
             "callgroups": len(doc.callgroups),
             "conferences": len(doc.conferences),
             "applications": len(doc.applications),
+            "ivr_menus": len(doc.ivr_menus),
+            "business_hours": len(doc.business_hours),
             "ami_users": len(doc.ami_users),
             "media": len(doc.media),
         }
         return self.counts
+
+    def dest(self, data: dict[str, Any], prefix: str, where: str) -> None:
+        """Remap ``<prefix>_dest_id`` of ``data`` to the new database id."""
+        dest_type, dest_id = data[f"{prefix}_dest_type"], data[f"{prefix}_dest_id"]
+        if dest_type not in dst.ACTIONS and dest_id is not None:
+            data[f"{prefix}_dest_id"] = self.ref(dest_type, dest_id, where)
+
+    def menus_and_hours(self, media_ids: dict[str, int]) -> None:
+        """Menus and business hours may point to each other: create them without
+        destinations first, then set the destinations with the new ids."""
+        session, doc, user = self.session, self.doc, self.user
+        for h in doc.business_hours:
+            data = h.model_dump(exclude={"id", "legacy_uniqid"})
+            data.update(open_dest_type="hangup", open_dest_id=None, closed_dest_type="hangup", closed_dest_id=None)
+            with self.step(f"business_hours/{h.name}"):
+                obj = hours_svc.create_hours(session, parse(hours_svc.BusinessHoursIn, data), user)
+            self.remember("hours", h.id, obj, h.legacy_uniqid)
+        menus = {}
+        for m in doc.ivr_menus:
+            where = f"ivr_menus/{m.name}"
+            data = m.model_dump(exclude={"id", "legacy_uniqid", "prompt_media"})
+            if m.prompt_media is not None:
+                if m.prompt_media not in media_ids:
+                    raise ServiceError(_("%(object)s: unknown media file %(path)s", object=where, path=m.prompt_media))
+                data["prompt_media_id"] = media_ids[m.prompt_media]
+            menus[m.id] = data
+            first = {**data, "options": [], "timeout_dest_type": "hangup", "timeout_dest_id": None}
+            first.update(invalid_dest_type="repeat", invalid_dest_id=None)
+            with self.step(where):
+                menu = ivr_svc.create_menu(session, parse(ivr_svc.IvrMenuIn, first), user)
+            self.remember("ivr", m.id, menu, m.legacy_uniqid)
+        for m in doc.ivr_menus:
+            where = f"ivr_menus/{m.name}"
+            data = menus[m.id]
+            self.dest(data, "timeout", where)
+            self.dest(data, "invalid", where)
+            options = []
+            for o in data["options"]:
+                option = {**o}
+                if option["dest_type"] not in dst.ACTIONS:
+                    option["dest_id"] = self.ref(option["dest_type"], option["dest_id"], where)
+                options.append(option)
+            data["options"] = options
+            with self.step(where):
+                ivr_svc.update_menu(session, self.ids["ivr"][m.id], parse(ivr_svc.IvrMenuIn, data), user)
+        for h in doc.business_hours:
+            where = f"business_hours/{h.name}"
+            data = h.model_dump(exclude={"id", "legacy_uniqid"})
+            self.dest(data, "open", where)
+            self.dest(data, "closed", where)
+            with self.step(where):
+                hours_svc.update_hours(session, self.ids["hours"][h.id], parse(hours_svc.BusinessHoursIn, data), user)
 
     def settings(self) -> None:
         # a group missing from the document (hand-written, or older than the group) keeps its

@@ -11,6 +11,8 @@ from typing import Any
 from pydantic import BaseModel
 
 from phonix.services import dialplan as dp
+from phonix.services import hours as hours_svc
+from phonix.services import ivr as ivr_svc
 from phonix.services import manager as ami_svc
 from phonix.services import phones as phone_svc
 from phonix.services import providers as provider_svc
@@ -33,6 +35,12 @@ class Resource:
     enable_fn: Callable[..., Any] | None = None
     # PINs: left out for read-only tokens (a token that may write could change them anyway)
     pins: tuple[str, ...] = ()
+    # plural for MCP tool names (list_<plural>); default: name + "s"
+    plural: str = ""
+
+    @property
+    def plural_name(self) -> str:
+        return self.plural or self.name + "s"
 
     def parse(self, data: dict[str, Any]) -> Any:
         return self.parse_fn(data) if self.parse_fn else parse(self.schema, data)
@@ -111,6 +119,32 @@ RESOURCES = (
         dp.update_application,
         dp.delete_application,
         dp.application_to_dict,
+    ),
+    Resource(
+        "/ivr-menus",
+        "IVR menus",
+        "ivr_menu",
+        ivr_svc.IvrMenuIn,
+        ivr_svc.list_menus,
+        ivr_svc.get_menu,
+        ivr_svc.create_menu,
+        ivr_svc.update_menu,
+        ivr_svc.delete_menu,
+        ivr_svc.to_dict,
+        enable_fn=ivr_svc.set_enabled,
+    ),
+    Resource(
+        "/business-hours",
+        "business hours",
+        "business_hours",
+        hours_svc.BusinessHoursIn,
+        hours_svc.list_hours,
+        hours_svc.get_hours,
+        hours_svc.create_hours,
+        hours_svc.update_hours,
+        hours_svc.delete_hours,
+        hours_svc.to_dict,
+        plural="business_hours",
     ),
     Resource(
         "/ami-users",

@@ -22,6 +22,7 @@ from phonix import config
 from phonix.core.models import User
 from phonix.services import apply as apply_svc
 from phonix.services import calls as calls_svc
+from phonix.services import hours as hours_svc
 from phonix.services import settings_api
 from phonix.services import status as status_svc
 from phonix.services.common import ServiceError, dirty_areas
@@ -36,6 +37,9 @@ INSTRUCTIONS = (
     "delete_*, set_*_enabled and update_settings tools are stored but not active until "
     "apply_changes runs; get_pending_changes and preview_apply show what is outstanding. "
     "Secrets are never returned: an empty secret keeps the stored one. "
+    "set_business_hours_mode is the exception: it takes effect immediately. "
+    "IVR menus and business hours use destinations as dest_type/dest_id pairs (phone, callgroup, "
+    "application, conference, ivr, hours, voicemail = the mailbox of a phone; repeat and hangup need no id). "
     "originate_call (tokens that may place calls) rings a phone and dials a number from it."
 )
 
@@ -158,7 +162,7 @@ def _resource_tools(res: Resource) -> list[Tool]:
         return {"deleted": True}
 
     tools = [
-        Tool(f"list_{name}s", f"List all {tag}.", list_items),
+        Tool(f"list_{res.plural_name}", f"List all {tag}.", list_items),
         Tool(f"get_{name}", f"Get one of the {tag} by id.", get_item, ID, ("id",)),
         Tool(
             f"create_{name}",
@@ -272,6 +276,18 @@ def originate_call(ctx: Context, args: dict[str, Any]) -> Any:
     return calls_svc.originate(ctx.db, _str(args, "extension"), _str(args, "number"), ctx.actor, via="MCP")
 
 
+def business_hours_status(ctx: Context, args: dict[str, Any]) -> Any:
+    return hours_svc.live_status(ctx.db, _int(args, "id"))
+
+
+def set_business_hours_mode(ctx: Context, args: dict[str, Any]) -> Any:
+    mode = _str(args, "mode")
+    if mode not in hours_svc.MODES:
+        raise ToolInputError(f"'mode' must be one of {', '.join(hours_svc.MODES)}")
+    hours_svc.set_mode(ctx.db, _int(args, "id"), mode, ctx.actor)
+    return hours_svc.live_status(ctx.db, _int(args, "id"))
+
+
 def _hidden(tool: Tool, ctx: Context) -> bool:
     return (tool.write and ctx.read_only) or (tool.calls and not ctx.allow_calls)
 
@@ -315,6 +331,22 @@ def _tools() -> dict[str, Tool]:
                 "lines": {"type": "integer", "minimum": 1, "maximum": LOG_LINES_MAX, "default": 200},
             },
             ("log",),
+        ),
+        Tool(
+            "get_business_hours_status",
+            "Whether business hours are open right now, and their live mode (auto, open or closed).",
+            business_hours_status,
+            ID,
+            ("id",),
+        ),
+        Tool(
+            "set_business_hours_mode",
+            "Switch business hours to auto (follow the schedule), open or closed. Takes effect immediately, "
+            "without apply_changes.",
+            set_business_hours_mode,
+            {**ID, "mode": {"type": "string", "enum": list(hours_svc.MODES)}},
+            ("id", "mode"),
+            write=True,
         ),
         Tool(
             "originate_call",

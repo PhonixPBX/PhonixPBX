@@ -7,7 +7,7 @@ from __future__ import annotations
 from sqlalchemy.orm import Session
 
 from phonix.core import settings as st
-from phonix.services import dialplan, manager, phones, providers
+from phonix.services import dialplan, hours, ivr, manager, phones, providers
 
 
 def sample_pbx(session: Session) -> dict[str, int]:
@@ -161,6 +161,89 @@ def sample_pbx(session: Session) -> dict[str, int]:
             write_perms=[],
         ),
     )
+    support = ivr.create_menu(
+        session,
+        ivr.IvrMenuIn(
+            name="Support",
+            extension="610",
+            prompt_mode="sound",
+            prompt_sound="demo-instruct",
+            timeout_dest_type="callgroup",
+            timeout_dest_id=linear.id,
+            options=[
+                ivr.IvrOptionIn(key="1", label="Technical support", dest_type="callgroup", dest_id=linear.id),
+                ivr.IvrOptionIn(key="9", label="Leave a message", dest_type="voicemail", dest_id=alice.id),
+            ],
+        ),
+    )
+    main_menu = ivr.create_menu(
+        session,
+        ivr.IvrMenuIn(
+            name="Main menu",
+            extension="600",
+            public_access=True,
+            prompt_mode="sound",
+            prompt_sound="welcome",
+            repeats=1,
+            direct_dial=True,
+            timeout_dest_type="phone",
+            timeout_dest_id=alice.id,
+            options=[
+                ivr.IvrOptionIn(key="1", label="Sales", dest_type="callgroup", dest_id=group.id),
+                ivr.IvrOptionIn(key="2", label="Support", dest_type="ivr", dest_id=support.id),
+                ivr.IvrOptionIn(key="3", label="Conference", dest_type="conference", dest_id=room.id),
+                ivr.IvrOptionIn(key="0", label="Reception", dest_type="phone", dest_id=alice.id),
+                ivr.IvrOptionIn(key="#", label="Repeat", dest_type="repeat"),
+            ],
+        ),
+    )
+    # back to the main menu from the support menu
+    ivr.update_menu(
+        session,
+        support.id,
+        ivr.IvrMenuIn(
+            **{
+                **ivr.to_dict(support),
+                "options": [
+                    *ivr.to_dict(support)["options"],
+                    {"key": "*", "label": "Main menu", "dest_type": "ivr", "dest_id": main_menu.id},
+                ],
+            }
+        ),
+    )
+    office = hours.create_hours(
+        session,
+        hours.BusinessHoursIn(
+            name="Office hours",
+            feature_code="*31",
+            open_dest_type="ivr",
+            open_dest_id=main_menu.id,
+            closed_dest_type="voicemail",
+            closed_dest_id=alice.id,
+            ranges=[
+                *({"weekday": d, "start": "08:00", "end": "12:00"} for d in range(5)),
+                *({"weekday": d, "start": "13:00", "end": "17:30"} for d in range(5)),
+                {"weekday": 5, "start": "09:00", "end": "24:00"},
+            ],
+            holidays=[
+                {"date": "2026-12-25", "name": "Christmas Day", "yearly": True},
+                {"date": "2027-03-26", "name": "Good Friday"},
+            ],
+        ),
+    )
+    providers.update_provider(
+        session,
+        trunk.id,
+        providers.parse_provider(
+            {
+                **providers.to_dict(trunk, with_secret=True),
+                "incoming_routes": [
+                    *providers.to_dict(trunk)["incoming_routes"],
+                    {"pattern": "4930123458", "dest_type": "hours", "dest_id": office.id},
+                ],
+            }
+        ),
+    )
     session.flush()
     return {
         "alice": alice.id,
@@ -173,4 +256,7 @@ def sample_pbx(session: Session) -> dict[str, int]:
         "group": group.id,
         "linear": linear.id,
         "room": room.id,
+        "main_menu": main_menu.id,
+        "support_menu": support.id,
+        "office": office.id,
     }

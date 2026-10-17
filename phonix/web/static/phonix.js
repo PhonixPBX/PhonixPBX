@@ -73,9 +73,11 @@
 
     if (window.Dropzone) {
       Dropzone.autoDiscover = false;
-      scope("form[data-dropzone]").forEach((form) => {
+      // a <div data-dropzone data-url> can sit inside another form (forms cannot nest)
+      scope("form[data-dropzone], div[data-dropzone]").forEach((form) => {
         if (form.dropzone) return;
         const dz = new Dropzone(form, {
+          url: form.dataset.url || form.action,
           paramName: form.dataset.param || "file",
           maxFilesize: Number(form.dataset.maxMb || 512),
           acceptedFiles: form.dataset.accept || null,
@@ -258,8 +260,29 @@
         const html = tpl.innerHTML.replaceAll("__INDEX__", index);
         into.insertAdjacentHTML("beforeend", html);
         const row = into.lastElementChild;
+        // <select data-unique="group">: preselect the first value no other row of the group uses
+        row.querySelectorAll("select[data-unique]").forEach((sel) => {
+          const others = into.querySelectorAll(`select[data-unique="${sel.dataset.unique}"]`);
+          const used = new Set(Array.from(others, (o) => (o === sel ? null : o.value)));
+          const free = Array.from(sel.options).find((o) => !used.has(o.value));
+          if (free) sel.value = free.value;
+        });
         init(row);
         if (window.htmx) htmx.process(row);
+      }
+      return;
+    }
+    // reorder with the keyboard / without drag and drop: <button data-move="up|down">
+    const move = evt.target.closest("[data-move]");
+    if (move) {
+      const item = move.closest("[data-sortable-item]");
+      if (item) {
+        if (move.dataset.move === "up" && item.previousElementSibling) {
+          item.parentElement.insertBefore(item, item.previousElementSibling);
+        } else if (move.dataset.move === "down" && item.nextElementSibling) {
+          item.parentElement.insertBefore(item.nextElementSibling, item);
+        }
+        move.focus();
       }
       return;
     }
@@ -275,6 +298,62 @@
     const print = evt.target.closest("[data-print]");
     if (print) window.print();
   });
+
+  // ---- drag and drop: [data-sortable-item] rows, dragged by their [data-sortable-handle] ----------
+  // Only the handle makes a row draggable, so the inputs in it stay selectable. The rows
+  // are submitted in their order on the page.
+  let dragged = null;
+  const clearMarkers = (list) =>
+    list.querySelectorAll(".drop-before, .drop-after").forEach((el) => el.classList.remove("drop-before", "drop-after"));
+  const endDrag = () => {
+    if (!dragged) return;
+    dragged.classList.remove("is-dragging");
+    dragged.draggable = false;
+    clearMarkers(dragged.parentElement);
+    dragged = null;
+  };
+  document.addEventListener("pointerdown", (evt) => {
+    const handle = evt.target.closest("[data-sortable-handle]");
+    const item = handle && handle.closest("[data-sortable-item]");
+    if (item) item.draggable = true;
+  });
+  document.addEventListener("pointerup", () => {
+    if (!dragged) document.querySelectorAll('[data-sortable-item][draggable="true"]').forEach((el) => (el.draggable = false));
+  });
+  document.addEventListener("dragstart", (evt) => {
+    const item = evt.target.closest && evt.target.closest("[data-sortable-item]");
+    if (!item || !item.draggable) return;
+    dragged = item;
+    item.classList.add("is-dragging");
+    evt.dataTransfer.effectAllowed = "move";
+    try {
+      evt.dataTransfer.setData("text/plain", "");
+    } catch (e) {
+      /* some browsers need data to start a drag */
+    }
+  });
+  document.addEventListener("dragover", (evt) => {
+    if (!dragged) return;
+    const item = evt.target.closest && evt.target.closest("[data-sortable-item]");
+    if (!item || item.parentElement !== dragged.parentElement) return;
+    evt.preventDefault();
+    evt.dataTransfer.dropEffect = "move";
+    clearMarkers(item.parentElement);
+    if (item === dragged) return;
+    const rect = item.getBoundingClientRect();
+    item.classList.add(evt.clientY > rect.top + rect.height / 2 ? "drop-after" : "drop-before");
+  });
+  document.addEventListener("drop", (evt) => {
+    if (!dragged) return;
+    const item = evt.target.closest && evt.target.closest("[data-sortable-item]");
+    if (item && item !== dragged && item.parentElement === dragged.parentElement) {
+      evt.preventDefault();
+      const after = item.classList.contains("drop-after");
+      item.parentElement.insertBefore(dragged, after ? item.nextSibling : item);
+    }
+    endDrag();
+  });
+  document.addEventListener("dragend", endDrag);
 
   // show/hide dependent form parts: <div data-show-if="name=value">
   function updateConditional(form) {

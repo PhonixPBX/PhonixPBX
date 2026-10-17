@@ -15,17 +15,21 @@ Context layout
 ``prov-<id>-in``        per provider: incoming routes
 ``app-<id>``            custom application logic
 ``conf-<id>``           conference room PIN handling
+``ivr-<id>[-pub]``      IVR menu (``-pub``: for callers from outside: public direct
+                        dial, no transfer feature)
+``hours-<id>[-pub]``    business hours: open/closed destination
 ``sub-*``               shared subroutines (Gosub; Macro() is gone in Asterisk 21+)
 """
 
 from __future__ import annotations
 
+import re
 from collections import OrderedDict
 from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import Any
 
-from phonix.core.models import Application, CallGroup, ConferenceRoom, Phone, Provider
+from phonix.core.models import Application, BusinessHours, CallGroup, ConferenceRoom, IvrMenu, Phone, Provider
 from phonix.core.validation import parse_dialpattern
 from phonix.generators.base import HEADER, Snapshot
 
@@ -33,6 +37,15 @@ NOTIFY_SCRIPT = "/usr/libexec/phonix/notify"
 CF_MAX_HOPS = 3
 APP_PATTERN = "_[0-9a-zA-Z*#]!"
 CATCHALL_PATTERN = "_[0-9*#+]!"
+# Asterisk database family of the live business hours mode (key: id, value: open/closed)
+HOURS_DB = "phonix-hours"
+ASTERISK_DAYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
+_UNSAFE = re.compile(r"[^\w .@+-]")
+
+
+def safe_text(text: str) -> str:
+    """Text for NoOp() and comments: no variables, quotes or argument separators."""
+    return _UNSAFE.sub("", text)
 
 
 def ext_pattern(extension: str) -> str:
@@ -191,6 +204,26 @@ def room_steps(room: ConferenceRoom) -> list[str]:
     return [f"Gosub(conf-{room.id},s,1)", "Hangup()"]
 
 
+def last_minute(end: str) -> str:
+    """GotoIfTime() includes the end minute and takes no 24:00: "17:30" (exclusive) -> "17:29"."""
+    minutes = (24 * 60 if end == "24:00" else int(end[:2]) * 60 + int(end[3:])) - 1
+    return f"{minutes // 60:02d}:{minutes % 60:02d}"
+
+
+def ivr_context(menu: IvrMenu, from_public: bool) -> str:
+    return f"ivr-{menu.id}-pub" if from_public else f"ivr-{menu.id}"
+
+
+def hours_context(hours: BusinessHours, from_public: bool) -> str:
+    return f"hours-{hours.id}-pub" if from_public else f"hours-{hours.id}"
+
+
+def _terminated(steps: list[str]) -> list[str]:
+    if steps and steps[-1].startswith(("Hangup(", "Goto(")):
+        return steps
+    return [*steps, "Hangup()"]
+
+
 class DialplanBuilder:
     def __init__(self, snap: Snapshot) -> None:
         self.snap = snap
@@ -308,8 +341,45 @@ class DialplanBuilder:
         if kind == "application":
             assert isinstance(obj, Application)
             return application_steps(obj)
+        if kind == "ivr":
+            assert isinstance(obj, IvrMenu)
+            return [f"Goto({ivr_context(obj, from_public)},s,1)"]
+        if kind == "hours":
+            assert isinstance(obj, BusinessHours)
+            return [f"Goto({hours_context(obj, from_public)},s,1)"]
         assert isinstance(obj, ConferenceRoom)
         return room_steps(obj)
+
+    def pools(self) -> dict[str, list[Any]]:
+        """Objects a destination may point to (disabled ones are left out)."""
+        snap = self.snap
+        return {
+            "phone": snap.active_phones,
+            "callgroup": snap.callgroups,
+            "application": [a for a in snap.applications if a.enabled],
+            "conference": snap.rooms,
+            "ivr": [m for m in snap.ivr_menus if m.enabled],
+            "hours": snap.business_hours,
+        }
+
+    def dest_steps(self, kind: str, dest_id: int | None, from_public: bool) -> list[str]:
+        """Steps for one destination of an IVR key or of business hours; always terminated."""
+        if kind == "hangup":
+            return ["Hangup()"]
+        if kind == "repeat":
+            return ["Goto(s,prompt)"]
+        if kind == "voicemail":
+            phone = next((p for p in self.snap.active_phones if p.id == dest_id), None)
+            if phone is None or not phone.vm_enabled:
+                return ["NoOp(Voicemail box not available)", "Hangup()"]
+            # sub-dial's vm step plays the custom greeting, if there is one
+            return [f"Gosub(sub-dial,vm,1(,{phone.extension},,))", "Hangup()"]
+        obj = next((o for o in self.pools().get(kind, []) if o.id == dest_id), None)
+        if obj is None:
+            return [f"NoOp(Destination {kind} {dest_id} is not available)", "Hangup()"]
+        if kind == "application":
+            return [f"Goto(app-{obj.id},s,1)"]
+        return _terminated(self.target_steps(kind, obj, from_public))
 
     def numbered_objects(self) -> list[tuple[str, str, str, object, bool, str]]:
         """(kind, number, label, obj, public_access, public_name) for every dialable object."""
@@ -354,6 +424,18 @@ class DialplanBuilder:
             out.append(
                 ("conference", room.number, f"conference {room.name}", room, room.public_access, room.public_name)
             )
+        for menu in snap.ivr_menus:
+            if menu.enabled and menu.extension:
+                out.append(
+                    (
+                        "ivr",
+                        menu.extension,
+                        f"IVR menu {safe_text(menu.name)}",
+                        menu,
+                        menu.public_access,
+                        menu.public_name,
+                    )
+                )
         return out
 
     def internal(self) -> None:
@@ -369,6 +451,25 @@ class DialplanBuilder:
                 else:
                     steps = self.target_steps(kind, obj, True)
                 public.ext(pub_number, [f"NoOp(Public call to {label})", *steps], label)
+
+        for hours in snap.business_hours:
+            if hours.feature_code:
+                key = f"{HOURS_DB}/{hours.id}"
+                internal.ext(
+                    hours.feature_code,
+                    [
+                        f"NoOp(Switch business hours {safe_text(hours.name)})",
+                        "Answer()",
+                        f'GotoIf($["${{DB({key})}}" = ""]?close)',
+                        f"Set(HOURS_OLD=${{DB_DELETE({key})}})",
+                        "Playback(de-activated)",
+                        "Hangup()",
+                        f"@close Set(DB({key})=closed)",
+                        "Playback(activated)",
+                        "Hangup()",
+                    ],
+                    f"business hours {safe_text(hours.name)}: closed / automatic",
+                )
 
         f = snap.features
         internal.raw("; call parking")
@@ -431,6 +532,78 @@ class DialplanBuilder:
                 "Return()",
             ]
             ctx.ext("s", steps)
+
+    # -- IVR menus and business hours --------------------------------------------
+
+    def prompt(self, menu: IvrMenu) -> str:
+        if menu.prompt_mode == "sound":
+            return menu.prompt_sound
+        media = next((m for m in self.snap.media_files if m.id == menu.prompt_media_id), None)
+        if media is None:
+            return ""
+        return f"{self.snap.facts.data_dir}/media/{media.path.rsplit('.', 1)[0]}"
+
+    def ivr_menus(self) -> None:
+        for menu in self.snap.ivr_menus:
+            if not menu.enabled:
+                continue
+            name = safe_text(menu.name)
+            for public in (False, True):
+                comment = f"IVR menu {name}" + (" (callers from outside)" if public else "")
+                ctx = self.ctx(ivr_context(menu, public), comment)
+                if menu.direct_dial:
+                    ctx.include("public-direct-dial" if public else "internal")
+                prompt = self.prompt(menu)
+                wait = f"WaitExten({menu.timeout})"
+                steps = [f"NoOp(IVR menu {name})", "Answer()", "Set(IVR_TRIES=0)", "Wait(1)"]
+                steps += [f"@prompt Background({prompt})", wait] if prompt else [f"@prompt {wait}"]
+                ctx.ext("s", steps)
+                for option in menu.options:
+                    label = safe_text(option.label) or option.key
+                    ctx.ext(
+                        option.key,
+                        [f"NoOp(IVR menu {name}: {label})", *self.dest_steps(option.dest_type, option.dest_id, public)],
+                    )
+                if menu.invalid_dest_type == "repeat":
+                    ctx.ext("i", ["Playback(option-is-invalid)", "Goto(t,1)"])
+                else:
+                    ctx.ext("i", self.dest_steps(menu.invalid_dest_type, menu.invalid_dest_id, public))
+                ctx.ext(
+                    "t",
+                    [
+                        "Set(IVR_TRIES=$[${IVR_TRIES} + 1])",
+                        f"GotoIf($[${{IVR_TRIES}} <= {menu.repeats}]?s,prompt)",
+                        *self.dest_steps(menu.timeout_dest_type, menu.timeout_dest_id, public),
+                    ],
+                )
+
+    def business_hours(self) -> None:
+        for hours in self.snap.business_hours:
+            name = safe_text(hours.name)
+            for public in (False, True):
+                comment = f"business hours {name}" + (" (callers from outside)" if public else "")
+                ctx = self.ctx(hours_context(hours, public), comment)
+                steps = [
+                    f"NoOp(Business hours {name})",
+                    f"Set(HOURS_MODE=${{DB({HOURS_DB}/{hours.id})}})",
+                    'GotoIf($["${HOURS_MODE}" = "open"]?open)',
+                    'GotoIf($["${HOURS_MODE}" = "closed"]?closed)',
+                ]
+                if hours.holidays:
+                    steps.append("Set(HOURS_TODAY=${STRFTIME(${EPOCH},,%Y-%m-%d)})")
+                    for h in hours.holidays:
+                        if h.yearly:
+                            steps.append(f'GotoIf($["${{HOURS_TODAY:5}}" = "{h.date:%m-%d}"]?closed)')
+                        else:
+                            steps.append(f'GotoIf($["${{HOURS_TODAY}}" = "{h.date.isoformat()}"]?closed)')
+                for r in hours.ranges:
+                    steps.append(f"GotoIfTime({r.start}-{last_minute(r.end)},{ASTERISK_DAYS[r.weekday]},*,*?open)")
+                steps.append("Goto(closed)")
+                steps.append("@open NoOp(open)")
+                steps += self.dest_steps(hours.open_dest_type, hours.open_dest_id, public)
+                steps.append("@closed NoOp(closed)")
+                steps += self.dest_steps(hours.closed_dest_type, hours.closed_dest_id, public)
+                ctx.ext("s", steps)
 
     # -- providers --------------------------------------------------------------
 
@@ -529,15 +702,9 @@ class DialplanBuilder:
     def destination_steps(self, dests: list[tuple[str, int]]) -> list[str]:
         snap = self.snap
         resolved: list[tuple[str, object]] = []
+        pools = self.pools()
         for kind, dest_id in dests:
-            pools: dict[str, list[Any]] = {
-                "phone": snap.active_phones,
-                "callgroup": snap.callgroups,
-                "application": [a for a in snap.applications if a.enabled],
-                "conference": snap.rooms,
-            }
-            pool = pools[kind]
-            obj = next((o for o in pool if o.id == dest_id), None)
+            obj = next((o for o in pools.get(kind, []) if o.id == dest_id), None)
             if obj is not None:
                 resolved.append((kind, obj))
         if not resolved:
@@ -591,6 +758,8 @@ class DialplanBuilder:
         self.internal()
         self.applications()
         self.rooms()
+        self.ivr_menus()
+        self.business_hours()
         for provider in snap.active_providers:
             self.provider_in(provider)
             self.provider_out(provider)

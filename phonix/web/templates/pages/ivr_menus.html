@@ -1,0 +1,19 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+{% extends "base.html" %}
+{% from "macros/ui.html" import empty with context %}
+{% block actions %}<a href="/dialplan/ivr/new" class="btn btn-primary">{{ icon("plus") }}{{ _("IVR menu") }}</a>{% endblock %}
+{% block content %}
+<div class="card">
+  {% if items %}
+  <div class="table-responsive">
+  <table class="table table-vcenter card-table table-hover">
+    <thead><tr><th>{{ _("Number") }}</th><th>{{ _("Name") }}</th><th>{{ _("Keys") }}</th><th>{{ _("No key pressed") }}</th><th>{{ _("Status") }}</th><th></th></tr></thead>
+    <tbody>
+    {% for m in items %}{% include "partials/ivr_row.html" %}{% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}{{ empty(_("No IVR menus"), _("An IVR menu plays an announcement and lets callers choose with a key, e.g. 1 for sales and 2 for support."), "/dialplan/ivr/new", _("Add an IVR menu")) }}{% endif %}
+</div>
+<p class="text-secondary small mt-3">{{ _('To answer calls from outside with a menu, mark it as reachable from outside or choose it as the destination of a provider’s incoming route. Use <a href="/dialplan/hours">business hours</a> to play another menu while the office is closed.') }}</p>
+{% endblock %}

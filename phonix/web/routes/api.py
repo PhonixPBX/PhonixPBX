@@ -19,6 +19,7 @@ from sqlalchemy.orm import Session
 from phonix.core.models import User
 from phonix.services import apply as apply_svc
 from phonix.services import calls as calls_svc
+from phonix.services import hours as hours_svc
 from phonix.services import settings_api
 from phonix.services import status as status_svc
 from phonix.services.common import NotFound, ServiceError, dirty_areas
@@ -96,6 +97,34 @@ def crud(res: Resource) -> None:
 
 for _res in RESOURCES:
     crud(_res)
+
+
+class HoursMode(BaseModel):
+    mode: hours_svc.Mode = Field(description="auto: follow the schedule; open or closed: until switched back")
+
+
+@router.get("/business-hours/{hours_id}/status", tags=["business hours"], summary="Open right now, and the live mode")
+def business_hours_status(hours_id: int, user: User = Depends(api_user), db: Session = Depends(get_db)) -> Any:
+    try:
+        return hours_svc.live_status(db, hours_id)
+    except ServiceError as exc:
+        raise _error(exc) from None
+
+
+@router.put(
+    "/business-hours/{hours_id}/mode",
+    tags=["business hours"],
+    summary="Switch the live mode (takes effect immediately, no apply needed)",
+)
+def business_hours_mode(
+    hours_id: int, body: HoursMode, user: User = Depends(api_user), db: Session = Depends(get_db)
+) -> Any:
+    try:
+        hours_svc.set_mode(db, hours_id, body.mode, user.username)
+        return hours_svc.live_status(db, hours_id)
+    except ServiceError as exc:
+        db.rollback()
+        raise _error(exc) from None
 
 
 @router.get("/settings/{group}", tags=["settings"])

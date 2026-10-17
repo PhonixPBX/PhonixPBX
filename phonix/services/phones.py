@@ -12,8 +12,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from phonix.core import validation as v
-from phonix.core.models import Phone, PhoneProviderCallerId, Provider, ProviderIncomingRoute
+from phonix.core.models import Phone, PhoneProviderCallerId, Provider
 from phonix.i18n import N_, _
+from phonix.services import destinations as dst
 from phonix.services.common import (
     NotFound,
     ServiceError,
@@ -291,9 +292,8 @@ def set_enabled(session: Session, phone_id: int, enabled: bool, user: str = "") 
 def delete_phone(session: Session, phone_id: int, user: str = "") -> None:
     phone = get_phone(session, phone_id)
     # legacy dialplan_remove_incomingextensionmap_reference_from_providers()
-    session.query(ProviderIncomingRoute).filter(
-        ProviderIncomingRoute.dest_type == "phone", ProviderIncomingRoute.dest_id == phone.id
-    ).delete()
+    dst.forget(session, "phone", phone.id)
+    dst.forget(session, "voicemail", phone.id)
     audit(session, user, "delete", "phone", phone.id, f"{phone.callerid} <{phone.extension}>")
     session.delete(phone)
     session.flush()
