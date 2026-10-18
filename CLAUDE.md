@@ -87,3 +87,4 @@ This file says what the rules are; the skills and agents in `.claude/` say how t
 - `privsep-reviewer` agent: review any change to `privileged.py`, the priv helpers, doas, nginx, `security.py` or auth.
 - `i18n-translator` agent: fill the catalogs after `scripts/i18n.sh update`.
 - `/commit`: project-style commit after lint, tests and the checklist.
+- `/release`: cut a release along `docs/RELEASING.md`, with the version decision and a stop before every push and tag.
