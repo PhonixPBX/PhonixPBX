@@ -8,7 +8,8 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ### Added
 
-- `phonix update install <file>` installs an update bundle from the console.
+- On the console, `phonix update install <file>` installs an update bundle. It runs one installation at a time, also
+  against an upload in *System → Firmware*.
 
 ### Changed
 
@@ -17,6 +18,8 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   back; the update continues in the background, and another upload is refused until it has finished. After
   *Reboot into the new firmware* the page waits for the system and then confirms that the new version runs, or
   reports that the previous version was started again.
+- *System → Firmware*: rebooting and resetting to factory defaults are refused while a firmware update is being
+  installed. An installation that was cut off by a crash or power loss is shown as interrupted.
 
 ### Fixed
 
