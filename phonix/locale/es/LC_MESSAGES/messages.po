@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-18 10:32+0200\n"
+"POT-Creation-Date: 2026-10-18 12:09+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: es\n"
@@ -2475,6 +2475,12 @@ msgstr "Reiniciar"
 msgid "Reboot into the new firmware"
 msgstr "Reiniciar con el nuevo firmware"
 
+msgid "Reboot now"
+msgstr "Reiniciar ahora"
+
+msgid "Reboot required"
+msgstr "Reinicio necesario"
+
 msgid "Recipient"
 msgstr "Destinatario"
 
@@ -3391,6 +3397,12 @@ msgstr "La versión %(latest)s está disponible (versión actual: %(version)s). 
 #, python-format
 msgid "Version %(version)s did not start"
 msgstr "La versión %(version)s no arrancó"
+
+#, python-format
+msgid "Version %(version)s has been installed. Reboot to start it; until then version %(running)s keeps running."
+msgstr ""
+"La versión %(version)s se ha instalado. Reinicie para iniciarla; hasta entonces sigue ejecutándose la versión "
+"%(running)s."
 
 #, python-format
 msgid ""

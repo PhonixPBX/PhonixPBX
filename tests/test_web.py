@@ -3,6 +3,7 @@
 import base64
 import re
 
+import jinja2
 import pytest
 from factories import sample_pbx
 from fastapi.testclient import TestClient
@@ -520,6 +521,62 @@ def test_firmware_reboot_result(client, runtime, monkeypatch):
     page = client.get("/system/firmware").text
     assert "The update was successful" in page
     assert "The update was successful" not in client.get("/system/firmware").text  # reported once
+
+
+def test_reboot_banner_while_update_pending(client, runtime, monkeypatch):
+    from phonix import __version__
+    from phonix.services import update
+
+    login(client)
+    monkeypatch.setattr(update, "_boot_id", lambda: "boot-1")
+    assert "Reboot required" not in client.get("/").text
+    update.write_job("installed", version="9.9.9")
+    assert update.pending_reboot() == "9.9.9"
+    page = client.get("/accounts/phones").text
+    assert "Reboot required" in page and "9.9.9" in page
+    assert 'action="/system/reboot"' in page and 'name="next" value="/system/firmware"' in page
+    # the firmware page has its own reboot button
+    page = client.get("/system/firmware").text
+    assert "Reboot required" not in page and "Reboot into the new firmware" in page
+    # rebooted, but the trial boot was rolled back: nothing pending any more
+    monkeypatch.setattr(update, "_boot_id", lambda: "boot-2")
+    assert update.pending_reboot() is None
+    assert "Reboot required" not in client.get("/accounts/phones").text
+    # running the installed version
+    update.write_job("installed", version=__version__)
+    assert update.pending_reboot() is None
+
+
+def test_reboot_banner_in_lxc(client, runtime, monkeypatch):
+    from phonix.services import update
+
+    login(client)
+    monkeypatch.setattr(update.platform, "is_container", lambda name=None: True)
+    monkeypatch.setattr(update, "_boot_id", lambda: "boot-1")
+    update.write_job("installed", version="9.9.9")
+    # a container shares the host's boot id: a restart does not change it
+    monkeypatch.setattr(update, "_boot_id", lambda: "boot-2")
+    assert update.pending_reboot() == "9.9.9"
+
+
+def test_templates_are_read_at_startup(tmp_path, monkeypatch):
+    """An in-place update (LXC) replaces the templates before the restart; the
+    running version keeps rendering its own."""
+    from phonix.web import templating
+
+    tpl = tmp_path / "pages" / "x.html"
+    tpl.parent.mkdir()
+    tpl.write_text("old")
+    loader = templating._loader(tmp_path, dev=False)
+    tpl.write_text("new")
+    (tmp_path / "pages" / "added.html").write_text("added")
+    env = jinja2.Environment(loader=loader, autoescape=True)
+    assert env.get_template("pages/x.html").render() == "old"
+    with pytest.raises(jinja2.TemplateNotFound):
+        env.get_template("pages/added.html")
+    # dev: edits show up without a restart
+    env = jinja2.Environment(loader=templating._loader(tmp_path, dev=True), autoescape=True)
+    assert env.get_template("pages/x.html").render() == "new"
 
 
 def test_reboot_next_is_whitelisted(client, runtime):

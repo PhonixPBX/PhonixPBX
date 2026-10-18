@@ -352,6 +352,20 @@ def reboot_result() -> dict[str, Any] | None:
     return None
 
 
+def pending_reboot() -> str | None:
+    """The version of an installed update that waits for the reboot, or None."""
+    job = _read_job_raw()
+    version = str(job.get("version", ""))
+    if job.get("state") != "installed" or not version or version == __version__:
+        return None
+    # rebooted and still the old version: rolled back, reported by reboot_result()
+    # (a container shares the host's boot id, a restart does not change it)
+    booted = _boot_id()
+    if booted and job.get("boot_id") and booted != job["boot_id"] and not platform.is_container():
+        return None
+    return version
+
+
 def is_running() -> bool:
     return read_job().get("state") == "running"
 

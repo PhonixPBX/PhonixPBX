@@ -329,6 +329,8 @@ Everything hardware-specific listed in the confirmed decisions, plus Humbug anal
 **Updates**
 - Update bundles are signed with ed25519. The public key is baked into the image.
 - The upload request only stores the bundle in `/data` and starts `phonix update install --remove` detached (like the ACME request), so a long install never hangs on an HTTP request or a proxy timeout. The job writes its state (`running` with the step verify/backup/write and a percentage while hashing, `installed`, `error`) to `<state>/update-job.json`; *System → Firmware* polls it and allows one job at a time. A job whose process is gone is shown as interrupted.
+- While an `installed` job waits for the reboot (job version ≠ running version, same `boot_id`; containers keep the host's `boot_id`), every page except *System → Firmware* shows a *Reboot required* banner with a reboot button.
+- LXC upgrades the packages in place, so the files on disk change while the old version keeps running until the container restarts. The web app therefore reads all Jinja templates into memory at start (`DictLoader`; `PHONIX_DEV=1` keeps reading from disk), and the old routes never render templates of the new version.
 - After *Reboot into the new firmware* the waiting page polls `/system/ping` until the system went down and answered twice, then opens *System → Firmware*, which compares the running version with the installed one once: success, or (after a reboot, `boot_id` changed) a rolled-back trial boot.
 
 ## 5. UI: Tabler 1.6.1 with PhonixPBX branding

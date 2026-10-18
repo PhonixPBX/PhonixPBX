@@ -1,0 +1,17 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+{# an installed update waits for the reboot; the firmware page shows its own button #}
+{% if reboot_pending and not (active_item and active_item.url == "/system/firmware") %}
+<div class="alert alert-info alert-important mb-0 rounded-0 border-0" role="alert">
+  <div class="container-xl d-flex align-items-center gap-3">
+    {{ icon("refresh") }}
+    <div class="flex-fill">
+      <strong>{{ _("Reboot required") }}</strong> &mdash; {{ _("Version %(version)s has been installed. Reboot to start it; until then version %(running)s keeps running.", version=reboot_pending, running=VERSION) }}
+    </div>
+    <form method="post" action="/system/reboot" class="m-0">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="next" value="/system/firmware">
+      <button class="btn btn-light" type="submit" name="action" value="reboot">{{ icon("refresh") }}{{ _("Reboot now") }}</button>
+    </form>
+  </div>
+</div>
+{% endif %}

@@ -34,7 +34,7 @@ Disk-Images (Raspberry Pi, PC) haben zwei System-Slots, A und B. Ein Update wird
 3. Sobald die Datei hochgeladen ist, zeigt die Seite den Fortschritt der Installation in Schritten (*Prüfen*, *Installieren*, *Fertig*) mit der vergangenen Zeit. Sie können die Seite verlassen; das Update läuft weiter, und *System → Firmware* zeigt den Fortschritt wieder an, wenn Sie zurückkehren. Eine weitere Datei kann erst hochgeladen werden, wenn es fertig ist. Schalten Sie das System nicht aus.
 4. *Prüfen*: Bevor etwas geschrieben wird, wird das Paket geprüft. Es wird abgelehnt, wenn die ed25519-Signatur nicht zum im System eingebauten Schlüssel passt, wenn es für ein anderes Board ist oder wenn eine Prüfsumme nicht stimmt. Die Seite zeigt dann den Grund an.
 5. *Installieren*: Die neue Version wird in den inaktiven Slot geschrieben und zur Kontrolle zurückgelesen. Das dauert einige Minuten, auf einer SD-Karte länger. Die aktuelle Version läuft weiter.
-6. Klicken Sie auf **Mit der neuen Firmware neu starten**. Aktive Gespräche werden unterbrochen.
+6. Klicken Sie auf **Mit der neuen Firmware neu starten**. Aktive Gespräche werden unterbrochen. Verlassen Sie die Seite stattdessen, zeigt jede andere Seite bis zum Neustart den Hinweis *Neustart erforderlich* mit der Schaltfläche **Jetzt neu starten**.
 7. Während das System neu startet, wartet die Seite darauf und öffnet danach wieder *System → Firmware*. Dort steht *Das Update war erfolgreich: PhonixPBX X läuft*, oder dass die neue Version nicht gestartet ist und wieder die vorherige läuft (siehe unten).
 
 Der neue Slot erhält **einen Probestart**. Nach dem Neustart wartet eine Zustandsprüfung, bis Weboberfläche und Asterisk antworten, und macht erst dann den neuen Slot dauerhaft. Die vorherige Version wird automatisch wieder gestartet, wenn die neue:
@@ -63,7 +63,7 @@ Ein Systemcontainer hat keinen zweiten System-Slot. Das Update aktualisiert die 
 2. Setzen Sie das Häkchen bei **Ich habe einen Snapshot dieses Containers erstellt**. Erst dann ist das Upload-Feld freigegeben.
 3. Laden Sie das Paket `phonix-<version>-lxc-<arch>.update` hoch. Es wird wie beim Disk-Image geprüft (Signatur, Board, Prüfsummen).
 4. PhonixPBX speichert ein Backup der Konfiguration unter [System → Backup/Wiederherstellung]({{< relref "/system/backup.md" >}}) und aktualisiert dann die Pakete aus dem Update-Paket. Es wird nichts heruntergeladen. Die Seite zeigt den Fortschritt in Schritten (*Prüfen*, *Backup*, *Installieren*, *Fertig*), wie beim Disk-Image.
-5. Starten Sie den Container mit **Mit der neuen Firmware neu starten** neu. Bis dahin läuft die bisherige Version weiter. Die neue Version migriert die Datenbank bei ihrem ersten Start.
+5. Starten Sie den Container mit **Mit der neuen Firmware neu starten** neu, oder mit **Jetzt neu starten** im Hinweis *Neustart erforderlich*, den die anderen Seiten zeigen. Bis dahin läuft die bisherige Version weiter. Die neue Version migriert die Datenbank bei ihrem ersten Start.
 
 Das Update-Paket legt den vollständigen Paketbestand des Release fest: Pakete, die Sie selbst mit `apk add` installiert haben, werden entfernt. Das Protokoll des Updates liegt in `/var/log/phonix/update.log`. Container, die mit Version 1.2.0 oder älter erstellt wurden, lehnen Update-Pakete ab; ersetzen Sie einen solchen Container einmalig durch einen neuen und behalten Sie das `/data`-Volume.
 

@@ -34,7 +34,7 @@ Disk images (Raspberry Pi, PC) have two system slots, A and B. An update is writ
 3. Once the file is uploaded, the page shows the progress of the installation in steps (*Check*, *Install*, *Done*) with the elapsed time. You can leave the page; the update continues, and *System → Firmware* shows its progress again when you come back. Another file cannot be uploaded until it has finished. Do not switch the system off.
 4. *Check*: before anything is written, the bundle is checked. It is refused if the ed25519 signature does not match the key built into the system, if it is for another board, or if any checksum is wrong. The page then shows the reason.
 5. *Install*: the new version is written to the inactive slot and read back for verification. This takes a few minutes, longer on an SD card. The current version keeps running.
-6. Click **Reboot into the new firmware**. Active calls are interrupted.
+6. Click **Reboot into the new firmware**. Active calls are interrupted. If you leave the page instead, every other page shows a *Reboot required* banner with a **Reboot now** button until you reboot.
 7. While the system restarts, the page waits for it and then opens *System → Firmware* again. It confirms *The update was successful: PhonixPBX X is running*, or reports that the new version did not start and the previous one is running again (see below).
 
 The new slot gets **one trial boot**. After the reboot, a health check waits until the web interface and Asterisk respond, and only then makes the new slot permanent. The previous version is started again automatically if the new one:
@@ -63,7 +63,7 @@ A system container has no second system slot. The update upgrades the packages o
 2. Tick **I have taken a snapshot of this container**. The upload field is enabled only after that.
 3. Upload the bundle `phonix-<version>-lxc-<arch>.update`. It is checked like on the disk image (signature, board, checksums).
 4. PhonixPBX saves a backup of the configuration under [System → Backup/Restore]({{< relref "/system/backup.md" >}}), then upgrades the packages from the bundle. Nothing is downloaded. The page shows the progress in steps (*Check*, *Backup*, *Install*, *Done*), as for the disk image.
-5. Restart the container with **Reboot into the new firmware**. Until then the previous version keeps running. The new version migrates the database at its first start.
+5. Restart the container with **Reboot into the new firmware**, or with **Reboot now** in the *Reboot required* banner that the other pages show. Until then the previous version keeps running. The new version migrates the database at its first start.
 
 The bundle defines the complete package set of the release: packages you added yourself with `apk add` are removed. The log of the update is in `/var/log/phonix/update.log`. Containers created from version 1.2.0 or older refuse update bundles; replace such a container once with a new one and keep the `/data` volume.
 

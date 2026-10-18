@@ -6,6 +6,17 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- After a firmware update has been installed, every page shows a *Reboot required* banner with a **Reboot now**
+  button until the system (or the LXC container) has been restarted into the new version.
+
+### Fixed
+
+- LXC containers: between installing an update and restarting the container, pages of the web interface no
+  longer fail with an error (*Internal Server Error*). This takes effect for updates installed from this version
+  on: when you update an LXC container from 1.5.0 or older, restart the container right after the installation.
+
 ## [1.5.0] - 2026-10-18
 
 ### Added

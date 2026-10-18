@@ -4,10 +4,12 @@
 
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+import jinja2
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
 from markupsafe import Markup
@@ -15,7 +17,7 @@ from markupsafe import Markup
 from phonix import __version__, i18n
 from phonix.core import validation as v
 from phonix.i18n import N_
-from phonix.services import platform
+from phonix.services import platform, update
 from phonix.services.common import AREAS
 from phonix.web.security import csrf_token
 
@@ -215,7 +217,20 @@ def _options(objs: Any, value: str = "id", label: str = "name") -> list[tuple[An
     return [(getattr(o, value), getattr(o, label)) for o in objs]
 
 
+def _loader(directory: Path, dev: bool) -> jinja2.BaseLoader:
+    """All templates, read once at the start.
+
+    An in-place update (LXC) replaces the files on disk while this version runs on until
+    the restart; its routes must keep rendering their own templates."""
+    if dev:
+        return jinja2.FileSystemLoader(directory)  # edits show up without a restart
+    return jinja2.DictLoader(
+        {p.relative_to(directory).as_posix(): p.read_text(encoding="utf-8") for p in sorted(directory.rglob("*.html"))}
+    )
+
+
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
+templates.env.loader = _loader(TEMPLATES_DIR, os.environ.get("PHONIX_DEV") == "1")
 templates.env.globals.update(
     {
         "MENU": MENU,
@@ -258,6 +273,8 @@ def render(request: Request, name: str, ctx: dict[str, Any] | None = None, statu
         "errors": {},
         # "appliance", "lxc", "oci" or "dev" (containers: host-managed network)
         "platform": platform.kind(),
+        # an installed update that waits for the reboot (banner on every page)
+        "reboot_pending": update.pending_reboot(),
     }
     context.update(ctx or {})
     return templates.TemplateResponse(request, name, context, status_code=status_code)
