@@ -269,7 +269,7 @@ def cmd_update(args: argparse.Namespace) -> int:
             print("ERROR the update bundle is missing", file=sys.stderr)
             return 2
         try:
-            info = update.run_install(Path(args.bundle).resolve(), args.user, remove=args.remove)
+            info = update.run_install(Path(args.bundle).resolve(), args.user, remove=args.remove, force=args.force)
         except (ServiceError, privileged.PrivilegedError, OSError) as exc:
             print(f"ERROR {exc}", file=sys.stderr)
             return 1
@@ -412,6 +412,7 @@ def build_parser() -> argparse.ArgumentParser:
     up.add_argument("bundle", nargs="?", help="install: the .update bundle (below /data)")
     up.add_argument("--user", default="cli", help="install: the user named in the audit log")
     up.add_argument("--remove", action="store_true", help="install: delete the bundle afterwards")
+    up.add_argument("--force", action="store_true", help="install: allow the same or an older version")
     up.add_argument("--auto", action="store_true", help="only if automatic checks are enabled (periodic job)")
     up.set_defaults(func=cmd_update)
 

@@ -97,9 +97,41 @@
           gate.addEventListener("change", sync);
           sync();
         }
+        // data-uploading: a progress bar in the target while the bytes are sent (Dropzone's own
+        // preview needs dropzone.css, which is not vendored)
+        let bar = null;
+        dz.on("sending", (file) => {
+          const target = document.querySelector(form.dataset.target || "#upload-result");
+          if (!target || !form.dataset.uploading) return;
+          const note = document.createElement("div");
+          note.className = "alert alert-info mt-3 mb-0";
+          const head = document.createElement("div");
+          head.className = "d-flex align-items-center mb-2";
+          const label = document.createElement("strong");
+          label.className = "text-truncate";
+          label.textContent = `${form.dataset.uploading} ${file.name}`;
+          const percent = document.createElement("span");
+          percent.className = "ms-auto ps-2 text-secondary small";
+          percent.textContent = "0 %";
+          head.append(label, percent);
+          const progress = document.createElement("div");
+          progress.className = "progress progress-sm";
+          const fill = document.createElement("div");
+          fill.className = "progress-bar";
+          fill.setAttribute("role", "progressbar");
+          fill.style.width = "0%";
+          progress.append(fill);
+          note.append(head, progress);
+          target.replaceChildren(note);
+          bar = { fill, percent };
+        });
         // the server answers only after it stored the file: say so once the bytes are sent
         dz.on("uploadprogress", (file, progress) => {
           const target = document.querySelector(form.dataset.target || "#upload-result");
+          if (bar && progress < 100) {
+            bar.fill.style.width = `${progress}%`;
+            bar.percent.textContent = `${Math.floor(progress)} %`;
+          }
           if (progress >= 100 && target && form.dataset.processing && !target.dataset.processing) {
             target.dataset.processing = "1";
             const note = document.createElement("div");
@@ -112,6 +144,7 @@
         dz.on("complete", () => {
           const target = document.querySelector(form.dataset.target || "#upload-result");
           if (target) delete target.dataset.processing;
+          bar = null;
         });
         dz.on("success", (file, response) => {
           const target = document.querySelector(form.dataset.target || "#upload-result");
@@ -132,6 +165,13 @@
           const target = document.querySelector(form.dataset.target || "#upload-result");
           if (target && typeof message === "string" && message.trim().startsWith("<")) {
             target.innerHTML = message;
+            dz.removeAllFiles();
+          } else if (target && form.dataset.uploading) {
+            // the preview with Dropzone's error is hidden: show it in the target
+            const note = document.createElement("div");
+            note.className = "alert alert-danger mt-3 mb-0";
+            note.textContent = typeof message === "string" ? message : (message && message.error) || String(message);
+            target.replaceChildren(note);
             dz.removeAllFiles();
           } else if (target && target.dataset.processing) {
             target.replaceChildren(); // the error is shown on the file

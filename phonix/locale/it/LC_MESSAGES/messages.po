@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-18 13:06+0200\n"
+"POT-Creation-Date: 2026-10-18 15:18+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: it\n"
@@ -3311,6 +3311,9 @@ msgstr "Audio caricato"
 msgid "Uploaded files"
 msgstr "File caricati"
 
+msgid "Uploading"
+msgstr "Caricamento in corso:"
+
 msgid "Uptime"
 msgstr "Tempo di attività"
 
@@ -3406,6 +3409,10 @@ msgid "Version %(version)s has been installed. Reboot to start it; until then ve
 msgstr ""
 "La versione %(version)s è stata installata. Riavvii per avviarla; fino ad allora resta in esecuzione la versione "
 "%(running)s."
+
+#, python-format
+msgid "Version %(version)s is not newer than the running version %(running)s. Downgrades are not allowed."
+msgstr "La versione %(version)s non è più recente della versione in esecuzione %(running)s. Il downgrade non è consentito."
 
 #, python-format
 msgid ""

@@ -6,6 +6,17 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- *System → Firmware* refuses an update bundle whose version is not newer than the running one, right after the
+  upload and before anything is written; the uploaded file is deleted. To install the same or an older version
+  (recovery, test builds), use `phonix update install <file> --force` on the console.
+
+### Fixed
+
+- Uploading a file in *System → Firmware* and *System → Backup/Restore* now shows a progress bar; before, nothing
+  visible happened until the upload had finished.
+
 ## [1.6.0] - 2026-10-18
 
 ### Added

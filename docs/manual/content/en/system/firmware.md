@@ -30,9 +30,9 @@ When a check – automatic or manual – finds a newer version, the [dashboard](
 Disk images (Raspberry Pi, PC) have two system slots, A and B. An update is written to the slot that is not running, so a failed update never breaks the running system.
 
 1. Download the update bundle for your board, `phonix-<version>-<board>.update` (at most 1 GiB).
-2. Drop the file onto **Install an update**, or click the field to choose it. The field shows the upload progress.
+2. Drop the file onto **Install an update**, or click the field to choose it. While the file is being sent, a progress bar shows how much of it has been uploaded.
 3. Once the file is uploaded, the page shows the progress of the installation in steps (*Check*, *Install*, *Done*) with the elapsed time. You can leave the page; the update continues, and *System → Firmware* shows its progress again when you come back. Another file cannot be uploaded until it has finished. Do not switch the system off.
-4. *Check*: before anything is written, the bundle is checked. It is refused if the ed25519 signature does not match the key built into the system, if it is for another board, or if any checksum is wrong. The page then shows the reason.
+4. *Check*: before anything is written, the bundle is checked. It is refused if the ed25519 signature does not match the key built into the system, if it is for another board, if its version is not newer than the running one, or if any checksum is wrong. The page then shows the reason and the uploaded file is deleted, so nothing is installed. Downgrades are not possible from the web interface (see `phonix update install --force` in the [command line reference]({{< relref "/reference/cli.md#other" >}})).
 5. *Install*: the new version is written to the inactive slot and read back for verification. This takes a few minutes, longer on an SD card. The current version keeps running.
 6. Click **Reboot into the new firmware**. Active calls are interrupted. If you leave the page instead, every other page shows a *Reboot required* banner with a **Reboot now** button until you reboot.
 7. While the system restarts, the page waits for it and then opens *System → Firmware* again. It confirms *The update was successful: PhonixPBX X is running*, or reports that the new version did not start and the previous one is running again (see below).
@@ -61,7 +61,7 @@ A system container has no second system slot. The update upgrades the packages o
 
    With Incus, snapshot a separate `/data` volume as well.
 2. Tick **I have taken a snapshot of this container**. The upload field is enabled only after that.
-3. Upload the bundle `phonix-<version>-lxc-<arch>.update`. It is checked like on the disk image (signature, board, checksums).
+3. Upload the bundle `phonix-<version>-lxc-<arch>.update`. It is checked like on the disk image (signature, board, newer version, checksums).
 4. PhonixPBX saves a backup of the configuration under [System → Backup/Restore]({{< relref "/system/backup.md" >}}), then upgrades the packages from the bundle. Nothing is downloaded. The page shows the progress in steps (*Check*, *Backup*, *Install*, *Done*), as for the disk image.
 5. Restart the container with **Reboot into the new firmware**, or with **Reboot now** in the *Reboot required* banner that the other pages show. Until then the previous version keeps running. The new version migrates the database at its first start.
 

@@ -69,7 +69,7 @@
         <span class="form-check-label">{{ _("I have taken a snapshot of this container") }}</span>
       </label>
       {% if not busy %}
-      <form action="/system/firmware/upload" class="dropzone" data-dropzone data-requires="#snapshot-confirm" data-param="file" data-max-mb="1024" data-accept=".update" data-target="#firmware-result" data-hide-on-success
+      <form action="/system/firmware/upload" class="dropzone" data-dropzone data-requires="#snapshot-confirm" data-param="file" data-max-mb="1024" data-accept=".update" data-target="#firmware-result" data-hide-on-success data-uploading="{{ _("Uploading") }}"
             data-message="{{ _("Drop the update file here or click to upload") }}" data-processing="{{ _("Upload complete. Starting the update ...") }}"></form>
       {% endif %}
       <div id="firmware-result">{{ job_html }}</div>
@@ -79,7 +79,7 @@
       <h3 class="card-title">{{ _("Install an update") }}</h3>
       <p class="text-secondary">{{ _("Upload a signed <code>.update</code> bundle for this board. It is written to the inactive system slot; the configuration and data are kept. If the new firmware fails to start, the previous one is booted automatically.") }}</p>
       {% if not busy %}
-      <form action="/system/firmware/upload" class="dropzone" data-dropzone data-param="file" data-max-mb="1024" data-accept=".update" data-target="#firmware-result" data-hide-on-success
+      <form action="/system/firmware/upload" class="dropzone" data-dropzone data-param="file" data-max-mb="1024" data-accept=".update" data-target="#firmware-result" data-hide-on-success data-uploading="{{ _("Uploading") }}"
             data-message="{{ _("Drop the update file here or click to upload") }}" data-processing="{{ _("Upload complete. Starting the update ...") }}"></form>
       {% endif %}
       <div id="firmware-result">{{ job_html }}</div>

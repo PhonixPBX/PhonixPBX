@@ -198,8 +198,10 @@ def _public_key() -> Ed25519PublicKey:
     return key
 
 
-def verify_bundle(path: Path, progress: Callable[[int], None] | None = None) -> BundleInfo:
-    """Check signature, board and checksums; ``progress`` gets the percentage of the hashed payload."""
+def verify_bundle(path: Path, progress: Callable[[int], None] | None = None, force: bool = False) -> BundleInfo:
+    """Check signature, board, version and checksums; ``progress`` gets the percentage of the hashed payload.
+
+    Only a newer version than the running one is accepted, unless ``force`` (console only)."""
     if not platform.supports_updates():
         raise ServiceError(_(platform.CONTAINER_UPDATE_HINT))
     if path.stat().st_size > MAX_BUNDLE:
@@ -228,6 +230,16 @@ def verify_bundle(path: Path, progress: Callable[[int], None] | None = None) -> 
                         current=current_board(),
                     )
                 )
+            # before the checksums: an older bundle is refused at once, and nothing is written
+            if not force and not is_newer(info.version, __version__):
+                raise ServiceError(
+                    _(
+                        "Version %(version)s is not newer than the running version %(running)s. "
+                        "Downgrades are not allowed.",
+                        version=info.version,
+                        running=__version__,
+                    )
+                )
             members = []
             for name in info.files:
                 member = names.get(name)
@@ -253,11 +265,11 @@ def verify_bundle(path: Path, progress: Callable[[int], None] | None = None) -> 
     return info
 
 
-def install(path: Path, step: Callable[[str, int | None], None] | None = None) -> BundleInfo:
+def install(path: Path, step: Callable[[str, int | None], None] | None = None, force: bool = False) -> BundleInfo:
     """Verify and install a bundle; ``step(name, percent)`` reports verify, backup and write."""
     report = step or (lambda name, percent: None)
     report("verify", 0)
-    info = verify_bundle(path, lambda percent: report("verify", percent))
+    info = verify_bundle(path, lambda percent: report("verify", percent), force=force)
     if platform.kind() == "lxc":
         # no A/B slot to fall back to: keep the configuration of the running version
         report("backup", None)
@@ -392,7 +404,7 @@ def is_running() -> bool:
     return read_job().get("state") == "running"
 
 
-def run_install(path: Path, user: str, remove: bool = False) -> BundleInfo:
+def run_install(path: Path, user: str, remove: bool = False, force: bool = False) -> BundleInfo:
     """The job body (``phonix update install``): install ``path`` and record the progress in the job file.
 
     ``remove`` (the web upload) deletes the bundle afterwards; it is only accepted for an
@@ -407,10 +419,10 @@ def run_install(path: Path, user: str, remove: bool = False) -> BundleInfo:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except OSError as exc:
             raise ServiceError(_("An update is already being installed.")) from exc
-        return _run_install(path, user, remove)
+        return _run_install(path, user, remove, force)
 
 
-def _run_install(path: Path, user: str, remove: bool) -> BundleInfo:
+def _run_install(path: Path, user: str, remove: bool, force: bool) -> BundleInfo:
     last: dict[str, Any] = {"time": 0.0, "step": ""}
 
     def step(name: str, percent: int | None) -> None:
@@ -422,7 +434,7 @@ def _run_install(path: Path, user: str, remove: bool) -> BundleInfo:
         write_job("running", name, progress=percent)
 
     try:
-        info = install(path, step)
+        info = install(path, step, force=force)
     except (ServiceError, privileged.PrivilegedError, OSError) as exc:
         write_job("error", message=str(exc))
         raise

@@ -30,7 +30,7 @@
       <div class="card-header"><h3 class="card-title">{{ _("Restore") }}</h3></div>
       <div class="card-body">
         <p class="text-secondary">{{ _("Upload a PhonixPBX backup (<code>.tar.zst</code>). You get a preview before anything changes.") }}</p>
-        <form action="/system/backup/upload" class="dropzone" data-dropzone data-param="file" data-max-mb="2048" data-accept=".zst" data-target="#restore-result"
+        <form action="/system/backup/upload" class="dropzone" data-dropzone data-param="file" data-max-mb="2048" data-accept=".zst" data-target="#restore-result" data-uploading="{{ _("Uploading") }}"
               data-message="{{ _("Drop the backup here or click to upload") }}"></form>
         <div id="restore-result"></div>
       </div>
@@ -41,7 +41,7 @@
       <div class="card-header"><h3 class="card-title">{{ _("Legacy AskoziaPBX") }}</h3></div>
       <div class="card-body">
         <p>{{ _("Import the <code>config.xml</code> of an AskoziaPBX 2.x system. You get a preview of what is imported, adapted (e.g. SIP to PJSIP) or dropped (analog/ISDN hardware) before anything changes.") }}</p>
-        <form action="/system/legacy/upload" class="dropzone" data-dropzone data-param="file" data-max-mb="10" data-accept=".xml" data-target="#legacy-result"
+        <form action="/system/legacy/upload" class="dropzone" data-dropzone data-param="file" data-max-mb="10" data-accept=".xml" data-target="#legacy-result" data-uploading="{{ _("Uploading") }}"
               data-message="{{ _("Drop config.xml here or click to upload") }}"></form>
         <div id="legacy-result" class="mt-3"></div>
         <hr>

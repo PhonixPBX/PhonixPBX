@@ -375,6 +375,9 @@
   .hours-holiday-name { grid-column: 1 / -1; grid-row: 2; }
 }
 
+/* uploads with data-uploading show their progress in the result area (dropzone.css is not vendored) */
+.dropzone[data-uploading] .dz-preview { display: none; }
+
 @media print {
   .phonix-sidebar, .phonix-topbar, .footer, #apply-banner { display: none !important; }
   .page-wrapper { margin: 0 !important; }

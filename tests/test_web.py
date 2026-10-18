@@ -438,7 +438,7 @@ def test_firmware_upload_runs_install_job(client, monkeypatch, runtime, inline_i
 
     seen = []
 
-    def fake_install(path, step=None):
+    def fake_install(path, step=None, force=False):
         seen.append((path, path.read_bytes()))
         step("verify", 50)
         if len(seen) == 1:
@@ -465,6 +465,7 @@ def test_firmware_upload_runs_install_job(client, monkeypatch, runtime, inline_i
     # the pending reboot stays on the page, the upload field too
     page = client.get("/system/firmware").text
     assert "Reboot into the new firmware" in page and "data-dropzone" in page
+    assert 'data-uploading="Uploading"' in page  # the upload shows its progress
     from phonix.core.models import AuditLog
 
     with session_scope() as s:
@@ -594,7 +595,7 @@ def test_cli_update_install(runtime, monkeypatch, tmp_path, capsys):
 
     bundle = tmp_path / "x.update"
     bundle.write_bytes(b"bundle")
-    monkeypatch.setattr(update, "install", lambda path, step=None: update.BundleInfo("9.9.9", "pc-amd64", {}))
+    monkeypatch.setattr(update, "install", lambda path, step=None, **kw: update.BundleInfo("9.9.9", "pc-amd64", {}))
     cli.main(["migrate"])
     assert cli.main(["update", "install", str(bundle)]) == 0
     assert "9.9.9 installed" in capsys.readouterr().out

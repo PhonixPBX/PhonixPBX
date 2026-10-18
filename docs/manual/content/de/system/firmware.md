@@ -30,9 +30,9 @@ Findet eine Prüfung – automatisch oder von Hand – eine neuere Version, zeig
 Disk-Images (Raspberry Pi, PC) haben zwei System-Slots, A und B. Ein Update wird in den Slot geschrieben, der gerade nicht läuft. Ein fehlgeschlagenes Update beschädigt deshalb nie das laufende System.
 
 1. Laden Sie das Update-Paket für Ihr Board herunter, `phonix-<version>-<board>.update` (höchstens 1 GiB).
-2. Ziehen Sie die Datei auf **Update installieren**, oder klicken Sie auf das Feld, um sie auszuwählen. Das Feld zeigt den Fortschritt des Hochladens.
+2. Ziehen Sie die Datei auf **Update installieren**, oder klicken Sie auf das Feld, um sie auszuwählen. Während die Datei übertragen wird, zeigt ein Fortschrittsbalken, wie viel davon hochgeladen ist.
 3. Sobald die Datei hochgeladen ist, zeigt die Seite den Fortschritt der Installation in Schritten (*Prüfen*, *Installieren*, *Fertig*) mit der vergangenen Zeit. Sie können die Seite verlassen; das Update läuft weiter, und *System → Firmware* zeigt den Fortschritt wieder an, wenn Sie zurückkehren. Eine weitere Datei kann erst hochgeladen werden, wenn es fertig ist. Schalten Sie das System nicht aus.
-4. *Prüfen*: Bevor etwas geschrieben wird, wird das Paket geprüft. Es wird abgelehnt, wenn die ed25519-Signatur nicht zum im System eingebauten Schlüssel passt, wenn es für ein anderes Board ist oder wenn eine Prüfsumme nicht stimmt. Die Seite zeigt dann den Grund an.
+4. *Prüfen*: Bevor etwas geschrieben wird, wird das Paket geprüft. Es wird abgelehnt, wenn die ed25519-Signatur nicht zum im System eingebauten Schlüssel passt, wenn es für ein anderes Board ist, wenn seine Version nicht neuer als die laufende ist oder wenn eine Prüfsumme nicht stimmt. Die Seite zeigt dann den Grund an, und die hochgeladene Datei wird gelöscht, es wird also nichts installiert. Ein Downgrade ist über die Weboberfläche nicht möglich (siehe `phonix update install --force` in der [Befehlsreferenz]({{< relref "/reference/cli.md#other" >}})).
 5. *Installieren*: Die neue Version wird in den inaktiven Slot geschrieben und zur Kontrolle zurückgelesen. Das dauert einige Minuten, auf einer SD-Karte länger. Die aktuelle Version läuft weiter.
 6. Klicken Sie auf **Mit der neuen Firmware neu starten**. Aktive Gespräche werden unterbrochen. Verlassen Sie die Seite stattdessen, zeigt jede andere Seite bis zum Neustart den Hinweis *Neustart erforderlich* mit der Schaltfläche **Jetzt neu starten**.
 7. Während das System neu startet, wartet die Seite darauf und öffnet danach wieder *System → Firmware*. Dort steht *Das Update war erfolgreich: PhonixPBX X läuft*, oder dass die neue Version nicht gestartet ist und wieder die vorherige läuft (siehe unten).
@@ -61,7 +61,7 @@ Ein Systemcontainer hat keinen zweiten System-Slot. Das Update aktualisiert die 
 
    Erstellen Sie bei Incus auch einen Snapshot eines separaten `/data`-Volumes.
 2. Setzen Sie das Häkchen bei **Ich habe einen Snapshot dieses Containers erstellt**. Erst dann ist das Upload-Feld freigegeben.
-3. Laden Sie das Paket `phonix-<version>-lxc-<arch>.update` hoch. Es wird wie beim Disk-Image geprüft (Signatur, Board, Prüfsummen).
+3. Laden Sie das Paket `phonix-<version>-lxc-<arch>.update` hoch. Es wird wie beim Disk-Image geprüft (Signatur, Board, neuere Version, Prüfsummen).
 4. PhonixPBX speichert ein Backup der Konfiguration unter [System → Backup/Wiederherstellung]({{< relref "/system/backup.md" >}}) und aktualisiert dann die Pakete aus dem Update-Paket. Es wird nichts heruntergeladen. Die Seite zeigt den Fortschritt in Schritten (*Prüfen*, *Backup*, *Installieren*, *Fertig*), wie beim Disk-Image.
 5. Starten Sie den Container mit **Mit der neuen Firmware neu starten** neu, oder mit **Jetzt neu starten** im Hinweis *Neustart erforderlich*, den die anderen Seiten zeigen. Bis dahin läuft die bisherige Version weiter. Die neue Version migriert die Datenbank bei ihrem ersten Start.
 

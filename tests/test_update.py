@@ -87,3 +87,65 @@ def test_verify_bundle_reports_progress(runtime, tmp_path, monkeypatch):
     seen: list[int] = []
     assert update.verify_bundle(bundle, seen.append).version == "9.9.9"
     assert seen == sorted(seen) and seen[-1] == 100 and len(seen) > 2
+
+
+def _signed_bundle(tmp_path, monkeypatch, version: str):
+    import hashlib
+    import json
+
+    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+
+    key = Ed25519PrivateKey.generate()
+    monkeypatch.setattr(update, "_public_key", key.public_key)
+    monkeypatch.setattr(update, "current_board", lambda: "pc-amd64")
+    payload = {"rootfs.squashfs": b"r" * 1024}
+    files = {name: hashlib.sha256(data).hexdigest() for name, data in payload.items()}
+    manifest = json.dumps({"version": version, "board": "pc-amd64", "files": files}).encode()
+    bundle = tmp_path / f"update-{version}.bundle"
+    _bundle(bundle, {"manifest.json": manifest, "manifest.sig": key.sign(manifest), **payload})
+    return bundle
+
+
+@pytest.mark.parametrize("version", ["1.5.0", "1.6.0", "1.6.0rc1"])
+def test_downgrade_is_refused_before_anything_is_written(runtime, tmp_path, monkeypatch, version):
+    from phonix.services import privileged
+
+    monkeypatch.setattr(update, "__version__", "1.6.0")
+    bundle = _signed_bundle(tmp_path, monkeypatch, version)
+    calls = len(privileged.recorder.calls)
+    hashed: list[int] = []
+    with pytest.raises(ServiceError, match=f"Version {version} is not newer than the running version 1.6.0"):
+        update.install(bundle, lambda name, percent: hashed.append(percent or 0))
+    assert hashed == [0]  # refused before the checksums
+    assert len(privileged.recorder.calls) == calls
+    # the console may force it (recovery, nightly builds of the same version)
+    assert update.install(bundle, force=True).version == version
+    assert privileged.recorder.calls[-1][0] == "install-update"
+
+
+def test_upgrade_is_accepted(runtime, tmp_path, monkeypatch):
+    monkeypatch.setattr(update, "__version__", "1.6.0")
+    assert update.install(_signed_bundle(tmp_path, monkeypatch, "1.6.1")).version == "1.6.1"
+
+
+def test_web_upload_of_an_older_bundle_is_removed(runtime, tmp_path, monkeypatch):
+    monkeypatch.setattr(update, "__version__", "1.6.0")
+    runtime.data_dir.mkdir(parents=True, exist_ok=True)
+    upload = runtime.data_dir / "update-old.bundle"
+    _signed_bundle(tmp_path, monkeypatch, "1.5.0").rename(upload)
+    with pytest.raises(ServiceError, match="Downgrades are not allowed"):
+        update.run_install(upload, "admin", remove=True)
+    assert not upload.exists()
+    job = update.read_job()
+    assert job["state"] == "error" and "not newer" in job["message"]
+    assert update.pending_reboot() is None
+
+
+def test_cli_install_force(initialized, tmp_path, monkeypatch):
+    from phonix import cli
+
+    monkeypatch.setattr(update, "__version__", "1.6.0")
+    bundle = _signed_bundle(tmp_path, monkeypatch, "1.5.0")
+    assert cli.main(["update", "install", str(bundle)]) != 0
+    assert cli.main(["update", "install", str(bundle), "--force"]) == 0
+    assert update.read_job()["version"] == "1.5.0"

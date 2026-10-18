@@ -69,7 +69,7 @@ def test_lxc_install_takes_a_backup_first(session, runtime, tmp_path, monkeypatc
     bundle = tmp_path / "x.update"
     bundle.write_bytes(b"verified elsewhere")
     monkeypatch.setattr(
-        update, "verify_bundle", lambda path, progress=None: update.BundleInfo("9.9.9", "lxc-amd64", {})
+        update, "verify_bundle", lambda path, progress=None, force=False: update.BundleInfo("9.9.9", "lxc-amd64", {})
     )
     privileged.recorder.calls.clear()
     assert update.install(bundle).version == "9.9.9"
@@ -83,7 +83,7 @@ def test_lxc_install_stops_when_the_backup_fails(session, runtime, tmp_path, mon
 
     _set_board(runtime, "lxc-amd64")
     monkeypatch.setattr(
-        update, "verify_bundle", lambda path, progress=None: update.BundleInfo("9.9.9", "lxc-amd64", {})
+        update, "verify_bundle", lambda path, progress=None, force=False: update.BundleInfo("9.9.9", "lxc-amd64", {})
     )
 
     def full_disk(target=None):
