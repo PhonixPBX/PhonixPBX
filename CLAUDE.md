@@ -60,7 +60,7 @@ CI (`.github/workflows/ci.yml`) runs ruff, mypy and pytest.
 ## User manual
 
 - The manual is Hugo Markdown in `docs/manual/content/{en,de}/`. Its paths mirror the menu URLs, and the help button in `base.html` links to `help_url(active_item.url)`. Forms set `{% block help_anchor %}edit{% endblock %}`.
-- Every user-visible UI change updates the matching chapter in both languages. Use the exact UI labels (German from the `de` catalog), keep the explicit heading anchors (`## … {#edit}`) identical in both languages, then run `scripts/help-build.sh` and commit the output in `phonix/web/static/help/`. A new menu item needs a new chapter (`tests/test_help.py`).
+- Every user-visible UI change updates the matching chapter in both languages and the built help in `phonix/web/static/help/`; the `ui-change-checklist` skill has the steps. A new menu item needs a new chapter (`tests/test_help.py`).
 
 ## Translations
 
@@ -68,7 +68,7 @@ CI (`.github/workflows/ci.yml`) runs ruff, mypy and pytest.
   - Mark strings with `_("...")`, or `N_("...")` for module-level constants that are translated where they are displayed.
   - Use named placeholders only: `_("Deleted %(name)s.", name=x)`. Never wrap an f-string, and never build sentences from translated fragments.
   - In templates, `{{ _("...") }}` always %-formats its result, so a literal `%` must be written `%%`.
-- After changing UI strings, run `scripts/i18n.sh update` and translate the new entries in all 11 catalogs under `phonix/locale/`. `tests/test_i18n.py` enforces complete catalogs.
+- After changing UI strings, run `scripts/i18n.sh update`; the `i18n-translator` agent fills the new entries in all 11 catalogs under `phonix/locale/`. `tests/test_i18n.py` enforces complete catalogs.
 - Don't translate: logs, audit summaries, JSON API errors, CLI/console output, generated config files.
 - The request language is a contextvar. `LanguageMiddleware` sets it from the session; the session copy comes from `User.language`.
 
@@ -78,3 +78,12 @@ CI (`.github/workflows/ci.yml`) runs ruff, mypy and pytest.
 - Every user-visible change gets an entry in `CHANGELOG.md` under `## [Unreleased]` (Keep a Changelog sections: Added, Changed, Fixed, Removed, Security), committed together with the change itself. Write it for administrators: what they can now do or what behaves differently, with menu paths (e.g. *Dialplan → IVR Menus*), and call out anything that needs action (incompatible `config.json` versions, upgrades, replaced containers). Internal refactors and tests get no entry.
 - Keep `docs/SPEC.md` in step with features and design decisions (data model, feature scope, API/MCP, backup format, implementation notes).
 - Ruff line length is 120.
+
+## Claude Code setup
+
+This file says what the rules are; the skills and agents in `.claude/` say how to carry them out. When a convention changes, change it here and check the skill.
+
+- `ui-change-checklist` skill: run before declaring a user-visible change done.
+- `privsep-reviewer` agent: review any change to `privileged.py`, the priv helpers, doas, nginx, `security.py` or auth.
+- `i18n-translator` agent: fill the catalogs after `scripts/i18n.sh update`.
+- `/commit`: project-style commit after lint, tests and the checklist.
