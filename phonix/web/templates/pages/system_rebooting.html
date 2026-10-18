@@ -4,7 +4,10 @@
 <div class="empty">
   <div class="empty-icon"><span class="spinner-border"></span></div>
   <p class="empty-title">{{ message }}</p>
-  {% if poll %}<div data-reload-when-up="/system/ping"></div>
-  <p class="empty-subtitle text-secondary"><a href="/">{{ _("Back to the dashboard") }}</a></p>{% endif %}
+  {% if poll %}<div data-reload-when-up="/system/ping" data-next="{{ back or '/' }}"
+       data-text-down="{{ _("The system is starting. This can take a few minutes.") }}"
+       data-text-slow="{{ _("The system has not come back yet. Check its console, or try the link below.") }}"></div>
+  <p class="empty-subtitle text-secondary" data-reboot-status>{{ _("Waiting for the system to shut down ...") }}</p>
+  <p class="empty-subtitle text-secondary"><a href="{{ back or '/' }}">{{ _("Continue") if back and back != '/' else _("Back to the dashboard") }}</a></p>{% endif %}
 </div>
 {% endblock %}

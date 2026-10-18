@@ -169,20 +169,30 @@ def storage(request: Request, user: User = Depends(ui_user)) -> Response:
 # --- firmware -------------------------------------------------------------------------------
 
 
+def _firmware_page(request: Request, values: dict[str, Any], **ctx: Any) -> Response:
+    # after the reboot into an update: report the outcome once (forgets the job)
+    result = update.reboot_result()
+    return page(
+        request,
+        "pages/system_firmware.html",
+        info=update.status(),
+        values=values,
+        job=update.read_job(),
+        result=result,
+        **ctx,
+    )
+
+
 @router.get("/firmware")
 def firmware(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
-    return page(
-        request, "pages/system_firmware.html", info=update.status(), values=st.load(db, st.UpdateSettings).model_dump()
-    )
+    return _firmware_page(request, st.load(db, st.UpdateSettings).model_dump())
 
 
 @router.post("/firmware/settings")
 async def firmware_settings(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
     saved, values, errors = await save_settings_form(request, db, st.UpdateSettings, ())
     if not saved:
-        return page(
-            request, "pages/system_firmware.html", status_code=422, info=update.status(), values=values, errors=errors
-        )
+        return _firmware_page(request, values, status_code=422, errors=errors)
     return redirect(request, "/system/firmware")
 
 
@@ -208,26 +218,27 @@ def firmware_check(request: Request, user: User = Depends(ui_user), db: Session 
 
 
 @router.post("/firmware/upload")
-async def firmware_upload(
-    request: Request, file: UploadFile, user: User = Depends(ui_user), db: Session = Depends(get_db)
-) -> Response:
+async def firmware_upload(request: Request, file: UploadFile, user: User = Depends(ui_user)) -> Response:
     if (file.size or 0) > update.MAX_BUNDLE:
         return _alert(request, "danger", _("Update file is too large"), status_code=422)
-    # a unique name per upload, removed whatever happens (a bundle can be 1 GiB)
+    # a unique name per upload (a bundle can be 1 GiB); the install job removes it when it ends
     fd, name = tempfile.mkstemp(prefix="update-", suffix=".bundle", dir=config.get().data_dir)
     target = Path(name)
     try:
         with os.fdopen(fd, "wb") as fh:
             await file.seek(0)
             await run_in_threadpool(shutil.copyfileobj, file.file, fh, 1024 * 1024)
-        # hashing and writing the slot takes minutes on an SD card: keep the event loop free
-        info = await run_in_threadpool(update.install, target)
-    except (ServiceError, privileged.PrivilegedError, OSError) as exc:
-        return _alert(request, "danger", _("Update rejected: %(error)s", error=exc), status_code=422)
-    finally:
+        # verifying and writing the slot takes minutes on an SD card: run it detached, the page polls
+        update.start_install(target, user.username)
+    except (ServiceError, OSError) as exc:
         target.unlink(missing_ok=True)
-    audit(db, user.username, "firmware", summary=f"installed {info.version}")
-    return render(request, "partials/firmware_done.html", {"info": info})
+        return _alert(request, "danger", _("Update rejected: %(error)s", error=exc), status_code=422)
+    return render(request, "partials/firmware_job.html", {"job": update.read_job()})
+
+
+@router.get("/firmware/job")
+def firmware_job(request: Request, user: User = Depends(ui_user)) -> Response:
+    return render(request, "partials/firmware_job.html", {"job": update.read_job()})
 
 
 # --- backup / restore / legacy ------------------------------------------------------------
@@ -405,6 +416,9 @@ async def defaults_do(request: Request, user: User = Depends(ui_user), db: Sessi
         return page(
             request, "pages/system_defaults.html", status_code=422, errors={"confirm": _("Type RESET to confirm.")}
         )
+    if update.is_running():
+        flash(request, _("A firmware update is being installed. Wait until it has finished."), "error")
+        return redirect(request, "/system/defaults")
     audit(db, user.username, "factory-reset")
     db.commit()
     try:
@@ -419,6 +433,9 @@ async def defaults_do(request: Request, user: User = Depends(ui_user), db: Sessi
     )
 
 
+_REBOOT_NEXT = ("/system/firmware",)
+
+
 @router.get("/reboot")
 def reboot(request: Request, user: User = Depends(ui_user)) -> Response:
     return page(request, "pages/system_reboot.html")
@@ -428,6 +445,12 @@ def reboot(request: Request, user: User = Depends(ui_user)) -> Response:
 async def reboot_do(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
     form = await request.form()
     action = "shutdown" if form.get("action") == "shutdown" else "reboot"
+    # where the page goes when the system is back (a fixed list, not an open redirect)
+    back = form.get("next") if form.get("next") in _REBOOT_NEXT else "/"
+    if update.is_running():
+        # a reboot in the middle of a package upgrade (LXC) leaves the system half updated
+        flash(request, _("A firmware update is being installed. Wait until it has finished."), "error")
+        return redirect(request, "/system/reboot")
     audit(db, user.username, action)
     db.commit()
     try:
@@ -440,7 +463,7 @@ async def reboot_do(request: Request, user: User = Depends(ui_user), db: Session
         if action == "shutdown"
         else _("The system is rebooting. This page reloads when it is back.")
     )
-    return page(request, "pages/system_rebooting.html", message=msg, poll=action == "reboot")
+    return page(request, "pages/system_rebooting.html", message=msg, poll=action == "reboot", back=back)
 
 
 @router.get("/ping")

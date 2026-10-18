@@ -261,9 +261,20 @@ def cmd_cert(args: argparse.Namespace) -> int:
 
 def cmd_update(args: argparse.Namespace) -> int:
     from phonix.core import settings as st
-    from phonix.services import update
+    from phonix.services import privileged, update
     from phonix.services.common import ServiceError
 
+    if args.action == "install":
+        if not args.bundle:
+            print("ERROR the update bundle is missing", file=sys.stderr)
+            return 2
+        try:
+            info = update.run_install(Path(args.bundle).resolve(), args.user, remove=args.remove)
+        except (ServiceError, privileged.PrivilegedError, OSError) as exc:
+            print(f"ERROR {exc}", file=sys.stderr)
+            return 1
+        print(f"version {info.version} installed - reboot to activate")
+        return 0
     with _session() as session:
         settings = st.load(session, st.UpdateSettings)
     if args.auto and not settings.auto_check:
@@ -397,7 +408,10 @@ def build_parser() -> argparse.ArgumentParser:
     c.set_defaults(func=cmd_cert)
 
     up = sub.add_parser("update", help="firmware updates")
-    up.add_argument("action", choices=["check"])
+    up.add_argument("action", choices=["check", "install"])
+    up.add_argument("bundle", nargs="?", help="install: the .update bundle (below /data)")
+    up.add_argument("--user", default="cli", help="install: the user named in the audit log")
+    up.add_argument("--remove", action="store_true", help="install: delete the bundle afterwards")
     up.add_argument("--auto", action="store_true", help="only if automatic checks are enabled (periodic job)")
     up.set_defaults(func=cmd_update)
 

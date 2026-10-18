@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-17 16:06+0200\n"
+"POT-Creation-Date: 2026-10-18 10:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -156,6 +156,9 @@ msgstr ""
 msgid ""
 "A custom greeting played before callers leave a message (replaces the "
 "standard \"unavailable\" message)."
+msgstr ""
+
+msgid "A firmware update is being installed. Wait until it has finished."
 msgstr ""
 
 msgid "A new self-signed certificate was created."
@@ -347,6 +350,9 @@ msgstr ""
 msgid "An e-mail address is required for the ACME account"
 msgstr ""
 
+msgid "An update is already being installed."
+msgstr ""
+
 msgid "Announce on the local network (mDNS)"
 msgstr ""
 
@@ -485,6 +491,9 @@ msgid "Avail"
 msgstr ""
 
 msgid "Back to the dashboard"
+msgstr ""
+
+msgid "Backup"
 msgstr ""
 
 #, python-format
@@ -681,6 +690,9 @@ msgstr ""
 msgid "Channel"
 msgstr ""
 
+msgid "Check"
+msgstr ""
+
 msgid "Check automatically"
 msgstr ""
 
@@ -688,6 +700,9 @@ msgid "Check for updates"
 msgstr ""
 
 msgid "Check now"
+msgstr ""
+
+msgid "Checking the signature and checksums of the update ..."
 msgstr ""
 
 #, python-format
@@ -801,6 +816,9 @@ msgstr ""
 msgid "Content"
 msgstr ""
 
+msgid "Continue"
+msgstr ""
+
 msgid "Copied"
 msgstr ""
 
@@ -816,6 +834,10 @@ msgstr ""
 
 #, python-format
 msgid "Could not start the certificate request: %(error)s"
+msgstr ""
+
+#, python-format
+msgid "Could not start the update: %(error)s"
 msgstr ""
 
 msgid "Country specific dial, busy and ring tones."
@@ -989,6 +1011,9 @@ msgid "Domain must not be empty"
 msgstr ""
 
 msgid "Domain names"
+msgstr ""
+
+msgid "Done"
 msgstr ""
 
 msgid "Down"
@@ -1490,6 +1515,9 @@ msgid "Install an update"
 msgstr ""
 
 msgid "Installed firmware"
+msgstr ""
+
+msgid "Installing the new version ..."
 msgstr ""
 
 msgid "Interface"
@@ -2655,6 +2683,9 @@ msgstr ""
 msgid "Save and request certificate now"
 msgstr ""
 
+msgid "Saving a backup of the configuration ..."
+msgstr ""
+
 msgid "Secret"
 msgstr ""
 
@@ -2948,6 +2979,11 @@ msgstr ""
 msgid "The password must have at least 8 characters"
 msgstr ""
 
+msgid ""
+"The system has not come back yet. Check its console, or try the link "
+"below."
+msgstr ""
+
 msgid "The system is being reset to factory defaults and reboots now."
 msgstr ""
 
@@ -2957,12 +2993,33 @@ msgstr ""
 msgid "The system is shutting down."
 msgstr ""
 
+msgid "The system is starting. This can take a few minutes."
+msgstr ""
+
+#, python-format
+msgid ""
+"The system went back to version %(running)s, which is running now. The "
+"log of the failed start is in <a href=\"/status/logs\">Status &rarr; "
+"Logs</a>."
+msgstr ""
+
 msgid "The text must not contain control characters"
 msgstr ""
 
 msgid ""
 "The text to record for this menu. It is not played; record it and upload "
 "the file above."
+msgstr ""
+
+msgid ""
+"The update was interrupted before it finished (see <a "
+"href=\"/status/logs\">Status &rarr; Logs</a>). Upload the file again."
+msgstr ""
+
+#, python-format
+msgid ""
+"The update was successful: PhonixPBX <strong>%(version)s</strong> is "
+"running."
 msgstr ""
 
 msgid "The uploaded file expired, please upload it again."
@@ -2997,6 +3054,12 @@ msgid "This phone cannot place outgoing calls through the selected providers."
 msgstr ""
 
 msgid "This phone has no voicemail box"
+msgstr ""
+
+msgid ""
+"This takes several minutes, longer on an SD card. Do not switch the "
+"system off. You can leave this page: the update continues, and this page "
+"shows its progress when you come back."
 msgstr ""
 
 msgid "This username is reserved"
@@ -3208,6 +3271,9 @@ msgstr ""
 msgid "Upload certificate"
 msgstr ""
 
+msgid "Upload complete. Starting the update ..."
+msgstr ""
+
 msgid ""
 "Upload your own hold music. Files are converted to 8 kHz mono WAV. "
 "Without uploads the bundled music is used."
@@ -3315,9 +3381,13 @@ msgid "Version %(latest)s is available (running %(version)s). Download: %(url)s"
 msgstr ""
 
 #, python-format
+msgid "Version %(version)s did not start"
+msgstr ""
+
+#, python-format
 msgid ""
 "Version <strong>%(version)s</strong> has been installed into the inactive"
-" slot."
+" slot. Reboot to start it; active calls are interrupted."
 msgstr ""
 
 #, python-format
@@ -3361,6 +3431,9 @@ msgid "Voicemail, conferencing and media"
 msgstr ""
 
 msgid "Wait for a key (s)"
+msgstr ""
+
+msgid "Waiting for the system to shut down ..."
 msgstr ""
 
 msgid "Web application"
@@ -3413,6 +3486,9 @@ msgid "Write from options"
 msgstr ""
 
 msgid "Write permissions"
+msgstr ""
+
+msgid "Writing the new version to the inactive system slot ..."
 msgstr ""
 
 #, python-format
@@ -3624,6 +3700,9 @@ msgid "phone %(ext)s"
 msgstr ""
 
 msgid "prepend text to name"
+msgstr ""
+
+msgid "progress"
 msgstr ""
 
 #, python-format

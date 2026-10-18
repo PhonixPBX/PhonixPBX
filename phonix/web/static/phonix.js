@@ -97,6 +97,22 @@
           gate.addEventListener("change", sync);
           sync();
         }
+        // the server answers only after it stored the file: say so once the bytes are sent
+        dz.on("uploadprogress", (file, progress) => {
+          const target = document.querySelector(form.dataset.target || "#upload-result");
+          if (progress >= 100 && target && form.dataset.processing && !target.dataset.processing) {
+            target.dataset.processing = "1";
+            const note = document.createElement("div");
+            note.className = "alert alert-info mt-3 mb-0 d-flex align-items-center";
+            note.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>';
+            note.append(form.dataset.processing);
+            target.replaceChildren(note);
+          }
+        });
+        dz.on("complete", () => {
+          const target = document.querySelector(form.dataset.target || "#upload-result");
+          if (target) delete target.dataset.processing;
+        });
         dz.on("success", (file, response) => {
           const target = document.querySelector(form.dataset.target || "#upload-result");
           if (target) {
@@ -106,12 +122,19 @@
           }
           if (form.dataset.reload) window.location.reload();
           dz.removeAllFiles();
+          // data-hide-on-success: a one-shot upload (the result takes over, e.g. a running update)
+          if ("hideOnSuccess" in form.dataset) {
+            dz.disable();
+            form.classList.add("d-none");
+          }
         });
         dz.on("error", (file, message, xhr) => {
           const target = document.querySelector(form.dataset.target || "#upload-result");
           if (target && typeof message === "string" && message.trim().startsWith("<")) {
             target.innerHTML = message;
             dz.removeAllFiles();
+          } else if (target && target.dataset.processing) {
+            target.replaceChildren(); // the error is shown on the file
           }
         });
       });
@@ -381,16 +404,33 @@
     if (log) log.scrollTop = log.scrollHeight;
   });
 
-  // after a reboot: wait until the system went away and came back, then reload
+  // after a reboot: wait until the system went away and came back, then go to data-next
   function watchReboot(el) {
-    let wentDown = false;
+    const status = document.querySelector("[data-reboot-status]");
+    const say = (text) => {
+      if (status && text) status.textContent = text;
+    };
+    const next = el.dataset.next || "/";
     const started = Date.now();
-    const tick = () =>
+    let wentDown = false;
+    let up = 0;
+    const down = () => {
+      if (!wentDown) say(el.dataset.textDown);
+      wentDown = true;
+      up = 0;
+    };
+    const tick = () => {
+      if (Date.now() - started > 600000) say(el.dataset.textSlow);
       fetch(el.dataset.reloadWhenUp, { cache: "no-store", credentials: "same-origin" })
         .then((r) => {
-          if (r.ok && (wentDown || Date.now() - started > 120000)) window.location.href = "/";
+          // 502/503 while nginx is up but the web app still starts
+          if (!r.ok) return down();
+          // twice in a row: the app answers, not just a service that is still starting
+          if (wentDown) up += 1;
+          if (up >= 2 || (!wentDown && Date.now() - started > 120000)) window.location.href = next;
         })
-        .catch(() => (wentDown = true));
+        .catch(down);
+    };
     setInterval(tick, 5000);
   }
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-17 16:06+0200\n"
+"POT-Creation-Date: 2026-10-18 10:32+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: nl\n"
@@ -161,6 +161,9 @@ msgid "A custom greeting played before callers leave a message (replaces the sta
 msgstr ""
 "Een eigen begroeting die wordt afgespeeld voordat bellers een bericht inspreken (vervangt het standaardbericht \"niet"
 " beschikbaar\")."
+
+msgid "A firmware update is being installed. Wait until it has finished."
+msgstr "Er wordt een firmware-update geïnstalleerd. Wacht tot deze is voltooid."
 
 msgid "A new self-signed certificate was created."
 msgstr "Er is een nieuw zelfondertekend certificaat aangemaakt."
@@ -345,6 +348,9 @@ msgstr "Een IVR-menu speelt een aankondiging af en laat bellers met een toets ki
 msgid "An e-mail address is required for the ACME account"
 msgstr "Voor het ACME-account is een e-mailadres vereist"
 
+msgid "An update is already being installed."
+msgstr "Er wordt al een update geïnstalleerd."
+
 msgid "Announce on the local network (mDNS)"
 msgstr "Aankondigen op het lokale netwerk (mDNS)"
 
@@ -482,6 +488,9 @@ msgstr "Beschikbaar"
 
 msgid "Back to the dashboard"
 msgstr "Terug naar het dashboard"
+
+msgid "Backup"
+msgstr "Back-up"
 
 #, python-format
 msgid "Backup %(name)s created."
@@ -677,6 +686,9 @@ msgstr "Het wijzigen van het adres onderbreekt de verbinding. Open na het toepas
 msgid "Channel"
 msgstr "Kanaal"
 
+msgid "Check"
+msgstr "Controleren"
+
 msgid "Check automatically"
 msgstr "Automatisch controleren"
 
@@ -685,6 +697,9 @@ msgstr "Controleren op updates"
 
 msgid "Check now"
 msgstr "Nu controleren"
+
+msgid "Checking the signature and checksums of the update ..."
+msgstr "Handtekening en controlesommen van de update worden gecontroleerd ..."
 
 #, python-format
 msgid "Checksum mismatch for %(name)s"
@@ -797,6 +812,9 @@ msgstr "Contact"
 msgid "Content"
 msgstr "Inhoud"
 
+msgid "Continue"
+msgstr "Doorgaan"
+
 msgid "Copied"
 msgstr "Gekopieerd"
 
@@ -813,6 +831,10 @@ msgstr "Audio kon niet worden geconverteerd: %(error)s"
 #, python-format
 msgid "Could not start the certificate request: %(error)s"
 msgstr "De certificaataanvraag kon niet worden gestart: %(error)s"
+
+#, python-format
+msgid "Could not start the update: %(error)s"
+msgstr "De update kon niet worden gestart: %(error)s"
 
 msgid "Country specific dial, busy and ring tones."
 msgstr "Landspecifieke kies-, bezet- en beltonen."
@@ -986,6 +1008,9 @@ msgstr "Domein mag niet leeg zijn"
 
 msgid "Domain names"
 msgstr "Domeinnamen"
+
+msgid "Done"
+msgstr "Klaar"
 
 msgid "Down"
 msgstr "Niet actief"
@@ -1499,6 +1524,9 @@ msgstr "Een update installeren"
 
 msgid "Installed firmware"
 msgstr "Geïnstalleerde firmware"
+
+msgid "Installing the new version ..."
+msgstr "De nieuwe versie wordt geïnstalleerd ..."
 
 msgid "Interface"
 msgstr "Interface"
@@ -2647,6 +2675,9 @@ msgstr "Opslaan"
 msgid "Save and request certificate now"
 msgstr "Opslaan en certificaat nu aanvragen"
 
+msgid "Saving a backup of the configuration ..."
+msgstr "Back-up van de configuratie wordt opgeslagen ..."
+
 msgid "Secret"
 msgstr "Geheim"
 
@@ -2945,6 +2976,9 @@ msgstr "Het nummer waarmee deze telefoon wordt gebeld."
 msgid "The password must have at least 8 characters"
 msgstr "Het wachtwoord moet minstens 8 tekens hebben"
 
+msgid "The system has not come back yet. Check its console, or try the link below."
+msgstr "Het systeem is nog niet terug. Controleer de console of probeer de link hieronder."
+
 msgid "The system is being reset to factory defaults and reboots now."
 msgstr "Het systeem wordt teruggezet naar de fabrieksinstellingen en herstart nu."
 
@@ -2954,6 +2988,17 @@ msgstr "Het systeem wordt herstart. Deze pagina wordt herladen zodra het weer be
 msgid "The system is shutting down."
 msgstr "Het systeem wordt uitgeschakeld."
 
+msgid "The system is starting. This can take a few minutes."
+msgstr "Het systeem wordt gestart. Dit kan enkele minuten duren."
+
+#, python-format
+msgid ""
+"The system went back to version %(running)s, which is running now. The log of the failed start is in <a "
+"href=\"/status/logs\">Status &rarr; Logs</a>."
+msgstr ""
+"Het systeem is teruggegaan naar versie %(running)s, die nu draait. Het log van de mislukte start staat onder <a "
+"href=\"/status/logs\">Status &rarr; Logs</a>."
+
 msgid "The text must not contain control characters"
 msgstr "De tekst mag geen stuurtekens bevatten"
 
@@ -2961,6 +3006,17 @@ msgid "The text to record for this menu. It is not played; record it and upload 
 msgstr ""
 "De tekst die voor dit menu moet worden ingesproken. Deze wordt niet afgespeeld; neem hem op en upload het bestand "
 "hierboven."
+
+msgid ""
+"The update was interrupted before it finished (see <a href=\"/status/logs\">Status &rarr; Logs</a>). Upload the file "
+"again."
+msgstr ""
+"De update is onderbroken voordat deze klaar was (zie <a href=\"/status/logs\">Status &rarr; Logs</a>). Upload het "
+"bestand opnieuw."
+
+#, python-format
+msgid "The update was successful: PhonixPBX <strong>%(version)s</strong> is running."
+msgstr "De update is geslaagd: PhonixPBX <strong>%(version)s</strong> draait."
 
 msgid "The uploaded file expired, please upload it again."
 msgstr "Het geüploade bestand is verlopen, upload het opnieuw."
@@ -2996,6 +3052,13 @@ msgstr "Deze telefoon kan via de geselecteerde providers geen uitgaande gesprekk
 
 msgid "This phone has no voicemail box"
 msgstr "Deze telefoon heeft geen voicemailbox"
+
+msgid ""
+"This takes several minutes, longer on an SD card. Do not switch the system off. You can leave this page: the update "
+"continues, and this page shows its progress when you come back."
+msgstr ""
+"Dit duurt enkele minuten, langer op een SD-kaart. Schakel het systeem niet uit. U kunt deze pagina verlaten: de "
+"update gaat door, en deze pagina toont de voortgang wanneer u terugkomt."
 
 msgid "This username is reserved"
 msgstr "Deze gebruikersnaam is gereserveerd"
@@ -3210,6 +3273,9 @@ msgstr ""
 msgid "Upload certificate"
 msgstr "Certificaat uploaden"
 
+msgid "Upload complete. Starting the update ..."
+msgstr "Upload voltooid. Update wordt gestart ..."
+
 msgid "Upload your own hold music. Files are converted to 8 kHz mono WAV. Without uploads the bundled music is used."
 msgstr ""
 "Upload uw eigen wachtmuziek. Bestanden worden geconverteerd naar 8 kHz mono WAV. Zonder uploads wordt de meegeleverde"
@@ -3315,8 +3381,16 @@ msgid "Version %(latest)s is available (running %(version)s). Download: %(url)s"
 msgstr "Versie %(latest)s is beschikbaar (actief: %(version)s). Download: %(url)s"
 
 #, python-format
-msgid "Version <strong>%(version)s</strong> has been installed into the inactive slot."
-msgstr "Versie <strong>%(version)s</strong> is in het inactieve slot geïnstalleerd."
+msgid "Version %(version)s did not start"
+msgstr "Versie %(version)s is niet gestart"
+
+#, python-format
+msgid ""
+"Version <strong>%(version)s</strong> has been installed into the inactive slot. Reboot to start it; active calls are "
+"interrupted."
+msgstr ""
+"Versie <strong>%(version)s</strong> is in het inactieve slot geïnstalleerd. Herstart om deze te starten; actieve "
+"gesprekken worden onderbroken."
 
 #, python-format
 msgid ""
@@ -3364,6 +3438,9 @@ msgstr "Voicemail, vergaderingen en media"
 
 msgid "Wait for a key (s)"
 msgstr "Wachten op een toets (s)"
+
+msgid "Waiting for the system to shut down ..."
+msgstr "Wachten tot het systeem is afgesloten ..."
 
 msgid "Web application"
 msgstr "Webapplicatie"
@@ -3416,6 +3493,9 @@ msgstr "Genereren uit opties"
 
 msgid "Write permissions"
 msgstr "Schrijfrechten"
+
+msgid "Writing the new version to the inactive system slot ..."
+msgstr "De nieuwe versie wordt naar het inactieve systeemslot geschreven ..."
 
 #, python-format
 msgid "You are running the latest version (%(version)s)."
@@ -3626,6 +3706,9 @@ msgstr "telefoon %(ext)s"
 
 msgid "prepend text to name"
 msgstr "tekst vóór naam plaatsen"
+
+msgid "progress"
+msgstr "voortgang"
 
 #, python-format
 msgid "provider %(name)s"

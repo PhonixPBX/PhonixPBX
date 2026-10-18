@@ -2,6 +2,16 @@
 {% extends "base.html" %}
 {% from "macros/forms.html" import csrf, input, checkbox, form_errors with context %}
 {% block content %}
+{% if result and result.ok %}
+<div class="alert alert-success" role="status">{{ icon("circle-check", "me-1") }}{{ _("The update was successful: PhonixPBX <strong>%(version)s</strong> is running.", version=result.version) }}</div>
+{% elif result %}
+<div class="alert alert-warning" role="alert">
+  <h4 class="alert-title">{{ _("Version %(version)s did not start", version=result.version) }}</h4>
+  <div class="text-secondary">{{ _('The system went back to version %(running)s, which is running now. The log of the failed start is in <a href="/status/logs">Status &rarr; Logs</a>.', running=info.version) }}</div>
+</div>
+{% endif %}
+{% set busy = job.state == "running" %}
+{% set job_html %}{% if job.state in ("running", "installed") %}{% include "partials/firmware_job.html" %}{% endif %}{% endset %}
 <div class="row row-cards">
   <div class="col-lg-6">
     <div class="card"><div class="card-body">
@@ -58,17 +68,21 @@
         <input class="form-check-input" type="checkbox" id="snapshot-confirm">
         <span class="form-check-label">{{ _("I have taken a snapshot of this container") }}</span>
       </label>
-      <form action="/system/firmware/upload" class="dropzone" data-dropzone data-requires="#snapshot-confirm" data-param="file" data-max-mb="1024" data-accept=".update" data-target="#firmware-result"
-            data-message="{{ _("Drop the update file here or click to upload") }}"></form>
-      <div id="firmware-result"></div>
+      {% if not busy %}
+      <form action="/system/firmware/upload" class="dropzone" data-dropzone data-requires="#snapshot-confirm" data-param="file" data-max-mb="1024" data-accept=".update" data-target="#firmware-result" data-hide-on-success
+            data-message="{{ _("Drop the update file here or click to upload") }}" data-processing="{{ _("Upload complete. Starting the update ...") }}"></form>
+      {% endif %}
+      <div id="firmware-result">{{ job_html }}</div>
     </div></div>
     {% else %}
     <div class="card"><div class="card-body">
       <h3 class="card-title">{{ _("Install an update") }}</h3>
       <p class="text-secondary">{{ _("Upload a signed <code>.update</code> bundle for this board. It is written to the inactive system slot; the configuration and data are kept. If the new firmware fails to start, the previous one is booted automatically.") }}</p>
-      <form action="/system/firmware/upload" class="dropzone" data-dropzone data-param="file" data-max-mb="1024" data-accept=".update" data-target="#firmware-result"
-            data-message="{{ _("Drop the update file here or click to upload") }}"></form>
-      <div id="firmware-result"></div>
+      {% if not busy %}
+      <form action="/system/firmware/upload" class="dropzone" data-dropzone data-param="file" data-max-mb="1024" data-accept=".update" data-target="#firmware-result" data-hide-on-success
+            data-message="{{ _("Drop the update file here or click to upload") }}" data-processing="{{ _("Upload complete. Starting the update ...") }}"></form>
+      {% endif %}
+      <div id="firmware-result">{{ job_html }}</div>
     </div></div>
     {% endif %}
   </div>

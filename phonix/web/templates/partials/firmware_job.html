@@ -1,0 +1,51 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+{# firmware install job; polls itself while it runs #}
+{% set state = job.get("state", "none") %}
+<div id="firmware-job"{% if state == "running" %} hx-get="/system/firmware/job" hx-trigger="every 2s" hx-swap="outerHTML"{% endif %}>
+{% if state == "running" %}
+  {% set steps = [("verify", _("Check"))] + ([("backup", _("Backup"))] if platform == "lxc" else []) + [("write", _("Install")), ("done", _("Done"))] %}
+  {% set names = steps | map("first") | list %}
+  {% set current = names.index(job.step) if job.step in names else 0 %}
+  <div class="alert alert-info mt-3 mb-0" role="status">
+    <div class="steps steps-counter steps-blue mb-3">
+      {% for name, label in steps %}
+      <span class="step-item{% if loop.index0 == current %} active{% endif %}">{{ label }}</span>
+      {% endfor %}
+    </div>
+    <div class="d-flex align-items-center mb-2">
+      <span class="spinner-border spinner-border-sm me-2"></span>
+      <strong>
+      {% if job.step == "backup" %}{{ _("Saving a backup of the configuration ...") }}
+      {% elif job.step == "write" %}{{ _("Installing the new version ...") if platform == "lxc" else _("Writing the new version to the inactive system slot ...") }}
+      {% else %}{{ _("Checking the signature and checksums of the update ...") }}{% endif %}
+      </strong>
+      <span class="ms-auto text-secondary small">{{ "%d:%02d" | format(job.elapsed // 60, job.elapsed % 60) }}</span>
+    </div>
+    {% if job.progress is not none %}
+    <div class="progress progress-sm mb-2"><div class="progress-bar" style="width: {{ job.progress }}%" role="progressbar" aria-valuenow="{{ job.progress }}" aria-valuemin="0" aria-valuemax="100" aria-label="{{ _("progress") }}"></div></div>
+    {% else %}
+    <div class="progress progress-sm mb-2"><div class="progress-bar progress-bar-indeterminate" role="progressbar" aria-label="{{ _("progress") }}"></div></div>
+    {% endif %}
+    <div class="text-secondary small">{{ _("This takes several minutes, longer on an SD card. Do not switch the system off. You can leave this page: the update continues, and this page shows its progress when you come back.") }}</div>
+  </div>
+{% elif state == "installed" %}
+  <div class="alert alert-success mt-3 mb-0">
+    {% if platform == "lxc" %}
+    {{ _("Version <strong>%(version)s</strong> has been installed. Restart the container to start it; until then the previous version keeps running.", version=job.version) }}
+    <p class="mb-0 mt-2">{{ _("If the new version does not work, roll back to the snapshot you took on the container host.") }}</p>
+    {% else %}
+    {{ _("Version <strong>%(version)s</strong> has been installed into the inactive slot. Reboot to start it; active calls are interrupted.", version=job.version) }}
+    {% endif %}
+    <form method="post" action="/system/reboot" class="mt-2">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <input type="hidden" name="next" value="/system/firmware">
+      <button class="btn btn-success" type="submit" name="action" value="reboot">{{ icon("refresh") }}{{ _("Reboot into the new firmware") }}</button>
+    </form>
+  </div>
+{% elif state == "error" %}
+  <div class="alert alert-danger mt-3 mb-0" role="alert">
+    {% if job.interrupted %}{{ _('The update was interrupted before it finished (see <a href="/status/logs">Status &rarr; Logs</a>). Upload the file again.') }}
+    {% else %}{{ _("Update rejected: %(error)s", error=job.message) }}{% endif %}
+  </div>
+{% endif %}
+</div>

@@ -6,6 +6,23 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `phonix update install <file>` installs an update bundle from the console.
+
+### Changed
+
+- *System → Firmware*: after the upload, the page shows the progress of the installation in steps (check, backup
+  on LXC, install) with the elapsed time, instead of an upload field that stays at 100 %. You can leave and come
+  back; the update continues in the background, and another upload is refused until it has finished. After
+  *Reboot into the new firmware* the page waits for the system and then confirms that the new version runs, or
+  reports that the previous version was started again.
+
+### Fixed
+
+- Installing a firmware update on a slow SD card no longer ends with an error page while the update itself
+  succeeded: the installation no longer runs inside the upload request.
+
 ## [1.4.0] - 2026-10-17
 
 ### Added

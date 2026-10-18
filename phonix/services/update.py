@@ -14,17 +14,29 @@ checks everything again and installs the payload:
   the release), ``world`` and ``image-info`` upgrade the container in place
   with apk; there is no automatic rollback, so a backup of the configuration is
   taken first and the UI recommends a snapshot on the container host
+
+Installing takes minutes on an SD card, so the web UI does not wait for it: it
+starts ``phonix update install`` detached (``start_install``) and polls the job
+file (``read_job``) that the job keeps up to date.
 """
 
 from __future__ import annotations
 
+import datetime as dt
+import fcntl
 import hashlib
 import json
 import logging
+import os
 import re
+import secrets
+import subprocess
+import sys
 import tarfile
+import threading
 import time
 import urllib.request
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -34,9 +46,10 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
 from phonix import __version__, config
+from phonix.core import db
 from phonix.i18n import _
 from phonix.services import backup, platform, privileged
-from phonix.services.common import ServiceError
+from phonix.services.common import ServiceError, audit
 
 log = logging.getLogger(__name__)
 
@@ -44,6 +57,8 @@ MAX_BUNDLE = 1024**3
 MAX_MANIFEST = 1024**2
 MAX_SIGNATURE = 1024
 CHECK_STATE = "update-check.json"  # result of the last online check (state dir)
+JOB_STATE = "update-job.json"  # the running or last install job (state dir)
+INSTALL_TIMEOUT = 3600  # writing and verifying a slot on a slow SD card
 
 # PEP 440 (1.2.0, 1.2.0rc1, 1.2.0.post1, 1.3.0.dev0), with an optional "v" prefix; the
 # semver spellings 1.2.0-rc.1 and 1.2.0-alpha normalise the same way. Local versions (+build) are ignored.
@@ -161,7 +176,8 @@ def _public_key() -> Ed25519PublicKey:
     return key
 
 
-def verify_bundle(path: Path) -> BundleInfo:
+def verify_bundle(path: Path, progress: Callable[[int], None] | None = None) -> BundleInfo:
+    """Check signature, board and checksums; ``progress`` gets the percentage of the hashed payload."""
     if not platform.supports_updates():
         raise ServiceError(_(platform.CONTAINER_UPDATE_HINT))
     if path.stat().st_size > MAX_BUNDLE:
@@ -190,15 +206,24 @@ def verify_bundle(path: Path) -> BundleInfo:
                         current=current_board(),
                     )
                 )
-            for name, digest in info.files.items():
+            members = []
+            for name in info.files:
                 member = names.get(name)
                 if member is None or not member.isfile():
                     raise ServiceError(_("Update bundle is missing %(name)s", name=name))
+                members.append(member)
+            total = sum(m.size for m in members) or 1
+            done = 0
+            for member in members:
+                name, digest = member.name, info.files[member.name]
                 h = hashlib.sha256()
                 fh = tar.extractfile(member)
                 assert fh is not None
                 while chunk := fh.read(1024 * 1024):
                     h.update(chunk)
+                    done += len(chunk)
+                    if progress:
+                        progress(done * 100 // total)
                 if h.hexdigest() != digest:
                     raise ServiceError(_("Checksum mismatch for %(name)s", name=name))
     except (tarfile.TarError, KeyError, ValueError) as exc:
@@ -206,17 +231,205 @@ def verify_bundle(path: Path) -> BundleInfo:
     return info
 
 
-def install(path: Path) -> BundleInfo:
-    info = verify_bundle(path)
+def install(path: Path, step: Callable[[str, int | None], None] | None = None) -> BundleInfo:
+    """Verify and install a bundle; ``step(name, percent)`` reports verify, backup and write."""
+    report = step or (lambda name, percent: None)
+    report("verify", 0)
+    info = verify_bundle(path, lambda percent: report("verify", percent))
     if platform.kind() == "lxc":
         # no A/B slot to fall back to: keep the configuration of the running version
+        report("backup", None)
         try:
             saved = backup.create()
         except (OSError, ServiceError) as exc:
             raise ServiceError(_("Backup before the update failed: %(error)s", error=exc)) from exc
         log.info("backup before the update to %s: %s", info.version, saved)
-    privileged.run("install-update", str(path), timeout=900)
+    report("write", None)
+    privileged.run("install-update", str(path), timeout=INSTALL_TIMEOUT)
     return info
+
+
+# --- install job ------------------------------------------------------------------------------
+
+
+def _job_path() -> Path:
+    return config.get().state_dir / JOB_STATE
+
+
+def _boot_id() -> str:
+    try:
+        return Path("/proc/sys/kernel/random/boot_id").read_text().strip()
+    except OSError:
+        return ""
+
+
+def write_job(
+    state: str,
+    step: str = "",
+    version: str = "",
+    message: str = "",
+    progress: int | None = None,
+    pid: int | None = None,
+) -> None:
+    path = _job_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    old = _read_job_raw()
+    data = {
+        "state": state,
+        "step": step,
+        "version": version,
+        "message": message,
+        "progress": progress,
+        # the start of the job, for the elapsed time shown while it runs
+        "started": old.get("started") if old.get("state") == "running" else int(time.time()),
+        "time": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+        "pid": (pid or os.getpid()) if state == "running" else None,
+        "boot_id": _boot_id(),
+        "id": secrets.token_hex(8),
+    }
+    tmp = path.with_name(f".{path.name}.tmp")
+    tmp.write_text(json.dumps(data, indent=2))
+    os.replace(tmp, path)
+
+
+def _read_job_raw() -> dict[str, Any]:
+    try:
+        data = json.loads(_job_path().read_text())
+    except (OSError, ValueError):
+        return {"state": "none"}
+    return data if isinstance(data, dict) else {"state": "none"}
+
+
+def _alive(pid: Any) -> bool:
+    if not isinstance(pid, int) or pid <= 0:
+        return False
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
+
+
+def read_job() -> dict[str, Any]:
+    """The install job: state none, running (with step and progress), installed or error.
+
+    ``message`` of an error is the reason the update was rejected; ``interrupted``
+    is set when the job process went away without a result."""
+    data = _read_job_raw()
+    # the job file survives a reboot, and after one the pid may belong to another process
+    rebooted = bool(data.get("boot_id")) and data.get("boot_id") != _boot_id()
+    if data.get("state") == "running" and (rebooted or not _alive(data.get("pid"))):
+        data.update(state="error", message="", interrupted=True)
+    if data.get("state") == "running":
+        data["elapsed"] = max(0, int(time.time()) - int(data.get("started") or time.time()))
+    return data
+
+
+def clear_job() -> None:
+    _job_path().unlink(missing_ok=True)
+
+
+def reboot_result() -> dict[str, Any] | None:
+    """After the reboot into an installed update: whether the new version runs.
+
+    Returns ``{"ok": bool, "version": installed}`` once and forgets the job, or
+    None if there is nothing to report (yet)."""
+    job = _read_job_raw()
+    if job.get("state") != "installed":
+        return None
+    version = str(job.get("version", ""))
+    if version == __version__:
+        clear_job()
+        return {"ok": True, "version": version}
+    # still the old version: only a failure if the system has rebooted since the install
+    # (the trial boot was rolled back); before that, the reboot is just pending
+    booted = _boot_id()
+    if booted and job.get("boot_id") and booted != job["boot_id"] and not platform.is_container():
+        clear_job()
+        return {"ok": False, "version": version}
+    return None
+
+
+def is_running() -> bool:
+    return read_job().get("state") == "running"
+
+
+def run_install(path: Path, user: str, remove: bool = False) -> BundleInfo:
+    """The job body (``phonix update install``): install ``path`` and record the progress in the job file.
+
+    ``remove`` (the web upload) deletes the bundle afterwards; it is only accepted for an
+    upload in the data dir and not as root (the data dir belongs to the web user)."""
+    if remove and (os.geteuid() == 0 or path.parent != config.get().data_dir or not path.name.startswith("update-")):
+        raise ServiceError("--remove is only for uploads of the web interface")
+    lock_path = config.get().state_dir / "update.lock"
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(lock_path, "w") as lock:
+        # one install at a time, whether started from the web or the console
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError as exc:
+            raise ServiceError(_("An update is already being installed.")) from exc
+        return _run_install(path, user, remove)
+
+
+def _run_install(path: Path, user: str, remove: bool) -> BundleInfo:
+    last: dict[str, Any] = {"time": 0.0, "step": ""}
+
+    def step(name: str, percent: int | None) -> None:
+        # the hash loop reports every MiB: write the job file at most once a second
+        now = time.monotonic()
+        if name == last["step"] and now - last["time"] < 1 and percent != 100:
+            return
+        last.update(time=now, step=name)
+        write_job("running", name, progress=percent)
+
+    try:
+        info = install(path, step)
+    except (ServiceError, privileged.PrivilegedError, OSError) as exc:
+        write_job("error", message=str(exc))
+        raise
+    finally:
+        if remove:
+            path.unlink(missing_ok=True)
+    write_job("installed", version=info.version)
+    with db.session_scope() as session:
+        audit(session, user, "firmware", summary=f"installed {info.version}")
+    return info
+
+
+def _stale_bundles(keep: Path) -> None:
+    """Uploads of interrupted jobs (the job removes its bundle when it ends)."""
+    for old in config.get().data_dir.glob("update-*.bundle"):
+        if old != keep:
+            old.unlink(missing_ok=True)
+
+
+def start_install(path: Path, user: str) -> None:
+    """Run ``phonix update install --remove`` detached, so the upload request returns at once."""
+    if is_running():
+        raise ServiceError(_("An update is already being installed."))
+    _stale_bundles(path)
+    write_job("running", "verify", progress=0)
+    before = _read_job_raw().get("id")
+    try:
+        proc = subprocess.Popen(
+            [sys.executable, "-m", "phonix.cli", "update", "install", str(path), "--user", user, "--remove"],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+            cwd="/",
+        )
+    except OSError as exc:
+        clear_job()
+        raise ServiceError(_("Could not start the update: %(error)s", error=exc)) from exc
+    # until the child writes its own status, the job belongs to the child's pid
+    if _read_job_raw().get("id") == before:
+        write_job("running", "verify", progress=0, pid=proc.pid)
+    # reap the child when it exits (a zombie would look alive to read_job)
+    threading.Thread(target=proc.wait, daemon=True).start()
 
 
 def status() -> dict[str, str]:

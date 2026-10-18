@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-17 16:06+0200\n"
+"POT-Creation-Date: 2026-10-18 10:32+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: de\n"
@@ -162,6 +162,9 @@ msgid "A custom greeting played before callers leave a message (replaces the sta
 msgstr ""
 "Eigene Ansage, die abgespielt wird, bevor Anrufer eine Nachricht hinterlassen (ersetzt die Standardansage \"nicht "
 "erreichbar\")."
+
+msgid "A firmware update is being installed. Wait until it has finished."
+msgstr "Ein Firmware-Update wird installiert. Warten Sie, bis es abgeschlossen ist."
 
 msgid "A new self-signed certificate was created."
 msgstr "Ein neues selbstsigniertes Zertifikat wurde erstellt."
@@ -346,6 +349,9 @@ msgstr "Ein IVR-Menü spielt eine Ansage ab und lässt Anrufer per Taste wählen
 msgid "An e-mail address is required for the ACME account"
 msgstr "Für das ACME-Konto ist eine E-Mail-Adresse erforderlich"
 
+msgid "An update is already being installed."
+msgstr "Es wird bereits ein Update installiert."
+
 msgid "Announce on the local network (mDNS)"
 msgstr "Im lokalen Netzwerk bekannt geben (mDNS)"
 
@@ -483,6 +489,9 @@ msgstr "Verfügbar"
 
 msgid "Back to the dashboard"
 msgstr "Zurück zum Dashboard"
+
+msgid "Backup"
+msgstr "Backup"
 
 #, python-format
 msgid "Backup %(name)s created."
@@ -678,6 +687,9 @@ msgstr "Eine Änderung der Adresse unterbricht die Verbindung. Öffnen Sie nach 
 msgid "Channel"
 msgstr "Kanal"
 
+msgid "Check"
+msgstr "Prüfen"
+
 msgid "Check automatically"
 msgstr "Automatisch prüfen"
 
@@ -686,6 +698,9 @@ msgstr "Nach Updates suchen"
 
 msgid "Check now"
 msgstr "Jetzt prüfen"
+
+msgid "Checking the signature and checksums of the update ..."
+msgstr "Signatur und Prüfsummen des Updates werden geprüft ..."
 
 #, python-format
 msgid "Checksum mismatch for %(name)s"
@@ -798,6 +813,9 @@ msgstr "Kontakt"
 msgid "Content"
 msgstr "Inhalt"
 
+msgid "Continue"
+msgstr "Weiter"
+
 msgid "Copied"
 msgstr "Kopiert"
 
@@ -814,6 +832,10 @@ msgstr "Audio konnte nicht konvertiert werden: %(error)s"
 #, python-format
 msgid "Could not start the certificate request: %(error)s"
 msgstr "Die Zertifikatsanforderung konnte nicht gestartet werden: %(error)s"
+
+#, python-format
+msgid "Could not start the update: %(error)s"
+msgstr "Das Update konnte nicht gestartet werden: %(error)s"
 
 msgid "Country specific dial, busy and ring tones."
 msgstr "Länderspezifische Wähl-, Besetzt- und Ruftöne."
@@ -987,6 +1009,9 @@ msgstr "Die Domain darf nicht leer sein"
 
 msgid "Domain names"
 msgstr "Domainnamen"
+
+msgid "Done"
+msgstr "Fertig"
 
 msgid "Down"
 msgstr "Getrennt"
@@ -1502,6 +1527,9 @@ msgstr "Update installieren"
 
 msgid "Installed firmware"
 msgstr "Installierte Firmware"
+
+msgid "Installing the new version ..."
+msgstr "Die neue Version wird installiert ..."
 
 msgid "Interface"
 msgstr "Interface"
@@ -2656,6 +2684,9 @@ msgstr "Speichern"
 msgid "Save and request certificate now"
 msgstr "Speichern und Zertifikat jetzt anfordern"
 
+msgid "Saving a backup of the configuration ..."
+msgstr "Backup der Konfiguration wird gespeichert ..."
+
 msgid "Secret"
 msgstr "Passwort"
 
@@ -2956,6 +2987,9 @@ msgstr "Die Rufnummer dieses Telefons."
 msgid "The password must have at least 8 characters"
 msgstr "Das Passwort muss mindestens 8 Zeichen haben"
 
+msgid "The system has not come back yet. Check its console, or try the link below."
+msgstr "Das System ist noch nicht wieder erreichbar. Prüfen Sie die Konsole oder versuchen Sie den Link unten."
+
 msgid "The system is being reset to factory defaults and reboots now."
 msgstr "Das System wird auf die Werkseinstellungen zurückgesetzt und startet jetzt neu."
 
@@ -2965,6 +2999,17 @@ msgstr "Das System startet neu. Diese Seite wird neu geladen, sobald es wieder e
 msgid "The system is shutting down."
 msgstr "Das System wird heruntergefahren."
 
+msgid "The system is starting. This can take a few minutes."
+msgstr "Das System startet. Dies kann einige Minuten dauern."
+
+#, python-format
+msgid ""
+"The system went back to version %(running)s, which is running now. The log of the failed start is in <a "
+"href=\"/status/logs\">Status &rarr; Logs</a>."
+msgstr ""
+"Das System ist zu Version %(running)s zurückgekehrt, die jetzt läuft. Das Log des fehlgeschlagenen Starts finden Sie "
+"unter <a href=\"/status/logs\">Status &rarr; Logs</a>."
+
 msgid "The text must not contain control characters"
 msgstr "Der Text darf keine Steuerzeichen enthalten"
 
@@ -2972,6 +3017,17 @@ msgid "The text to record for this menu. It is not played; record it and upload 
 msgstr ""
 "Der Text, der für dieses Menü aufgenommen werden soll. Er wird nicht abgespielt; nehmen Sie ihn auf und laden Sie die"
 " Datei oben hoch."
+
+msgid ""
+"The update was interrupted before it finished (see <a href=\"/status/logs\">Status &rarr; Logs</a>). Upload the file "
+"again."
+msgstr ""
+"Das Update wurde vor dem Abschluss unterbrochen (siehe <a href=\"/status/logs\">Status &rarr; Logs</a>). Laden Sie "
+"die Datei erneut hoch."
+
+#, python-format
+msgid "The update was successful: PhonixPBX <strong>%(version)s</strong> is running."
+msgstr "Das Update war erfolgreich: PhonixPBX <strong>%(version)s</strong> läuft."
 
 msgid "The uploaded file expired, please upload it again."
 msgstr "Die hochgeladene Datei ist abgelaufen, bitte laden Sie sie erneut hoch."
@@ -3009,6 +3065,13 @@ msgstr "Dieses Telefon kann über die ausgewählten Provider keine ausgehenden A
 
 msgid "This phone has no voicemail box"
 msgstr "Dieses Telefon hat keine Mailbox"
+
+msgid ""
+"This takes several minutes, longer on an SD card. Do not switch the system off. You can leave this page: the update "
+"continues, and this page shows its progress when you come back."
+msgstr ""
+"Dies dauert einige Minuten, auf einer SD-Karte länger. Schalten Sie das System nicht aus. Sie können diese Seite "
+"verlassen: Das Update läuft weiter, und diese Seite zeigt den Fortschritt an, wenn Sie zurückkehren."
 
 msgid "This username is reserved"
 msgstr "Dieser Benutzername ist reserviert"
@@ -3223,6 +3286,9 @@ msgstr ""
 msgid "Upload certificate"
 msgstr "Zertifikat hochladen"
 
+msgid "Upload complete. Starting the update ..."
+msgstr "Hochladen abgeschlossen. Update wird gestartet ..."
+
 msgid "Upload your own hold music. Files are converted to 8 kHz mono WAV. Without uploads the bundled music is used."
 msgstr ""
 "Laden Sie Ihre eigene Wartemusik hoch. Dateien werden in 8-kHz-Mono-WAV konvertiert. Ohne eigene Dateien wird die "
@@ -3328,8 +3394,16 @@ msgid "Version %(latest)s is available (running %(version)s). Download: %(url)s"
 msgstr "Version %(latest)s ist verfügbar (installiert: %(version)s). Download: %(url)s"
 
 #, python-format
-msgid "Version <strong>%(version)s</strong> has been installed into the inactive slot."
-msgstr "Version <strong>%(version)s</strong> wurde in den inaktiven Slot installiert."
+msgid "Version %(version)s did not start"
+msgstr "Version %(version)s ist nicht gestartet"
+
+#, python-format
+msgid ""
+"Version <strong>%(version)s</strong> has been installed into the inactive slot. Reboot to start it; active calls are "
+"interrupted."
+msgstr ""
+"Version <strong>%(version)s</strong> wurde in den inaktiven Slot installiert. Starten Sie neu, um sie zu starten; "
+"aktive Gespräche werden unterbrochen."
 
 #, python-format
 msgid ""
@@ -3377,6 +3451,9 @@ msgstr "Mailbox, Telefonkonferenzen und Medien"
 
 msgid "Wait for a key (s)"
 msgstr "Auf Taste warten (s)"
+
+msgid "Waiting for the system to shut down ..."
+msgstr "Warten, bis das System heruntergefahren ist ..."
 
 msgid "Web application"
 msgstr "Webanwendung"
@@ -3429,6 +3506,9 @@ msgstr "Aus Optionen erstellen"
 
 msgid "Write permissions"
 msgstr "Schreibrechte"
+
+msgid "Writing the new version to the inactive system slot ..."
+msgstr "Die neue Version wird in den inaktiven System-Slot geschrieben ..."
 
 #, python-format
 msgid "You are running the latest version (%(version)s)."
@@ -3639,6 +3719,9 @@ msgstr "Telefon %(ext)s"
 
 msgid "prepend text to name"
 msgstr "Text vor den Namen setzen"
+
+msgid "progress"
+msgstr "Fortschritt"
 
 #, python-format
 msgid "provider %(name)s"

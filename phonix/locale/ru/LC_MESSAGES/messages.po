@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-17 16:06+0200\n"
+"POT-Creation-Date: 2026-10-18 10:32+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ru\n"
@@ -162,6 +162,9 @@ msgid "A custom greeting played before callers leave a message (replaces the sta
 msgstr ""
 "Собственное приветствие, которое проигрывается перед тем, как звонящий оставит сообщение (заменяет стандартное "
 "сообщение «недоступен»)."
+
+msgid "A firmware update is being installed. Wait until it has finished."
+msgstr "Устанавливается обновление прошивки. Дождитесь его завершения."
 
 msgid "A new self-signed certificate was created."
 msgstr "Создан новый самоподписанный сертификат."
@@ -346,6 +349,9 @@ msgstr ""
 msgid "An e-mail address is required for the ACME account"
 msgstr "Для учетной записи ACME требуется адрес электронной почты"
 
+msgid "An update is already being installed."
+msgstr "Обновление уже устанавливается."
+
 msgid "Announce on the local network (mDNS)"
 msgstr "Объявлять в локальной сети (mDNS)"
 
@@ -483,6 +489,9 @@ msgstr "Доступен"
 
 msgid "Back to the dashboard"
 msgstr "Вернуться на главную"
+
+msgid "Backup"
+msgstr "Резервная копия"
 
 #, python-format
 msgid "Backup %(name)s created."
@@ -678,6 +687,9 @@ msgstr "Изменение адреса прервет соединение. П�
 msgid "Channel"
 msgstr "Канал"
 
+msgid "Check"
+msgstr "Проверить"
+
 msgid "Check automatically"
 msgstr "Проверять автоматически"
 
@@ -686,6 +698,9 @@ msgstr "Проверка обновлений"
 
 msgid "Check now"
 msgstr "Проверить сейчас"
+
+msgid "Checking the signature and checksums of the update ..."
+msgstr "Проверка подписи и контрольных сумм обновления ..."
 
 #, python-format
 msgid "Checksum mismatch for %(name)s"
@@ -798,6 +813,9 @@ msgstr "Контакт"
 msgid "Content"
 msgstr "Содержимое"
 
+msgid "Continue"
+msgstr "Продолжить"
+
 msgid "Copied"
 msgstr "Скопировано"
 
@@ -814,6 +832,10 @@ msgstr "Не удалось преобразовать аудио: %(error)s"
 #, python-format
 msgid "Could not start the certificate request: %(error)s"
 msgstr "Не удалось запустить запрос сертификата: %(error)s"
+
+#, python-format
+msgid "Could not start the update: %(error)s"
+msgstr "Не удалось запустить обновление: %(error)s"
 
 msgid "Country specific dial, busy and ring tones."
 msgstr "Национальные тоны готовности, занятости и вызова."
@@ -987,6 +1009,9 @@ msgstr "Домен не может быть пустым"
 
 msgid "Domain names"
 msgstr "Доменные имена"
+
+msgid "Done"
+msgstr "Готово"
 
 msgid "Down"
 msgstr "Неактивен"
@@ -1500,6 +1525,9 @@ msgstr "Установить обновление"
 
 msgid "Installed firmware"
 msgstr "Установленная прошивка"
+
+msgid "Installing the new version ..."
+msgstr "Установка новой версии ..."
 
 msgid "Interface"
 msgstr "Интерфейс"
@@ -2649,6 +2677,9 @@ msgstr "Сохранить"
 msgid "Save and request certificate now"
 msgstr "Сохранить и запросить сертификат"
 
+msgid "Saving a backup of the configuration ..."
+msgstr "Сохранение резервной копии конфигурации ..."
+
 msgid "Secret"
 msgstr "Секрет"
 
@@ -2945,6 +2976,9 @@ msgstr "Номер для вызова этого телефона."
 msgid "The password must have at least 8 characters"
 msgstr "Пароль должен содержать не менее 8 символов"
 
+msgid "The system has not come back yet. Check its console, or try the link below."
+msgstr "Система ещё не вернулась. Проверьте её консоль или попробуйте ссылку ниже."
+
 msgid "The system is being reset to factory defaults and reboots now."
 msgstr "Система сбрасывается к заводским настройкам и сейчас перезагрузится."
 
@@ -2954,11 +2988,33 @@ msgstr "Система перезагружается. Страница обно
 msgid "The system is shutting down."
 msgstr "Система выключается."
 
+msgid "The system is starting. This can take a few minutes."
+msgstr "Система запускается. Это может занять несколько минут."
+
+#, python-format
+msgid ""
+"The system went back to version %(running)s, which is running now. The log of the failed start is in <a "
+"href=\"/status/logs\">Status &rarr; Logs</a>."
+msgstr ""
+"Система вернулась к версии %(running)s, которая сейчас работает. Журнал неудачного запуска находится в разделе <a "
+"href=\"/status/logs\">Статус &rarr; Журналы</a>."
+
 msgid "The text must not contain control characters"
 msgstr "Текст не должен содержать управляющих символов"
 
 msgid "The text to record for this menu. It is not played; record it and upload the file above."
 msgstr "Текст, который нужно записать для этого меню. Он не воспроизводится: запишите его и загрузите файл выше."
+
+msgid ""
+"The update was interrupted before it finished (see <a href=\"/status/logs\">Status &rarr; Logs</a>). Upload the file "
+"again."
+msgstr ""
+"Обновление было прервано до завершения (см. <a href=\"/status/logs\">Статус &rarr; Журналы</a>). Загрузите файл ещё "
+"раз."
+
+#, python-format
+msgid "The update was successful: PhonixPBX <strong>%(version)s</strong> is running."
+msgstr "Обновление выполнено успешно: работает PhonixPBX <strong>%(version)s</strong>."
 
 msgid "The uploaded file expired, please upload it again."
 msgstr "Срок хранения загруженного файла истек, загрузите его снова."
@@ -2994,6 +3050,13 @@ msgstr "Этот телефон не может совершать исходя�
 
 msgid "This phone has no voicemail box"
 msgstr "У этого телефона нет голосового ящика"
+
+msgid ""
+"This takes several minutes, longer on an SD card. Do not switch the system off. You can leave this page: the update "
+"continues, and this page shows its progress when you come back."
+msgstr ""
+"Это занимает несколько минут, на SD-карте дольше. Не выключайте систему. Вы можете покинуть эту страницу: обновление "
+"продолжится, а при возвращении эта страница покажет его ход."
 
 msgid "This username is reserved"
 msgstr "Это имя пользователя зарезервировано"
@@ -3209,6 +3272,9 @@ msgstr ""
 msgid "Upload certificate"
 msgstr "Загрузить сертификат"
 
+msgid "Upload complete. Starting the update ..."
+msgstr "Загрузка завершена. Запуск обновления ..."
+
 msgid "Upload your own hold music. Files are converted to 8 kHz mono WAV. Without uploads the bundled music is used."
 msgstr ""
 "Загрузите собственную музыку ожидания. Файлы преобразуются в WAV 8 кГц моно. Без загруженных файлов используется "
@@ -3310,8 +3376,16 @@ msgid "Version %(latest)s is available (running %(version)s). Download: %(url)s"
 msgstr "Доступна версия %(latest)s (установлена %(version)s). Скачать: %(url)s"
 
 #, python-format
-msgid "Version <strong>%(version)s</strong> has been installed into the inactive slot."
-msgstr "Версия <strong>%(version)s</strong> установлена в неактивный слот."
+msgid "Version %(version)s did not start"
+msgstr "Версия %(version)s не запустилась"
+
+#, python-format
+msgid ""
+"Version <strong>%(version)s</strong> has been installed into the inactive slot. Reboot to start it; active calls are "
+"interrupted."
+msgstr ""
+"Версия <strong>%(version)s</strong> установлена в неактивный слот. Перезагрузите систему, чтобы запустить её; "
+"активные вызовы будут прерваны."
 
 #, python-format
 msgid ""
@@ -3359,6 +3433,9 @@ msgstr "Голосовая почта, конференц-связь и меди
 
 msgid "Wait for a key (s)"
 msgstr "Ожидание клавиши (с)"
+
+msgid "Waiting for the system to shut down ..."
+msgstr "Ожидание выключения системы ..."
 
 msgid "Web application"
 msgstr "Веб-приложение"
@@ -3411,6 +3488,9 @@ msgstr "Составить по вариантам"
 
 msgid "Write permissions"
 msgstr "Права на запись"
+
+msgid "Writing the new version to the inactive system slot ..."
+msgstr "Запись новой версии в неактивный системный слот ..."
 
 #, python-format
 msgid "You are running the latest version (%(version)s)."
@@ -3621,6 +3701,9 @@ msgstr "телефон %(ext)s"
 
 msgid "prepend text to name"
 msgstr "добавить текст перед именем"
+
+msgid "progress"
+msgstr "ход выполнения"
 
 #, python-format
 msgid "provider %(name)s"

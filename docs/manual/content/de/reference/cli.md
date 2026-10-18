@@ -110,6 +110,7 @@ Der Import gibt seinen Bericht aus. Siehe [Umstieg von AskoziaPBX]({{< relref "/
 | `phonix tui` | Das [Konsolenmenü]({{< relref "/getting-started/_index.md#console" >}}) starten. |
 | `phonix banner` | Die Konsolenmeldung mit den Adressen der Anlage ausgeben. |
 | `phonix update check` | Die neueste Version unter der *URL für Update-Informationen* von [System → Firmware]({{< relref "/system/firmware.md#check" >}}) abfragen und ausgeben, ob eine neuere Version verfügbar ist. Mit `--auto` geschieht nichts, solange *Automatisch prüfen* aus ist (für den täglichen Lauf). |
+| `phonix update install <Datei>` | Ein Update-Paket prüfen und installieren, wie das Hochladen unter [System → Firmware]({{< relref "/system/firmware.md#update-image" >}}); die Seite zeigt den Fortschritt ebenfalls an. Die Datei muss unter `/data` liegen. Danach neu starten, um die neue Version zu starten. |
 | `phonix healthcheck` | Prüfen, ob Weboberfläche und Asterisk antworten; Exit-Code 0, wenn alles in Ordnung ist. `--mark-good` bestätigt den gebooteten Update-Slot. |
 | `phonix migrate` | Datenbankschema anlegen oder aktualisieren. Läuft beim Systemstart automatisch. |
 | `phonix firstboot` | Die Datenpartition initialisieren. Läuft beim ersten Start automatisch. |

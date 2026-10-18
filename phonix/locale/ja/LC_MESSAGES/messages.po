@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-17 16:06+0200\n"
+"POT-Creation-Date: 2026-10-18 10:32+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ja\n"
@@ -150,6 +150,9 @@ msgstr "コンテナーには 2 つ目のシステムスロットがないため
 
 msgid "A custom greeting played before callers leave a message (replaces the standard \"unavailable\" message)."
 msgstr "発信者がメッセージを録音する前に再生されるカスタム応答メッセージです（標準の「不在」メッセージの代わりに再生されます）。"
+
+msgid "A firmware update is being installed. Wait until it has finished."
+msgstr "ファームウェアのアップデートをインストールしています。完了するまでお待ちください。"
 
 msgid "A new self-signed certificate was created."
 msgstr "新しい自己署名証明書を作成しました。"
@@ -332,6 +335,9 @@ msgstr "IVR メニューはアナウンスを再生し、発信者がキーで�
 msgid "An e-mail address is required for the ACME account"
 msgstr "ACME アカウントにはメールアドレスが必要です"
 
+msgid "An update is already being installed."
+msgstr "アップデートはすでにインストール中です。"
+
 msgid "Announce on the local network (mDNS)"
 msgstr "ローカルネットワークに公開する (mDNS)"
 
@@ -469,6 +475,9 @@ msgstr "利用可"
 
 msgid "Back to the dashboard"
 msgstr "ダッシュボードに戻る"
+
+msgid "Backup"
+msgstr "バックアップ"
 
 #, python-format
 msgid "Backup %(name)s created."
@@ -662,6 +671,9 @@ msgstr "アドレスを変更すると接続が切断されます。適用後、
 msgid "Channel"
 msgstr "チャンネル"
 
+msgid "Check"
+msgstr "検証"
+
 msgid "Check automatically"
 msgstr "自動的に確認する"
 
@@ -670,6 +682,9 @@ msgstr "アップデートを確認"
 
 msgid "Check now"
 msgstr "今すぐ確認"
+
+msgid "Checking the signature and checksums of the update ..."
+msgstr "アップデートの署名とチェックサムを確認しています ..."
 
 #, python-format
 msgid "Checksum mismatch for %(name)s"
@@ -780,6 +795,9 @@ msgstr "コンタクト"
 msgid "Content"
 msgstr "内容"
 
+msgid "Continue"
+msgstr "続行"
+
 msgid "Copied"
 msgstr "コピーしました"
 
@@ -796,6 +814,10 @@ msgstr "音声を変換できませんでした: %(error)s"
 #, python-format
 msgid "Could not start the certificate request: %(error)s"
 msgstr "証明書リクエストを開始できませんでした: %(error)s"
+
+#, python-format
+msgid "Could not start the update: %(error)s"
+msgstr "アップデートを開始できませんでした: %(error)s"
 
 msgid "Country specific dial, busy and ring tones."
 msgstr "国ごとの発信音、話中音、呼出音です。"
@@ -969,6 +991,9 @@ msgstr "ドメインは空欄にできません"
 
 msgid "Domain names"
 msgstr "ドメイン名"
+
+msgid "Done"
+msgstr "完了"
 
 msgid "Down"
 msgstr "ダウン"
@@ -1478,6 +1503,9 @@ msgstr "アップデートのインストール"
 
 msgid "Installed firmware"
 msgstr "インストール済みファームウェア"
+
+msgid "Installing the new version ..."
+msgstr "新しいバージョンをインストールしています ..."
 
 msgid "Interface"
 msgstr "インターフェース"
@@ -2608,6 +2636,9 @@ msgstr "保存"
 msgid "Save and request certificate now"
 msgstr "保存して今すぐ証明書をリクエスト"
 
+msgid "Saving a backup of the configuration ..."
+msgstr "設定のバックアップを保存しています ..."
+
 msgid "Secret"
 msgstr "シークレット"
 
@@ -2897,6 +2928,9 @@ msgstr "この電話機を呼び出す番号です。"
 msgid "The password must have at least 8 characters"
 msgstr "パスワードは 8 文字以上にしてください"
 
+msgid "The system has not come back yet. Check its console, or try the link below."
+msgstr "システムはまだ復帰していません。コンソールを確認するか、下のリンクをお試しください。"
+
 msgid "The system is being reset to factory defaults and reboots now."
 msgstr "システムを工場出荷時設定にリセットし、再起動します。"
 
@@ -2906,11 +2940,29 @@ msgstr "システムを再起動しています。復帰するとこのページ
 msgid "The system is shutting down."
 msgstr "システムをシャットダウンしています。"
 
+msgid "The system is starting. This can take a few minutes."
+msgstr "システムを起動しています。数分かかる場合があります。"
+
+#, python-format
+msgid ""
+"The system went back to version %(running)s, which is running now. The log of the failed start is in <a "
+"href=\"/status/logs\">Status &rarr; Logs</a>."
+msgstr "システムはバージョン %(running)s に戻り、現在そのバージョンが動作しています。起動に失敗した際のログは <a href=\"/status/logs\">ステータス &rarr; ログ</a> にあります。"
+
 msgid "The text must not contain control characters"
 msgstr "テキストに制御文字を含めることはできません"
 
 msgid "The text to record for this menu. It is not played; record it and upload the file above."
 msgstr "このメニュー用に録音するテキストです。再生はされません。録音して、上でファイルをアップロードしてください。"
+
+msgid ""
+"The update was interrupted before it finished (see <a href=\"/status/logs\">Status &rarr; Logs</a>). Upload the file "
+"again."
+msgstr "アップデートは完了前に中断されました (<a href=\"/status/logs\">ステータス &rarr; ログ</a> を参照)。ファイルをもう一度アップロードしてください。"
+
+#, python-format
+msgid "The update was successful: PhonixPBX <strong>%(version)s</strong> is running."
+msgstr "アップデートに成功しました: PhonixPBX <strong>%(version)s</strong> が動作しています。"
 
 msgid "The uploaded file expired, please upload it again."
 msgstr "アップロードしたファイルの有効期限が切れました。もう一度アップロードしてください。"
@@ -2944,6 +2996,11 @@ msgstr "この電話機は、選択したプロバイダー経由で発信でき
 
 msgid "This phone has no voicemail box"
 msgstr "この電話機にはボイスメールボックスがありません"
+
+msgid ""
+"This takes several minutes, longer on an SD card. Do not switch the system off. You can leave this page: the update "
+"continues, and this page shows its progress when you come back."
+msgstr "これには数分かかります。SD カードではさらに時間がかかります。システムの電源を切らないでください。このページを離れても構いません。アップデートは続行され、戻ってきたときにこのページに進行状況が表示されます。"
 
 msgid "This username is reserved"
 msgstr "このユーザー名は予約されています"
@@ -3153,6 +3210,9 @@ msgstr ""
 msgid "Upload certificate"
 msgstr "証明書をアップロード"
 
+msgid "Upload complete. Starting the update ..."
+msgstr "アップロードが完了しました。アップデートを開始しています ..."
+
 msgid "Upload your own hold music. Files are converted to 8 kHz mono WAV. Without uploads the bundled music is used."
 msgstr "独自の保留音をアップロードできます。ファイルは 8 kHz モノラル WAV に変換されます。アップロードしない場合は、付属の音楽が使用されます。"
 
@@ -3252,8 +3312,14 @@ msgid "Version %(latest)s is available (running %(version)s). Download: %(url)s"
 msgstr "バージョン %(latest)s が利用可能です（現在 %(version)s）。ダウンロード: %(url)s"
 
 #, python-format
-msgid "Version <strong>%(version)s</strong> has been installed into the inactive slot."
-msgstr "バージョン <strong>%(version)s</strong> を非アクティブなスロットにインストールしました。"
+msgid "Version %(version)s did not start"
+msgstr "バージョン %(version)s が起動しませんでした"
+
+#, python-format
+msgid ""
+"Version <strong>%(version)s</strong> has been installed into the inactive slot. Reboot to start it; active calls are "
+"interrupted."
+msgstr "バージョン <strong>%(version)s</strong> が非アクティブなスロットにインストールされました。起動するには再起動してください。通話中の呼は切断されます。"
 
 #, python-format
 msgid ""
@@ -3295,6 +3361,9 @@ msgstr "ボイスメール、電話会議、メディア"
 
 msgid "Wait for a key (s)"
 msgstr "キー入力の待ち時間（秒）"
+
+msgid "Waiting for the system to shut down ..."
+msgstr "システムのシャットダウンを待っています ..."
 
 msgid "Web application"
 msgstr "Webアプリケーション"
@@ -3345,6 +3414,9 @@ msgstr "選択肢から作成"
 
 msgid "Write permissions"
 msgstr "書き込み権限"
+
+msgid "Writing the new version to the inactive system slot ..."
+msgstr "新しいバージョンを非アクティブなシステムスロットに書き込んでいます ..."
 
 #, python-format
 msgid "You are running the latest version (%(version)s)."
@@ -3555,6 +3627,9 @@ msgstr "電話機 %(ext)s"
 
 msgid "prepend text to name"
 msgstr "名前の前にテキストを追加"
+
+msgid "progress"
+msgstr "進行状況"
 
 #, python-format
 msgid "provider %(name)s"

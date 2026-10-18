@@ -68,3 +68,22 @@ def test_scheduled_check(initialized, monkeypatch, capsys):
 def test_check_online_errors(runtime):
     with pytest.raises(ServiceError, match="https://"):
         update.check_online("http://example.com/latest")
+
+
+def test_verify_bundle_reports_progress(runtime, tmp_path, monkeypatch):
+    import hashlib
+    import json
+
+    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+
+    key = Ed25519PrivateKey.generate()
+    monkeypatch.setattr(update, "_public_key", key.public_key)
+    monkeypatch.setattr(update, "current_board", lambda: "pc-amd64")
+    payload = {"rootfs.squashfs": b"r" * (3 * 1024 * 1024), "vmlinuz": b"k" * 1024}
+    files = {name: hashlib.sha256(data).hexdigest() for name, data in payload.items()}
+    manifest = json.dumps({"version": "9.9.9", "board": "pc-amd64", "files": files}).encode()
+    bundle = tmp_path / "x.update"
+    _bundle(bundle, {"manifest.json": manifest, "manifest.sig": key.sign(manifest), **payload})
+    seen: list[int] = []
+    assert update.verify_bundle(bundle, seen.append).version == "9.9.9"
+    assert seen == sorted(seen) and seen[-1] == 100 and len(seen) > 2

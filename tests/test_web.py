@@ -404,16 +404,45 @@ def test_deleting_admin_removes_tokens(client):
         assert s.query(ApiToken).count() == 0
 
 
-def test_firmware_upload_removes_bundle(client, monkeypatch, runtime):
+class _InlinePopen:
+    """Runs ``phonix update install`` in the test process instead of detaching it."""
+
+    calls: list[list[str]] = []
+
+    def __init__(self, cmd, **kwargs):
+        import os
+
+        from phonix import cli
+
+        type(self).calls.append(cmd)
+        self.pid = os.getpid()
+        self.returncode = cli.main(cmd[cmd.index("update") :])
+
+    def wait(self):
+        return self.returncode
+
+
+@pytest.fixture
+def inline_install(monkeypatch):
+    from phonix.services import update
+
+    _InlinePopen.calls = []
+    monkeypatch.setattr(update.subprocess, "Popen", _InlinePopen)
+    return _InlinePopen
+
+
+def test_firmware_upload_runs_install_job(client, monkeypatch, runtime, inline_install):
     from phonix.services import update
     from phonix.services.common import ServiceError
 
     seen = []
 
-    def fake_install(path):
+    def fake_install(path, step=None):
         seen.append((path, path.read_bytes()))
+        step("verify", 50)
         if len(seen) == 1:
             raise ServiceError("Update signature is invalid")
+        step("write", None)
         return update.BundleInfo("9.9.9", "pc-amd64", {})
 
     monkeypatch.setattr(update, "install", fake_install)
@@ -421,12 +450,100 @@ def test_firmware_upload_removes_bundle(client, monkeypatch, runtime):
     headers = {"HX-Request": "true", "X-CSRF-Token": csrf(client, "/system/firmware")}
     files = {"file": ("x.update", b"bundle", "application/octet-stream")}
     r = client.post("/system/firmware/upload", headers=headers, files=files)
-    assert r.status_code == 422 and "Update signature is invalid" in r.text
+    # the upload returns the job, which failed
+    assert r.status_code == 200 and "Update rejected: Update signature is invalid" in r.text
+    assert "Update rejected" in client.get("/system/firmware/job").text
     r = client.post("/system/firmware/upload", headers=headers, files=files)
     assert r.status_code == 200
+    assert "9.9.9" in r.text and "Reboot into the new firmware" in r.text
+    assert 'name="next" value="/system/firmware"' in r.text
     assert [content for _, content in seen] == [b"bundle", b"bundle"]
     assert seen[0][0] != seen[1][0]  # unique per upload
+    assert all("--remove" in cmd and cmd[cmd.index("--user") + 1] == "admin" for cmd in inline_install.calls)
     assert not list(runtime.data_dir.glob("update*"))
+    # the pending reboot stays on the page, the upload field too
+    page = client.get("/system/firmware").text
+    assert "Reboot into the new firmware" in page and "data-dropzone" in page
+    from phonix.core.models import AuditLog
+
+    with session_scope() as s:
+        assert [a.summary for a in s.query(AuditLog).filter_by(action="firmware")] == ["installed 9.9.9"]
+
+
+def test_firmware_job_running(client, runtime, inline_install):
+    from phonix.services import update
+
+    login(client)
+    update.write_job("running", "verify", progress=40)
+    page = client.get("/system/firmware").text
+    assert 'hx-get="/system/firmware/job"' in page and 'aria-valuenow="40"' in page
+    assert "data-dropzone" not in page  # no second upload while one runs
+    update.write_job("running", "write")
+    r = client.get("/system/firmware/job")
+    assert "inactive system slot" in r.text and "progress-bar-indeterminate" in r.text
+    headers = {"HX-Request": "true", "X-CSRF-Token": csrf(client, "/system/firmware")}
+    files = {"file": ("x.update", b"bundle", "application/octet-stream")}
+    r = client.post("/system/firmware/upload", headers=headers, files=files)
+    assert r.status_code == 422 and "already being installed" in r.text
+    assert not inline_install.calls
+    assert not list(runtime.data_dir.glob("update*"))
+
+
+def test_firmware_job_interrupted(client, runtime, monkeypatch):
+    from phonix.services import update
+
+    login(client)
+    update.write_job("running", "write", pid=2**22 + 12345)  # no such process
+    job = update.read_job()
+    assert job["state"] == "error" and job["interrupted"]
+    r = client.get("/system/firmware/job")
+    assert "interrupted" in r.text and "hx-get" not in r.text
+
+
+def test_firmware_reboot_result(client, runtime, monkeypatch):
+    from phonix import __version__
+    from phonix.services import update
+
+    login(client)
+    monkeypatch.setattr(update, "_boot_id", lambda: "boot-1")
+    update.write_job("installed", version="9.9.9")
+    # not rebooted yet: still pending
+    assert update.reboot_result() is None
+    assert "Reboot into the new firmware" in client.get("/system/firmware").text
+    # rebooted, but the old version runs: the trial boot was rolled back
+    monkeypatch.setattr(update, "_boot_id", lambda: "boot-2")
+    page = client.get("/system/firmware").text
+    assert "Version 9.9.9 did not start" in page and "Reboot into the new firmware" not in page
+    assert update.read_job()["state"] == "none"
+    # rebooted into the new version
+    update.write_job("installed", version=__version__)
+    page = client.get("/system/firmware").text
+    assert "The update was successful" in page
+    assert "The update was successful" not in client.get("/system/firmware").text  # reported once
+
+
+def test_reboot_next_is_whitelisted(client, runtime):
+    login(client)
+    token = csrf(client, "/system/reboot")
+    r = client.post("/system/reboot", data={"csrf_token": token, "action": "reboot", "next": "/system/firmware"})
+    assert 'data-next="/system/firmware"' in r.text
+    r = client.post("/system/reboot", data={"csrf_token": token, "action": "reboot", "next": "https://evil.example/"})
+    assert 'data-next="/"' in r.text and "evil" not in r.text
+
+
+def test_cli_update_install(runtime, monkeypatch, tmp_path, capsys):
+    from phonix import cli
+    from phonix.services import update
+
+    bundle = tmp_path / "x.update"
+    bundle.write_bytes(b"bundle")
+    monkeypatch.setattr(update, "install", lambda path, step=None: update.BundleInfo("9.9.9", "pc-amd64", {}))
+    cli.main(["migrate"])
+    assert cli.main(["update", "install", str(bundle)]) == 0
+    assert "9.9.9 installed" in capsys.readouterr().out
+    assert bundle.exists()  # only removed with --remove
+    assert update.read_job()["state"] == "installed"
+    assert cli.main(["update", "install"]) == 2
 
 
 def test_firmware_check_github_release(client, monkeypatch):
@@ -599,3 +716,35 @@ def test_firstboot_legacy_report_on_dashboard(client, runtime):
     r = client.post("/legacy-report/dismiss", data={"csrf_token": csrf(client, "/")}, follow_redirects=False)
     assert r.status_code == 303
     assert "was imported at first boot" not in client.get("/").text
+
+
+def test_firmware_job_guards(client, runtime, monkeypatch, tmp_path):
+    import fcntl
+
+    from phonix.services import privileged, update
+    from phonix.services.common import ServiceError
+
+    login(client)
+    monkeypatch.setattr(update, "_boot_id", lambda: "boot-1")
+    update.write_job("running", "write")
+    # no reboot or factory reset in the middle of an install
+    privileged.recorder.calls.clear()
+    token = csrf(client, "/system/reboot")
+    client.post("/system/reboot", data={"csrf_token": token, "action": "reboot"})
+    client.post("/system/defaults", data={"csrf_token": token, "confirm": "RESET"})
+    assert not privileged.recorder.calls
+    # after a reboot the stored pid means nothing: the job was interrupted
+    monkeypatch.setattr(update, "_boot_id", lambda: "boot-2")
+    assert update.read_job()["interrupted"] and not update.is_running()
+    # one install at a time, also from the console
+    bundle = tmp_path / "x.update"
+    bundle.write_bytes(b"bundle")
+    runtime.state_dir.mkdir(parents=True, exist_ok=True)
+    with open(runtime.state_dir / "update.lock", "w") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        with pytest.raises(ServiceError, match="already being installed"):
+            update.run_install(bundle, "cli")
+    # --remove only for web uploads
+    with pytest.raises(ServiceError, match="--remove"):
+        update.run_install(bundle, "cli", remove=True)
+    assert bundle.exists()

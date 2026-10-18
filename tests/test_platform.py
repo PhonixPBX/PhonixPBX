@@ -68,7 +68,9 @@ def test_lxc_install_takes_a_backup_first(session, runtime, tmp_path, monkeypatc
     _set_board(runtime, "lxc-amd64")
     bundle = tmp_path / "x.update"
     bundle.write_bytes(b"verified elsewhere")
-    monkeypatch.setattr(update, "verify_bundle", lambda path: update.BundleInfo("9.9.9", "lxc-amd64", {}))
+    monkeypatch.setattr(
+        update, "verify_bundle", lambda path, progress=None: update.BundleInfo("9.9.9", "lxc-amd64", {})
+    )
     privileged.recorder.calls.clear()
     assert update.install(bundle).version == "9.9.9"
     assert ("install-update", str(bundle)) in privileged.recorder.calls
@@ -80,7 +82,9 @@ def test_lxc_install_stops_when_the_backup_fails(session, runtime, tmp_path, mon
     from phonix.services import backup
 
     _set_board(runtime, "lxc-amd64")
-    monkeypatch.setattr(update, "verify_bundle", lambda path: update.BundleInfo("9.9.9", "lxc-amd64", {}))
+    monkeypatch.setattr(
+        update, "verify_bundle", lambda path, progress=None: update.BundleInfo("9.9.9", "lxc-amd64", {})
+    )
 
     def full_disk(target=None):
         raise OSError(28, "No space left on device")
@@ -114,14 +118,14 @@ def test_firmware_page_in_container(client, runtime):  # noqa: F811
     assert "snapshot-confirm" not in page
 
 
-def test_firmware_done_in_lxc(client, runtime, monkeypatch):  # noqa: F811
-    monkeypatch.setattr(update, "install", lambda path: update.BundleInfo("9.9.9", "lxc-amd64", {}))
+def test_firmware_done_in_lxc(client, runtime):  # noqa: F811
     login(client)
-    headers = {"HX-Request": "true", "X-CSRF-Token": csrf(client, "/system/firmware")}
-    files = {"file": ("x.update", b"bundle", "application/octet-stream")}
     _set_board(runtime, "lxc-amd64")
-    r = client.post("/system/firmware/upload", headers=headers, files=files)
-    assert r.status_code == 200
+    update.write_job("running", "backup")
+    r = client.get("/system/firmware/job")
+    assert "Backup" in r.text and "Saving a backup" in r.text
+    update.write_job("installed", version="9.9.9")
+    r = client.get("/system/firmware/job")
     assert "Restart the container" in r.text and "roll back to the snapshot" in r.text
     assert "inactive slot" not in r.text
 

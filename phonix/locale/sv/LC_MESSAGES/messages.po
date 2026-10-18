@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-17 16:06+0200\n"
+"POT-Creation-Date: 2026-10-18 10:32+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: sv\n"
@@ -161,6 +161,9 @@ msgid "A custom greeting played before callers leave a message (replaces the sta
 msgstr ""
 "En egen hälsning som spelas upp innan uppringare lämnar ett meddelande (ersätter standardmeddelandet ”inte "
 "tillgänglig”)."
+
+msgid "A firmware update is being installed. Wait until it has finished."
+msgstr "En firmwareuppdatering installeras. Vänta tills den är klar."
 
 msgid "A new self-signed certificate was created."
 msgstr "Ett nytt självsignerat certifikat har skapats."
@@ -345,6 +348,9 @@ msgstr ""
 msgid "An e-mail address is required for the ACME account"
 msgstr "En e-postadress krävs för ACME-kontot"
 
+msgid "An update is already being installed."
+msgstr "En uppdatering installeras redan."
+
 msgid "Announce on the local network (mDNS)"
 msgstr "Annonsera i det lokala nätverket (mDNS)"
 
@@ -482,6 +488,9 @@ msgstr "Tillg."
 
 msgid "Back to the dashboard"
 msgstr "Tillbaka till översikten"
+
+msgid "Backup"
+msgstr "Säkerhetskopia"
 
 #, python-format
 msgid "Backup %(name)s created."
@@ -677,6 +686,9 @@ msgstr "Om du ändrar adressen bryts anslutningen. Öppna den nya adressen efter
 msgid "Channel"
 msgstr "Kanal"
 
+msgid "Check"
+msgstr "Kontrollera"
+
 msgid "Check automatically"
 msgstr "Kontrollera automatiskt"
 
@@ -685,6 +697,9 @@ msgstr "Sök efter uppdateringar"
 
 msgid "Check now"
 msgstr "Kontrollera nu"
+
+msgid "Checking the signature and checksums of the update ..."
+msgstr "Uppdateringens signatur och kontrollsummor kontrolleras ..."
 
 #, python-format
 msgid "Checksum mismatch for %(name)s"
@@ -795,6 +810,9 @@ msgstr "Kontakt"
 msgid "Content"
 msgstr "Innehåll"
 
+msgid "Continue"
+msgstr "Fortsätt"
+
 msgid "Copied"
 msgstr "Kopierat"
 
@@ -811,6 +829,10 @@ msgstr "Det gick inte att konvertera ljudet: %(error)s"
 #, python-format
 msgid "Could not start the certificate request: %(error)s"
 msgstr "Det gick inte att starta certifikatbegäran: %(error)s"
+
+#, python-format
+msgid "Could not start the update: %(error)s"
+msgstr "Det gick inte att starta uppdateringen: %(error)s"
 
 msgid "Country specific dial, busy and ring tones."
 msgstr "Landsspecifika kopplings-, upptaget- och ringsignaler."
@@ -984,6 +1006,9 @@ msgstr "Domänen får inte vara tom"
 
 msgid "Domain names"
 msgstr "Domännamn"
+
+msgid "Done"
+msgstr "Klart"
 
 msgid "Down"
 msgstr "Nere"
@@ -1497,6 +1522,9 @@ msgstr "Installera en uppdatering"
 
 msgid "Installed firmware"
 msgstr "Installerad firmware"
+
+msgid "Installing the new version ..."
+msgstr "Den nya versionen installeras ..."
 
 msgid "Interface"
 msgstr "Gränssnitt"
@@ -2647,6 +2675,9 @@ msgstr "Spara"
 msgid "Save and request certificate now"
 msgstr "Spara och begär certifikat nu"
 
+msgid "Saving a backup of the configuration ..."
+msgstr "Sparar en säkerhetskopia av konfigurationen ..."
+
 msgid "Secret"
 msgstr "Hemlighet"
 
@@ -2945,6 +2976,9 @@ msgstr "Numret som används för att ringa den här telefonen."
 msgid "The password must have at least 8 characters"
 msgstr "Lösenordet måste ha minst 8 tecken"
 
+msgid "The system has not come back yet. Check its console, or try the link below."
+msgstr "Systemet har inte kommit tillbaka än. Kontrollera dess konsol eller prova länken nedan."
+
 msgid "The system is being reset to factory defaults and reboots now."
 msgstr "Systemet återställs till fabriksinställningar och startas om nu."
 
@@ -2954,11 +2988,31 @@ msgstr "Systemet startas om. Sidan laddas om när det är tillbaka."
 msgid "The system is shutting down."
 msgstr "Systemet stängs av."
 
+msgid "The system is starting. This can take a few minutes."
+msgstr "Systemet startar. Det kan ta några minuter."
+
+#, python-format
+msgid ""
+"The system went back to version %(running)s, which is running now. The log of the failed start is in <a "
+"href=\"/status/logs\">Status &rarr; Logs</a>."
+msgstr ""
+"Systemet har gått tillbaka till version %(running)s, som körs nu. Loggen från den misslyckade starten finns under <a "
+"href=\"/status/logs\">Status &rarr; Loggar</a>."
+
 msgid "The text must not contain control characters"
 msgstr "Texten får inte innehålla styrtecken"
 
 msgid "The text to record for this menu. It is not played; record it and upload the file above."
 msgstr "Texten som ska spelas in för den här menyn. Den spelas inte upp; spela in den och ladda upp filen ovan."
+
+msgid ""
+"The update was interrupted before it finished (see <a href=\"/status/logs\">Status &rarr; Logs</a>). Upload the file "
+"again."
+msgstr "Uppdateringen avbröts innan den var klar (se <a href=\"/status/logs\">Status &rarr; Loggar</a>). Ladda upp filen igen."
+
+#, python-format
+msgid "The update was successful: PhonixPBX <strong>%(version)s</strong> is running."
+msgstr "Uppdateringen lyckades: PhonixPBX <strong>%(version)s</strong> körs."
 
 msgid "The uploaded file expired, please upload it again."
 msgstr "Den uppladdade filen har gått ut, ladda upp den igen."
@@ -2994,6 +3048,13 @@ msgstr "Den här telefonen kan inte ringa utgående samtal via de valda leverant
 
 msgid "This phone has no voicemail box"
 msgstr "Den här telefonen har ingen röstbrevlåda"
+
+msgid ""
+"This takes several minutes, longer on an SD card. Do not switch the system off. You can leave this page: the update "
+"continues, and this page shows its progress when you come back."
+msgstr ""
+"Det tar flera minuter, längre på ett SD-kort. Stäng inte av systemet. Du kan lämna den här sidan: uppdateringen "
+"fortsätter, och sidan visar förloppet när du kommer tillbaka."
 
 msgid "This username is reserved"
 msgstr "Användarnamnet är reserverat"
@@ -3205,6 +3266,9 @@ msgstr ""
 msgid "Upload certificate"
 msgstr "Ladda upp certifikat"
 
+msgid "Upload complete. Starting the update ..."
+msgstr "Uppladdningen är klar. Startar uppdateringen ..."
+
 msgid "Upload your own hold music. Files are converted to 8 kHz mono WAV. Without uploads the bundled music is used."
 msgstr ""
 "Ladda upp din egen väntmusik. Filerna konverteras till 8 kHz mono-WAV. Utan uppladdningar används den medföljande "
@@ -3306,8 +3370,16 @@ msgid "Version %(latest)s is available (running %(version)s). Download: %(url)s"
 msgstr "Version %(latest)s är tillgänglig (installerad: %(version)s). Ladda ner: %(url)s"
 
 #, python-format
-msgid "Version <strong>%(version)s</strong> has been installed into the inactive slot."
-msgstr "Version <strong>%(version)s</strong> har installerats på den inaktiva systemplatsen."
+msgid "Version %(version)s did not start"
+msgstr "Version %(version)s startade inte"
+
+#, python-format
+msgid ""
+"Version <strong>%(version)s</strong> has been installed into the inactive slot. Reboot to start it; active calls are "
+"interrupted."
+msgstr ""
+"Version <strong>%(version)s</strong> har installerats på den inaktiva platsen. Starta om för att starta den; pågående"
+" samtal avbryts."
 
 #, python-format
 msgid ""
@@ -3355,6 +3427,9 @@ msgstr "Röstbrevlåda, konferenser och media"
 
 msgid "Wait for a key (s)"
 msgstr "Vänta på knapp (s)"
+
+msgid "Waiting for the system to shut down ..."
+msgstr "Väntar på att systemet ska stängas av ..."
 
 msgid "Web application"
 msgstr "Webbapplikation"
@@ -3407,6 +3482,9 @@ msgstr "Skriv utifrån alternativen"
 
 msgid "Write permissions"
 msgstr "Skrivbehörigheter"
+
+msgid "Writing the new version to the inactive system slot ..."
+msgstr "Skriver den nya versionen till den inaktiva systemplatsen ..."
 
 #, python-format
 msgid "You are running the latest version (%(version)s)."
@@ -3617,6 +3695,9 @@ msgstr "telefon %(ext)s"
 
 msgid "prepend text to name"
 msgstr "lägg till text före namnet"
+
+msgid "progress"
+msgstr "förlopp"
 
 #, python-format
 msgid "provider %(name)s"
