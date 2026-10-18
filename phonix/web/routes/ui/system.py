@@ -179,6 +179,8 @@ def _firmware_page(request: Request, values: dict[str, Any], **ctx: Any) -> Resp
         values=values,
         job=update.read_job(),
         result=result,
+        # the newer release found by the last check (also the dashboard's notice)
+        release=update.available(),
         **ctx,
     )
 
@@ -202,19 +204,9 @@ def firmware_check(request: Request, user: User = Depends(ui_user), db: Session 
         release = update.check_online(st.load(db, st.UpdateSettings).check_url)
     except ServiceError as exc:
         return _alert(request, "danger", str(exc))
-    latest, download = release.version, release.url
-    if not update.is_newer(latest, __version__):
+    if not update.is_newer(release.version, __version__):
         return _alert(request, "success", _("You are running the latest version (%(version)s).", version=__version__))
-    return _alert(
-        request,
-        "info",
-        _(
-            "Version %(latest)s is available (running %(version)s). Download: %(url)s",
-            latest=latest,
-            version=__version__,
-            url=download,
-        ),
-    )
+    return render(request, "partials/firmware_release.html", {"release": release, "running": __version__})
 
 
 @router.post("/firmware/upload")

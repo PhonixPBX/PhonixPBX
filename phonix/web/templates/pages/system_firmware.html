@@ -36,7 +36,7 @@
         <button class="btn" type="submit">{{ _("Save") }}</button>
         <button class="btn btn-primary" type="button" hx-post="/system/firmware/check" hx-target="#check-result">{{ icon("refresh") }}{{ _("Check now") }}</button>
       </form>
-      <div id="check-result"></div>
+      <div id="check-result">{% if release %}{% include "partials/firmware_release.html" %}{% endif %}</div>
     </div></div>
   </div>
   <div class="col-lg-6">

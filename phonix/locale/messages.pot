@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-18 12:09+0200\n"
+"POT-Creation-Date: 2026-10-18 13:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1017,6 +1017,10 @@ msgid "Done"
 msgstr ""
 
 msgid "Down"
+msgstr ""
+
+#, python-format
+msgid "Download %(file)s"
 msgstr ""
 
 #, python-format
@@ -2515,6 +2519,9 @@ msgstr ""
 msgid "Rejected"
 msgstr ""
 
+msgid "Release notes"
+msgstr ""
+
 #, python-format
 msgid "Reloading the web server failed: %(error)s"
 msgstr ""
@@ -3037,6 +3044,9 @@ msgid ""
 "own</a> to get rid of browser warnings."
 msgstr ""
 
+msgid "Then upload the downloaded file under <em>Install an update</em>."
+msgstr ""
+
 msgid ""
 "This backup was made by an older PhonixPBX release in a format that can "
 "no longer be restored."
@@ -3383,7 +3393,7 @@ msgid "Version"
 msgstr ""
 
 #, python-format
-msgid "Version %(latest)s is available (running %(version)s). Download: %(url)s"
+msgid "Version %(latest)s is available (running %(version)s)."
 msgstr ""
 
 #, python-format

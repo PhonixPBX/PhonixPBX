@@ -104,7 +104,29 @@ def is_newer(latest: str, current: str) -> bool:
 @dataclass
 class Release:
     version: str
-    url: str
+    url: str  # release notes / release page
+    download: str = ""  # the update bundle of this board, if the release lists it
+
+
+def _https(value: Any) -> str:
+    # the URLs become links on the page: nothing but https
+    return value if isinstance(value, str) and value.startswith("https://") else ""
+
+
+def bundle_name(version: str, board: str) -> str:
+    return f"phonix-{version}-{board}.update"
+
+
+def _github_release(data: dict[str, Any]) -> Release:
+    version = str(data["tag_name"]).removeprefix("v")
+    name = bundle_name(version, current_board())
+    assets = data.get("assets")
+    if not isinstance(assets, list):
+        assets = []
+    download = next(
+        (_https(a.get("browser_download_url")) for a in assets if isinstance(a, dict) and a.get("name") == name), ""
+    )
+    return Release(version, _https(data.get("html_url")), download)
 
 
 def check_online(url: str) -> Release:
@@ -119,16 +141,16 @@ def check_online(url: str) -> Release:
         with urllib.request.urlopen(req, timeout=15) as resp:  # noqa: S310 - https only, admin configured
             data = json.loads(resp.read(1024 * 1024))
         if "tag_name" in data:  # GitHub release (api.github.com/repos/<owner>/<repo>/releases/latest)
-            release = Release(str(data["tag_name"]).removeprefix("v"), str(data.get("html_url", "")))
+            release = _github_release(data)
         else:  # plain {"version": ..., "url": ...}
-            release = Release(str(data.get("version") or ""), str(data.get("url", "")))
+            release = Release(str(data.get("version") or ""), _https(data.get("url")))
         if not release.version:
             raise ValueError("the response contains no version")
     except (OSError, ValueError, AttributeError) as exc:
         raise ServiceError(_("Update check failed: %(error)s", error=exc)) from exc
     state = config.get().state_dir
     state.mkdir(parents=True, exist_ok=True)
-    data = {"version": release.version, "url": release.url, "checked": int(time.time())}
+    data = {"version": release.version, "url": release.url, "download": release.download, "checked": int(time.time())}
     (state / CHECK_STATE).write_text(json.dumps(data) + "\n")
     return release
 
@@ -137,7 +159,7 @@ def available() -> Release | None:
     """The newer release found by the last online check, if any."""
     try:
         data = json.loads((config.get().state_dir / CHECK_STATE).read_text())
-        release = Release(str(data["version"]), str(data.get("url", "")))
+        release = Release(str(data["version"]), _https(data.get("url")), _https(data.get("download")))
     except (OSError, ValueError, KeyError, TypeError):
         return None
     return release if is_newer(release.version, __version__) else None

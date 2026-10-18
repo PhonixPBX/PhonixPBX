@@ -1,0 +1,18 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+{# a newer release found by the update check #}
+<div class="alert alert-info mt-3 mb-0" role="status">
+  <div>{{ _("Version %(latest)s is available (running %(version)s).", latest=release.version, version=running or VERSION) }}</div>
+  {% if release.download or release.url %}
+  <div class="d-flex flex-wrap gap-2 mt-2">
+    {% if release.download and platform != "oci" %}
+    <a class="btn btn-primary" href="{{ release.download }}" rel="noopener noreferrer">{{ icon("download") }}{{ _("Download %(file)s", file=release.download.rsplit("/", 1)[-1]) }}</a>
+    {% endif %}
+    {% if release.url %}
+    <a class="btn" href="{{ release.url }}" target="_blank" rel="noopener noreferrer">{{ icon("external-link") }}{{ _("Release notes") }}</a>
+    {% endif %}
+  </div>
+  {% if release.download and platform != "oci" %}
+  <div class="text-secondary small mt-2">{{ _("Then upload the downloaded file under <em>Install an update</em>.") }}</div>
+  {% endif %}
+  {% endif %}
+</div>

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-18 12:09+0200\n"
+"POT-Creation-Date: 2026-10-18 13:06+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ru\n"
@@ -1015,6 +1015,10 @@ msgstr "Готово"
 
 msgid "Down"
 msgstr "Неактивен"
+
+#, python-format
+msgid "Download %(file)s"
+msgstr "Скачать %(file)s"
 
 #, python-format
 msgid "Download %(name)s"
@@ -2503,6 +2507,9 @@ msgstr "Таймеры регистрации"
 msgid "Rejected"
 msgstr "Отклонен"
 
+msgid "Release notes"
+msgstr "Примечания к выпуску"
+
 #, python-format
 msgid "Reloading the web server failed: %(error)s"
 msgstr "Не удалось перезагрузить веб-сервер: %(error)s"
@@ -3032,6 +3039,9 @@ msgstr ""
 "Веб-интерфейс использует самоподписанный сертификат. <a href=\"/advanced/certificate\">Получите сертификат от Let's "
 "Encrypt или загрузите собственный</a>, чтобы избавиться от предупреждений браузера."
 
+msgid "Then upload the downloaded file under <em>Install an update</em>."
+msgstr "Затем загрузите скачанный файл в разделе <em>Установить обновление</em>."
+
 msgid "This backup was made by an older PhonixPBX release in a format that can no longer be restored."
 msgstr "Эта резервная копия создана более старой версией PhonixPBX в формате, который больше нельзя восстановить."
 
@@ -3378,8 +3388,8 @@ msgid "Version"
 msgstr "Версия"
 
 #, python-format
-msgid "Version %(latest)s is available (running %(version)s). Download: %(url)s"
-msgstr "Доступна версия %(latest)s (установлена %(version)s). Скачать: %(url)s"
+msgid "Version %(latest)s is available (running %(version)s)."
+msgstr "Доступна версия %(latest)s (установлена %(version)s)."
 
 #, python-format
 msgid "Version %(version)s did not start"

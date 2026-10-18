@@ -628,8 +628,30 @@ def test_firmware_check_github_release(client, monkeypatch):
     assert "releases/tag/v9.9.9" in r.text
     assert requests[0].full_url == st.DEFAULT_UPDATE_CHECK_URL
     assert requests[0].get_header("User-agent").startswith("phonix/")
+    assert 'href="https://github.com/PhonixPBX/PhonixPBX/releases/tag/v9.9.9"' in r.text
+    assert "Download phonix-" not in r.text  # no bundle for this board in the release
     # the dashboard shows the result of the last check
     assert "PhonixPBX 9.9.9 is available" in client.get("/").text
+
+    # the release lists the bundle of this board: a direct download link
+    base = "https://github.com/PhonixPBX/PhonixPBX/releases/download/v9.9.9"
+    payload["assets"] = [
+        {"name": "phonix-9.9.9-rpi.update", "browser_download_url": f"{base}/phonix-9.9.9-rpi.update"},
+        {"name": "phonix-9.9.9-dev.update", "browser_download_url": f"{base}/phonix-9.9.9-dev.update"},
+        {"name": "phonix-9.9.9-dev.img.zst", "browser_download_url": f"{base}/phonix-9.9.9-dev.img.zst"},
+    ]
+    r = client.post("/system/firmware/check", headers=headers)
+    assert f'href="{base}/phonix-9.9.9-dev.update"' in r.text and "Download phonix-9.9.9-dev.update" in r.text
+    assert "rpi.update" not in r.text and "img.zst" not in r.text
+    # System > Firmware shows the last result without a new check
+    page = client.get("/system/firmware").text
+    assert f'href="{base}/phonix-9.9.9-dev.update"' in page
+    # only https links
+    payload["assets"] = [{"name": "phonix-9.9.9-dev.update", "browser_download_url": "javascript:alert(1)"}]
+    payload["html_url"] = "javascript:alert(2)"
+    r = client.post("/system/firmware/check", headers=headers)
+    assert "javascript:" not in r.text and "Version 9.9.9 is available" in r.text
+    payload = {"tag_name": "v9.9.9", "html_url": "https://github.com/PhonixPBX/PhonixPBX/releases/tag/v9.9.9"}
 
     payload = {"version": "9.9.8", "url": "https://updates.example.com/phonix-9.9.8.update"}
     r = client.post("/system/firmware/check", headers=headers)

@@ -11,6 +11,12 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 - After a firmware update has been installed, every page shows a *Reboot required* banner with a **Reboot now**
   button until the system (or the LXC container) has been restarted into the new version.
 
+### Changed
+
+- *System → Firmware → Check now*: a newer release comes with a **Download** button for the update bundle of
+  this board (`phonix-<version>-<board>.update`) and a **Release notes** link, instead of the address of the
+  release page as plain text. The page keeps showing the last result until the version is installed.
+
 ### Fixed
 
 - LXC containers: between installing an update and restarting the container, pages of the web interface no

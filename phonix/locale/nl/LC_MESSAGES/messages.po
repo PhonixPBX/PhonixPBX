@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-18 12:09+0200\n"
+"POT-Creation-Date: 2026-10-18 13:06+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: nl\n"
@@ -1014,6 +1014,10 @@ msgstr "Klaar"
 
 msgid "Down"
 msgstr "Niet actief"
+
+#, python-format
+msgid "Download %(file)s"
+msgstr "%(file)s downloaden"
 
 #, python-format
 msgid "Download %(name)s"
@@ -2501,6 +2505,9 @@ msgstr "Registratietimers"
 msgid "Rejected"
 msgstr "Geweigerd"
 
+msgid "Release notes"
+msgstr "Releasenotes"
+
 #, python-format
 msgid "Reloading the web server failed: %(error)s"
 msgstr "Herladen van de webserver mislukt: %(error)s"
@@ -3034,6 +3041,9 @@ msgstr ""
 "De webinterface gebruikt een zelfondertekend certificaat. <a href=\"/advanced/certificate\">Vraag er een aan bij "
 "Let's Encrypt of upload uw eigen certificaat</a> om browserwaarschuwingen te voorkomen."
 
+msgid "Then upload the downloaded file under <em>Install an update</em>."
+msgstr "Upload het gedownloade bestand daarna onder <em>Een update installeren</em>."
+
 msgid "This backup was made by an older PhonixPBX release in a format that can no longer be restored."
 msgstr "Deze back-up is gemaakt met een oudere PhonixPBX-versie in een formaat dat niet meer kan worden hersteld."
 
@@ -3383,8 +3393,8 @@ msgid "Version"
 msgstr "Versie"
 
 #, python-format
-msgid "Version %(latest)s is available (running %(version)s). Download: %(url)s"
-msgstr "Versie %(latest)s is beschikbaar (actief: %(version)s). Download: %(url)s"
+msgid "Version %(latest)s is available (running %(version)s)."
+msgstr "Versie %(latest)s is beschikbaar (actief: %(version)s)."
 
 #, python-format
 msgid "Version %(version)s did not start"
@@ -3392,8 +3402,7 @@ msgstr "Versie %(version)s is niet gestart"
 
 #, python-format
 msgid "Version %(version)s has been installed. Reboot to start it; until then version %(running)s keeps running."
-msgstr ""
-"Versie %(version)s is geïnstalleerd. Herstart om deze te starten; tot die tijd blijft versie %(running)s actief."
+msgstr "Versie %(version)s is geïnstalleerd. Herstart om deze te starten; tot die tijd blijft versie %(running)s actief."
 
 #, python-format
 msgid ""

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-18 12:09+0200\n"
+"POT-Creation-Date: 2026-10-18 13:06+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: fr\n"
@@ -1016,6 +1016,10 @@ msgstr "Terminé"
 
 msgid "Down"
 msgstr "Arrêté"
+
+#, python-format
+msgid "Download %(file)s"
+msgstr "Télécharger %(file)s"
 
 #, python-format
 msgid "Download %(name)s"
@@ -2513,6 +2517,9 @@ msgstr "Délais d'enregistrement"
 msgid "Rejected"
 msgstr "Rejeté"
 
+msgid "Release notes"
+msgstr "Notes de version"
+
 #, python-format
 msgid "Reloading the web server failed: %(error)s"
 msgstr "Le rechargement du serveur web a échoué : %(error)s"
@@ -3048,6 +3055,9 @@ msgstr ""
 "L'interface web utilise un certificat auto-signé. <a href=\"/advanced/certificate\">Obtenez-en un auprès de Let's "
 "Encrypt ou envoyez le vôtre</a> pour supprimer les avertissements du navigateur."
 
+msgid "Then upload the downloaded file under <em>Install an update</em>."
+msgstr "Envoyez ensuite le fichier téléchargé sous <em>Installer une mise à jour</em>."
+
 msgid "This backup was made by an older PhonixPBX release in a format that can no longer be restored."
 msgstr "Cette sauvegarde a été créée par une ancienne version de PhonixPBX dans un format qui ne peut plus être restauré."
 
@@ -3393,8 +3403,8 @@ msgid "Version"
 msgstr "Version"
 
 #, python-format
-msgid "Version %(latest)s is available (running %(version)s). Download: %(url)s"
-msgstr "La version %(latest)s est disponible (version actuelle : %(version)s). Téléchargement : %(url)s"
+msgid "Version %(latest)s is available (running %(version)s)."
+msgstr "La version %(latest)s est disponible (version actuelle : %(version)s)."
 
 #, python-format
 msgid "Version %(version)s did not start"
@@ -3402,8 +3412,7 @@ msgstr "La version %(version)s n'a pas démarré"
 
 #, python-format
 msgid "Version %(version)s has been installed. Reboot to start it; until then version %(running)s keeps running."
-msgstr ""
-"La version %(version)s a été installée. Redémarrez pour la lancer ; d'ici là, la version %(running)s reste en service."
+msgstr "La version %(version)s a été installée. Redémarrez pour la lancer ; d'ici là, la version %(running)s reste en service."
 
 #, python-format
 msgid ""

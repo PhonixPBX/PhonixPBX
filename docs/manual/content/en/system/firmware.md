@@ -21,9 +21,9 @@ description: "Installed version, checking for updates and installing signed upda
 | Update information URL | Where the latest version is looked up. It must start with `https://`. Either a GitHub "latest release" API URL, or a URL that returns JSON of the form `{"version": "1.4.0", "url": "https://…"}`. | `https://api.github.com/repos/PhonixPBX/PhonixPBX/releases/latest` |
 | Check automatically | Look up the latest version once a day. | off |
 
-**Save** stores the two settings (no apply needed). **Check now** queries the URL and tells you whether you run the latest version or which newer version is available, with a download link. With *Check automatically* on, the PBX does the same once a day, at a random time within an hour after the daily maintenance jobs start.
+**Save** stores the two settings (no apply needed). **Check now** queries the URL and tells you whether you run the latest version or which newer version is available. For a newer version, **Download phonix-X-board.update** downloads the update bundle for this board straight from the GitHub release, and **Release notes** opens the release page. *System → Firmware* keeps showing the result of the last check until that version is installed. With *Check automatically* on, the PBX does the same once a day, at a random time within an hour after the daily maintenance jobs start.
 
-When a check – automatic or manual – finds a newer version, the [dashboard]({{< relref "/status/summary.md#notices" >}}) shows the notice *PhonixPBX X is available. Update the system.* until that version is installed. The check only reports; it does not download or install anything: download the update bundle and upload it as described below. The system needs internet access for it.
+When a check – automatic or manual – finds a newer version, the [dashboard]({{< relref "/status/summary.md#notices" >}}) shows the notice *PhonixPBX X is available. Update the system.* until that version is installed. The check only reports; it does not download or install anything: download the update bundle and upload it as described below. With a plain JSON URL, the link is the `url` of the response. The system needs internet access for it.
 
 ## Updating a disk image {#update-image}
 

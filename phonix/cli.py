@@ -285,7 +285,7 @@ def cmd_update(args: argparse.Namespace) -> int:
         print(f"ERROR {exc}", file=sys.stderr)
         return 1
     if update.is_newer(release.version, __version__):
-        print(f"version {release.version} is available (running {__version__}): {release.url}")
+        print(f"version {release.version} is available (running {__version__}): {release.download or release.url}")
     else:
         print(f"running the latest version ({__version__})")
     return 0
