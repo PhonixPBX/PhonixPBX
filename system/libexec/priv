@@ -449,8 +449,13 @@ install_update_lxc() { # bundle board
 
 	log "installing $_version (packages)"
 	kmsg "installing update $_version"
-	mkdir -p /var/log/phonix
-	_ulog=/var/log/phonix/update.log
+	# root-only and persistent (not /data: owned by phonix): /var/log is RAM
+	# backed and the update is activated by a restart
+	mkdir -p /var/lib/phonix
+	chmod 0700 /var/lib/phonix
+	_ulog=/var/lib/phonix/update.log
+	# keep only the last updates
+	[ "$(wc -c 2>/dev/null <"$_ulog" || echo 0)" -lt 1048576 ] || : >"$_ulog"
 	{
 		echo "== $(date -u +%Y-%m-%dT%H:%M:%SZ) update to $_version"
 		cat "$WORK/simulate.log"

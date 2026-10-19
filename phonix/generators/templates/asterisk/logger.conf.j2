@@ -4,8 +4,16 @@
 dateformat=%F %T
 use_callids=yes
 appendhostname=no
+; app_queue is not loaded
+queue_log=no
 
 [logfiles]
 console => notice,warning,error
+{% if platform == "oci" %}
+; OCI container: syslogd writes to the container output, no log files
+syslog.local0 => notice,warning,error,verbose(2)
+syslog.local1 => security
+{% else %}
 messages => notice,warning,error,verbose(2)
 security => security
+{% endif %}

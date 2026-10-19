@@ -164,7 +164,7 @@ Start it from the web interface (*System → Factory defaults*) or from the cons
 How the running system is put together:
 - The root filesystem is the squashfs of the active slot with a RAM overlay on top. Changes outside `/data` are lost when the box restarts.
 - `/media/boot` is the boot partition. It is mounted read-only and remounted read-write only for updates.
-- Logs are in RAM under `/var/log`. They are rotated small.
+- Logs are in RAM under `/var/log`. They are checked every 15 minutes and rotated at 1–2 MB.
 
 ### Kernel command line options
 
@@ -186,6 +186,7 @@ Differences to the appliance:
 - **Network, host name and DNS** belong to the container host. PhonixPBX does not write `/etc/network/interfaces`, `/etc/hostname`, `/etc/hosts` or `/etc/resolv.conf` in a container. *System → Network* shows a notice. The LAN interface setting there only picks the address that is used for SIP, and the NAT settings work as usual. The image default is DHCP on `eth0`.
 - **Updates** upgrade the packages of the container in place (see [Updating a system container](#updating-a-system-container)). There are no A/B slots and no automatic rollback, so take a snapshot on the container host first.
 - **Factory reset** erases `/data` at the next start of the container.
+- **Logs** are in RAM: `/var/log` and `/tmp` are tmpfs mounts inside the container, so logging does not write to the host's disk. They are lost when the container restarts. If the container profile forbids the mount, the boot log shows a warning and the logs stay on the disk.
 - **Console menu** runs on the container console (`/dev/console`) and on `tty1`.
 - **mDNS** (`<hostname>.local`) works when the container is on a bridge of your LAN. It uses the host name from *System → General*, not the container's host name.
 
@@ -214,7 +215,7 @@ What the update changes:
 - The files the container host manages stay as they are: `/etc/network/interfaces`, `/etc/hostname`, `/etc/hosts`.
 - Where a package brings a new version of a configuration file that you changed, your version stays, and the package's is saved next to it as `*.apk-new`.
 
-The log is in `/var/log/phonix/update.log`.
+The log is in `/var/lib/phonix/update.log`.
 
 If the update fails or the new version does not work, roll back to the snapshot. Without a snapshot, create a new container from the previous release and restore the backup that was saved before the update. You can also still update by replacing the container, as described for each host below.
 
@@ -308,7 +309,7 @@ Host networking is recommended. SIP and RTP then work without NAT between the co
 ```sh
 docker run -d --name phonix --restart unless-stopped --network host \
   -v phonix-data:/data ghcr.io/phonixpbx/phonix:latest
-docker logs phonix               # shows the web address and the initial admin password
+docker logs phonix               # shows the web address and the initial admin password, and all logs
 ```
 
 Open `https://<host-address>/` and log in as `admin` with the password from the log. You must change the password at the first login. For the REST API, create a bearer token under *Advanced → API tokens*, or without the web interface with `docker exec phonix phonix token create <name>`.
@@ -350,6 +351,10 @@ Rootless Podman cannot bind ports below 1024 on the host network. Move the web i
 podman run -d --name phonix --network host -e PHONIX_HTTP_PORT=8080 -e PHONIX_HTTPS_PORT=8443 \
   -v phonix-data:/data ghcr.io/phonixpbx/phonix:latest
 ```
+
+### Logs
+
+The container writes no log files. Asterisk, the web interface, the security monitor and nginx (errors only) log to the container output: `docker logs -f phonix`. How much is kept is up to the log driver of the container engine (for example `--log-opt max-size=10m --log-opt max-file=3` with the `json-file` driver). *Status → Logs* shows a notice instead of the log files. Call records (CDR CSV) are still written to `/var/log/asterisk/cdr-csv` in the container and rotated at 2 MB.
 
 ### Options
 

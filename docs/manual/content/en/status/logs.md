@@ -24,6 +24,10 @@ The header of the log shows the path of the file. *The log is empty or not avail
 
 ## Size and lifetime {#retention}
 
-On the appliance the logs are kept in RAM and rotated while they are small. They are lost on reboot. To keep information about a problem, copy the relevant lines before you restart the PBX.
+On the appliance and in an LXC/Incus system container the logs are kept in RAM, so they do not wear out the disk. They are checked every 15 minutes and rotated once they reach 1–2 MB. They are lost when the PBX or the container restarts. To keep information about a problem, copy the relevant lines before you restart the PBX.
+
+## OCI container {#oci}
+
+In an OCI container (Docker, Podman) PhonixPBX writes no log files. Asterisk, the web application and the security monitor write to the container output instead, and *Status → Logs* only shows the notice *Logs are in the container output*. Read the logs on the container host, for example with `docker logs -f <container>` or `podman logs -f <container>`. How long they are kept is decided by the log driver of the container engine.
 
 The same logs can also be viewed on the console: [console menu]({{< relref "/getting-started/_index.md#console" >}}), *View logs*. AI assistants connected over MCP can read the last lines of a log with the tool `tail_log`, see [REST API and MCP]({{< relref "/reference/api.md#mcp" >}}).

@@ -41,6 +41,8 @@ class Facts:
     lan_prefix: int = 8
     data_dir: str = "/data"
     version: str = __version__
+    # phonix.services.platform.kind(): appliance, lxc, oci or dev
+    platform: str = "appliance"
 
     @property
     def lan_network(self) -> str:

@@ -81,7 +81,7 @@ start_asterisk() {
 		_i=$((_i + 1))
 		sleep 1
 	done
-	die "Asterisk did not start, see /var/log/asterisk/messages"
+	die "Asterisk did not start, see the container output"
 }
 
 stop_asterisk() {

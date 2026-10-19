@@ -6,6 +6,23 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- OCI container (Docker, Podman): all logs (Asterisk, web interface, security monitor, nginx errors) now go only
+  to the container output, read them with `docker logs -f <container>`. No log files are written in the container
+  any more, and *Status → Logs* shows a notice instead. Limit the size with the log driver of the container engine
+  (e.g. `--log-opt max-size=10m`).
+- The log of an LXC/Incus container update is now kept in `/var/lib/phonix/update.log`, so it survives the restart into
+  the new version.
+- Logs are checked every 15 minutes instead of once a day and rotated at 1–2 MB, so a SIP scan can no longer fill
+  the RAM with a huge security log.
+
+### Fixed
+
+- LXC/Incus system containers wrote every log line (Asterisk, web interface, nginx, syslog) to the host's disk. Now
+  `/var/log` and `/tmp` are kept in RAM, as on the appliance; the logs are lost when the container restarts. Takes
+  effect with the update and a restart of the container.
+
 ## [1.7.0] - 2026-10-18
 
 ### Changed

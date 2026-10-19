@@ -1,0 +1,39 @@
+#!/sbin/openrc-run
+# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
+# SPDX-License-Identifier: Apache-2.0
+# System containers (LXC/Incus): keep /var/log and /tmp in RAM, as on the
+# appliance, where the whole root file system has a tmpfs overlay. The
+# container's root file system is on the host's disk, and logging every call
+# and SIP authentication there wears it out. localmount (/etc/fstab) does not
+# run in containers. Logs are lost when the container restarts.
+
+description="PhonixPBX RAM backed /var/log and /tmp (containers)"
+
+depend() {
+	before bootmisc logger phonix-firstboot
+}
+
+_tmpfs() { # path options
+	mountpoint -q "$1" && return 0
+	# whatever an earlier boot left on the disk below the mount point
+	find "$1" -mindepth 1 -maxdepth 1 -exec rm -rf {} + 2>/dev/null
+	mount -t tmpfs -o "nosuid,nodev,$2" tmpfs "$1"
+}
+
+start() {
+	ebegin "Mounting /var/log and /tmp in RAM"
+	local rc=0
+	# written by the update helper of versions before 1.8.0 (now /var/lib/phonix)
+	if [ -f /var/log/phonix/update.log ] && [ ! -L /var/log/phonix/update.log ] && ! mountpoint -q /var/log; then
+		checkpath -d -m 0700 -o root:root /var/lib/phonix
+		cat /var/log/phonix/update.log >>/var/lib/phonix/update.log
+	fi
+	_tmpfs /var/log "noexec,mode=0755,size=64M" || rc=1
+	_tmpfs /tmp "mode=1777,size=128M" || rc=1
+	[ $rc -eq 0 ] || ewarn "cannot mount tmpfs (container profile?): logs stay on the disk"
+	# the log directories of the packages, hidden by the empty tmpfs
+	checkpath -d -m 0755 -o root:root /var/log/phonix
+	checkpath -d -m 0755 -o nginx:nginx /var/log/nginx
+	checkpath -d -m 0750 -o asterisk:asterisk /var/log/asterisk /var/log/asterisk/cdr-csv
+	eend 0
+}

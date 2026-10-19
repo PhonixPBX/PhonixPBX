@@ -4,8 +4,8 @@
 # PhonixPBX OCI container entry point (runs as root under tini).
 #
 #   entrypoint              prepare /data, generate the configuration, start
-#                           and supervise Asterisk, the security monitor, the
-#                           web interface (user phonix) and nginx
+#                           and supervise syslogd, Asterisk, the security
+#                           monitor, the web interface (user phonix) and nginx
 #   entrypoint <cmd> [args] prepare /data, then run <cmd> instead, e.g.
 #                           "phonix user passwd admin"
 #
@@ -15,6 +15,10 @@
 # the web interface takes) the container exits non-zero, so that the restart
 # policy of the container engine takes over. SIGTERM/SIGINT stop everything
 # cleanly (exit 0).
+#
+# Logs go to the container output only (docker logs), no log files are
+# written: web and monitor write to stdout, Asterisk logs to syslogd
+# (logger.conf for board oci-*), nginx logs errors to stderr.
 #
 # Environment:
 #   PHONIX_HTTP_PORT / PHONIX_HTTPS_PORT  web ports (80/443), e.g. with
@@ -52,7 +56,7 @@ for _p in "$HTTP_PORT" "$HTTPS_PORT"; do
 	case "$_p" in '' | *[!0-9]*) die "invalid port '$_p'" ;; esac
 done
 
-WEB_PID='' MONITOR_PID='' NGINX_PID='' CROND_PID='' SLEEP_PID=''
+WEB_PID='' MONITOR_PID='' NGINX_PID='' CROND_PID='' SYSLOG_PID='' SLEEP_PID=''
 STOPPING=0
 
 # ------------------------------------------------------------------ shutdown
@@ -98,6 +102,8 @@ shutdown() {
 		for _p in $NGINX_PID $WEB_PID $MONITOR_PID $CROND_PID; do kill -KILL "$_p" 2>/dev/null; done
 	fi
 	pkill -KILL -x asterisk 2>/dev/null
+	# last: Asterisk logs until it is gone
+	[ -n "$SYSLOG_PID" ] && kill -TERM "$SYSLOG_PID" 2>/dev/null
 	log "stopped"
 	exit "${1:-0}"
 }
@@ -145,7 +151,6 @@ dir 0711 phonix:phonix /run/phonix
 dir 0700 phonix:phonix /run/phonix/staged
 dir 0755 phonix:phonix /run/phonix/acme
 dir 0700 root:root /run/phonix-priv /var/lib/phonix
-dir 0755 root:root /var/log/phonix
 dir 0750 asterisk:asterisk /var/run/asterisk /var/log/asterisk /var/lib/asterisk \
 	/var/lib/asterisk/keys /var/cache/asterisk
 dir 0755 nginx:nginx /run/nginx
@@ -180,9 +185,8 @@ fi
 log "generating the configuration"
 # writes /etc/asterisk, msmtprc, time zone and firewall files; network and
 # host name are left to the container engine (board oci-*)
-if ! phonix apply --boot >/var/log/phonix/apply-boot.log 2>&1; then
-	tail -n 20 /var/log/phonix/apply-boot.log >&2
-	log "WARNING: phonix apply failed (see /var/log/phonix/apply-boot.log)"
+if ! phonix apply --boot 2>&1; then
+	log "WARNING: phonix apply failed"
 fi
 chown -R phonix:asterisk /etc/asterisk
 find /etc/asterisk -type f -exec chmod 0640 {} +
@@ -217,27 +221,21 @@ nginx -t -q || die "nginx configuration test failed"
 
 # ------------------------------------------------------------------ services
 
-log "starting Asterisk"
-"$LIBEXEC/priv" asterisk-start || log "WARNING: Asterisk did not start, see /var/log/asterisk/messages"
+# Asterisk's log (logger.conf: syslog.local0/local1) to the container output
+syslogd -n -t -O - &
+SYSLOG_PID=$!
 
-# web and monitor log to the container output and to /var/log/phonix (Status > Logs);
-# tee ends by itself when the service closes the fifo
-logpipe() { # name
-	rm -f "/run/phonix/$1.log.fifo"
-	mkfifo -m 0600 "/run/phonix/$1.log.fifo" || die "cannot create the $1 log fifo"
-	touch "/var/log/phonix/$1.log" && chown phonix:phonix "/var/log/phonix/$1.log" &&
-		chmod 0640 "/var/log/phonix/$1.log" || die "cannot prepare /var/log/phonix/$1.log"
-	tee -a "/var/log/phonix/$1.log" <"/run/phonix/$1.log.fifo" &
-}
-logpipe monitor
-su-exec phonix phonix monitor >/run/phonix/monitor.log.fifo 2>&1 &
+log "starting Asterisk"
+"$LIBEXEC/priv" asterisk-start || log "WARNING: Asterisk did not start"
+
+# web and monitor log to the container output
+su-exec phonix phonix monitor 2>&1 &
 MONITOR_PID=$!
-logpipe web
-TMPDIR="$D/tmp/web" su-exec phonix phonix web --uds "$SOCKET" >/run/phonix/web.log.fifo 2>&1 &
+TMPDIR="$D/tmp/web" su-exec phonix phonix web --uds "$SOCKET" 2>&1 &
 WEB_PID=$!
 nginx -g 'daemon off;' &
 NGINX_PID=$!
-# log rotation and certificate renewal (/etc/periodic/daily); not critical
+# certificate renewal and rotation of the CDR files (/etc/periodic); not critical
 crond -f -l 8 &
 CROND_PID=$!
 
@@ -254,7 +252,7 @@ log "running"
 
 down=0
 while :; do
-	for _svc in "web:$WEB_PID" "monitor:$MONITOR_PID" "nginx:$NGINX_PID"; do
+	for _svc in "web:$WEB_PID" "monitor:$MONITOR_PID" "nginx:$NGINX_PID" "syslogd:$SYSLOG_PID"; do
 		if ! pid_alive "${_svc#*:}"; then
 			log "ERROR: ${_svc%%:*} exited"
 			shutdown 1

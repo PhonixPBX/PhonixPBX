@@ -87,7 +87,7 @@ package() {
 
 	# OpenRC services
 	local svc
-	for svc in phonix-firstboot phonix-apply phonix-web phonix-monitor phonix-healthcheck phonix-mdns; do
+	for svc in phonix-ramlog phonix-firstboot phonix-apply phonix-web phonix-monitor phonix-healthcheck phonix-mdns; do
 		install -Dm755 "$sys/openrc/init.d/$svc" "$pkgdir/etc/init.d/$svc"
 	done
 	install -Dm644 "$sys/openrc/conf.d/phonix" "$pkgdir/etc/conf.d/phonix"
@@ -111,6 +111,7 @@ package() {
 	install -Dm644 "$sys/logrotate.d/phonix" "$pkgdir/etc/logrotate.d/phonix"
 	install -Dm755 "$sys/periodic/phonix-cert" "$pkgdir/etc/periodic/daily/phonix-cert"
 	install -Dm755 "$sys/periodic/phonix-update" "$pkgdir/etc/periodic/daily/phonix-update"
+	install -Dm755 "$sys/periodic/phonix-logrotate" "$pkgdir/etc/periodic/15min/phonix-logrotate"
 	install -Dm644 "$sys/sysctl.d/phonix.conf" "$pkgdir/etc/sysctl.d/phonix.conf"
 
 	# static web assets are served by nginx

@@ -175,7 +175,7 @@ if [ "$CONTAINER" = 1 ]; then
 	# no A/B slots (no phonix-healthcheck); the host mounts the file systems
 	# and sets the host name (lxc.uts.name)
 	mkdir -p "$R/etc/runlevels/sysinit"
-	rl boot bootmisc syslog phonix-firstboot phonix-apply nftables networking
+	rl boot phonix-ramlog bootmisc syslog phonix-firstboot phonix-apply nftables networking
 	rl default crond asterisk phonix-web nginx phonix-monitor
 	rl shutdown killprocs savecache
 else

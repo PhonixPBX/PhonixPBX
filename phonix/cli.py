@@ -59,12 +59,13 @@ def cmd_apply(args: argparse.Namespace) -> int:
 def cmd_generate(args: argparse.Namespace) -> int:
     """Render all generated files into a directory (no side effects)."""
     from phonix.generators import Facts, Secrets, build_snapshot, generate_all
+    from phonix.services import platform
 
     out = Path(args.output)
     with _session() as session:
         snap = build_snapshot(
             session,
-            Facts(lan_ip=args.lan_ip, lan_prefix=24, data_dir=str(config.get().data_dir)),
+            Facts(lan_ip=args.lan_ip, lan_prefix=24, data_dir=str(config.get().data_dir), platform=platform.kind()),
             Secrets(ami_internal="generated-preview"),
         )
         for f in generate_all(snap):

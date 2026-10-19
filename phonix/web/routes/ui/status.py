@@ -18,7 +18,7 @@ from phonix import config
 from phonix.core import settings as st
 from phonix.core.models import AuditLog, User
 from phonix.i18n import N_
-from phonix.services import firstboot, phones, providers, status, tls, update
+from phonix.services import firstboot, phones, platform, providers, status, tls, update
 from phonix.web.deps import get_db, ui_user
 from phonix.web.routes.ui.common import page
 from phonix.web.templating import render
@@ -90,6 +90,9 @@ LOGS = {"asterisk": "Asterisk", "system": N_("System"), "web": N_("Web applicati
 
 @router.get("/status/logs")
 def logs(request: Request, log: str = "asterisk", user: User = Depends(ui_user)) -> Response:
+    if platform.kind() == "oci":
+        # no log files in the OCI container: everything goes to the container output
+        return page(request, "pages/status_logs.html", container_output=True)
     if log not in LOGS:
         log = "asterisk"
     path = config.get().log_files[log]
@@ -100,7 +103,7 @@ def logs(request: Request, log: str = "asterisk", user: User = Depends(ui_user))
 async def log_stream(request: Request, log: str = "asterisk", user: User = Depends(ui_user)) -> Response:
     """Server-sent events with new log lines (consumed by the htmx 4 SSE extension)."""
     path = config.get().log_files.get(log)
-    if path is None:
+    if path is None or platform.kind() == "oci":
         return Response(status_code=404)
 
     async def events() -> AsyncIterator[str]:

@@ -12,6 +12,7 @@ import subprocess
 from phonix import config
 from phonix.core.settings import NetworkSettings
 from phonix.generators.base import Facts
+from phonix.services import platform
 
 
 def interface_ipv4(interface: str) -> tuple[str, int] | None:
@@ -54,4 +55,4 @@ def collect(net: NetworkSettings) -> Facts:
         else:
             ip, prefix = default_route_ipv4() or "127.0.0.1", 24
     ipaddress.IPv4Address(ip)
-    return Facts(lan_ip=ip, lan_prefix=prefix, data_dir=str(cfg.data_dir))
+    return Facts(lan_ip=ip, lan_prefix=prefix, data_dir=str(cfg.data_dir), platform=platform.kind())

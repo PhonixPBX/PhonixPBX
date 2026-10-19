@@ -93,6 +93,11 @@ for svc in phonix-firstboot phonix-apply asterisk phonix-web nginx phonix-monito
 	in_ct "rc-service $svc status" >/dev/null 2>&1 || fail "service $svc is not started"
 done
 echo "ok: PhonixPBX services started"
+for mnt in /var/log /tmp; do
+	[ "$(in_ct "stat -f -c %T $mnt")" = tmpfs ] || fail "$mnt is not in RAM"
+done
+in_ct 'test -s /var/log/asterisk/messages' || fail "Asterisk does not log to /var/log/asterisk/messages"
+echo "ok: /var/log and /tmp in RAM"
 [ "$(in_ct 'ps -o user,args | grep "[p]honix web" | cut -d" " -f1')" = phonix ] ||
 	fail "web process does not run as user phonix"
 echo "ok: web process runs as phonix"

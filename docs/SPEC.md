@@ -80,7 +80,7 @@ We are reviving the product on current technology:
 **MCP for AI assistants.**
 - `POST /api/mcp` is a Model Context Protocol server (streamable HTTP, protocol versions 2025-03-26 to 2025-11-25). It is stateless and answers with JSON only: no SSE stream and no `Mcp-Session-Id`, so `GET` and `DELETE` return 405. The protocol is implemented in `phonix/mcp.py`, not with the `mcp` SDK, so it adds no runtime dependency.
 - Clients authenticate with the same bearer tokens; the session cookie is not accepted. Every MCP request is a POST, so a read-only token is enforced per tool: it gets only the read tools in `tools/list`, and write tools return a tool error. Requests with an `Origin` header for another host name are rejected (DNS rebinding); the port is not compared, because nginx passes `Host` without it.
-- Tools: `list_*`, `get_*`, `create_*`, `update_*` (partial: only the given fields change), `delete_*` for phones, providers, call groups, conferences, applications, IVR menus, business hours and AMI users, plus `set_phone_enabled` / `set_provider_enabled` / `set_ivr_menu_enabled`; `get_business_hours_status` and `set_business_hours_mode` (immediate); `list_settings_groups`, `get_settings`, `update_settings`; `get_status`, `get_pending_changes`, `preview_apply` (paths and components only, never file content), `apply_changes`; `tail_log` (`asterisk`, `system`, `web` or `monitor`, at most 1000 lines). `originate_call` (the click-to-call above) is listed and callable only for tokens with `allow_calls`.
+- Tools: `list_*`, `get_*`, `create_*`, `update_*` (partial: only the given fields change), `delete_*` for phones, providers, call groups, conferences, applications, IVR menus, business hours and AMI users, plus `set_phone_enabled` / `set_provider_enabled` / `set_ivr_menu_enabled`; `get_business_hours_status` and `set_business_hours_mode` (immediate); `list_settings_groups`, `get_settings`, `update_settings`; `get_status`, `get_pending_changes`, `preview_apply` (paths and components only, never file content), `apply_changes`; `tail_log` (`asterisk`, `system`, `web` or `monitor`, at most 1000 lines; an error in the OCI image, which has no log files). `originate_call` (the click-to-call above) is listed and callable only for tokens with `allow_calls`.
 - Secrets are never returned, and an empty secret keeps the stored one, as in the REST API. Changes are audited as `<user> (mcp)`.
 
 ### Tech choices
@@ -163,7 +163,7 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 **Status**
 - Dashboard: system info, uptime, registrations, active calls
 - Registrations and channels, from AMI
-- Logs: a tail of the Asterisk, system, web application and monitor logs, live via SSE
+- Logs: a tail of the Asterisk, system, web application and monitor logs, live via SSE. Logs are kept in RAM (appliance overlay, tmpfs in LXC) and rotated by size every 15 minutes (`/etc/periodic/15min/phonix-logrotate`). The OCI image writes no log files: everything goes to the container output, and the page (and MCP `tail_log`) say so instead.
 - CPU and network graphs, drawn with ApexCharts
 
 **Advanced**
@@ -477,12 +477,14 @@ This replaces the old `/cf` and `/offload` scheme and meets the goals of the `st
 - The same root filesystem, built by the same pipeline (`CONTAINER=1`, `LOADER=none` in the profile). There is no kernel, initramfs, boot loader or A/B slot. OpenRC is init, and the runlevels have no device, module, sysctl, clock, ACPI or health check services.
 - Output: a rootfs tarball (Proxmox VE CT template, `lxc-create -t local` with a small metadata tarball) and an Incus/LXD unified image.
 - `/data` is a directory or volume in the container. `/var/spool/asterisk` is a symlink to `/data/spool`.
+- `phonix-ramlog` (first in the boot runlevel, containers only) mounts tmpfs on `/var/log` (64 MB) and `/tmp` (128 MB), as `localmount` does not run in containers. The log of an in-place update goes to `/var/lib/phonix/update.log`, because the update is activated by a restart.
 - Network, host name and DNS belong to the container host, and `phonix apply` skips `system:network` and `system:hostname` (`phonix.services.platform`). `priv mark-good` refuses, and factory reset empties `/data` at the next start.
 - Updates are in place, with a package bundle (see Updates). The root filesystem is writable and keeps its apk database, and `apk-tools` is installed (`lxc-<arch>.packages`). There is no rollback: the UI asks for a snapshot on the container host, and a configuration backup is saved first.
 
 **OCI image (`ghcr.io/phonixpbx/phonix`)**
 - Multi-arch application container from `Containerfile`: Alpine packages, the `phonix` wheel and the same file layout, with board `oci-<arch>`.
-- No init system. `system/container/entrypoint` runs under tini and supervises Asterisk, the web interface (user `phonix`, unix socket), the monitor and nginx.
+- No init system. `system/container/entrypoint` runs under tini and supervises busybox syslogd, Asterisk, the web interface (user `phonix`, unix socket), the monitor and nginx.
+- No log files: web and monitor write to stdout, Asterisk logs to syslog (`logger.conf` for `platform == "oci"`, a generator fact), which `syslogd -n -O -` writes to the container output, and nginx logs errors to stderr with the access log off.
 - Root actions go through doas to `system/container/priv`, which only does what belongs inside a container.
 
 ### Updates

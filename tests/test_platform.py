@@ -193,3 +193,15 @@ def test_tui_follow_log(tmp_path):
     assert next(follow) == "new line\n"
     path.write_text("rotated\n")  # shorter than before: starts over
     assert next(follow) == "rotated\n"
+
+
+def test_logs_in_oci_point_to_the_container_output(client, runtime, tmp_path):  # noqa: F811
+    runtime.log_files["asterisk"] = tmp_path / "messages"
+    runtime.log_files["asterisk"].write_text("NOTICE secret line\n")
+    login(client)
+    assert "NOTICE secret line" in client.get("/status/logs").text
+    _set_board(runtime, "oci-amd64")
+    page = client.get("/status/logs").text
+    assert "Logs are in the container output" in page and "docker logs" in page
+    assert "NOTICE secret line" not in page and "hx-sse:connect" not in page
+    assert client.get("/status/logs/stream?log=asterisk").status_code == 404

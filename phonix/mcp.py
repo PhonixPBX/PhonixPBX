@@ -23,7 +23,7 @@ from phonix.core.models import User
 from phonix.services import apply as apply_svc
 from phonix.services import calls as calls_svc
 from phonix.services import hours as hours_svc
-from phonix.services import settings_api
+from phonix.services import platform, settings_api
 from phonix.services import status as status_svc
 from phonix.services.common import ServiceError, dirty_areas
 from phonix.services.resources import RESOURCES, Resource
@@ -265,6 +265,8 @@ def tail_log(ctx: Context, args: dict[str, Any]) -> Any:
     log = _str(args, "log")
     if log not in LOGS or log not in files:
         raise ToolInputError(f"unknown log '{log}'")
+    if platform.kind() == "oci":
+        raise ToolInputError("PhonixPBX runs in an OCI container: logs are only in the container output (docker logs)")
     lines = args.get("lines", 200)
     if isinstance(lines, bool) or not isinstance(lines, int) or not 1 <= lines <= LOG_LINES_MAX:
         raise ToolInputError(f"'lines' must be an integer from 1 to {LOG_LINES_MAX}")

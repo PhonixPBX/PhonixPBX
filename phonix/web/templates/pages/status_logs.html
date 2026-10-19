@@ -1,13 +1,22 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
 {% block actions %}
+{% if not container_output %}
 <div class="btn-group">
   {% for key, title in logs.items() %}
   <a href="/status/logs?log={{ key }}" class="btn{% if key == current %} btn-primary{% endif %}">{{ _(title) }}</a>
   {% endfor %}
 </div>
+{% endif %}
 {% endblock %}
 {% block content %}
+{% if container_output %}
+<div class="alert alert-info" role="status">
+  <h4 class="alert-title">{{ _("Logs are in the container output") }}</h4>
+  <div>{{ _("PhonixPBX runs in an OCI container and writes no log files. The logs of Asterisk, the web application and the security monitor are in the container output. Show them on the container host:") }}</div>
+  <div class="mt-2"><code>docker logs -f &lt;container&gt;</code></div>
+</div>
+{% else %}
 <div class="card">
   <div class="card-header">
     <h3 class="card-title">{{ _("%(name)s log", name=_(logs[current])) }} <span class="text-secondary small ms-2">{{ path }}</span></h3>
@@ -20,4 +29,5 @@
     </div>
   </div>
 </div>
+{% endif %}
 {% endblock %}

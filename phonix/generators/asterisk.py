@@ -165,7 +165,7 @@ def generate(snap: Snapshot) -> list[GeneratedFile]:
             "asterisk:restart",
         ),
         _file("modules.conf", render("asterisk/modules.conf.j2"), "asterisk:restart"),
-        _file("logger.conf", render("asterisk/logger.conf.j2"), "asterisk:logger"),
+        _file("logger.conf", render("asterisk/logger.conf.j2", platform=snap.facts.platform), "asterisk:logger"),
         _file(
             "indications.conf",
             render("asterisk/indications.conf.j2", country=snap.system.tonezone, zones=zones),

@@ -33,6 +33,18 @@ def test_golden_files(session):
         assert f.content == golden.read_text(), f"{path} differs from {golden} (UPDATE_GOLDEN=1 to accept)"
 
 
+def test_logger_oci_logs_to_syslog(session):
+    """OCI: no log files, Asterisk logs through syslogd to the container output."""
+    sample_pbx(session)
+    snap = build_snapshot(session, Facts(platform="oci"), Secrets())
+    conf = {f.path: f for f in generate_all(snap)}["/etc/asterisk/logger.conf"].content
+    assert "syslog.local0 => notice,warning,error,verbose(2)" in conf
+    assert "syslog.local1 => security" in conf
+    assert "messages =>" not in conf and "security =>" not in conf
+    default = render(session)["/etc/asterisk/logger.conf"].content
+    assert "messages => notice,warning,error,verbose(2)" in default and "syslog" not in default
+
+
 def test_dialplan_semantics(session):
     sample_pbx(session)
     ext = render(session)["/etc/asterisk/extensions.conf"].content

@@ -65,7 +65,7 @@ A system container has no second system slot. The update upgrades the packages o
 4. PhonixPBX saves a backup of the configuration under [System → Backup/Restore]({{< relref "/system/backup.md" >}}), then upgrades the packages from the bundle. Nothing is downloaded. The page shows the progress in steps (*Check*, *Backup*, *Install*, *Done*), as for the disk image.
 5. Restart the container with **Reboot into the new firmware**, or with **Reboot now** in the *Reboot required* banner that the other pages show. Until then the previous version keeps running. The new version migrates the database at its first start.
 
-The bundle defines the complete package set of the release: packages you added yourself with `apk add` are removed. The log of the update is in `/var/log/phonix/update.log`. Containers created from version 1.2.0 or older refuse update bundles; replace such a container once with a new one and keep the `/data` volume.
+The bundle defines the complete package set of the release: packages you added yourself with `apk add` are removed. The log of the update is in `/var/lib/phonix/update.log`, so it is still there after the restart. Containers created from version 1.2.0 or older refuse update bundles; replace such a container once with a new one and keep the `/data` volume.
 
 If the new version does not work, roll back to the snapshot. Without a snapshot, create a new container from the previous release and restore the backup that was saved before the update.
 

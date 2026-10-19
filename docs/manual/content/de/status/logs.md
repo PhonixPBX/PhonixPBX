@@ -24,6 +24,10 @@ Die Kopfzeile des Logs zeigt den Pfad der Datei. *Das Log ist leer oder nicht ve
 
 ## Größe und Aufbewahrung {#retention}
 
-Auf dem Gerät liegen die Logs im Arbeitsspeicher und werden klein rotiert. Bei einem Neustart gehen sie verloren. Wollen Sie Informationen zu einem Problem behalten, kopieren Sie die betreffenden Zeilen, bevor Sie die Anlage neu starten.
+Auf dem Gerät und in einem LXC-/Incus-Systemcontainer liegen die Logs im Arbeitsspeicher und belasten so den Datenträger nicht. Sie werden alle 15 Minuten geprüft und ab 1–2 MB rotiert. Bei einem Neustart der Anlage oder des Containers gehen sie verloren. Wollen Sie Informationen zu einem Problem behalten, kopieren Sie die betreffenden Zeilen, bevor Sie die Anlage neu starten.
+
+## OCI-Container {#oci}
+
+In einem OCI-Container (Docker, Podman) schreibt PhonixPBX keine Logdateien. Asterisk, die Webanwendung und der Sicherheitsmonitor schreiben stattdessen in die Ausgabe des Containers, und *Status → Logs* zeigt nur den Hinweis *Die Logs stehen in der Container-Ausgabe*. Lesen Sie die Logs auf dem Container-Host, zum Beispiel mit `docker logs -f <container>` oder `podman logs -f <container>`. Wie lange sie aufbewahrt werden, bestimmt der Log-Treiber der Container-Engine.
 
 Dieselben Logs können Sie auch auf der Konsole ansehen: [Konsolenmenü]({{< relref "/getting-started/_index.md#console" >}}), *View logs*. Über MCP angebundene KI-Assistenten lesen die letzten Zeilen eines Logs mit dem Werkzeug `tail_log`, siehe [REST-API und MCP]({{< relref "/reference/api.md#mcp" >}}).

@@ -49,8 +49,12 @@ RUN apk add --no-cache \
         nginx msmtp nftables sox doas su-exec tini logrotate lego \
         tzdata ca-certificates-bundle iproute2 curl \
     && rm -f /etc/nginx/http.d/default.conf \
-    && sed -i 's/^worker_processes .*/worker_processes 1;/' /etc/nginx/nginx.conf \
-    && grep -q '^worker_processes 1;' /etc/nginx/nginx.conf
+    && sed -i -e 's/^worker_processes .*/worker_processes 1;/' \
+        -e 's|^error_log .*|error_log stderr warn;|' -e 's|^\(\s*\)access_log .*|\1access_log off;|' \
+        /etc/nginx/nginx.conf \
+    && grep -q '^worker_processes 1;' /etc/nginx/nginx.conf \
+    && grep -q '^error_log stderr warn;' /etc/nginx/nginx.conf \
+    && ! grep -q 'access_log /' /etc/nginx/nginx.conf
 
 COPY --from=build /staging/ /
 COPY system/ /tmp/system/
@@ -64,6 +68,7 @@ RUN set -eu; S=/tmp/system; L=/usr/libexec/phonix; \
     install -Dm644 "$S/logrotate.d/phonix" /etc/logrotate.d/phonix; \
     install -Dm755 "$S/periodic/phonix-cert" /etc/periodic/daily/phonix-cert; \
     install -Dm755 "$S/periodic/phonix-update" /etc/periodic/daily/phonix-update; \
+    install -Dm755 "$S/periodic/phonix-logrotate" /etc/periodic/15min/phonix-logrotate; \
     install -Dm644 "$S/rootfs/etc/nftables.nft" /etc/nftables.nft; \
     rm -rf "$S"; \
     pyver=$(python3 -c 'import sys; print(f"{sys.version_info[0]}.{sys.version_info[1]}")'); \

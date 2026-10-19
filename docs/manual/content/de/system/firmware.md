@@ -65,7 +65,7 @@ Ein Systemcontainer hat keinen zweiten System-Slot. Das Update aktualisiert die 
 4. PhonixPBX speichert ein Backup der Konfiguration unter [System → Backup/Wiederherstellung]({{< relref "/system/backup.md" >}}) und aktualisiert dann die Pakete aus dem Update-Paket. Es wird nichts heruntergeladen. Die Seite zeigt den Fortschritt in Schritten (*Prüfen*, *Backup*, *Installieren*, *Fertig*), wie beim Disk-Image.
 5. Starten Sie den Container mit **Mit der neuen Firmware neu starten** neu, oder mit **Jetzt neu starten** im Hinweis *Neustart erforderlich*, den die anderen Seiten zeigen. Bis dahin läuft die bisherige Version weiter. Die neue Version migriert die Datenbank bei ihrem ersten Start.
 
-Das Update-Paket legt den vollständigen Paketbestand des Release fest: Pakete, die Sie selbst mit `apk add` installiert haben, werden entfernt. Das Protokoll des Updates liegt in `/var/log/phonix/update.log`. Container, die mit Version 1.2.0 oder älter erstellt wurden, lehnen Update-Pakete ab; ersetzen Sie einen solchen Container einmalig durch einen neuen und behalten Sie das `/data`-Volume.
+Das Update-Paket legt den vollständigen Paketbestand des Release fest: Pakete, die Sie selbst mit `apk add` installiert haben, werden entfernt. Das Protokoll des Updates liegt in `/var/lib/phonix/update.log` und bleibt so auch nach dem Neustart erhalten. Container, die mit Version 1.2.0 oder älter erstellt wurden, lehnen Update-Pakete ab; ersetzen Sie einen solchen Container einmalig durch einen neuen und behalten Sie das `/data`-Volume.
 
 Funktioniert die neue Version nicht, kehren Sie zum Snapshot zurück. Ohne Snapshot erstellen Sie einen neuen Container mit dem vorherigen Release und stellen das Backup wieder her, das vor dem Update gespeichert wurde.
 

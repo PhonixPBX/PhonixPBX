@@ -1,5 +1,8 @@
-# /var/log is RAM backed on the appliance: keep the logs small.
+# /var/log is RAM backed (appliance, LXC), rotated every 15 minutes (/etc/periodic/15min/phonix-logrotate)
+# by size: keep the logs small.
 /var/log/asterisk/messages /var/log/asterisk/security /var/log/asterisk/full /var/log/asterisk/queue_log {
+	# the directories belong to asterisk: no root file operations in them
+	su asterisk asterisk
 	size 2M
 	rotate 2
 	missingok
@@ -12,6 +15,7 @@
 }
 
 /var/log/asterisk/cdr-csv/*.csv {
+	su asterisk asterisk
 	size 2M
 	rotate 2
 	missingok

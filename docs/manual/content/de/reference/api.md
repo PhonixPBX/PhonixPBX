@@ -138,7 +138,7 @@ Die Werkzeuge:
 - `get_business_hours_status`, `set_business_hours_mode` (wirkt sofort).
 - `list_settings_groups`, `get_settings`, `update_settings`.
 - `get_status`, `get_pending_changes`, `preview_apply` (welche Dateien und Komponenten sich ändern würden), `apply_changes`.
-- `tail_log` – die letzten Zeilen des Logs `asterisk`, `system`, `web` oder `monitor` (bis zu 1000).
+- `tail_log` – die letzten Zeilen des Logs `asterisk`, `system`, `web` oder `monitor` (bis zu 1000). In einem OCI-Container gibt es keine Logdateien, und das Werkzeug meldet einen Fehler.
 - `originate_call` – Click-to-Call; nur für Tokens mit *Darf Anrufe tätigen* verfügbar.
 
 Ein Nur-Lese-Token sieht nur die lesenden Werkzeuge. Geheimnisse werden nie zurückgegeben. Änderungen erscheinen im Audit-Log als `<name> (mcp)`. Geben Sie einem Assistenten nur den Zugriff, den er braucht – für Fragen zur Konfiguration oder die Auswertung von Logs reicht ein Nur-Lese-Token.

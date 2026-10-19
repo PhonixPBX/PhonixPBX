@@ -165,6 +165,11 @@ def test_tail_log(client, runtime, tmp_path):
     assert r["lines"] == ["banned 192.0.2.1"]
     assert call(client, "tail_log", log="/etc/shadow")["isError"] is True
     assert call(client, "tail_log", log="asterisk", lines=5000)["isError"] is True
+    board = runtime.path("/etc/phonix/board")
+    board.parent.mkdir(parents=True, exist_ok=True)
+    board.write_text("oci-amd64\n")
+    r = call(client, "tail_log", log="asterisk")
+    assert r["isError"] is True and "container output" in r["content"][0]["text"]
 
 
 def test_unexpected_tool_error_is_a_jsonrpc_error(client, monkeypatch):
