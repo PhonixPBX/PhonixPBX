@@ -9,12 +9,17 @@ import getpass
 import json
 import logging
 import sys
+from contextlib import AbstractContextManager
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from phonix import __version__, config
 
+if TYPE_CHECKING:
+    from sqlalchemy.orm import Session
 
-def _session():  # type: ignore[no-untyped-def]
+
+def _session() -> AbstractContextManager[Session]:
     from phonix.core.db import session_scope
 
     return session_scope()

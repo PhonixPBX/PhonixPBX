@@ -78,6 +78,7 @@ CI (`.github/workflows/ci.yml`) runs ruff, mypy and pytest.
 - Every user-visible change gets an entry in `CHANGELOG.md` under `## [Unreleased]` (Keep a Changelog sections: Added, Changed, Fixed, Removed, Security), committed together with the change itself. Write it for administrators: what they can now do or what behaves differently, with menu paths (e.g. *Dialplan → IVR Menus*), and call out anything that needs action (incompatible `config.json` versions, upgrades, replaced containers). Internal refactors and tests get no entry.
 - Keep `docs/SPEC.md` in step with features and design decisions (data model, feature scope, API/MCP, backup format, implementation notes).
 - Ruff line length is 120.
+- Every function in `phonix/` is fully annotated in Python 3.10 style (`list[str]`, `X | None`, `collections.abc`). Ruff `ANN`/`UP` and mypy `disallow_untyped_defs` enforce it; tests are exempt.
 
 ## Claude Code setup
 

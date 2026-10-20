@@ -62,7 +62,7 @@ def in_builder(*cmd: str) -> None:
 
 
 class Vm:
-    def __init__(self, disk: Path, firmware: str, arch: str, name: str):
+    def __init__(self, disk: Path, firmware: str, arch: str, name: str) -> None:
         self.disk, self.firmware, self.arch, self.name = disk, firmware, arch, name
         self.https = free_port()
         self.sip = free_port(socket.SOCK_DGRAM)
@@ -296,7 +296,7 @@ def make_broken_bundle(board: str, version: str, key: Path, out: Path) -> None:
 
 
 class Server(threading.Thread):
-    def __init__(self, directory: Path):
+    def __init__(self, directory: Path) -> None:
         super().__init__(daemon=True)
         handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(directory))
         handler.log_message = lambda *a, **k: None  # type: ignore[method-assign]

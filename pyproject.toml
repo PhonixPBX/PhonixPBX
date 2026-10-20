@@ -63,17 +63,18 @@ line-length = 120
 extend-exclude = ["legacy/**"]
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "B", "UP", "S", "SIM", "RUF"]
+select = ["E", "F", "W", "I", "B", "UP", "S", "SIM", "RUF", "ANN"]
 ignore = [
     "S101",   # assert in tests
     "S603",   # subprocess without shell is intended
     "S607",   # partial executable paths resolved via PATH on appliance
     "B008",   # FastAPI Depends() in defaults
     "RUF012",
+    "ANN401",  # explicit Any is allowed
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S105", "S106", "S107", "S108", "S311"]
+"tests/**" = ["S105", "S106", "S107", "S108", "S311", "ANN"]
 "phonix/core/migrations/**" = ["E501"]
 
 [tool.mypy]
@@ -81,6 +82,8 @@ python_version = "3.10"
 plugins = ["pydantic.mypy"]
 ignore_missing_imports = true
 check_untyped_defs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
 exclude = ["^legacy/"]
 
 [tool.pytest.ini_options]

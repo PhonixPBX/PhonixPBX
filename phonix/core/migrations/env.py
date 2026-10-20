@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 from alembic import context
+from sqlalchemy import Connection
 
 from phonix.core import models  # noqa: F401  (register tables)
 from phonix.core.db import Base
@@ -24,7 +25,7 @@ def run_migrations_online() -> None:
         _run(connection)
 
 
-def _run(connection) -> None:  # type: ignore[no-untyped-def]
+def _run(connection: Connection) -> None:
     context.configure(
         connection=connection,
         target_metadata=target_metadata,
