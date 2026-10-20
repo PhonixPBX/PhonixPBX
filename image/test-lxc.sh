@@ -19,7 +19,9 @@
 # older release than the bundle.
 #
 # The container engine owns the network here, so ifupdown-ng only brings up
-# lo (in LXC/Incus/Proxmox it configures eth0). Environment: CONTAINER
+# lo (in LXC/Incus/Proxmox it configures eth0). SYS_ADMIN and no AppArmor
+# profile let phonix-ramlog mount tmpfs on /var/log and /tmp, which LXC/Incus
+# allow (docker's default profile denies mount). Environment: CONTAINER
 # (podman, docker), PORT (host port for 443, default 18443), TIMEOUT (300).
 set -eu
 ENGINE=${CONTAINER:-podman}
@@ -66,6 +68,7 @@ rm -f "$tmp/rootfs.tar"
 echo "== booting"
 "$ENGINE" run -d --name "$name" -t \
 	--cap-add NET_ADMIN --cap-add NET_RAW --cap-add SYS_CHROOT --cap-add AUDIT_WRITE \
+	--cap-add SYS_ADMIN --security-opt apparmor=unconfined \
 	--stop-signal SIGPWR -p "127.0.0.1:$PORT:443" "$image" \
 	/bin/sh -c 'printf "auto lo\niface lo inet loopback\n" >/etc/network/interfaces; exec /sbin/init' >/dev/null
 
