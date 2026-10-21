@@ -103,7 +103,11 @@ shutdown() {
 	fi
 	pkill -KILL -x asterisk 2>/dev/null
 	# last: Asterisk logs until it is gone
-	[ -n "$SYSLOG_PID" ] && kill -TERM "$SYSLOG_PID" 2>/dev/null
+	# and its "exiting" line comes before ours (image/test-oci.sh checks the last line)
+	if [ -n "$SYSLOG_PID" ]; then
+		kill -TERM "$SYSLOG_PID" 2>/dev/null
+		wait_gone 2 "$SYSLOG_PID" || kill -KILL "$SYSLOG_PID" 2>/dev/null
+	fi
 	log "stopped"
 	exit "${1:-0}"
 }
