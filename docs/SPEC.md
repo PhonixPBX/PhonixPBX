@@ -104,8 +104,10 @@ The table list below is derived from the old `config.xml` schema:
 - `providers`: id, tech (`pjsip|iax`), name, host, port, username, secret, `auth_user`, `from_domain`, `from_user`, `register`, codecs, `outbound_callerid`, enabled.
   - `provider_dialpatterns`: provider_id, pattern, position. The pattern keeps the legacy syntax `[add+][strip|]pattern` (e.g. `49+0|X.`), so legacy configs import 1:1.
   - `provider_incoming_map`: provider_id, did_pattern, target_type, target_id.
-- `callgroups` (ring groups): id, extension, name, strategy, ring_time, and a failover destination.
-  - `callgroup_members`: group_id, phone_id, position.
+- `callgroups` (ring groups): id, extension (optional), name, description, strategy (`ringall|linear`), ringlength, public access/name.
+  - `callgroup_members`: group_id, position, and either phone_id or member_group_id (a nested call group, exactly one of the two is set).
+  - A nested call group stands for its phones, resolved recursively; a phone that turns up again rings only once. In a `linear` group a nested group is one step that rings all its phones at once, for the parent's ring length, else the nested group's, else 20 s. Loops (a group containing itself directly or through other groups) are refused by the service layer; the generator also skips them. Unanswered calls go to the mailbox of the first resolved phone.
+  - API/MCP: `members` is the ordered list of `phone:<id>` / `callgroup:<id>`. `member_ids` (phones only) is still returned and accepted for pre-1.9 clients: if it disagrees with the phones in `members`, its phones win and the nested groups of `members` follow them.
 - `conference_rooms`: id, extension, name, pin, admin_pin.
 - `applications`: custom dialplan snippets.
   - Columns: id, extension, name, logic (plain text dialplan), enabled.
@@ -208,7 +210,7 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 | `external/phone[]` | `phones` tech=external |
 | `sip/provider[]` | `providers` tech=pjsip, generating registration, auth and aor. Also imports `dialpattern[]`, `incomingextensionmap[]` and `outgoingcalleridmap` |
 | `iax/provider[]` | `providers` tech=iax |
-| `dialplan/callgroup[]` | `callgroups` + members, resolved by legacy uniqid |
+| `dialplan/callgroup[]` | `callgroups` + members, resolved by legacy uniqid; the export writes nested call groups as their phones |
 | `dialplan/application[]` | `applications` with base64-decoded logic. Known Asterisk 1.8 constructs, such as `MeetMe` → `ConfBridge`, are rewritten automatically. Anything else is flagged "review needed". |
 | `dialplan` callparking/featuremap/transfer and pickup keys | `settings.features.*` |
 | `conferencing/room[]` | `conference_rooms` |
@@ -269,7 +271,7 @@ A backup holds the configuration as a document, not as a database file. This kee
 - Not included: the Asterisk database (`asterisk/`, runtime state), voicemail messages (`spool/`), `secrets.json` (machine-local keys), SSH host keys and logs.
 
 **config.json** (`phonix/services/configdoc.py`, schema in `docs/config-schema.json`)
-- `{"format": "phonix-config", "version": 3, "phonix_version", "created", "settings", "users", "providers", "phones", "callgroups", "conferences", "applications", "ivr_menus", "business_hours", "ami_users", "media"}`. Version 3 added the IVR menus and business hours (optional sections) and the `allow_calls` flag of API tokens. An IVR menu names its announcement by media path (`prompt_media`), since media files have no document id; menus and business hours that point to each other are created first without destinations, which are set in a second pass.
+- `{"format": "phonix-config", "version": 4, "phonix_version", "created", "settings", "users", "providers", "phones", "callgroups", "conferences", "applications", "ivr_menus", "business_hours", "ami_users", "media"}`. Version 3 added the IVR menus and business hours (optional sections) and the `allow_calls` flag of API tokens. An IVR menu names its announcement by media path (`prompt_media`), since media files have no document id; menus and business hours that point to each other are created first without destinations, which are set in a second pass. Version 4 replaced `callgroups[].member_ids` by `members` (`phone:<id>` / `callgroup:<id>`); call groups are created in dependency order, contained groups first.
 - Contains every secret: SIP/IAX passwords, voicemail PINs, manager secrets, the e-mail password, the argon2 hashes of the web users and the sha256 hashes of their API tokens.
 - Objects have document-local `id`s that references use (`dial_provider_id`, `member_ids`, `incoming_routes[].dest_id`, …); the field names are those of the REST API. Settings groups that are missing keep their current values.
 - Unknown keys are errors. `version` is bumped whenever the document changes incompatibly; older documents are upgraded step by step (`UPGRADES`), newer ones are refused with the release that made them. A test keeps the checked-in schema current.

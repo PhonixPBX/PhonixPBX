@@ -329,11 +329,11 @@
           "default": null,
           "title": "Legacy Uniqid"
         },
-        "member_ids": {
+        "members": {
           "items": {
-            "type": "integer"
+            "type": "string"
           },
-          "title": "Member Ids",
+          "title": "Members",
           "type": "array"
         },
         "name": {
@@ -2180,6 +2180,6 @@
     "version",
     "users"
   ],
-  "title": "PhonixPBX configuration, version 3",
+  "title": "PhonixPBX configuration, version 4",
   "type": "object"
 }

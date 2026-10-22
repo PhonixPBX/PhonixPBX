@@ -142,6 +142,16 @@ def sample_pbx(session: Session) -> dict[str, int]:
             ringlength=15,
         ),
     )
+    # nested: Sales rings as one step after Carol; Alice is already in Sales and rings only once
+    nested = dialplan.create_callgroup(
+        session,
+        dialplan.CallGroupIn(
+            name="Everyone",
+            extension="302",
+            members=[f"phone:{carol.id}", f"callgroup:{group.id}", f"phone:{alice.id}"],
+            strategy="linear",
+        ),
+    )
     room = dialplan.create_room(
         session,
         dialplan.ConferenceRoomIn(
@@ -255,6 +265,7 @@ def sample_pbx(session: Session) -> dict[str, int]:
         "external": ext.id,
         "group": group.id,
         "linear": linear.id,
+        "nested": nested.id,
         "room": room.id,
         "main_menu": main_menu.id,
         "support_menu": support.id,

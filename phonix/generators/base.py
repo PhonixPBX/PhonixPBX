@@ -96,6 +96,9 @@ class Snapshot:
     def provider(self, provider_id: int | None) -> Provider | None:
         return next((p for p in self.providers if p.id == provider_id), None)
 
+    def callgroup(self, group_id: int | None) -> CallGroup | None:
+        return next((g for g in self.callgroups if g.id == group_id), None)
+
 
 def build_snapshot(session: Session, facts: Facts | None = None, secrets: Secrets | None = None) -> Snapshot:
     def ordered(model: Any, *order: Any) -> list[Any]:

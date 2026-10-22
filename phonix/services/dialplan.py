@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -42,6 +42,8 @@ class CallGroupIn(BaseModel):
     ringlength: int | None = Field(default=None, ge=5, le=600)
     public_access: bool = False
     public_name: str = ""
+    # ordered "phone:<id>" / "callgroup:<id>"; ``member_ids`` (phones only) is the pre-1.9 form
+    members: list[str] = Field(default_factory=list, validate_default=True)
     member_ids: list[int] = Field(default_factory=list)
 
     _name = field_validator("name")(lambda cls, x: _required_name(x))
@@ -53,16 +55,52 @@ class CallGroupIn(BaseModel):
     def _ext(cls, value: str) -> str:
         return v.extension(value) if value.strip() else ""
 
-    @field_validator("member_ids")
+    @model_validator(mode="before")
     @classmethod
-    def _members(cls, value: list[int]) -> list[int]:
-        seen: list[int] = []
-        for pid in value:
-            if pid not in seen:
-                seen.append(pid)
+    def _legacy_member_ids(cls, data: Any) -> Any:
+        # a pre-1.9 client sends (or edits a fetched copy of) member_ids only: those phones win,
+        # nested call groups listed in members are kept after them
+        if not isinstance(data, dict) or not isinstance(data.get("member_ids"), list):
+            return data
+        members = data.get("members") or []
+        if not isinstance(members, list):
+            return data
+        phones = [f"phone:{i}" for i in data["member_ids"]]
+        if [m for m in members if str(m).startswith("phone:")] == phones:
+            return data
+        groups = [m for m in members if not str(m).startswith("phone:")]
+        return {**data, "members": [*phones, *groups]}
+
+    @field_validator("members")
+    @classmethod
+    def _members(cls, value: list[str]) -> list[str]:
+        seen: list[str] = []
+        for text in value:
+            ref = dst.parse_value(text)
+            if ref is None or ref[0] not in MEMBER_TYPES:
+                raise ValueError(_("Invalid member: %(member)s", member=text))
+            norm = f"{ref[0]}:{ref[1]}"
+            if norm not in seen:
+                seen.append(norm)
         if not seen:
             raise ValueError(_("Select at least one member"))
         return seen
+
+    @model_validator(mode="after")
+    def _phone_ids(self) -> CallGroupIn:
+        self.member_ids = [i for t, i in self.member_refs if t == "phone"]
+        return self
+
+    @property
+    def member_refs(self) -> list[tuple[str, int]]:
+        refs = []
+        for text in self.members:
+            kind, _sep, ident = text.partition(":")
+            refs.append((kind, int(ident)))
+        return refs
+
+
+MEMBER_TYPES = ("phone", "callgroup")
 
 
 def _required_name(value: str) -> str:
@@ -93,15 +131,58 @@ def callgroup_to_dict(g: CallGroup) -> dict[str, Any]:
         "ringlength": g.ringlength,
         "public_access": g.public_access,
         "public_name": g.public_name,
-        "member_ids": [m.phone_id for m in g.members],
+        "members": [m.ref for m in g.members],
+        "member_ids": [m.phone_id for m in g.members if m.phone_id is not None],
     }
 
 
+def contains_callgroup(session: Session, start: int, target: int) -> bool:
+    """Whether call group ``start`` contains ``target``, directly or through nested groups."""
+    edges: dict[int, list[int]] = {}
+    for parent, child in session.execute(
+        select(CallGroupMember.group_id, CallGroupMember.member_group_id).where(
+            CallGroupMember.member_group_id.is_not(None)
+        )
+    ):
+        edges.setdefault(parent, []).append(child)
+    todo, seen = [start], set()
+    while todo:
+        gid = todo.pop()
+        if gid == target:
+            return True
+        if gid not in seen:
+            seen.add(gid)
+            todo.extend(edges.get(gid, []))
+    return False
+
+
+def member_choices(session: Session, group_id: int | None) -> list[tuple[str, list[tuple[str, str]]]]:
+    """Grouped member options for the call group form, without the groups that would make a loop."""
+    phones = [
+        (f"phone:{p.id}", f"{p.extension} - {p.callerid}")
+        for p in session.scalars(select(Phone).order_by(Phone.extension))
+    ]
+    groups = [
+        (f"callgroup:{g.id}", dst.label(session, "callgroup", g.id))
+        for g in list_callgroups(session)
+        if group_id is None or not contains_callgroup(session, g.id, group_id)
+    ]
+    return [(_("Phones"), phones), (_("Call groups"), groups)]
+
+
 def _apply_callgroup(session: Session, group: CallGroup, data: CallGroupIn) -> None:
+    refs = data.member_refs
     phones = {p.id for p in session.scalars(select(Phone))}
-    missing = [pid for pid in data.member_ids if pid not in phones]
-    if missing:
-        raise ServiceError(fields={"member_ids": _("Unknown phone selected")})
+    if any(i not in phones for t, i in refs if t == "phone"):
+        raise ServiceError(fields={"members": _("Unknown phone selected")})
+    groups = {g.id for g in session.scalars(select(CallGroup))}
+    child_ids = [i for t, i in refs if t == "callgroup"]
+    if any(i not in groups for i in child_ids):
+        raise ServiceError(fields={"members": _("Unknown call group selected")})
+    if group.id is not None and any(contains_callgroup(session, i, group.id) for i in child_ids):
+        raise ServiceError(
+            fields={"members": _("A call group cannot contain itself, directly or through another group")}
+        )
     group.name = data.name
     group.extension = data.extension or None
     group.description = data.description
@@ -110,11 +191,13 @@ def _apply_callgroup(session: Session, group: CallGroup, data: CallGroupIn) -> N
     group.public_access = data.public_access
     group.public_name = data.public_name
     # reuse the existing rows: the flush inserts new members before it deletes orphans,
-    # so a fresh row for a phone that stays in the group violates (group_id, phone_id)
-    existing = {m.phone_id: m for m in group.members}
+    # so a fresh row for a member that stays in the group violates the unique constraints
+    existing = {m.ref: m for m in group.members}
     members = []
-    for i, pid in enumerate(data.member_ids):
-        member = existing.get(pid) or CallGroupMember(phone_id=pid)
+    for i, (kind, ident) in enumerate(refs):
+        member = existing.get(f"{kind}:{ident}")
+        if member is None:
+            member = CallGroupMember(phone_id=ident) if kind == "phone" else CallGroupMember(member_group_id=ident)
         member.position = i
         members.append(member)
     group.members = members

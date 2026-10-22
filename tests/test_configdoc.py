@@ -84,7 +84,7 @@ def test_import_is_all_or_nothing(session, initialized):
     doc = _populated(session)
     session.close()
     broken = copy.deepcopy(doc)
-    broken["callgroups"][0]["member_ids"] = [9999]
+    broken["callgroups"][0]["members"] = ["phone:9999"]
     with pytest.raises(ServiceError, match=r"callgroups/.*unknown phone 9999"):
         _import(broken, initialized.media_dir)
     with db.session_scope() as s:
@@ -181,3 +181,25 @@ def test_unknown_keep_part(session, initialized):
     doc = configdoc.parse_document(_populated(session))
     with pytest.raises(ValueError, match="unknown parts"):
         configdoc.import_document(session, doc, initialized.media_dir, keep=["everything"])
+
+
+def test_upgrade_3_converts_member_ids(session):
+    doc = _populated(session)
+    doc["version"] = 3
+    for group in doc["callgroups"]:
+        group["member_ids"] = [int(m.removeprefix("phone:")) for m in group.pop("members") if m.startswith("phone:")]
+    parsed = configdoc.parse_document(doc)
+    assert all(all(m.startswith("phone:") for m in g.members) for g in parsed.callgroups)
+    assert any(g.members for g in parsed.callgroups)
+
+
+def test_callgroup_loop_in_document(session, initialized):
+    doc = _populated(session)
+    session.close()
+    groups = {g["name"]: g for g in doc["callgroups"]}
+    groups["Sales"]["members"].append(f"callgroup:{groups['Everyone']['id']}")
+    with pytest.raises(ServiceError, match="contain each other"):
+        _import(doc, initialized.media_dir)
+    doc["callgroups"][0]["members"] = ["callgroup:9999"]
+    with pytest.raises(ServiceError, match="unknown callgroup 9999"):
+        _import(doc, initialized.media_dir)

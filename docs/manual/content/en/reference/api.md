@@ -53,6 +53,8 @@ Every kind of object has the same five endpoints:
 
 Passwords and other secrets are never returned. When you send an empty secret, the stored value stays unchanged.
 
+Call groups list their members in `members`, in ringing order: `"phone:<id>"` for a phone, `"callgroup:<id>"` for a contained call group, for example `{"name": "Support", "members": ["callgroup:2", "phone:5"]}`. A group that would contain itself is refused with `422`. The older field `member_ids` (phone ids only) is still returned and accepted.
+
 ## Settings {#settings}
 
 `GET /api/v1/settings/{group}` returns a settings group, `PATCH /api/v1/settings/{group}` changes only the fields you send. The groups are `system`, `network`, `rtp`, `sip`, `iax`, `voicemail`, `email`, `features`, `media`, `firewall`, `acme`, `gui` and `update`.

@@ -6,6 +6,21 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- *Dialplan → Call Groups*: a call group can now contain other call groups as members, next to phones. With
+  *Ring all at once* all their phones ring together; with *One after another* a contained group is one step in which
+  all its phones ring at once. A phone that is in several of the groups rings only once, and a group cannot contain
+  itself, directly or through another group.
+
+### Changed
+
+- REST API and MCP: call groups have a new `members` field, the ordered list of `phone:<id>` and `callgroup:<id>`.
+  `member_ids` still works for phones.
+- Configuration backups (`config.json`) are now version 4. Older backups are upgraded on restore; backups of this
+  version cannot be restored on PhonixPBX 1.8 or older.
+- The export to the legacy `config.xml` writes a contained call group as its phones.
+
 ## [1.8.0] - 2026-10-21
 
 ### Changed

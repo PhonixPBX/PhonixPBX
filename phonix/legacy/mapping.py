@@ -1405,6 +1405,21 @@ def provider_out(
     return out
 
 
+def _flat_phone_ids(group: CallGroup, seen: set[int]) -> list[int]:
+    """The phones of a call group with nested call groups resolved (legacy cannot nest them)."""
+    seen.add(group.id)
+    out: list[int] = []
+    for m in group.members:
+        if m.phone_id is not None:
+            ids = [m.phone_id]
+        elif m.member_group is not None and m.member_group.id not in seen:
+            ids = _flat_phone_ids(m.member_group, seen)
+        else:
+            ids = []
+        out += [i for i in ids if i not in out]
+    return out
+
+
 def callgroup_out(group: CallGroup, uid: Callable[[str, int], str], report: ExportReport) -> dict[str, Any]:
     if group.strategy != "ringall":
         report.omit("callgroups", group.name, f"strategy={group.strategy} (legacy rings all)")
@@ -1414,11 +1429,13 @@ def callgroup_out(group: CallGroup, uid: Callable[[str, int], str], report: Expo
             group.name,
             "Call group without extension; the legacy firmware requires one",
         )
+    if any(m.member_group_id is not None for m in group.members):
+        report.omit("callgroups", group.name, "nested call groups (exported as their phones)")
     return {
         "name": group.name,
         "extension": group.extension or None,
         "descr": group.description or None,
-        "groupmember": [uid("phone", m.phone_id) for m in group.members],
+        "groupmember": [uid("phone", pid) for pid in _flat_phone_ids(group, set())],
         "publicaccess": _enabled(group.public_access),
         "publicname": group.public_name or None,
         "ringlength": _ringlength_out(group.ringlength),

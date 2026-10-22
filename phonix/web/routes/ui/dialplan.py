@@ -14,7 +14,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from phonix.core import settings as st
-from phonix.core.models import User
+from phonix.core.models import CallGroupMember, User
 from phonix.i18n import N_, _
 from phonix.services import dialplan as dp
 from phonix.services import phones as phone_svc
@@ -89,9 +89,15 @@ GROUPS = Kind(
 )
 
 
-def _form_ctx(db: Session, kind: Kind) -> dict[str, Any]:
+def _member_label(member: CallGroupMember) -> str:
+    if member.member_group is not None:
+        return member.member_group.name
+    return member.phone.extension if member.phone is not None else ""
+
+
+def _form_ctx(db: Session, kind: Kind, obj_id: int | None) -> dict[str, Any]:
     if kind is GROUPS:
-        return {"phones": phone_svc.list_phones(db)}
+        return {"member_choices": dp.member_choices(db, obj_id)}
     return {}
 
 
@@ -116,7 +122,7 @@ def register(kind: Kind, target: APIRouter = router, prefix: str = "/dialplan") 
             obj_id=obj_id,
             is_new=obj_id is None,
             kind=kind,
-            **_form_ctx(db, kind),
+            **_form_ctx(db, kind, obj_id),
         )
 
     @target.get(base, name=f"{kind.name}_list")
@@ -225,7 +231,7 @@ def overview(request: Request, user: User = Depends(ui_user), db: Session = Depe
                     "number": g.extension,
                     "type": _("Call group"),
                     "name": g.name,
-                    "info": ", ".join(m.phone.extension for m in g.members),
+                    "info": ", ".join(_member_label(m) for m in g.members),
                     "public": g.public_name or (_("yes") if g.public_access else ""),
                 }
             )

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-19 10:55+0200\n"
+"POT-Creation-Date: 2026-10-22 20:22+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: da\n"
@@ -146,6 +146,9 @@ msgid ""
 msgstr ""
 "En TXT-post oprettes via DNS-udbyderens API. Virker for PBX'er, der ikke kan nås fra internettet, og for wildcard-"
 "navne."
+
+msgid "A call group cannot contain itself, directly or through another group"
+msgstr "En opkaldsgruppe kan ikke indeholde sig selv, hverken direkte eller via en anden gruppe"
 
 msgid "A certificate request is already running."
 msgstr "En certifikatanmodning kører allerede."
@@ -613,6 +616,10 @@ msgstr "Opkaldsgruppe ikke fundet"
 
 msgid "Call groups"
 msgstr "Opkaldsgrupper"
+
+#, python-format
+msgid "Call groups contain each other: %(names)s"
+msgstr "Opkaldsgrupper indeholder hinanden: %(names)s"
 
 msgid "Call groups ring several phones at once or one after another."
 msgstr "Opkaldsgrupper ringer til flere telefoner på én gang eller efter hinanden."
@@ -1280,9 +1287,6 @@ msgstr "Følg åbningstider og helligdage."
 msgid "For %(what)s, press %(key)s."
 msgstr "Tryk %(key)s for %(what)s."
 
-msgid "For 'one after another', phones ring in this order."
-msgstr "Ved 'én efter én' ringer telefonerne i denne rækkefølge."
-
 msgid "For example when the backup comes from a system with another host name."
 msgstr "For eksempel når backuppen stammer fra et system med et andet værtsnavn."
 
@@ -1567,6 +1571,10 @@ msgstr "Ugyldigt format"
 
 msgid "Invalid interface name"
 msgstr "Ugyldigt interfacenavn"
+
+#, python-format
+msgid "Invalid member: %(member)s"
+msgstr "Ugyldigt medlem: %(member)s"
 
 msgid "Invalid password hash"
 msgstr "Ugyldig adgangskode-hash"
@@ -2279,6 +2287,13 @@ msgstr "Telefon ikke fundet"
 
 msgid "Phones"
 msgstr "Telefoner"
+
+msgid ""
+"Phones and other call groups. For 'one after another', members ring in this order; a call group rings all its phones "
+"at once."
+msgstr ""
+"Telefoner og andre opkaldsgrupper. Ved 'én efter én' ringer medlemmerne i denne rækkefølge; en opkaldsgruppe ringer "
+"på alle sine telefoner på én gang."
 
 msgid "Phones and providers"
 msgstr "Telefoner og udbydere"
@@ -3191,6 +3206,9 @@ msgstr "USA (gammel)"
 
 msgid "Unknown"
 msgstr "Ukendt"
+
+msgid "Unknown call group selected"
+msgstr "Ukendt opkaldsgruppe valgt"
 
 #, python-format
 msgid "Unknown codec %(codec)r"

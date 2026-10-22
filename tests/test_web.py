@@ -828,3 +828,35 @@ def test_firmware_job_guards(client, runtime, monkeypatch, tmp_path):
     with pytest.raises(ServiceError, match="--remove"):
         update.run_install(bundle, "cli", remove=True)
     assert bundle.exists()
+
+
+def test_callgroup_form_nested(client):
+    from phonix.core.models import CallGroup
+
+    login(client)
+    with session_scope() as s:
+        groups = {g.name: g.id for g in s.query(CallGroup)}
+    page = client.get(f"/dialplan/callgroups/{groups['Sales']}").text
+    # Sales can contain Hunt, but not itself or Everyone (which contains Sales)
+    assert f'value="callgroup:{groups["Hunt"]}"' in page
+    assert f'value="callgroup:{groups["Everyone"]}"' not in page
+    token = csrf(client, "/dialplan/callgroups/new")
+    form = {"csrf_token": token, "name": "Floor", "strategy": "ringall", "members__present": "1"}
+    r = client.post(
+        "/dialplan/callgroups/new",
+        data={**form, "members": [f"callgroup:{groups['Hunt']}", "phone:1"]},
+        follow_redirects=False,
+    )
+    assert r.status_code == 303
+    with session_scope() as s:
+        floor = s.query(CallGroup).filter_by(name="Floor").one()
+        assert [m.ref for m in floor.members] == [f"callgroup:{groups['Hunt']}", "phone:1"]
+        floor_id = floor.id
+    # Hunt must not contain Floor, which contains Hunt
+    r = client.post(
+        f"/dialplan/callgroups/{groups['Hunt']}",
+        data={**form, "name": "Hunt", "members": [f"callgroup:{floor_id}"]},
+        follow_redirects=False,
+    )
+    assert r.status_code == 422 and "cannot contain itself" in r.text
+    assert "Floor" in client.get("/dialplan/callgroups").text

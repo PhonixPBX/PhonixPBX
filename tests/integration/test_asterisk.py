@@ -74,7 +74,11 @@ def pbx(tmp_path_factory: pytest.TempPathFactory) -> Iterator[Path]:
                     }
                 ),
             )
-        dialplan.create_callgroup(session, dialplan.CallGroupIn(name="Both", extension="300", member_ids=[1, 2]))
+        both = dialplan.create_callgroup(session, dialplan.CallGroupIn(name="Both", extension="300", member_ids=[1, 2]))
+        dialplan.create_callgroup(
+            session,
+            dialplan.CallGroupIn(name="Nested", extension="301", members=[f"callgroup:{both.id}"], strategy="linear"),
+        )
         menu = ivr.create_menu(
             session,
             ivr.IvrMenuIn(
@@ -277,6 +281,11 @@ def test_ivr_and_hours_loaded(pbx: Path) -> None:
     assert "'s'" in cli("dialplan show hours-1-pub")
     assert "'600'" in cli("dialplan show 600@internal")
     assert "'*31'" in cli("dialplan show *31@internal")
+
+
+def test_nested_callgroup_loaded(pbx: Path) -> None:
+    out = cli("dialplan show 301@internal")
+    assert "PJSIP/101&PJSIP/102" in out, out
 
 
 def test_ivr_call_is_answered(pbx: Path) -> None:

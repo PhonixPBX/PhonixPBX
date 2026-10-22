@@ -11,7 +11,7 @@ document does not depend on the database schema:
   the UI. The first error aborts the whole import.
 
 Objects carry document-local ``id`` values that references (``dial_provider_id``,
-``member_ids``, ``incoming_routes[].dest_id``, ...) point to; they are remapped
+``members``, ``incoming_routes[].dest_id``, ...) point to; they are remapped
 to new database ids on import. The field names are the ones of the REST API.
 
 ``CONFIG_VERSION`` is bumped whenever the document changes incompatibly (the
@@ -71,7 +71,7 @@ from phonix.services import users as users_svc
 from phonix.services.common import AREAS, ServiceError, errors_from_validation, mark_dirty, parse
 
 FORMAT = "phonix-config"
-CONFIG_VERSION = 3
+CONFIG_VERSION = 4
 
 
 def _upgrade_1(data: dict[str, Any]) -> dict[str, Any]:
@@ -93,8 +93,16 @@ def _upgrade_2(data: dict[str, Any]) -> dict[str, Any]:
     return data
 
 
+def _upgrade_3(data: dict[str, Any]) -> dict[str, Any]:
+    """3 -> 4: call group members became ``phone:<id>`` / ``callgroup:<id>`` references."""
+    for group in data.get("callgroups") or []:
+        if isinstance(group, dict) and isinstance(group.get("member_ids"), list):
+            group["members"] = [f"phone:{i}" for i in group.pop("member_ids")]
+    return data
+
+
 # version n -> n + 1, applied to the plain dict before validation
-UPGRADES: dict[int, Callable[[dict[str, Any]], dict[str, Any]]] = {1: _upgrade_1, 2: _upgrade_2}
+UPGRADES: dict[int, Callable[[dict[str, Any]], dict[str, Any]]] = {1: _upgrade_1, 2: _upgrade_2, 3: _upgrade_3}
 
 _FORBID = ConfigDict(extra="forbid")
 
@@ -117,6 +125,8 @@ class ProviderDoc(pv.ProviderIn):
 class CallGroupDoc(dp.CallGroupIn):
     model_config = _FORBID
     id: int
+    # the API compatibility field; documents carry ``members`` only
+    member_ids: SkipJsonSchema[list[int]] = Field(default_factory=list, exclude=True)
     legacy_uniqid: str | None = None
 
 
@@ -335,7 +345,7 @@ def export(session: Session) -> dict[str, Any]:
             entity(ph.to_dict(p, with_secret=True), p) for p in session.scalars(select(Phone).order_by(Phone.extension))
         ],
         "callgroups": [
-            entity(dp.callgroup_to_dict(g), g)
+            entity(_callgroup_doc(g), g)
             for g in session.scalars(select(CallGroup).order_by(CallGroup.name, CallGroup.id))
         ],
         "conferences": [entity(dp.room_to_dict(r), r) for r in dp.list_rooms(session)],
@@ -345,6 +355,12 @@ def export(session: Session) -> dict[str, Any]:
         "ami_users": ami_users,
         "media": media,
     }
+
+
+def _callgroup_doc(group: CallGroup) -> dict[str, Any]:
+    data = dp.callgroup_to_dict(group)
+    del data["member_ids"]
+    return data
 
 
 def _menu_doc(menu: IvrMenu) -> dict[str, Any]:
@@ -514,13 +530,7 @@ class _Importer:
             with self.step(f"applications/{app.extension}"):
                 application = dp.create_application(session, parse(dp.ApplicationIn, data), user)
             self.remember("application", app.id, application, app.legacy_uniqid)
-        for group in doc.callgroups:
-            where = f"callgroups/{group.name}"
-            data = group.model_dump(exclude={"id", "legacy_uniqid"})
-            data["member_ids"] = [self.ref("phone", i, where) for i in group.member_ids]
-            with self.step(where):
-                callgroup = dp.create_callgroup(session, parse(dp.CallGroupIn, data), user)
-            self.remember("callgroup", group.id, callgroup, group.legacy_uniqid)
+        self.callgroups()
         # media rows first: IVR menus refer to their announcement
         media_ids: dict[str, int] = {}
         for m in doc.media:
@@ -568,6 +578,31 @@ class _Importer:
         dest_type, dest_id = data[f"{prefix}_dest_type"], data[f"{prefix}_dest_id"]
         if dest_type not in dst.ACTIONS and dest_id is not None:
             data[f"{prefix}_dest_id"] = self.ref(dest_type, dest_id, where)
+
+    def callgroups(self) -> None:
+        """Call groups may contain call groups: create the contained ones first."""
+        session, user = self.session, self.user
+        pending = list(self.doc.callgroups)
+        doc_ids = {g.id for g in pending}
+        for group in pending:
+            for kind, ident in group.member_refs:
+                if kind == "callgroup" and ident not in doc_ids:
+                    self.ref(kind, ident, f"callgroups/{group.name}")
+        while pending:
+            ready = [
+                g for g in pending if all(k != "callgroup" or i in self.ids["callgroup"] for k, i in g.member_refs)
+            ]
+            if not ready:
+                names = ", ".join(g.name for g in pending)
+                raise ServiceError(_("Call groups contain each other: %(names)s", names=names))
+            for group in ready:
+                where = f"callgroups/{group.name}"
+                data = group.model_dump(exclude={"id", "legacy_uniqid"})
+                data["members"] = [f"{k}:{self.ref(k, i, where)}" for k, i in group.member_refs]
+                with self.step(where):
+                    callgroup = dp.create_callgroup(session, parse(dp.CallGroupIn, data), user)
+                self.remember("callgroup", group.id, callgroup, group.legacy_uniqid)
+                pending.remove(group)
 
     def menus_and_hours(self, media_ids: dict[str, int]) -> None:
         """Menus and business hours may point to each other: create them without

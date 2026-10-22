@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-19 10:55+0200\n"
+"POT-Creation-Date: 2026-10-22 20:22+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ru\n"
@@ -147,6 +147,9 @@ msgid ""
 "A TXT record is created through the DNS provider's API. Works for PBXs that are not reachable from the internet and "
 "for wildcard names."
 msgstr "TXT-запись создается через API DNS-провайдера. Подходит для АТС, недоступных из интернета, и для wildcard-имен."
+
+msgid "A call group cannot contain itself, directly or through another group"
+msgstr "Группа вызова не может содержать саму себя ни напрямую, ни через другую группу"
 
 msgid "A certificate request is already running."
 msgstr "Запрос сертификата уже выполняется."
@@ -616,6 +619,10 @@ msgstr "Группа вызова не найдена"
 
 msgid "Call groups"
 msgstr "Группы вызова"
+
+#, python-format
+msgid "Call groups contain each other: %(names)s"
+msgstr "Группы вызова содержат друг друга: %(names)s"
 
 msgid "Call groups ring several phones at once or one after another."
 msgstr "Группы вызова звонят на несколько телефонов одновременно или по очереди."
@@ -1283,9 +1290,6 @@ msgstr "По расписанию работы и праздникам."
 msgid "For %(what)s, press %(key)s."
 msgstr "%(what)s — нажмите %(key)s."
 
-msgid "For 'one after another', phones ring in this order."
-msgstr "В режиме 'по очереди' телефоны звонят в этом порядке."
-
 msgid "For example when the backup comes from a system with another host name."
 msgstr "Например, если резервная копия сделана на системе с другим именем хоста."
 
@@ -1571,6 +1575,10 @@ msgstr "Недопустимый формат"
 
 msgid "Invalid interface name"
 msgstr "Недопустимое имя интерфейса"
+
+#, python-format
+msgid "Invalid member: %(member)s"
+msgstr "Недопустимый участник: %(member)s"
 
 msgid "Invalid password hash"
 msgstr "Недопустимый хеш пароля"
@@ -2284,6 +2292,13 @@ msgstr "Телефон не найден"
 
 msgid "Phones"
 msgstr "Телефоны"
+
+msgid ""
+"Phones and other call groups. For 'one after another', members ring in this order; a call group rings all its phones "
+"at once."
+msgstr ""
+"Телефоны и другие группы вызова. В режиме 'по очереди' участники вызываются в этом порядке; группа вызова звонит на "
+"все свои телефоны одновременно."
 
 msgid "Phones and providers"
 msgstr "Телефоны и провайдеры"
@@ -3196,6 +3211,9 @@ msgstr "США (старый)"
 
 msgid "Unknown"
 msgstr "Неизвестно"
+
+msgid "Unknown call group selected"
+msgstr "Выбрана неизвестная группа вызова"
 
 #, python-format
 msgid "Unknown codec %(codec)r"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-19 10:55+0200\n"
+"POT-Creation-Date: 2026-10-22 20:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -142,6 +142,9 @@ msgstr ""
 msgid ""
 "A TXT record is created through the DNS provider's API. Works for PBXs "
 "that are not reachable from the internet and for wildcard names."
+msgstr ""
+
+msgid "A call group cannot contain itself, directly or through another group"
 msgstr ""
 
 msgid "A certificate request is already running."
@@ -616,6 +619,10 @@ msgid "Call group not found"
 msgstr ""
 
 msgid "Call groups"
+msgstr ""
+
+#, python-format
+msgid "Call groups contain each other: %(names)s"
 msgstr ""
 
 msgid "Call groups ring several phones at once or one after another."
@@ -1292,9 +1299,6 @@ msgstr ""
 msgid "For %(what)s, press %(key)s."
 msgstr ""
 
-msgid "For 'one after another', phones ring in this order."
-msgstr ""
-
 msgid "For example when the backup comes from a system with another host name."
 msgstr ""
 
@@ -1563,6 +1567,10 @@ msgid "Invalid format"
 msgstr ""
 
 msgid "Invalid interface name"
+msgstr ""
+
+#, python-format
+msgid "Invalid member: %(member)s"
 msgstr ""
 
 msgid "Invalid password hash"
@@ -2294,6 +2302,11 @@ msgid "Phone not found"
 msgstr ""
 
 msgid "Phones"
+msgstr ""
+
+msgid ""
+"Phones and other call groups. For 'one after another', members ring in "
+"this order; a call group rings all its phones at once."
 msgstr ""
 
 msgid "Phones and providers"
@@ -3196,6 +3209,9 @@ msgid "United States (old)"
 msgstr ""
 
 msgid "Unknown"
+msgstr ""
+
+msgid "Unknown call group selected"
 msgstr ""
 
 #, python-format

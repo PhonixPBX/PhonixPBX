@@ -91,6 +91,10 @@
           "101",
           "102"
         ],
+        "members": [
+          "phone:101",
+          "phone:102"
+        ],
         "name": "Sales",
         "public_access": true,
         "public_name": "sales",

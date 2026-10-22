@@ -28,7 +28,7 @@ def test_squashed_nightly_revision_is_restamped(runtime: config.RuntimeConfig) -
     with db.get_engine().begin() as conn:
         conn.execute(text("UPDATE alembic_version SET version_num = '0003'"))
     migrate.upgrade()
-    assert migrate.current_revision() == migrate.head_revision() == "0006"
+    assert migrate.current_revision() == migrate.head_revision() == "0007"
     assert not migrate.needs_upgrade()
 
 
@@ -49,3 +49,23 @@ def test_0004_moves_custom_voicemail_text(runtime: config.RuntimeConfig) -> None
         data = conn.execute(text("SELECT data FROM settings WHERE \"group\" = 'voicemail'")).scalar_one()
     data = json.loads(data) if isinstance(data, str) else data
     assert data == {"from_name": "VM", "templates": {"fr": {"vm_subject": "Nouveau", "vm_body": "Bonjour"}}}
+
+
+def test_0007_keeps_callgroup_members(runtime: config.RuntimeConfig) -> None:
+    from alembic import command
+    from factories import sample_pbx
+
+    migrate.upgrade()
+    with db.session_scope() as s:
+        sample_pbx(s)
+    count = "SELECT COUNT(*) FROM callgroup_members"
+    with db.get_engine().connect() as conn:
+        total = conn.execute(text(count)).scalar_one()
+    command.downgrade(migrate.alembic_config(), "0006")
+    with db.get_engine().connect() as conn:
+        # the nested group's call group member has no place in the old table
+        assert conn.execute(text(count)).scalar_one() == total - 1
+    migrate.upgrade()
+    with db.get_engine().connect() as conn:
+        assert conn.execute(text(count)).scalar_one() == total - 1
+        assert compare_metadata(MigrationContext.configure(conn), Base.metadata) == []

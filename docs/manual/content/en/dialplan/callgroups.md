@@ -17,14 +17,24 @@ Click **Call group** above the list to add one. The list shows the **Number** (o
 |---|---|---|
 | Name | A name for lists and destination pickers, for example `Sales`. | – |
 | Number | The internal number of the group (1–20 digits). Optional: a group without a number can still be the destination of an incoming route or an IVR key. | empty |
-| Members | The phones in the group, at least one. For *One after another*, the phones ring in the order shown here. | – |
+| Members | The phones and other call groups in the group, at least one. For *One after another*, the members ring in the order shown here. See [Call groups in call groups](#nested). | – |
 | Ring strategy | *Ring all at once*: all members ring together, the first to answer takes the call. *One after another*: the members ring in turn. | Ring all at once |
-| Ring time (seconds) | *Ring all at once*: how long the group rings (5–600); empty rings until the caller hangs up. *One after another*: how long each phone rings before the next one; empty uses each phone's own ring time, or 20 seconds if the phone has none. | empty |
+| Ring time (seconds) | *Ring all at once*: how long the group rings (5–600); empty rings until the caller hangs up. *One after another*: how long each member rings before the next one; empty uses the member's own ring time (of the phone, or of the contained call group), or 20 seconds if it has none. | empty |
 | Description | A note for your reference. | empty |
 | Reachable from outside | Callers from providers may reach the group directly by its number. | off |
 | Public name | With *Reachable from outside*: an alternative number or name for callers from outside. | empty |
 
-Calls that nobody answers go to the voicemail box of the **first member**, if that phone has voicemail enabled; otherwise the call ends. The missed call e-mail of the first member is used for the group as well. Disabled phones are skipped.
+Calls that nobody answers go to the voicemail box of the **first member** (the first phone of a contained call group), if that phone has voicemail enabled; otherwise the call ends. The missed call e-mail of the first member is used for the group as well. Disabled phones are skipped.
+
+### Call groups in call groups {#nested}
+
+A member can also be another call group. It stands for all of its phones, so you keep each team in one group and build larger groups from them, for example *Support* = *Support L1* + *Support L2*. A change to *Support L1* then applies to *Support* as well.
+
+- With *Ring all at once*, the phones of all contained groups ring together.
+- With *One after another*, a contained group is one step: all its phones ring at the same time, then the next member follows. Its own ring strategy does not matter here.
+- A phone that is in several of the groups rings only once, at its first place.
+- A group cannot contain itself, directly or through another group. Such groups are not offered in **Members**, and saving is refused.
+- Deleting a call group removes it from the groups that contain it.
 
 ### Set up a team number {#team-number}
 

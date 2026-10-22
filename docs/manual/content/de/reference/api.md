@@ -53,6 +53,8 @@ Jede Objektart hat dieselben fünf Endpunkte:
 
 Passwörter und andere Geheimnisse werden nie zurückgegeben. Senden Sie ein leeres Geheimnis, bleibt der gespeicherte Wert unverändert.
 
+Rufgruppen führen ihre Mitglieder in `members`, in der Klingelreihenfolge: `"phone:<id>"` für ein Telefon, `"callgroup:<id>"` für eine enthaltene Rufgruppe, zum Beispiel `{"name": "Support", "members": ["callgroup:2", "phone:5"]}`. Eine Gruppe, die sich selbst enthalten würde, wird mit `422` abgelehnt. Das ältere Feld `member_ids` (nur Telefon-IDs) wird weiterhin geliefert und angenommen.
+
 ## Einstellungen {#settings}
 
 `GET /api/v1/settings/{group}` liefert eine Gruppe von Einstellungen, `PATCH /api/v1/settings/{group}` ändert nur die gesendeten Felder. Die Gruppen heißen `system`, `network`, `rtp`, `sip`, `iax`, `voicemail`, `email`, `features`, `media`, `firewall`, `acme`, `gui` und `update`.

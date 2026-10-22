@@ -139,13 +139,41 @@ def group_notify_target(group: CallGroup) -> str:
     return f"group-{group.id}"
 
 
-def group_members(group: CallGroup, snap: Snapshot) -> list[Phone]:
-    out = []
+def group_steps(
+    group: CallGroup, snap: Snapshot, _seen: set[int] | None = None
+) -> list[tuple[int | None, list[Phone]]]:
+    """The members of a call group in order, with nested call groups resolved to their phones.
+
+    Each step is ``(ringlength, phones)``: a phone member is a step with its own ring time, a nested
+    call group one step that rings all its (recursively resolved) phones at once with the nested
+    group's ring time. Disabled phones, phones seen before and empty steps are left out; a group
+    that is already being resolved is skipped (the service layer rejects such loops).
+    """
+    seen = _seen if _seen is not None else set()
+    seen.add(group.id)
+    phones_seen: set[int] = set()
+    steps: list[tuple[int | None, list[Phone]]] = []
     for member in group.members:
-        phone = snap.phone(member.phone_id)
-        if phone is not None and phone.enabled:
-            out.append(phone)
-    return out
+        if member.member_group_id is not None:
+            child = snap.callgroup(member.member_group_id)
+            if child is None or child.id in seen:
+                continue
+            phones = [p for _rl, ps in group_steps(child, snap, seen) for p in ps]
+            ringlength = child.ringlength
+        else:
+            phone = snap.phone(member.phone_id) if member.phone_id is not None else None
+            phones = [phone] if phone is not None and phone.enabled else []
+            ringlength = phone.ringlength if phone is not None else None
+        phones = [p for p in phones if p.id not in phones_seen]
+        phones_seen.update(p.id for p in phones)
+        if phones:
+            steps.append((ringlength, phones))
+    return steps
+
+
+def group_members(group: CallGroup, snap: Snapshot) -> list[Phone]:
+    """All active phones of a call group, nested call groups included, in ringing order."""
+    return [p for _rl, phones in group_steps(group, snap) for p in phones]
 
 
 def ring_steps(target: RingTarget, from_public: bool, linear: list[RingTarget] | None = None) -> list[str]:
@@ -176,14 +204,12 @@ def ring_steps(target: RingTarget, from_public: bool, linear: list[RingTarget] |
 
 
 def callgroup_steps(group: CallGroup, snap: Snapshot, from_public: bool) -> list[str]:
-    members = group_members(group, snap)
+    members = group_steps(group, snap)
     if not members:
         return ["NoOp(Call group has no active members)", "Congestion(5)", "Hangup()"]
-    first = members[0]
-    targets = [phone_target(p, snap) for p in members]
-    dialstrings = [t.dialstring for t in targets if t.dialstring]
+    first = members[0][1][0]
     target = RingTarget(
-        dialstring="&".join(dialstrings),
+        dialstring=_joined(members, snap),
         # legacy: the first member's mailbox takes unanswered group calls
         vm_box=first.extension if first.vm_enabled else "",
         notify_email=first.notify_email if first.notify_missed else "",
@@ -191,10 +217,22 @@ def callgroup_steps(group: CallGroup, snap: Snapshot, from_public: bool) -> list
         notify_target=group_notify_target(group),
     )
     if group.strategy == "linear":
-        for t, phone in zip(targets, members, strict=False):
-            t.ringlength = group.ringlength or phone.ringlength or 20
-        return ring_steps(target, from_public, linear=[t for t in targets if t.dialstring])
+        linear = [
+            RingTarget(
+                dialstring=_joined([(ringlength, phones)], snap),
+                vm_box="",
+                notify_email="",
+                ringlength=group.ringlength or ringlength or 20,
+            )
+            for ringlength, phones in members
+        ]
+        return ring_steps(target, from_public, linear=[t for t in linear if t.dialstring])
     return ring_steps(target, from_public)
+
+
+def _joined(steps: list[tuple[int | None, list[Phone]]], snap: Snapshot) -> str:
+    dialstrings = (phone_dialstring(p, snap) for _rl, phones in steps for p in phones)
+    return "&".join(d for d in dialstrings if d)
 
 
 def application_steps(app: Application) -> list[str]:

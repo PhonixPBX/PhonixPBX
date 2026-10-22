@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-19 10:55+0200\n"
+"POT-Creation-Date: 2026-10-22 20:22+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: pl\n"
@@ -149,6 +149,9 @@ msgid ""
 msgstr ""
 "Rekord TXT jest tworzony przez API dostawcy DNS. Działa dla PBX-ów niedostępnych z internetu oraz dla nazw "
 "wieloznacznych (wildcard)."
+
+msgid "A call group cannot contain itself, directly or through another group"
+msgstr "Grupa telefoniczna nie może zawierać samej siebie, ani bezpośrednio, ani przez inną grupę"
 
 msgid "A certificate request is already running."
 msgstr "Żądanie certyfikatu jest już w toku."
@@ -614,6 +617,10 @@ msgstr "Nie znaleziono grupy telefonicznej"
 
 msgid "Call groups"
 msgstr "Grupy telefoniczne"
+
+#, python-format
+msgid "Call groups contain each other: %(names)s"
+msgstr "Grupy telefoniczne zawierają się wzajemnie: %(names)s"
 
 msgid "Call groups ring several phones at once or one after another."
 msgstr "Grupy telefoniczne dzwonią na kilka telefonów jednocześnie lub po kolei."
@@ -1281,9 +1288,6 @@ msgstr "Według godzin otwarcia i dni wolnych."
 msgid "For %(what)s, press %(key)s."
 msgstr "%(what)s – naciśnij %(key)s."
 
-msgid "For 'one after another', phones ring in this order."
-msgstr "Przy strategii „po kolei” telefony dzwonią w tej kolejności."
-
 msgid "For example when the backup comes from a system with another host name."
 msgstr "Na przykład gdy kopia zapasowa pochodzi z systemu o innej nazwie hosta."
 
@@ -1569,6 +1573,10 @@ msgstr "Nieprawidłowy format"
 
 msgid "Invalid interface name"
 msgstr "Nieprawidłowa nazwa interfejsu"
+
+#, python-format
+msgid "Invalid member: %(member)s"
+msgstr "Nieprawidłowy członek: %(member)s"
 
 msgid "Invalid password hash"
 msgstr "Nieprawidłowy skrót hasła"
@@ -2284,6 +2292,13 @@ msgstr "Nie znaleziono telefonu"
 
 msgid "Phones"
 msgstr "Telefony"
+
+msgid ""
+"Phones and other call groups. For 'one after another', members ring in this order; a call group rings all its phones "
+"at once."
+msgstr ""
+"Telefony i inne grupy telefoniczne. Dla „po kolei” członkowie dzwonią w tej kolejności; grupa telefoniczna dzwoni na "
+"wszystkie swoje telefony jednocześnie."
 
 msgid "Phones and providers"
 msgstr "Telefony i dostawcy"
@@ -3198,6 +3213,9 @@ msgstr "Stany Zjednoczone (stare)"
 
 msgid "Unknown"
 msgstr "Nieznany"
+
+msgid "Unknown call group selected"
+msgstr "Wybrano nieznaną grupę telefoniczną"
 
 #, python-format
 msgid "Unknown codec %(codec)r"

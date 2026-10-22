@@ -73,6 +73,23 @@
 </div>
 {% endmacro %}
 
+{% macro ordered_select(name, label, values, errors, choices, help="", required=False) %}
+{# multi select that keeps the order: `choices` is [(group title, [(value, label), ...]), ...];
+   the selected options come first, in the stored order, because Tom Select keeps their DOM order #}
+{% set current = values.get(name) or [] %}
+{% set labels = {} %}
+{% for _title, options in choices %}{% for value, text in options %}{% set _unused = labels.update({value: text}) %}{% endfor %}{% endfor %}
+<div class="mb-3">
+  <label class="form-label{% if required %} required{% endif %}" for="f-{{ name }}">{{ label }}</label>
+  <input type="hidden" name="{{ name }}__present" value="1">
+  <select id="f-{{ name }}" name="{{ name }}" multiple data-tom class="form-select{% if errors and errors.get(name) %} is-invalid{% endif %}">
+    {% for value in current if value in labels %}<option value="{{ value }}" selected>{{ labels[value] }}</option>{% endfor %}
+    {% for title, options in choices %}<optgroup label="{{ title }}">{% for value, text in options if value not in current %}<option value="{{ value }}">{{ text }}</option>{% endfor %}</optgroup>{% endfor %}
+  </select>
+  {{ _feedback(name, errors, help) }}
+</div>
+{% endmacro %}
+
 {% macro radios(name, label, values, errors, options, help="") %}
 <div class="mb-3">
   <div class="form-label">{{ label }}</div>

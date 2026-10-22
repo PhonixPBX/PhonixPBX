@@ -40,6 +40,8 @@ INSTRUCTIONS = (
     "set_business_hours_mode is the exception: it takes effect immediately. "
     "IVR menus and business hours use destinations as dest_type/dest_id pairs (phone, callgroup, "
     "application, conference, ivr, hours, voicemail = the mailbox of a phone; repeat and hangup need no id). "
+    'Call group members are an ordered list of "phone:<id>" and "callgroup:<id>" (nested call groups; '
+    "loops are refused). "
     "originate_call (tokens that may place calls) rings a phone and dials a number from it."
 )
 

@@ -111,9 +111,24 @@ def _ng_subset(snapshot: dict) -> dict:
         provider["incoming_routes"] = [
             r for r in provider["incoming_routes"] if not r["dest"].startswith(("ivr:", "hours:"))
         ]
+    # nested call groups are exported as their phones
+    by_name = {g["name"]: g for g in snap["callgroups"]}
+
+    def flat(group: dict) -> list[str]:
+        out: list[str] = []
+        for member in group["members"]:
+            kind, _, ref = member.partition(":")
+            for ext in [ref] if kind == "phone" else flat(by_name[ref]):
+                if ext not in out:
+                    out.append(ext)
+        return out
+
+    flattened = {name: flat(g) for name, g in by_name.items()}
     for group in snap["callgroups"]:
         group.pop("legacy_uniqid", None)
         group.pop("strategy")
+        group["member_ids"] = flattened[group["name"]]
+        group["members"] = [f"phone:{ext}" for ext in flattened[group["name"]]]
     for key in ("rooms", "applications", "ami_users"):
         for item in snap[key]:
             item.pop("legacy_uniqid", None)

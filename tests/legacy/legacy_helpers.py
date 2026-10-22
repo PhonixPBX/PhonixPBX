@@ -96,6 +96,9 @@ def db_snapshot(session: Session, uniqids: bool = True) -> dict[str, Any]:
     for g in groups.values():
         d = dp.callgroup_to_dict(g)
         d["member_ids"] = [phones[i].extension for i in d["member_ids"]]
+        d["members"] = [
+            f"phone:{m.phone.extension}" if m.phone else f"callgroup:{m.member_group.name}" for m in g.members
+        ]
         out_groups.append(clean(d, g))
     out_ami = []
     for u in session.scalars(select(AmiUser)):

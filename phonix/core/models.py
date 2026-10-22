@@ -16,6 +16,7 @@ from typing import Any
 from sqlalchemy import (
     JSON,
     Boolean,
+    CheckConstraint,
     Date,
     DateTime,
     ForeignKey,
@@ -260,20 +261,38 @@ class CallGroup(Base):
     legacy_uniqid: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
     members: Mapped[list[CallGroupMember]] = relationship(
-        cascade="all, delete-orphan", order_by="CallGroupMember.position", lazy="selectin"
+        cascade="all, delete-orphan",
+        order_by="CallGroupMember.position",
+        lazy="selectin",
+        foreign_keys="CallGroupMember.group_id",
     )
 
 
 class CallGroupMember(Base):
+    """One member of a call group: either a phone or another call group."""
+
     __tablename__ = "callgroup_members"
-    __table_args__ = (UniqueConstraint("group_id", "phone_id"),)
+    __table_args__ = (
+        UniqueConstraint("group_id", "phone_id"),
+        UniqueConstraint("group_id", "member_group_id"),
+        CheckConstraint("(phone_id IS NULL) != (member_group_id IS NULL)", name="ck_callgroup_member_kind"),
+    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     group_id: Mapped[int] = mapped_column(ForeignKey("callgroups.id", ondelete="CASCADE"))
-    phone_id: Mapped[int] = mapped_column(ForeignKey("phones.id", ondelete="CASCADE"))
+    phone_id: Mapped[int | None] = mapped_column(ForeignKey("phones.id", ondelete="CASCADE"), nullable=True)
+    member_group_id: Mapped[int | None] = mapped_column(ForeignKey("callgroups.id", ondelete="CASCADE"), nullable=True)
     position: Mapped[int] = mapped_column(Integer, default=0)
 
-    phone: Mapped[Phone] = relationship(lazy="selectin")
+    phone: Mapped[Phone | None] = relationship(lazy="selectin")
+    member_group: Mapped[CallGroup | None] = relationship(lazy="selectin", foreign_keys=[member_group_id])
+
+    @property
+    def ref(self) -> str:
+        """``phone:<id>`` or ``callgroup:<id>``, the notation of the API ``members`` field."""
+        if self.member_group_id is not None:
+            return f"callgroup:{self.member_group_id}"
+        return f"phone:{self.phone_id}"
 
 
 class ConferenceRoom(Base):

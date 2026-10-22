@@ -13,7 +13,7 @@
     <tr>
       <td><a href="/dialplan/callgroups/{{ g.id }}" class="fw-bold">{{ g.extension or "–" }}</a></td>
       <td>{{ g.name }}{% if g.public_access %} <span class="badge bg-azure-lt">{{ _("public") }}</span>{% endif %}</td>
-      <td>{% for m in g.members %}<span class="badge bg-primary-lt me-1">{{ m.phone.extension }} {{ m.phone.callerid }}</span>{% endfor %}</td>
+      <td>{% for m in g.members %}{% if m.member_group %}<span class="badge bg-purple-lt me-1">{{ icon("users-group") }}{{ m.member_group.name }}</span>{% elif m.phone %}<span class="badge bg-primary-lt me-1">{{ m.phone.extension }} {{ m.phone.callerid }}</span>{% endif %}{% endfor %}</td>
       <td>{{ _("ring all") if g.strategy == "ringall" else _("one after another") }}</td>
       <td class="table-actions">
         <a href="/dialplan/callgroups/{{ g.id }}" class="btn btn-ghost-primary btn-icon btn-sm" aria-label="{{ _("Edit %(name)s", name=g.name) }}">{{ icon("edit") }}</a>

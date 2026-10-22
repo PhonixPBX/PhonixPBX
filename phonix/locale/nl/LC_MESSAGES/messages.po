@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-19 10:55+0200\n"
+"POT-Creation-Date: 2026-10-22 20:22+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: nl\n"
@@ -146,6 +146,9 @@ msgid ""
 msgstr ""
 "Er wordt een TXT-record aangemaakt via de API van de DNS-provider. Werkt voor PBX'en die niet vanaf internet "
 "bereikbaar zijn en voor wildcardnamen."
+
+msgid "A call group cannot contain itself, directly or through another group"
+msgstr "Een belgroep kan zichzelf niet bevatten, niet direct en niet via een andere groep"
 
 msgid "A certificate request is already running."
 msgstr "Er loopt al een certificaataanvraag."
@@ -615,6 +618,10 @@ msgstr "Belgroep niet gevonden"
 
 msgid "Call groups"
 msgstr "Belgroepen"
+
+#, python-format
+msgid "Call groups contain each other: %(names)s"
+msgstr "Belgroepen bevatten elkaar: %(names)s"
 
 msgid "Call groups ring several phones at once or one after another."
 msgstr "Belgroepen laten meerdere telefoons tegelijk of na elkaar overgaan."
@@ -1282,9 +1289,6 @@ msgstr "De openingstijden en feestdagen volgen."
 msgid "For %(what)s, press %(key)s."
 msgstr "Voor %(what)s, toets %(key)s."
 
-msgid "For 'one after another', phones ring in this order."
-msgstr "Bij 'na elkaar' gaan de telefoons in deze volgorde over."
-
 msgid "For example when the backup comes from a system with another host name."
 msgstr "Bijvoorbeeld als de back-up van een systeem met een andere hostnaam komt."
 
@@ -1570,6 +1574,10 @@ msgstr "Ongeldig formaat"
 
 msgid "Invalid interface name"
 msgstr "Ongeldige interfacenaam"
+
+#, python-format
+msgid "Invalid member: %(member)s"
+msgstr "Ongeldig lid: %(member)s"
 
 msgid "Invalid password hash"
 msgstr "Ongeldige wachtwoordhash"
@@ -2282,6 +2290,13 @@ msgstr "Telefoon niet gevonden"
 
 msgid "Phones"
 msgstr "Telefoons"
+
+msgid ""
+"Phones and other call groups. For 'one after another', members ring in this order; a call group rings all its phones "
+"at once."
+msgstr ""
+"Telefoons en andere belgroepen. Bij 'na elkaar' gaan de leden in deze volgorde over; een belgroep laat al zijn "
+"telefoons tegelijk overgaan."
 
 msgid "Phones and providers"
 msgstr "Telefoons en providers"
@@ -3198,6 +3213,9 @@ msgstr "Verenigde Staten (oud)"
 
 msgid "Unknown"
 msgstr "Onbekend"
+
+msgid "Unknown call group selected"
+msgstr "Onbekende belgroep geselecteerd"
 
 #, python-format
 msgid "Unknown codec %(codec)r"

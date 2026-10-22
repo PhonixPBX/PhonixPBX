@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-19 10:55+0200\n"
+"POT-Creation-Date: 2026-10-22 20:22+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ja\n"
@@ -139,6 +139,9 @@ msgid ""
 "A TXT record is created through the DNS provider's API. Works for PBXs that are not reachable from the internet and "
 "for wildcard names."
 msgstr "DNS プロバイダーの API を通じて TXT レコードを作成します。インターネットから到達できない PBX やワイルドカード名にも使用できます。"
+
+msgid "A call group cannot contain itself, directly or through another group"
+msgstr "コールグループは、直接または別のグループを介して自分自身を含めることはできません"
 
 msgid "A certificate request is already running."
 msgstr "証明書リクエストはすでに実行中です。"
@@ -600,6 +603,10 @@ msgstr "コールグループが見つかりません"
 
 msgid "Call groups"
 msgstr "コールグループ"
+
+#, python-format
+msgid "Call groups contain each other: %(names)s"
+msgstr "コールグループが互いを含んでいます: %(names)s"
 
 msgid "Call groups ring several phones at once or one after another."
 msgstr "コールグループは、複数の電話機を同時または順番に呼び出します。"
@@ -1265,9 +1272,6 @@ msgstr "営業時間と休日に従います。"
 msgid "For %(what)s, press %(key)s."
 msgstr "%(what)s は %(key)s を押してください。"
 
-msgid "For 'one after another', phones ring in this order."
-msgstr "「順番に」の場合、この順序で電話機を呼び出します。"
-
 msgid "For example when the backup comes from a system with another host name."
 msgstr "たとえば、バックアップが別のホスト名のシステムのものである場合。"
 
@@ -1549,6 +1553,10 @@ msgstr "無効な形式です"
 
 msgid "Invalid interface name"
 msgstr "無効なインターフェース名です"
+
+#, python-format
+msgid "Invalid member: %(member)s"
+msgstr "無効なメンバーです: %(member)s"
 
 msgid "Invalid password hash"
 msgstr "無効なパスワードハッシュです"
@@ -2256,6 +2264,11 @@ msgstr "電話機が見つかりません"
 
 msgid "Phones"
 msgstr "電話機"
+
+msgid ""
+"Phones and other call groups. For 'one after another', members ring in this order; a call group rings all its phones "
+"at once."
+msgstr "電話機とほかのコールグループ。「順番に」の場合、メンバーはこの順序で呼び出されます。コールグループはその電話機をすべて同時に呼び出します。"
 
 msgid "Phones and providers"
 msgstr "電話機とプロバイダー"
@@ -3135,6 +3148,9 @@ msgstr "アメリカ合衆国（旧）"
 
 msgid "Unknown"
 msgstr "不明"
+
+msgid "Unknown call group selected"
+msgstr "不明なコールグループが選択されています"
 
 #, python-format
 msgid "Unknown codec %(codec)r"
