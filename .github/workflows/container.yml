@@ -69,6 +69,22 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         run: scripts/release.sh check "$GITHUB_REF_NAME"
 
+      # PEP 440 versions (1.2.0rc1) are no semver, so docker/metadata-action's type=semver does not
+      # tag them: the version comes from the tag, and only a final release (v1.2.0) gets "latest"
+      - name: Release kind
+        id: kind
+        run: |
+          version=""
+          final=false
+          case "$GITHUB_REF" in
+            refs/tags/v*)
+              version=${GITHUB_REF_NAME#v}
+              echo "$version" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' && final=true
+              ;;
+          esac
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "final=$final" >> "$GITHUB_OUTPUT"
+
       - name: Image name
         id: image
         # registry paths must be lower case
@@ -82,11 +98,12 @@ jobs:
         with:
           images: ${{ steps.image.outputs.name }}
           flavor: |
-            latest=auto
+            latest=false
           tags: |
             type=edge
             type=sha,prefix=sha-,format=short,enable={{is_default_branch}}
-            type=semver,pattern={{version}}
+            type=raw,value=${{ steps.kind.outputs.version }},enable=${{ steps.kind.outputs.version != '' }}
+            type=raw,value=latest,enable=${{ steps.kind.outputs.final }}
           labels: |
             org.opencontainers.image.title=PhonixPBX
 

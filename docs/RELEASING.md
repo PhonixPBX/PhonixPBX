@@ -8,6 +8,10 @@ Versions follow [Semantic Versioning](https://semver.org/) in PEP 440 form (`1.2
 - `container.yml` pushes `ghcr.io/phonixpbx/phonix:<version>` and, for final releases,
   `latest`.
 
+A tag with a pre-release suffix (`v1.2.0rc1`) becomes a GitHub pre-release, never the
+"latest" release that the update check of installed systems asks for, and the container
+gets only its version tag, not `latest`.
+
 Both workflows run `scripts/release.sh check <tag>` first and fail if the tag, the version
 files and CHANGELOG.md disagree.
 
