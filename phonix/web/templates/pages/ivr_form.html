@@ -17,7 +17,7 @@
           </div>
         </div>
         <div class="card-body">
-          <div id="ivr-options" class="ivr-options" data-sortable>
+          <div id="ivr-options" class="ivr-options" data-sortable='{"handle": "[data-sortable-handle]", "animation": 150}'>
             {% for o in values.options %}{% set idx = loop.index0 %}{% include "partials/ivr_option_row.html" %}{% endfor %}
           </div>
           {% if errors and errors.get("options") %}<div class="invalid-feedback d-block">{{ errors.get("options") }}</div>{% endif %}

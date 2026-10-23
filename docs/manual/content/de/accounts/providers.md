@@ -68,7 +68,7 @@ Ein Telefon kann die Anruferkennung pro Provider überschreiben und für einen P
 
 | Feld | Bedeutung | Standard |
 |---|---|---|
-| Codecs | Codecs, die dem Provider angeboten werden, in der Reihenfolge der Bevorzugung. Verwenden Sie, was der Provider unterstützt; G.711 (alaw in Europa, ulaw in Nordamerika) funktioniert fast überall. | alaw, ulaw, g722 |
+| Codecs | Codecs, die dem Provider angeboten werden, in der Reihenfolge der Bevorzugung (zum Umsortieren ziehen). Verwenden Sie, was der Provider unterstützt; G.711 (alaw in Europa, ulaw in Nordamerika) funktioniert fast überall. | alaw, ulaw, g722 |
 | Sprache | Sprache der Ansagen, die Anrufer über diesen Provider hören. | Englisch |
 | DTMF-Modus | *RFC 4733 (RFC 2833)*, *In-Band*, *SIP INFO* oder *Auto*. | RFC 4733 |
 | Qualify-Intervall (s) | Wie oft die Anlage prüft, ob der Provider erreichbar ist (0–3600, 0 = aus). | 60 |

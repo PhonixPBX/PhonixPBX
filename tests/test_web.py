@@ -860,3 +860,15 @@ def test_callgroup_form_nested(client):
     )
     assert r.status_code == 422 and "cannot contain itself" in r.text
     assert "Floor" in client.get("/dialplan/callgroups").text
+    # the members are dragged into a new order: the form posts them in that order
+    r = client.post(
+        f"/dialplan/callgroups/{floor_id}",
+        data={**form, "members": ["phone:1", f"callgroup:{groups['Hunt']}"]},
+        follow_redirects=False,
+    )
+    assert r.status_code == 303
+    with session_scope() as s:
+        assert [m.ref for m in s.get(CallGroup, floor_id).members] == ["phone:1", f"callgroup:{groups['Hunt']}"]
+    page = client.get(f"/dialplan/callgroups/{floor_id}").text
+    assert 'name="members" multiple data-tom data-tom-sortable' in page
+    assert page.index('value="phone:1" selected') < page.index(f'value="callgroup:{groups["Hunt"]}" selected')

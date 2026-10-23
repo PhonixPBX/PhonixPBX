@@ -2,7 +2,7 @@
  * PhonixPBX UI glue (no inline scripts: the CSP only allows 'self').
  * - sends the CSRF token with every htmx request
  * - initialises Tabler-supported libraries (Tom Select, Autosize, IMask,
- *   Dropzone, ApexCharts) on page load and on htmx 4 swapped content
+ *   Dropzone, ApexCharts, SortableJS) on page load and on htmx 4 swapped content
  * - small helpers driven by data-* attributes
  */
 (function () {
@@ -37,7 +37,7 @@
         if (el.tomselect) return;
         // Tabler ships the "base" build of Tom Select (no plugins)
         try {
-          new TomSelect(el, {
+          const ts = new TomSelect(el, {
             create: el.hasAttribute("data-tom-create"),
             maxOptions: 500,
             allowEmptyOption: true,
@@ -45,6 +45,19 @@
             dropdownParent: "body",
             render: { no_results: () => '<div class="no-results">No matches</div>' },
           });
+          // data-tom-sortable: the chosen items can be dragged into order; the form posts them in that order
+          if (el.hasAttribute("data-tom-sortable") && window.Sortable) {
+            el._sortable = Sortable.create(ts.control, {
+              draggable: ".item",
+              animation: 150,
+              // Tom Select cancels mousedown on its items, which stops a native HTML5 drag
+              forceFallback: true,
+              onEnd: () => {
+                ts.items = Array.from(ts.control.querySelectorAll(".item"), (item) => item.dataset.value);
+                ts.updateOriginalInput();
+              },
+            });
+          }
         } catch (e) {
           console.warn("TomSelect", e);
         }
@@ -200,7 +213,13 @@
 
   function teardown(root) {
     if (!root || !root.querySelectorAll) return;
-    root.querySelectorAll("select[data-tom]").forEach((el) => el.tomselect && el.tomselect.destroy());
+    root.querySelectorAll("select[data-tom]").forEach((el) => {
+      if (el._sortable) {
+        el._sortable.destroy();
+        el._sortable = null;
+      }
+      if (el.tomselect) el.tomselect.destroy();
+    });
     root.querySelectorAll("[data-chart]").forEach((el) => {
       const c = charts.get(el);
       if (c) {
@@ -361,62 +380,6 @@
     const print = evt.target.closest("[data-print]");
     if (print) window.print();
   });
-
-  // ---- drag and drop: [data-sortable-item] rows, dragged by their [data-sortable-handle] ----------
-  // Only the handle makes a row draggable, so the inputs in it stay selectable. The rows
-  // are submitted in their order on the page.
-  let dragged = null;
-  const clearMarkers = (list) =>
-    list.querySelectorAll(".drop-before, .drop-after").forEach((el) => el.classList.remove("drop-before", "drop-after"));
-  const endDrag = () => {
-    if (!dragged) return;
-    dragged.classList.remove("is-dragging");
-    dragged.draggable = false;
-    clearMarkers(dragged.parentElement);
-    dragged = null;
-  };
-  document.addEventListener("pointerdown", (evt) => {
-    const handle = evt.target.closest("[data-sortable-handle]");
-    const item = handle && handle.closest("[data-sortable-item]");
-    if (item) item.draggable = true;
-  });
-  document.addEventListener("pointerup", () => {
-    if (!dragged) document.querySelectorAll('[data-sortable-item][draggable="true"]').forEach((el) => (el.draggable = false));
-  });
-  document.addEventListener("dragstart", (evt) => {
-    const item = evt.target.closest && evt.target.closest("[data-sortable-item]");
-    if (!item || !item.draggable) return;
-    dragged = item;
-    item.classList.add("is-dragging");
-    evt.dataTransfer.effectAllowed = "move";
-    try {
-      evt.dataTransfer.setData("text/plain", "");
-    } catch (e) {
-      /* some browsers need data to start a drag */
-    }
-  });
-  document.addEventListener("dragover", (evt) => {
-    if (!dragged) return;
-    const item = evt.target.closest && evt.target.closest("[data-sortable-item]");
-    if (!item || item.parentElement !== dragged.parentElement) return;
-    evt.preventDefault();
-    evt.dataTransfer.dropEffect = "move";
-    clearMarkers(item.parentElement);
-    if (item === dragged) return;
-    const rect = item.getBoundingClientRect();
-    item.classList.add(evt.clientY > rect.top + rect.height / 2 ? "drop-after" : "drop-before");
-  });
-  document.addEventListener("drop", (evt) => {
-    if (!dragged) return;
-    const item = evt.target.closest && evt.target.closest("[data-sortable-item]");
-    if (item && item !== dragged && item.parentElement === dragged.parentElement) {
-      evt.preventDefault();
-      const after = item.classList.contains("drop-after");
-      item.parentElement.insertBefore(dragged, after ? item.nextSibling : item);
-    }
-    endDrag();
-  });
-  document.addEventListener("dragend", endDrag);
 
   // show/hide dependent form parts: <div data-show-if="name=value">
   function updateConditional(form) {

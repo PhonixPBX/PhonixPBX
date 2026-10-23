@@ -39,6 +39,7 @@ lib tom-select dist/js/tom-select.base.min.js dist/css/tom-select.bootstrap5.min
 lib dropzone dist/dropzone-min.js
 lib imask dist/imask.min.js
 lib autosize dist/autosize.min.js
+lib sortablejs Sortable.min.js
 # flatten the copied paths
 for d in "$DEST"/libs/*; do find "$d" -mindepth 2 -type f -exec mv {} "$d"/ \; ; find "$d" -mindepth 1 -type d -empty -delete; done
 

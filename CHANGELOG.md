@@ -12,6 +12,8 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   *Ring all at once* all their phones ring together; with *One after another* a contained group is one step in which
   all its phones ring at once. A phone that is in several of the groups rings only once, and a group cannot contain
   itself, directly or through another group.
+- *Dialplan → Call Groups*: drag the **Members** into a new order instead of removing and adding them again. With
+  *One after another* this is the order in which they ring.
 
 ### Changed
 
@@ -20,6 +22,11 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 - Configuration backups (`config.json`) are now version 4. Older backups are upgraded on restore; backups of this
   version cannot be restored on PhonixPBX 1.8 or older.
 - The export to the legacy `config.xml` writes a contained call group as its phones.
+
+### Fixed
+
+- *Accounts → Phones* and *Accounts → Providers*: the **Codecs** can now be dragged into order of preference, as
+  the manual describes. Dragging the key options of *Dialplan → IVR Menus* now also works on touch screens.
 
 ## [1.8.0] - 2026-10-21
 

@@ -12,7 +12,7 @@
       <div class="col-md-8">{{ input("name", _("Name"), values, errors, required=True) }}</div>
       <div class="col-md-4">{{ input("extension", _("Number"), values, errors, attrs='inputmode="numeric" data-mask="digits"', help=_("Optional - groups can also be used only as provider destinations.")) }}</div>
     </div>
-    {{ ordered_select("members", _("Members"), values, errors, member_choices, required=True, help=_("Phones and other call groups. For 'one after another', members ring in this order; a call group rings all its phones at once.")) }}
+    {{ ordered_select("members", _("Members"), values, errors, member_choices, required=True, help=_("Phones and other call groups. For 'one after another', members ring in this order - drag them to change it; a call group rings all its phones at once.")) }}
     <div class="row">
       <div class="col-md-6">{{ radios("strategy", _("Ring strategy"), values, errors, [("ringall", _("Ring all at once")), ("linear", _("One after another"))]) }}</div>
       <div class="col-md-6">{{ input("ringlength", _("Ring time (seconds)"), values, errors, type="number", attrs='min="5" max="600"', help=_("Empty = until the caller hangs up (per phone for 'one after another': default 20).")) }}</div>

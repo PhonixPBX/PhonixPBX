@@ -17,7 +17,7 @@ Klicken Sie über der Liste auf **Rufgruppe**, um eine hinzuzufügen. Die Liste 
 |---|---|---|
 | Name | Ein Name für Listen und Zielauswahl, zum Beispiel `Vertrieb`. | – |
 | Nummer | Die interne Nummer der Gruppe (1–20 Ziffern). Optional: Auch eine Gruppe ohne Nummer kann Ziel einer eingehenden Route oder einer IVR-Taste sein. | leer |
-| Mitglieder | Die Telefone und anderen Rufgruppen der Gruppe, mindestens ein Mitglied. Bei *Nacheinander* klingeln die Mitglieder in der hier angezeigten Reihenfolge. Siehe [Rufgruppen in Rufgruppen](#nested). | – |
+| Mitglieder | Die Telefone und anderen Rufgruppen der Gruppe, mindestens ein Mitglied. Bei *Nacheinander* klingeln die Mitglieder in der hier angezeigten Reihenfolge; ziehen Sie ein Mitglied an eine andere Stelle, um die Reihenfolge zu ändern. Siehe [Rufgruppen in Rufgruppen](#nested). | – |
 | Klingelstrategie | *Alle gleichzeitig klingeln lassen*: Alle Mitglieder klingeln zusammen, wer zuerst abhebt, übernimmt den Anruf. *Nacheinander*: Die Mitglieder klingeln der Reihe nach. | Alle gleichzeitig klingeln lassen |
 | Klingeldauer (Sekunden) | *Alle gleichzeitig*: wie lange die Gruppe klingelt (5–600); leer klingelt, bis der Anrufer auflegt. *Nacheinander*: wie lange jedes Mitglied klingelt, bevor das nächste an der Reihe ist; leer verwendet die Klingeldauer des Mitglieds (des Telefons oder der enthaltenen Rufgruppe) oder 20 Sekunden, wenn es keine hat. | leer |
 | Beschreibung | Eine Notiz für Sie. | leer |

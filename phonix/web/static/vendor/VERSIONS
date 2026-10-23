@@ -12,6 +12,7 @@ a2e892d841ef25f62517c1663ce6aaa759df51eff6f85a9a1105cba299075910  ./libs/apexcha
 5421f1dc60839ddd79ea608ce4433d6c94e3ee684caebc20dad01a6fd075bd0b  ./libs/autosize/autosize.min.js
 361bf85c74bc182c9d5e7f2a90731157c698e9b87f9a95c2668b15cb83d393a2  ./libs/dropzone/dropzone-min.js
 7fcd7b0428e446cb8fc10a9acde63838a2af5a1cf5e1d90596e326431e489610  ./libs/imask/imask.min.js
+bf4241bc73fef7f11c59a283a69fe8051cdd31c6d8ff5a2b9ba219e7831fcf76  ./libs/sortablejs/Sortable.min.js
 75fd733a8dcbeda6fc258e341b234561fd0be3ec850f65cf3f035277980d2cc7  ./libs/tom-select/tom-select.base.min.js
 ce467598f8953044ddfc0ff9fd4b7e2f6cced549001737d6b712a14f8b9a6599  ./libs/tom-select/tom-select.bootstrap5.min.css
 370a2d4e608ae518351d10528fc7dbe19b354ae5062c51b2a9cb294850d65403  ./tabler/tabler.min.css

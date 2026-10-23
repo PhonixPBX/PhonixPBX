@@ -17,7 +17,7 @@ Click **Call group** above the list to add one. The list shows the **Number** (o
 |---|---|---|
 | Name | A name for lists and destination pickers, for example `Sales`. | – |
 | Number | The internal number of the group (1–20 digits). Optional: a group without a number can still be the destination of an incoming route or an IVR key. | empty |
-| Members | The phones and other call groups in the group, at least one. For *One after another*, the members ring in the order shown here. See [Call groups in call groups](#nested). | – |
+| Members | The phones and other call groups in the group, at least one. For *One after another*, the members ring in the order shown here; drag a member to another place to change the order. See [Call groups in call groups](#nested). | – |
 | Ring strategy | *Ring all at once*: all members ring together, the first to answer takes the call. *One after another*: the members ring in turn. | Ring all at once |
 | Ring time (seconds) | *Ring all at once*: how long the group rings (5–600); empty rings until the caller hangs up. *One after another*: how long each member rings before the next one; empty uses the member's own ring time (of the phone, or of the contained call group), or 20 seconds if it has none. | empty |
 | Description | A note for your reference. | empty |

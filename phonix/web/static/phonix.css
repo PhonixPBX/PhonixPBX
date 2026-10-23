@@ -300,9 +300,7 @@
   background: var(--tblr-bg-surface-secondary);
 }
 .ivr-option.is-invalid { border-color: var(--tblr-danger); }
-.ivr-option.is-dragging { opacity: 0.4; }
-.ivr-option.drop-before { box-shadow: 0 -3px 0 0 var(--tblr-primary); }
-.ivr-option.drop-after { box-shadow: 0 3px 0 0 var(--tblr-primary); }
+.ivr-option.sortable-ghost { opacity: 0.4; box-shadow: 0 0 0 2px var(--tblr-primary); }
 .ivr-handle {
   grid-area: handle;
   display: flex;
@@ -382,3 +380,7 @@
   .phonix-sidebar, .phonix-topbar, .footer, #apply-banner { display: none !important; }
   .page-wrapper { margin: 0 !important; }
 }
+
+/* Tom Select with data-tom-sortable: the chosen items are dragged into order (SortableJS) */
+select[data-tom-sortable] + .ts-wrapper .ts-control > .item { cursor: grab; }
+select[data-tom-sortable] + .ts-wrapper .ts-control > .item.sortable-ghost { opacity: 0.4; }

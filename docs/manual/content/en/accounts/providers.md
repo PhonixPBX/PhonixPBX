@@ -68,7 +68,7 @@ A phone can override the caller ID per provider and can be blocked from using a 
 
 | Field | Meaning | Default |
 |---|---|---|
-| Codecs | Codecs offered to the provider, in order of preference. Use what the provider supports; G.711 (alaw in Europe, ulaw in North America) works almost everywhere. | alaw, ulaw, g722 |
+| Codecs | Codecs offered to the provider, in order of preference (drag to reorder). Use what the provider supports; G.711 (alaw in Europe, ulaw in North America) works almost everywhere. | alaw, ulaw, g722 |
 | Language | Language of the announcements callers from this provider hear. | English |
 | DTMF mode | *RFC 4733 (RFC 2833)*, *In-band*, *SIP INFO* or *Auto*. | RFC 4733 |
 | Qualify interval (s) | How often the PBX checks that the provider is reachable (0–3600, 0 = off). | 60 |
