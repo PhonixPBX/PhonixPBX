@@ -31,7 +31,7 @@ pytestmark = [
 
 SIPP = Path(__file__).parent / "sipp"
 HOST = "127.0.0.1"
-PHONES = {"101": "Alice-secret-101", "102": "Bob-secret-102"}
+PHONES = {"101": "Alice-secret-101", "102": "Bob-secret-102", "104": "Dave-secret-104"}
 
 
 def sh(*cmd: str, timeout: int = 60, check: bool = True) -> subprocess.CompletedProcess[str]:
@@ -183,6 +183,40 @@ def register(ext: str, port: int) -> None:
     assert result.returncode == 0, result.stdout + result.stderr
 
 
+def answer_call(port: int) -> subprocess.Popen[bytes]:
+    """A SIPp UAS on ``port`` that answers one call (register the phone on that port first)."""
+    callee = subprocess.Popen(
+        [
+            "sipp",
+            HOST,
+            "-sf",
+            str(SIPP / "answer.xml"),
+            "-p",
+            str(port),
+            "-i",
+            HOST,
+            "-m",
+            "1",
+            "-timeout",
+            "30s",
+            "-nostdin",
+            "-nd",
+        ],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    time.sleep(1)
+    return callee
+
+
+def finish(callee: subprocess.Popen[bytes]) -> bytes:
+    try:
+        return callee.communicate(timeout=30)[0]
+    except subprocess.TimeoutExpired:
+        callee.kill()
+        return callee.communicate()[0]
+
+
 def test_endpoints_loaded(pbx: Path) -> None:
     out = cli("pjsip show endpoints")
     assert "101/101" in out and "102/102" in out
@@ -204,36 +238,12 @@ def test_wrong_password_is_rejected(pbx: Path) -> None:
 
 def test_phone_to_phone_call(pbx: Path) -> None:
     register("102", 5072)
-    callee = subprocess.Popen(
-        [
-            "sipp",
-            HOST,
-            "-sf",
-            str(SIPP / "answer.xml"),
-            "-p",
-            "5072",
-            "-i",
-            HOST,
-            "-m",
-            "1",
-            "-timeout",
-            "30s",
-            "-nostdin",
-            "-nd",
-        ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    time.sleep(1)
+    callee = answer_call(5072)
     register("101", 5071)
     caller = sipp("call.xml", 5071, "-au", "101", "-ap", PHONES["101"], "-key", "from", "101", "-key", "to", "102")
-    try:
-        callee_out = callee.communicate(timeout=30)
-    except subprocess.TimeoutExpired:
-        callee.kill()
-        callee_out = callee.communicate()
+    callee_out = finish(callee)
     log = Path("/srv/phonix-test/asterisk-console.log").read_text()[-4000:]
-    assert caller.returncode == 0, f"{caller.stdout[-1500:]}\nCALLEE:\n{callee_out[0][-2500:]!r}\nASTERISK:\n{log}"
+    assert caller.returncode == 0, f"{caller.stdout[-1500:]}\nCALLEE:\n{callee_out[-2500:]!r}\nASTERISK:\n{log}"
     assert callee.returncode == 0
 
 
@@ -286,6 +296,20 @@ def test_ivr_and_hours_loaded(pbx: Path) -> None:
 def test_nested_callgroup_loaded(pbx: Path) -> None:
     out = cli("dialplan show 301@internal")
     assert "PJSIP/101&PJSIP/102" in out, out
+
+
+def test_nested_callgroup_call(pbx: Path) -> None:
+    # 301 rings "Both" (101 and 102) as one step; 102 answers, 101 is not listening
+    register("102", 5072)
+    callee = answer_call(5072)
+    register("104", 5074)
+    since = console_size()
+    caller = sipp("call.xml", 5074, "-au", "104", "-ap", PHONES["104"], "-key", "from", "104", "-key", "to", "301")
+    callee_out = finish(callee)
+    log = Path("/srv/phonix-test/asterisk-console.log").read_text()[since:]
+    assert caller.returncode == 0, f"{caller.stdout[-1500:]}\nCALLEE:\n{callee_out[-2500:]!r}\nASTERISK:\n{log[-4000:]}"
+    assert callee.returncode == 0
+    assert "call group Nested" in log and "PJSIP/101&PJSIP/102" in log, log[-4000:]
 
 
 def test_ivr_call_is_answered(pbx: Path) -> None:
