@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-22 22:04+0200\n"
+"POT-Creation-Date: 2026-10-23 08:48+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: da\n"
@@ -170,6 +170,13 @@ msgstr "En firmwareopdatering er ved at blive installeret. Vent, til den er fær
 
 msgid "A new self-signed certificate was created."
 msgstr "Et nyt selvsigneret certifikat blev oprettet."
+
+msgid ""
+"A number dialled as +41 44 123 45 67 is dialled as 0041441234567 with 00, before the dial patterns are matched. Use "
+"000 with an outside line prefix 0, 011 in North America. Empty: numbers with + are not dialled."
+msgstr ""
+"Et nummer, der ringes op som +41 44 123 45 67, ringes op som 0041441234567 med 00, før opkaldsmønstrene matches. Brug"
+" 000, hvis udgående linje vælges med 0, 011 i Nordamerika. Tom: numre med + ringes ikke op."
 
 msgid "A password is set. Leave empty to keep it."
 msgstr "Der er angivet en adgangskode. Lad feltet være tomt for at beholde den."
@@ -2078,6 +2085,9 @@ msgstr "Nummeret bruges allerede af %(owner)s"
 msgid "Number is reserved for call parking"
 msgstr "Nummeret er reserveret til parkering af opkald"
 
+msgid "Numbers with +"
+msgstr "Numre med +"
+
 msgid "OCI container (Docker / Podman)"
 msgstr "OCI-container (Docker / Podman)"
 
@@ -2554,6 +2564,9 @@ msgstr "Gentag ny adgangskode"
 
 msgid "Repeat the menu"
 msgstr "Gentag menuen"
+
+msgid "Replace a leading + with"
+msgstr "Erstat et foranstillet + med"
 
 msgid "Replace current configuration (backup first)"
 msgstr "Erstat den aktuelle konfiguration (backup først)"
@@ -3338,6 +3351,9 @@ msgstr "Brug åbningstider som destination for en udbyders indgående rute eller
 
 msgid "Use lowercase letters, digits, '.', '_' or '-'"
 msgstr "Brug små bogstaver, cifre, '.', '_' eller '-'"
+
+msgid "Use up to 16 digits, '*' and '#'"
+msgstr "Brug op til 16 cifre, '*' og '#'"
 
 msgid "Use “Repeat the menu” to play this menu again"
 msgstr "Brug »Gentag menuen« for at afspille denne menu igen"

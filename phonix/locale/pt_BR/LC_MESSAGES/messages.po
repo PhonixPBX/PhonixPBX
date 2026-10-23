@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-22 22:04+0200\n"
+"POT-Creation-Date: 2026-10-23 08:48+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: pt_BR\n"
@@ -170,6 +170,13 @@ msgstr "Uma atualização de firmware está sendo instalada. Aguarde até que el
 
 msgid "A new self-signed certificate was created."
 msgstr "Um novo certificado autoassinado foi criado."
+
+msgid ""
+"A number dialled as +41 44 123 45 67 is dialled as 0041441234567 with 00, before the dial patterns are matched. Use "
+"000 with an outside line prefix 0, 011 in North America. Empty: numbers with + are not dialled."
+msgstr ""
+"Um número discado como +41 44 123 45 67 é discado como 0041441234567 com 00, antes da comparação com os padrões de "
+"discagem. Use 000 com um prefixo de linha externa 0, 011 na América do Norte. Vazio: números com + não são discados."
 
 msgid "A password is set. Leave empty to keep it."
 msgstr "Uma senha está definida. Deixe em branco para mantê-la."
@@ -2085,6 +2092,9 @@ msgstr "Número já usado por %(owner)s"
 msgid "Number is reserved for call parking"
 msgstr "O número está reservado para o estacionamento de chamadas"
 
+msgid "Numbers with +"
+msgstr "Números com +"
+
 msgid "OCI container (Docker / Podman)"
 msgstr "Contêiner OCI (Docker / Podman)"
 
@@ -2560,6 +2570,9 @@ msgstr "Repetir nova senha"
 
 msgid "Repeat the menu"
 msgstr "Repetir o menu"
+
+msgid "Replace a leading + with"
+msgstr "Substituir um + inicial por"
 
 msgid "Replace current configuration (backup first)"
 msgstr "Substituir a configuração atual (backup antes)"
@@ -3346,6 +3359,9 @@ msgstr "Use o horário comercial como destino da rota de entrada de um provedor 
 
 msgid "Use lowercase letters, digits, '.', '_' or '-'"
 msgstr "Use letras minúsculas, dígitos, '.', '_' ou '-'"
+
+msgid "Use up to 16 digits, '*' and '#'"
+msgstr "Use até 16 dígitos, '*' e '#'"
 
 msgid "Use “Repeat the menu” to play this menu again"
 msgstr "Use “Repetir o menu” para reproduzir este menu novamente"

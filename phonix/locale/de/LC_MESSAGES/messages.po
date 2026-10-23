@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-22 22:04+0200\n"
+"POT-Creation-Date: 2026-10-23 08:48+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: de\n"
@@ -171,6 +171,13 @@ msgstr "Ein Firmware-Update wird installiert. Warten Sie, bis es abgeschlossen i
 
 msgid "A new self-signed certificate was created."
 msgstr "Ein neues selbstsigniertes Zertifikat wurde erstellt."
+
+msgid ""
+"A number dialled as +41 44 123 45 67 is dialled as 0041441234567 with 00, before the dial patterns are matched. Use "
+"000 with an outside line prefix 0, 011 in North America. Empty: numbers with + are not dialled."
+msgstr ""
+"Eine als +41 44 123 45 67 gewählte Nummer wird mit 00 als 0041441234567 gewählt, bevor die Wählmuster geprüft werden."
+" Mit Amtsholung 0 verwenden Sie 000, in Nordamerika 011. Leer: Nummern mit + werden nicht gewählt."
 
 msgid "A password is set. Leave empty to keep it."
 msgstr "Ein Passwort ist gesetzt. Leer lassen, um es beizubehalten."
@@ -2090,6 +2097,9 @@ msgstr "Nummer bereits vergeben: %(owner)s"
 msgid "Number is reserved for call parking"
 msgstr "Die Nummer ist für das Parken von Gesprächen reserviert"
 
+msgid "Numbers with +"
+msgstr "Nummern mit +"
+
 msgid "OCI container (Docker / Podman)"
 msgstr "OCI-Container (Docker / Podman)"
 
@@ -2566,6 +2576,9 @@ msgstr "Neues Passwort wiederholen"
 
 msgid "Repeat the menu"
 msgstr "Menü wiederholen"
+
+msgid "Replace a leading + with"
+msgstr "Führendes + ersetzen durch"
 
 msgid "Replace current configuration (backup first)"
 msgstr "Aktuelle Konfiguration ersetzen (vorher Backup)"
@@ -3361,6 +3374,9 @@ msgstr "Verwenden Sie Geschäftszeiten als Ziel der eingehenden Route eines Prov
 
 msgid "Use lowercase letters, digits, '.', '_' or '-'"
 msgstr "Verwenden Sie Kleinbuchstaben, Ziffern, '.', '_' oder '-'"
+
+msgid "Use up to 16 digits, '*' and '#'"
+msgstr "Verwenden Sie bis zu 16 Ziffern, '*' und '#'"
 
 msgid "Use “Repeat the menu” to play this menu again"
 msgstr "Verwenden Sie „Menü wiederholen“, um dieses Menü erneut abzuspielen"

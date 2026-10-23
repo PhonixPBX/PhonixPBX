@@ -146,6 +146,7 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 **Accounts**
 - Phones: PJSIP, IAX, External
 - Providers: PJSIP trunk with registration, IAX trunk
+- Numbers with a leading `+`: the settings group `outgoing` (`plus_replacement`, default `00`, empty = off, digits/`*`/`#`, max 16) is edited on *Accounts → Providers*. Every `phone-<ext>` context gets `_+X.` → `Goto(phone-<ext>,<replacement>${EXTEN:1},1)`, so the number runs through the internal numbers and the dial patterns again. A dial pattern cannot match `+` because `+` separates its prefix to add. This also covers click-to-call and call forwarding.
 
 **Dialplan**
 - Applications, edited in a monospace auto-growing textarea (Tabler's Autosize; CodeMirror is not part of the Tabler-supported libraries) with server-side validation of every line

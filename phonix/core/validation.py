@@ -213,6 +213,17 @@ def feature_code(value: str) -> str:
     return value
 
 
+_PLUS_REPLACEMENT = re.compile(r"^[0-9*#]{0,16}$")
+
+
+def plus_replacement(value: str) -> str:
+    """What a leading ``+`` of a dialled number becomes (``00``, ``011``); empty = keep it."""
+    value = value.strip()
+    if not _PLUS_REPLACEMENT.match(value):
+        raise ValueError(_("Use up to 16 digits, '*' and '#'"))
+    return value
+
+
 def dialpattern(value: str, incoming: bool = False) -> str:
     """Port of ``pbx_is_valid_dialpattern``.
 

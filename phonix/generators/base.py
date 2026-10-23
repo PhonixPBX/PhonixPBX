@@ -67,6 +67,7 @@ class Snapshot:
     voicemail: st.VoicemailSettings
     email: st.EmailSettings
     features: st.FeatureSettings
+    outgoing: st.OutgoingSettings
     media: st.MediaSettings
     firewall: st.FirewallSettings
     phones: list[Phone]
@@ -115,6 +116,7 @@ def build_snapshot(session: Session, facts: Facts | None = None, secrets: Secret
         voicemail=st.load(session, st.VoicemailSettings),
         email=st.load(session, st.EmailSettings),
         features=st.load(session, st.FeatureSettings),
+        outgoing=st.load(session, st.OutgoingSettings),
         media=st.load(session, st.MediaSettings),
         firewall=st.load(session, st.FirewallSettings),
         phones=phones,

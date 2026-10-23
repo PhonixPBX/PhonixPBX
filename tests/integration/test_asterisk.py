@@ -312,6 +312,13 @@ def test_nested_callgroup_call(pbx: Path) -> None:
     assert "call group Nested" in log and "PJSIP/101&PJSIP/102" in log, log[-4000:]
 
 
+def test_leading_plus_is_replaced(pbx: Path) -> None:
+    # +41... becomes 0041... and runs through the phone's context again (no provider here: it ends there)
+    since = console_size()
+    cli("channel originate Local/+41441234567@phone-101 application Wait 1")
+    wait_for('"phone-101,0041441234567,1"', since)
+
+
 def test_ivr_call_is_answered(pbx: Path) -> None:
     register("101", 5071)
     since = console_size()

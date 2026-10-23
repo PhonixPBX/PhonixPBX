@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-22 22:04+0200\n"
+"POT-Creation-Date: 2026-10-23 08:48+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: fr\n"
@@ -170,6 +170,14 @@ msgstr "Une mise à jour du micrologiciel est en cours d'installation. Attendez 
 
 msgid "A new self-signed certificate was created."
 msgstr "Un nouveau certificat auto-signé a été créé."
+
+msgid ""
+"A number dialled as +41 44 123 45 67 is dialled as 0041441234567 with 00, before the dial patterns are matched. Use "
+"000 with an outside line prefix 0, 011 in North America. Empty: numbers with + are not dialled."
+msgstr ""
+"Un numéro composé sous la forme +41 44 123 45 67 est composé comme 0041441234567 avec 00, avant la comparaison avec "
+"les modèles de numérotation. Utilisez 000 avec un préfixe de ligne extérieure 0, 011 en Amérique du Nord. Vide : les "
+"numéros avec + ne sont pas composés."
 
 msgid "A password is set. Leave empty to keep it."
 msgstr "Un mot de passe est défini. Laissez vide pour le conserver."
@@ -2093,6 +2101,9 @@ msgstr "Numéro déjà utilisé par %(owner)s"
 msgid "Number is reserved for call parking"
 msgstr "Le numéro est réservé au parcage d'appels"
 
+msgid "Numbers with +"
+msgstr "Numéros avec +"
+
 msgid "OCI container (Docker / Podman)"
 msgstr "Conteneur OCI (Docker / Podman)"
 
@@ -2569,6 +2580,9 @@ msgstr "Répéter le nouveau mot de passe"
 
 msgid "Repeat the menu"
 msgstr "Répéter le menu"
+
+msgid "Replace a leading + with"
+msgstr "Remplacer un + initial par"
 
 msgid "Replace current configuration (backup first)"
 msgstr "Remplacer la configuration actuelle (sauvegarde préalable)"
@@ -3362,6 +3376,9 @@ msgstr "Utilisez les horaires d'ouverture comme destination de la route entrante
 
 msgid "Use lowercase letters, digits, '.', '_' or '-'"
 msgstr "Utilisez des lettres minuscules, des chiffres, '.', '_' ou '-'"
+
+msgid "Use up to 16 digits, '*' and '#'"
+msgstr "Utilisez jusqu'à 16 chiffres, '*' et '#'"
 
 msgid "Use “Repeat the menu” to play this menu again"
 msgstr "Utilisez « Répéter le menu » pour rediffuser ce menu"

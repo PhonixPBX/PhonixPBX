@@ -187,6 +187,27 @@ def test_settings_page_roundtrip(client):
     assert 'value="pbx1"' in page and "ntp.example.org" in page
 
 
+def test_outgoing_settings_form(client):
+    from phonix.core import settings as st
+    from phonix.services.common import dirty_areas
+
+    login(client)
+    page = client.get("/accounts/providers").text
+    assert 'name="plus_replacement"' in page and 'value="00"' in page
+    token = csrf(client, "/accounts/providers")
+    r = client.post(
+        "/accounts/providers/outgoing", data={"csrf_token": token, "plus_replacement": "+0"}, follow_redirects=False
+    )
+    assert r.status_code == 422 and "is-invalid" in r.text
+    r = client.post(
+        "/accounts/providers/outgoing", data={"csrf_token": token, "plus_replacement": "000"}, follow_redirects=False
+    )
+    assert r.status_code == 303
+    with session_scope() as s:
+        assert st.load(s, st.OutgoingSettings).plus_replacement == "000"
+        assert "dialplan" in dirty_areas(s)
+
+
 def test_ssh_root_password(client):
     from phonix.core import settings as st
 

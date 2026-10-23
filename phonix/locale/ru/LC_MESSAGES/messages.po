@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-22 22:04+0200\n"
+"POT-Creation-Date: 2026-10-23 08:48+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ru\n"
@@ -171,6 +171,14 @@ msgstr "Устанавливается обновление прошивки. Д
 
 msgid "A new self-signed certificate was created."
 msgstr "Создан новый самоподписанный сертификат."
+
+msgid ""
+"A number dialled as +41 44 123 45 67 is dialled as 0041441234567 with 00, before the dial patterns are matched. Use "
+"000 with an outside line prefix 0, 011 in North America. Empty: numbers with + are not dialled."
+msgstr ""
+"Номер, набранный как +41 44 123 45 67, при значении 00 набирается как 0041441234567 до сопоставления с шаблонами "
+"набора. Используйте 000 при префиксе выхода на внешнюю линию 0, 011 в Северной Америке. Пусто: номера с + не "
+"набираются."
 
 msgid "A password is set. Leave empty to keep it."
 msgstr "Пароль задан. Оставьте поле пустым, чтобы сохранить его."
@@ -2084,6 +2092,9 @@ msgstr "Номер уже назначен на %(owner)s"
 msgid "Number is reserved for call parking"
 msgstr "Номер зарезервирован для парковки вызовов"
 
+msgid "Numbers with +"
+msgstr "Номера с +"
+
 msgid "OCI container (Docker / Podman)"
 msgstr "OCI-контейнер (Docker / Podman)"
 
@@ -2559,6 +2570,9 @@ msgstr "Повторите новый пароль"
 
 msgid "Repeat the menu"
 msgstr "Повторить меню"
+
+msgid "Replace a leading + with"
+msgstr "Заменять ведущий + на"
 
 msgid "Replace current configuration (backup first)"
 msgstr "Заменить текущую конфигурацию (сначала создается резервная копия)"
@@ -3347,6 +3361,9 @@ msgstr "Используйте рабочее время как назначен
 
 msgid "Use lowercase letters, digits, '.', '_' or '-'"
 msgstr "Используйте строчные латинские буквы, цифры, '.', '_' или '-'"
+
+msgid "Use up to 16 digits, '*' and '#'"
+msgstr "Используйте до 16 цифр, '*' и '#'"
 
 msgid "Use “Repeat the menu” to play this menu again"
 msgstr "Используйте «Повторить меню», чтобы проиграть это меню снова"

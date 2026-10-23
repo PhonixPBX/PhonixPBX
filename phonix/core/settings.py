@@ -250,6 +250,18 @@ class FeatureSettings(SettingsGroup):
         return v.feature_code(value)
 
 
+class OutgoingSettings(SettingsGroup):
+    group: str = Field(default="outgoing", exclude=True)
+    # a dialled "+41..." becomes "<plus_replacement>41..." before the dial patterns are matched
+    # ("+" separates the prefix to add in a dial pattern, so no pattern can match it); empty = off
+    plus_replacement: str = "00"
+
+    @field_validator("plus_replacement")
+    @classmethod
+    def _plus(cls, value: str) -> str:
+        return v.plus_replacement(value)
+
+
 class MediaSettings(SettingsGroup):
     group: str = Field(default="media", exclude=True)
     custom_moh: bool = False
@@ -418,6 +430,7 @@ ALL_GROUPS: tuple[type[SettingsGroup], ...] = (
     VoicemailSettings,
     EmailSettings,
     FeatureSettings,
+    OutgoingSettings,
     MediaSettings,
     FirewallSettings,
     AcmeSettings,

@@ -24,6 +24,22 @@ Mit den Schaltflächen am Ende jeder Zeile bearbeiten, deaktivieren/aktivieren u
 
 Ob ein Provider gerade registriert ist, sehen Sie unter [*Status → Gespräche & Registrierungen*]({{< relref "/status/calls.md" >}}).
 
+## Nummern mit + {#plus}
+
+Telefone, Adressbücher und Anruflisten zeigen Nummern oft in internationaler Form, zum Beispiel `+41 44 123 45 67`. Ein Wählmuster kann das `+` nicht erfassen (es trennt das hinzuzufügende Präfix ab, siehe [Wählmuster](#dial-patterns)). Darum ersetzt die Telefonanlage ein führendes `+` zuerst und wählt die Nummer dann erneut: zuerst die internen Nummern, dann die Wählmuster. Das gilt auch für Click-to-Call und für Rufumleitungen auf solche Nummern.
+
+Die Einstellung steht in der Karte **Nummern mit +** unter der Providerliste:
+
+| Feld | Bedeutung | Standard |
+|---|---|---|
+| Führendes + ersetzen durch | Was aus einem führenden `+` wird. Leer: Nummern mit `+` werden nicht gewählt. | `00` |
+
+| Einrichtung | Wert | Das Telefon wählt | Erneut gewählt als |
+|---|---|---|---|
+| Internationale Vorwahl `00` (die meisten Länder Europas) | `00` | `+41441234567` | `0041441234567` |
+| Mit Amtsholung `0` (Muster wie `0\|00X.`) | `000` | `+41441234567` | `00041441234567` |
+| Nordamerika | `011` | `+41441234567` | `01141441234567` |
+
 ## Provider anlegen oder bearbeiten {#edit}
 
 Die benötigten Werte finden Sie in der Dokumentation oder im Kundenportal Ihres Providers: den Server (Host), Ihren Benutzernamen und Ihr Passwort, manchmal auch einen eigenen Authentifizierungsbenutzer oder eine vorgeschriebene *From*-Domain. Das Formular hat vier Reiter.
@@ -113,6 +129,7 @@ Tipps:
 - Dasselbe Muster kann nicht von zwei Providern verwendet werden; das Formular meldet, welcher Provider es bereits hat. Für einen Ausweichweg verwenden Sie stattdessen den [Ersatzprovider](#failover).
 - Tragen Sie immer die Notrufnummern ein (zum Beispiel `112`, `110`), wenn sie an den Telefonen ohne Amtsholung gewählt werden.
 - Muster dürfen nicht mit internen Nummern kollidieren, die intern bleiben sollen. Wählt ein Telefon, werden zuerst die internen Nummern geprüft.
+- Mit führendem `+` gewählte Nummern werden erst geprüft, nachdem das `+` ersetzt wurde, siehe [Nummern mit +](#plus).
 
 ## Eingehende Routen {#incoming-routes}
 

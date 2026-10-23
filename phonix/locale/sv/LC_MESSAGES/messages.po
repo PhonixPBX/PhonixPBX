@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-22 22:04+0200\n"
+"POT-Creation-Date: 2026-10-23 08:48+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: sv\n"
@@ -170,6 +170,13 @@ msgstr "En firmwareuppdatering installeras. Vänta tills den är klar."
 
 msgid "A new self-signed certificate was created."
 msgstr "Ett nytt självsignerat certifikat har skapats."
+
+msgid ""
+"A number dialled as +41 44 123 45 67 is dialled as 0041441234567 with 00, before the dial patterns are matched. Use "
+"000 with an outside line prefix 0, 011 in North America. Empty: numbers with + are not dialled."
+msgstr ""
+"Ett nummer som slås som +41 44 123 45 67 slås som 0041441234567 med 00, innan nummermönstren matchas. Använd 000 om "
+"extern linje nås med 0, 011 i Nordamerika. Tomt: nummer med + slås inte."
 
 msgid "A password is set. Leave empty to keep it."
 msgstr "Ett lösenord är angivet. Lämna tomt för att behålla det."
@@ -2081,6 +2088,9 @@ msgstr "Numret används redan av %(owner)s"
 msgid "Number is reserved for call parking"
 msgstr "Numret är reserverat för samtalsparkering"
 
+msgid "Numbers with +"
+msgstr "Nummer med +"
+
 msgid "OCI container (Docker / Podman)"
 msgstr "OCI-container (Docker / Podman)"
 
@@ -2557,6 +2567,9 @@ msgstr "Upprepa nytt lösenord"
 
 msgid "Repeat the menu"
 msgstr "Upprepa menyn"
+
+msgid "Replace a leading + with"
+msgstr "Ersätt ett inledande + med"
 
 msgid "Replace current configuration (backup first)"
 msgstr "Ersätt aktuell konfiguration (säkerhetskopiera först)"
@@ -3341,6 +3354,9 @@ msgstr "Använd öppettider som destination för en leverantörs inkommande rutt
 
 msgid "Use lowercase letters, digits, '.', '_' or '-'"
 msgstr "Använd gemener, siffror, '.', '_' eller '-'"
+
+msgid "Use up to 16 digits, '*' and '#'"
+msgstr "Använd högst 16 siffror, '*' och '#'"
 
 msgid "Use “Repeat the menu” to play this menu again"
 msgstr "Använd ”Upprepa menyn” för att spela upp den här menyn igen"

@@ -24,6 +24,22 @@ The buttons at the end of each row edit, disable/enable and delete the provider.
 
 Whether a provider is registered right now is shown under [*Status → Calls & Registrations*]({{< relref "/status/calls.md" >}}).
 
+## Numbers with + {#plus}
+
+Phones, address books and call lists often show numbers in the international form, for example `+41 44 123 45 67`. A dial pattern cannot match the `+` (it separates the prefix to add, see [Dial patterns](#dial-patterns)). So the PBX first replaces a leading `+` and then dials the number again: internal numbers first, then the dial patterns. This also applies to click-to-call and to call forwarding to such numbers.
+
+The setting is in the card **Numbers with +** below the provider list:
+
+| Field | Meaning | Default |
+|---|---|---|
+| Replace a leading + with | What a leading `+` becomes. Empty: numbers with `+` are not dialled. | `00` |
+
+| Setup | Value | The phone dials | Dialled again as |
+|---|---|---|---|
+| International prefix `00` (most of Europe) | `00` | `+41441234567` | `0041441234567` |
+| With an outside line prefix `0` (patterns like `0\|00X.`) | `000` | `+41441234567` | `00041441234567` |
+| North America | `011` | `+41441234567` | `01141441234567` |
+
 ## Add or edit a provider {#edit}
 
 Your provider's documentation or customer portal lists the values you need: the server (host), your user name and password, and sometimes a separate authentication user or a required *From* domain. The form has four tabs.
@@ -113,6 +129,7 @@ Tips:
 - The same pattern cannot be used by two providers; the form reports which provider already has it. Use the [failover provider](#failover) for a backup route instead.
 - Always add the emergency numbers (for example `112`, `110`, `911`) if phones dial them without a prefix.
 - Patterns must not overlap with internal numbers that should stay internal. Internal numbers are checked first when a phone dials.
+- Numbers dialled with a leading `+` are matched after the `+` has been replaced, see [Numbers with +](#plus).
 
 ## Incoming routes {#incoming-routes}
 

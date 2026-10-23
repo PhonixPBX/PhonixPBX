@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-22 22:04+0200\n"
+"POT-Creation-Date: 2026-10-23 08:48+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: nl\n"
@@ -170,6 +170,14 @@ msgstr "Er wordt een firmware-update geïnstalleerd. Wacht tot deze is voltooid.
 
 msgid "A new self-signed certificate was created."
 msgstr "Er is een nieuw zelfondertekend certificaat aangemaakt."
+
+msgid ""
+"A number dialled as +41 44 123 45 67 is dialled as 0041441234567 with 00, before the dial patterns are matched. Use "
+"000 with an outside line prefix 0, 011 in North America. Empty: numbers with + are not dialled."
+msgstr ""
+"Een nummer dat als +41 44 123 45 67 wordt gekozen, wordt met 00 als 0041441234567 gekozen, voordat de kiespatronen "
+"worden vergeleken. Gebruik 000 met een buitenlijnprefix 0, 011 in Noord-Amerika. Leeg: nummers met + worden niet "
+"gekozen."
 
 msgid "A password is set. Leave empty to keep it."
 msgstr "Er is een wachtwoord ingesteld. Laat leeg om het te behouden."
@@ -2081,6 +2089,9 @@ msgstr "Nummer wordt al gebruikt door %(owner)s"
 msgid "Number is reserved for call parking"
 msgstr "Nummer is gereserveerd voor gesprek parkeren"
 
+msgid "Numbers with +"
+msgstr "Nummers met +"
+
 msgid "OCI container (Docker / Podman)"
 msgstr "OCI-container (Docker / Podman)"
 
@@ -2557,6 +2568,9 @@ msgstr "Nieuw wachtwoord herhalen"
 
 msgid "Repeat the menu"
 msgstr "Menu herhalen"
+
+msgid "Replace a leading + with"
+msgstr "Voorloop-+ vervangen door"
 
 msgid "Replace current configuration (backup first)"
 msgstr "Huidige configuratie vervangen (eerst back-up)"
@@ -3348,6 +3362,9 @@ msgstr "Gebruik openingstijden als bestemming van de inkomende route van een pro
 
 msgid "Use lowercase letters, digits, '.', '_' or '-'"
 msgstr "Gebruik kleine letters, cijfers, '.', '_' of '-'"
+
+msgid "Use up to 16 digits, '*' and '#'"
+msgstr "Gebruik maximaal 16 cijfers, '*' en '#'"
 
 msgid "Use “Repeat the menu” to play this menu again"
 msgstr "Gebruik ‘Menu herhalen’ om dit menu opnieuw af te spelen"

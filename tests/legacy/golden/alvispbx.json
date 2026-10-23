@@ -161,6 +161,9 @@
         "prefix": 24,
         "topology": "public"
       },
+      "outgoing": {
+        "plus_replacement": "00"
+      },
       "rtp": {
         "port_end": 20000,
         "port_start": 10000

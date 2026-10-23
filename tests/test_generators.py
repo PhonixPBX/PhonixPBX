@@ -62,6 +62,23 @@ def test_dialplan_semantics(session):
     assert ",tThH," in ext
 
 
+def test_plus_replacement(session):
+    sample_pbx(session)
+    alice = render(session)["/etc/asterisk/extensions.conf"].content.split("[phone-101]")[1].split("\n\n")[0]
+    assert "exten => _+X.,1,NoOp(Leading + replaced with 00)" in alice
+    assert "Goto(phone-101,00${EXTEN:1},1)" in alice
+    # an outside line prefix in front
+    st.save(session, st.OutgoingSettings(plus_replacement="000"))
+    assert "Goto(phone-101,000${EXTEN:1},1)" in render(session)["/etc/asterisk/extensions.conf"].content
+    # empty: numbers with + stay unmatched
+    st.save(session, st.OutgoingSettings(plus_replacement=""))
+    assert "_+X." not in render(session)["/etc/asterisk/extensions.conf"].content
+    for bad in ("+00", "0O", "1234567890123456789"):
+        with pytest.raises(ValueError):
+            st.OutgoingSettings(plus_replacement=bad)
+    assert st.OutgoingSettings(plus_replacement=" 011 ").plus_replacement == "011"
+
+
 def test_pjsip(session):
     sample_pbx(session)
     conf = render(session)["/etc/asterisk/pjsip.conf"].content

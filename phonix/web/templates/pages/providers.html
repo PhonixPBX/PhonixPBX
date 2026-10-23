@@ -1,6 +1,7 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
 {% from "macros/ui.html" import empty with context %}
+{% from "macros/forms.html" import csrf, input, form_errors, submit with context %}
 {% block actions %}
 <div class="btn-list">
   <a href="/accounts/providers/new?tech=pjsip" class="btn btn-primary">{{ icon("plus") }}{{ _("SIP provider") }}</a>
@@ -20,4 +21,16 @@
   {{ empty(_("No providers yet"), _("Add your SIP trunk or VoIP provider account to make and receive external calls."), "/accounts/providers/new", _("Add a provider")) }}
   {% endif %}
 </div>
+
+<form method="post" action="/accounts/providers/outgoing" class="card mt-3" id="plus">
+  {{ csrf() }}
+  <div class="card-body">
+    <h3 class="card-title">{{ _("Numbers with +") }}</h3>
+    {{ form_errors(errors) }}
+    <div class="row">
+      <div class="col-md-4">{{ input("plus_replacement", _("Replace a leading + with"), values, errors, attrs='data-mask="dialcode"', help=_("A number dialled as +41 44 123 45 67 is dialled as 0041441234567 with 00, before the dial patterns are matched. Use 000 with an outside line prefix 0, 011 in North America. Empty: numbers with + are not dialled.")) }}</div>
+    </div>
+  </div>
+  {{ submit() }}
+</form>
 {% endblock %}

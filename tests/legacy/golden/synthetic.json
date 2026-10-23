@@ -541,6 +541,9 @@
         "prefix": 24,
         "topology": "natstatic"
       },
+      "outgoing": {
+        "plus_replacement": "00"
+      },
       "rtp": {
         "port_end": 10500,
         "port_start": 10000

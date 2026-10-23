@@ -1096,6 +1096,18 @@
       "title": "NotificationTexts",
       "type": "object"
     },
+    "OutgoingSettingsDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "plus_replacement": {
+          "default": "00",
+          "title": "Plus Replacement",
+          "type": "string"
+        }
+      },
+      "title": "OutgoingSettingsDoc",
+      "type": "object"
+    },
     "PhoneDoc": {
       "additionalProperties": false,
       "properties": {
@@ -1658,6 +1670,17 @@
           "anyOf": [
             {
               "$ref": "#/$defs/NetworkSettingsDoc"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "outgoing": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutgoingSettingsDoc"
             },
             {
               "type": "null"

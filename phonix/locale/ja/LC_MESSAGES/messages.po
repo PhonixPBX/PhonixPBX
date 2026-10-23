@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-22 22:04+0200\n"
+"POT-Creation-Date: 2026-10-23 08:48+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ja\n"
@@ -159,6 +159,13 @@ msgstr "ファームウェアのアップデートをインストールしてい
 
 msgid "A new self-signed certificate was created."
 msgstr "新しい自己署名証明書を作成しました。"
+
+msgid ""
+"A number dialled as +41 44 123 45 67 is dialled as 0041441234567 with 00, before the dial patterns are matched. Use "
+"000 with an outside line prefix 0, 011 in North America. Empty: numbers with + are not dialled."
+msgstr ""
+"+41 44 123 45 67 とダイヤルされた番号は、00 の場合、ダイヤルパターンの照合前に 0041441234567 としてダイヤルされます。外線発信番号 0 を使用する場合は 000、北米では 011 "
+"を使用してください。空欄の場合、+ 付きの番号はダイヤルされません。"
 
 msgid "A password is set. Leave empty to keep it."
 msgstr "パスワードは設定済みです。変更しない場合は空欄のままにしてください。"
@@ -2060,6 +2067,9 @@ msgstr "この番号は %(owner)s で使用されています"
 msgid "Number is reserved for call parking"
 msgstr "この番号はコールパーク用に予約されています"
 
+msgid "Numbers with +"
+msgstr "+ 付きの番号"
+
 msgid "OCI container (Docker / Podman)"
 msgstr "OCI コンテナー（Docker / Podman）"
 
@@ -2522,6 +2532,9 @@ msgstr "新しいパスワード（確認）"
 
 msgid "Repeat the menu"
 msgstr "メニューを繰り返す"
+
+msgid "Replace a leading + with"
+msgstr "先頭の + の置換先"
 
 msgid "Replace current configuration (backup first)"
 msgstr "現在の設定を置き換える（事前にバックアップ）"
@@ -3279,6 +3292,9 @@ msgstr "営業時間は、プロバイダーの着信ルートや IVR キーの�
 
 msgid "Use lowercase letters, digits, '.', '_' or '-'"
 msgstr "英小文字、数字、'.'、'_'、'-' を使用してください"
+
+msgid "Use up to 16 digits, '*' and '#'"
+msgstr "最大 16 桁の数字、'*'、'#' を使用してください"
 
 msgid "Use “Repeat the menu” to play this menu again"
 msgstr "このメニューをもう一度再生するには「メニューを繰り返す」を使用してください"

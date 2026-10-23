@@ -4,6 +4,15 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- *Accounts → Providers*: phones can dial numbers in the international form with a leading `+` (for example
+  `+41 44 123 45 67` from an address book or call list), also through click-to-call. The `+` is replaced with `00`
+  before the dial patterns are matched; set **Replace a leading + with** in the new card **Numbers with +** to `000`
+  with an outside line prefix `0`, to `011` in North America, or leave it empty to switch it off.
+
 ## [1.9.0rc1] - 2026-10-23
 
 ### Added

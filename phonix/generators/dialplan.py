@@ -9,7 +9,8 @@ Context layout
 ``public-direct-dial``  numbers reachable from providers / anonymous callers
                         (objects with "public access" enabled)
 ``incoming-dest``       ring targets used by provider incoming routes
-``phone-<ext>``         per phone: internal + allowed providers (+ call forwarding)
+``phone-<ext>``         per phone: internal + allowed providers (+ call forwarding); a leading
+                        ``+`` is replaced (``OutgoingSettings.plus_replacement``) and dialled again
 ``phone-<ext>-out``     per phone: provider dial patterns not blocked for the phone
 ``prov-<id>-out``       per provider: dial patterns -> Dial(), failover
 ``prov-<id>-in``        per provider: incoming routes
@@ -678,6 +679,16 @@ class DialplanBuilder:
             ctx = self.ctx(f"phone-{phone.extension}", f"{phone.callerid} <{phone.extension}>")
             ctx.include("internal")
             ctx.include(f"phone-{phone.extension}-out")
+            plus = snap.outgoing.plus_replacement
+            if plus:
+                # "+41..." -> "0041...", then dialled again: no dial pattern can match a "+"
+                ctx.ext(
+                    "_+X.",
+                    [
+                        "NoOp(Leading + replaced with " + plus + ")",
+                        f"Goto(phone-{phone.extension},{plus}${{EXTEN:1}},1)",
+                    ],
+                )
             out = self.ctx(f"phone-{phone.extension}-out")
             blocked = {p.id for p in phone.blocked_providers}
             overrides = {c.provider_id: c.callerid for c in phone.provider_callerids}

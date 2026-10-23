@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-22 22:04+0200\n"
+"POT-Creation-Date: 2026-10-23 08:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -165,6 +165,12 @@ msgid "A firmware update is being installed. Wait until it has finished."
 msgstr ""
 
 msgid "A new self-signed certificate was created."
+msgstr ""
+
+msgid ""
+"A number dialled as +41 44 123 45 67 is dialled as 0041441234567 with 00,"
+" before the dial patterns are matched. Use 000 with an outside line "
+"prefix 0, 011 in North America. Empty: numbers with + are not dialled."
 msgstr ""
 
 msgid "A password is set. Leave empty to keep it."
@@ -2089,6 +2095,9 @@ msgstr ""
 msgid "Number is reserved for call parking"
 msgstr ""
 
+msgid "Numbers with +"
+msgstr ""
+
 msgid "OCI container (Docker / Podman)"
 msgstr ""
 
@@ -2568,6 +2577,9 @@ msgid "Repeat new password"
 msgstr ""
 
 msgid "Repeat the menu"
+msgstr ""
+
+msgid "Replace a leading + with"
 msgstr ""
 
 msgid "Replace current configuration (backup first)"
@@ -3345,6 +3357,9 @@ msgid ""
 msgstr ""
 
 msgid "Use lowercase letters, digits, '.', '_' or '-'"
+msgstr ""
+
+msgid "Use up to 16 digits, '*' and '#'"
 msgstr ""
 
 msgid "Use “Repeat the menu” to play this menu again"
