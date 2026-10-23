@@ -26,7 +26,7 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 ### Fixed
 
 - *Accounts → Phones* and *Accounts → Providers*: the **Codecs** can now be dragged into order of preference, as
-  the manual describes. Dragging the key options of *Dialplan → IVR Menus* now also works on touch screens.
+  the manual describes.
 
 ## [1.8.0] - 2026-10-21
 
