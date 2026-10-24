@@ -28,7 +28,7 @@ def test_squashed_nightly_revision_is_restamped(runtime: config.RuntimeConfig) -
     with db.get_engine().begin() as conn:
         conn.execute(text("UPDATE alembic_version SET version_num = '0003'"))
     migrate.upgrade()
-    assert migrate.current_revision() == migrate.head_revision() == "0007"
+    assert migrate.current_revision() == migrate.head_revision() == "0008"
     assert not migrate.needs_upgrade()
 
 

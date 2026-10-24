@@ -410,6 +410,9 @@ class BusinessHours(Base):
     holidays: Mapped[list[BusinessHoursHoliday]] = relationship(
         cascade="all, delete-orphan", order_by="BusinessHoursHoliday.date", lazy="selectin"
     )
+    specials: Mapped[list[BusinessHoursSpecial]] = relationship(
+        cascade="all, delete-orphan", order_by="BusinessHoursSpecial.position", lazy="selectin"
+    )
 
 
 class BusinessHoursRange(Base):
@@ -434,6 +437,29 @@ class BusinessHoursHoliday(Base):
     date: Mapped[dt.date] = mapped_column(Date)
     name: Mapped[str] = mapped_column(String(80), default="")
     yearly: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class BusinessHoursSpecial(Base):
+    """A special period (or an on/off switch) that sends calls to its own destination.
+
+    Without ``start``/``end`` it applies whenever it is switched on; with them it applies on those days
+    (``yearly`` repeats them every year). The first applying period in list order wins.
+    """
+
+    __tablename__ = "business_hours_specials"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    hours_id: Mapped[int] = mapped_column(ForeignKey("business_hours.id", ondelete="CASCADE"))
+    position: Mapped[int] = mapped_column(Integer)
+    name: Mapped[str] = mapped_column(String(80))
+    enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    start: Mapped[dt.date | None] = mapped_column(Date, nullable=True)
+    end: Mapped[dt.date | None] = mapped_column(Date, nullable=True)
+    yearly: Mapped[bool] = mapped_column(Boolean, default=False)
+    # dialled on an internal phone: switches the period on or off ("" = none)
+    feature_code: Mapped[str | None] = mapped_column(String(16), unique=True, nullable=True)
+    dest_type: Mapped[str] = mapped_column(String(16))
+    dest_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
 
 class AmiUser(Base):

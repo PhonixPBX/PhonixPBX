@@ -290,6 +290,14 @@
           "maxItems": 70,
           "title": "Ranges",
           "type": "array"
+        },
+        "specials": {
+          "items": {
+            "$ref": "#/$defs/SpecialIn"
+          },
+          "maxItems": 50,
+          "title": "Specials",
+          "type": "array"
         }
       },
       "required": [
@@ -1813,6 +1821,99 @@
         }
       },
       "title": "SipSettingsDoc",
+      "type": "object"
+    },
+    "SpecialIn": {
+      "properties": {
+        "dest_id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dest Id"
+        },
+        "dest_type": {
+          "enum": [
+            "phone",
+            "callgroup",
+            "application",
+            "conference",
+            "ivr",
+            "hours",
+            "voicemail",
+            "hangup"
+          ],
+          "title": "Dest Type",
+          "type": "string"
+        },
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "end": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End"
+        },
+        "feature_code": {
+          "default": "",
+          "title": "Feature Code",
+          "type": "string"
+        },
+        "id": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Id"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "start": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Start"
+        },
+        "yearly": {
+          "default": false,
+          "title": "Yearly",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "dest_type"
+      ],
+      "title": "SpecialIn",
       "type": "object"
     },
     "SystemSettingsDoc": {

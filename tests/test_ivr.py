@@ -478,3 +478,76 @@ def test_mcp(client, fake_ami):
     assert result["structuredContent"]["repeats"] == 4
     result = call(client, "set_business_hours_mode", id=ids["office"], mode="later")
     assert result["isError"] is True
+
+
+def test_special_periods_validation(session, ids):
+    from phonix.services.common import parse
+
+    target = hours.create_hours(session, _hours(name="Christmas"))
+    # start and end both or neither
+    with pytest.raises(ServiceError) as exc:
+        parse(
+            hours.BusinessHoursIn,
+            {
+                "name": "x",
+                "open_dest_type": "hangup",
+                "specials": [{"name": "x", "start": "2026-12-24", "dest_type": "hangup"}],
+            },
+        )
+    assert any(key.startswith("specials.0") for key in exc.value.fields)
+    # one level: a target must not have special periods, and not be itself
+    xmas = {"name": "xmas", "dest_type": "hours", "dest_id": target.id}
+    a = hours.create_hours(session, _hours(name="A", specials=[xmas]))
+    with pytest.raises(ServiceError) as exc:
+        hours.update_hours(
+            session, target.id, _hours(name="Christmas", specials=[{"name": "y", "dest_type": "hangup"}])
+        )
+    assert "specials" in exc.value.fields
+    with pytest.raises(ServiceError):
+        hours.create_hours(session, _hours(name="B", specials=[{"name": "z", "dest_type": "hours", "dest_id": a.id}]))
+    with pytest.raises(ServiceError):
+        hours.update_hours(
+            session, a.id, _hours(name="A", specials=[{"name": "me", "dest_type": "hours", "dest_id": a.id}])
+        )
+    # feature codes are unique across extensions and other feature codes
+    with pytest.raises(ServiceError) as exc:
+        hours.update_hours(
+            session,
+            a.id,
+            _hours(name="A", specials=[{"name": "e", "dest_type": "hangup", "feature_code": "*31"}]),
+        )
+    assert "specials.0.feature_code" in exc.value.fields
+
+
+def test_special_periods_keep_ids_and_order(session, ids):
+    h = hours.create_hours(
+        session,
+        _hours(
+            specials=[
+                {"name": "Emergency", "dest_type": "hangup", "feature_code": "*70"},
+                {
+                    "name": "Xmas",
+                    "start": "2026-12-24",
+                    "end": "2027-01-02",
+                    "yearly": True,
+                    "dest_type": "hangup",
+                },
+            ]
+        ),
+    )
+    first, second = [s.id for s in h.specials]
+    data = hours.to_dict(h)
+    data["specials"].reverse()
+    hours.update_hours(session, h.id, hours.BusinessHoursIn.model_validate(data))
+    session.expire_all()
+    assert [(s.id, s.position) for s in hours.get_hours(session, h.id).specials] == [(second, 0), (first, 1)]
+
+
+def test_deleting_target_hours_falls_back_to_hangup(session, ids):
+    target = hours.create_hours(session, _hours(name="Christmas"))
+    special = {"name": "x", "dest_type": "hours", "dest_id": target.id}
+    a = hours.create_hours(session, _hours(name="A", specials=[special]))
+    hours.delete_hours(session, target.id)
+    session.expire_all()
+    period = hours.get_hours(session, a.id).specials[0]
+    assert (period.dest_type, period.dest_id) == ("hangup", None)

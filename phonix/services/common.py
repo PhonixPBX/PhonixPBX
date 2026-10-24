@@ -16,6 +16,7 @@ from phonix.core.models import (
     Application,
     AuditLog,
     BusinessHours,
+    BusinessHoursSpecial,
     CallGroup,
     ConferenceRoom,
     Dirty,
@@ -199,6 +200,9 @@ def extension_owner(session: Session, number: str) -> str | None:
     hours = session.scalar(select(BusinessHours).where(BusinessHours.feature_code == number))
     if hours:
         return _("the feature code of business hours %(name)s", name=hours.name)
+    special = session.scalar(select(BusinessHoursSpecial).where(BusinessHoursSpecial.feature_code == number))
+    if special:
+        return _("the feature code of the special period %(name)s", name=special.name)
     features = load_settings(session, FeatureSettings)
     if number == features.park_ext:
         return _("call parking")
@@ -216,6 +220,7 @@ def ensure_extension_free(session: Session, number: str, field: str, own: tuple[
         (Application, Application.extension),
         (IvrMenu, IvrMenu.extension),
         (BusinessHours, BusinessHours.feature_code),
+        (BusinessHoursSpecial, BusinessHoursSpecial.feature_code),
     ]
     for model, column in owners:
         obj = session.scalar(select(model).where(column == number))
