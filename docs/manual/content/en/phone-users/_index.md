@@ -24,7 +24,7 @@ To dial an **internal number**, simply dial the extension of the other phone, fo
 | `000086` | Voicemail: listen to your messages, record greetings | phone idle |
 | `000023` | Call forwarding on or off | phone idle |
 | `2663` | Default conference room | phone idle |
-| set by the administrator | Switch business hours between *Automatic* and *Closed* | phone idle |
+| set by the administrator | Out-of-office key: switch business hours to the opposite state, or back to *Automatic*; switch a special period on or off | phone idle |
 | `000063` | Read back your own extension | test |
 | `000047` | Read back the IP address of the PBX | test |
 | `00003246` | Echo test | test |
@@ -132,12 +132,15 @@ Keys during the conference (press `*` first to hear the menu, or press the key d
 
 ## Business hours {#business-hours}
 
-Your administrator can define business hours: during opening hours calls go, for example, to the reception; outside them to an announcement or voicemail. For each set of business hours, the administrator can also define a **feature code** that you dial on an internal phone to switch manually:
+Your administrator can define business hours: during opening hours calls go, for example, to the reception; outside them to an announcement or voicemail. For each set of business hours, the administrator can also define a **feature code**, usually set up as an **out-of-office key** on your phone. Its lamp is lit while the office is closed and dark while it is open.
 
-- Dial the code once: the business hours are set to **Closed** – useful when the office closes early. You hear "activated".
-- Dial the code again: they return to **Automatic** and follow the schedule again. You hear "de-activated".
+- Press the key (or dial the code): the business hours switch to the opposite state – for example closed when you leave early, or open when you are in the office during the company holidays. You hear "disabled" (now closed) or "enabled" (now open).
+- Press it again: they return to **Automatic** and follow the schedule again. You hear "cancelled".
+- If you forget, the switch ends by itself at the next scheduled change, at midnight at the latest.
 
-The change takes effect immediately for all callers. Ask your administrator for the code.
+Your administrator may also set up keys for **special periods**, for example an emergency routing. Such a key switches the period on ("activated") or off ("de-activated"); its lamp is lit while the period is on.
+
+The change takes effect immediately for all callers and all phones. Ask your administrator for the codes.
 
 ## Test numbers {#tests}
 
