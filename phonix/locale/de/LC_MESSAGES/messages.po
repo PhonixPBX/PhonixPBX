@@ -52,7 +52,7 @@ msgstr "Log %(name)s"
 
 #, python-format
 msgid "%(name)s until %(date)s"
-msgstr ""
+msgstr "%(name)s bis %(date)s"
 
 #, python-format
 msgid "%(num)d CPU"
@@ -305,7 +305,7 @@ msgid "Add route"
 msgstr "Route hinzufügen"
 
 msgid "Add special period"
-msgstr ""
+msgstr "Sonderzeitraum hinzufügen"
 
 msgid "Add time range"
 msgstr "Zeitbereich hinzufügen"
@@ -603,7 +603,7 @@ msgstr ""
 " Menü für die Zeit nach Geschäftsschluss."
 
 msgid "Business hours used by a special period cannot have special periods"
-msgstr ""
+msgstr "Geschäftszeiten, die ein Sonderzeitraum verwendet, können keine eigenen Sonderzeiträume haben"
 
 msgid "Busy"
 msgstr "Besetzt"
@@ -759,7 +759,7 @@ msgid "Choose a sound"
 msgstr "Wählen Sie einen Sound"
 
 msgid "Choose business hours without special periods of their own"
-msgstr ""
+msgstr "Wählen Sie Geschäftszeiten ohne eigene Sonderzeiträume"
 
 msgid "Choose or upload an announcement"
 msgstr "Wählen Sie eine Ansage oder laden Sie eine hoch"
@@ -788,7 +788,7 @@ msgid "Cloud API token"
 msgstr "Cloud-API-Token"
 
 msgid "Code, e.g. *32"
-msgstr ""
+msgstr "Code, z. B. *32"
 
 msgid "Codecs"
 msgstr "Codecs"
@@ -1225,7 +1225,7 @@ msgid "Enter a time as HH:MM"
 msgstr "Geben Sie eine Uhrzeit als HH:MM ein"
 
 msgid "Enter both the first and the last day, or neither"
-msgstr ""
+msgstr "Geben Sie den ersten und den letzten Tag ein oder keinen von beiden"
 
 msgid "Enter the directory URL of the ACME server"
 msgstr "Geben Sie die Directory-URL des ACME-Servers ein"
@@ -1301,7 +1301,7 @@ msgid "Firmware"
 msgstr "Firmware"
 
 msgid "First day"
-msgstr ""
+msgstr "Erster Tag"
 
 msgid "First port"
 msgstr "Erster Port"
@@ -1313,7 +1313,7 @@ msgid "Fixed caller ID"
 msgstr "Feste Anruferkennung"
 
 msgid "Follow the special periods, holidays and opening hours."
-msgstr ""
+msgstr "Den Sonderzeiträumen, Feiertagen und Öffnungszeiten folgen."
 
 #, python-format
 msgid "For %(what)s, press %(key)s."
@@ -1702,7 +1702,7 @@ msgid "Language of the web interface for %(user)s."
 msgstr "Sprache der Weboberfläche für %(user)s."
 
 msgid "Last day"
-msgstr ""
+msgstr "Letzter Tag"
 
 msgid "Last login"
 msgstr "Letzte Anmeldung"
@@ -1937,7 +1937,7 @@ msgid "Name, e.g. Christmas Day"
 msgstr "Name, z. B. Weihnachten"
 
 msgid "Name, e.g. Christmas or Emergency"
-msgstr ""
+msgstr "Name, z. B. Weihnachten oder Notfall"
 
 msgid "Names"
 msgstr "Namen"
@@ -2150,10 +2150,10 @@ msgid "On Hold"
 msgstr "Gehalten"
 
 msgid "On, applies today"
-msgstr ""
+msgstr "Ein, gilt heute"
 
 msgid "On, but not today"
-msgstr ""
+msgstr "Ein, aber nicht heute"
 
 msgid "One CIDR per line, e.g. 192.168.1.0/24."
 msgstr "Ein CIDR pro Zeile, z. B. 192.168.1.0/24."
@@ -2227,6 +2227,10 @@ msgid ""
 "latest; dialled again, it returns to “Automatic”. It also ends a permanent mode set here. A phone key (BLF) on this "
 "code shows the state: lit means closed."
 msgstr ""
+"Optional. Auf einem internen Telefon gewählt, schaltet er bis zur nächsten Änderung, spätestens bis Mitternacht, in "
+"den jeweils anderen Zustand um; erneut gewählt, schaltet er zurück auf „Automatisch“. Er beendet auch einen hier "
+"dauerhaft eingestellten Modus. Eine Telefontaste (BLF) mit diesem Code zeigt den Zustand an: Leuchten bedeutet "
+"geschlossen."
 
 msgid "Optional. Joins as moderator."
 msgstr "Optional. Tritt als Moderator bei."
@@ -2600,7 +2604,7 @@ msgid "Remove option"
 msgstr "Option entfernen"
 
 msgid "Remove special period"
-msgstr ""
+msgstr "Sonderzeitraum entfernen"
 
 msgid "Remove the password (key logins only)"
 msgstr "Passwort entfernen (nur Anmeldung mit Schlüssel)"
@@ -2776,7 +2780,7 @@ msgid "Save and request certificate now"
 msgstr "Speichern und Zertifikat jetzt anfordern"
 
 msgid "Saved periods are switched on and off at the top of the page."
-msgstr ""
+msgstr "Gespeicherte Zeiträume werden oben auf der Seite ein- und ausgeschaltet."
 
 msgid "Saving a backup of the configuration ..."
 msgstr "Backup der Konfiguration wird gespeichert ..."
@@ -2886,10 +2890,10 @@ msgid "Spanish"
 msgstr "Spanisch"
 
 msgid "Special period not found"
-msgstr ""
+msgstr "Sonderzeitraum nicht gefunden"
 
 msgid "Special periods"
-msgstr ""
+msgstr "Sonderzeiträume"
 
 msgid "State"
 msgstr "Zustand"
@@ -2929,11 +2933,11 @@ msgstr "Schwedisch"
 
 #, python-format
 msgid "Switch %(name)s off"
-msgstr ""
+msgstr "%(name)s ausschalten"
 
 #, python-format
 msgid "Switch %(name)s on"
-msgstr ""
+msgstr "%(name)s einschalten"
 
 msgid "Switch now"
 msgstr "Jetzt umschalten"
@@ -2988,12 +2992,15 @@ msgid ""
 "Take precedence over holidays and the weekly hours: the first period in this list that is on and whose days include "
 "today sends calls to its destination. Without days, a period applies whenever it is on, e.g. emergency routing."
 msgstr ""
+"Haben Vorrang vor Feiertagen und den wöchentlichen Öffnungszeiten: Der erste eingeschaltete Zeitraum in dieser Liste,"
+" dessen Tage den heutigen Tag umfassen, leitet Anrufe an sein Ziel. Ohne Tage gilt ein Zeitraum, solange er "
+"eingeschaltet ist, z. B. für eine Notfallumleitung."
 
 msgid "Takes effect immediately, without applying the configuration."
 msgstr "Wirkt sofort, ohne dass die Konfiguration übernommen werden muss."
 
 msgid "Takes effect immediately. A period that is on applies only on its days, if it has any."
-msgstr ""
+msgstr "Wirkt sofort. Ein eingeschalteter Zeitraum gilt nur an seinen Tagen, sofern er welche hat."
 
 msgid "Telephony"
 msgstr "Telefonie"
@@ -3055,6 +3062,9 @@ msgid ""
 "between open and closed. The feature code switches the period on or off; a phone key (BLF) on it is lit while the "
 "period is on."
 msgstr ""
+"Das Ziel können auch andere Geschäftszeiten sein, z. B. kürzere Öffnungszeiten über Weihnachten; diese entscheiden "
+"dann zwischen geöffnet und geschlossen. Der Funktionscode schaltet den Zeitraum ein oder aus; eine Telefontaste (BLF)"
+" mit diesem Code leuchtet, solange der Zeitraum eingeschaltet ist."
 
 msgid "The directory URL must start with https://"
 msgstr "Die Directory-URL muss mit https:// beginnen"
@@ -3088,7 +3098,7 @@ msgid "The last administrator cannot be deleted"
 msgstr "Der letzte Administrator kann nicht gelöscht werden"
 
 msgid "The last day must not be before the first day"
-msgstr ""
+msgstr "Der letzte Tag darf nicht vor dem ersten Tag liegen"
 
 msgid "The lego ACME client is not installed."
 msgstr "Der ACME-Client lego ist nicht installiert."
@@ -3173,7 +3183,7 @@ msgstr ""
 "kann."
 
 msgid "This code is used more than once"
-msgstr ""
+msgstr "Dieser Code wird mehrfach verwendet"
 
 msgid "This day is listed more than once"
 msgstr "Dieser Tag ist mehrfach aufgeführt"
@@ -3844,7 +3854,7 @@ msgid "offer SRTP (SDES), fall back to RTP"
 msgstr "SRTP (SDES) anbieten, sonst RTP"
 
 msgid "on"
-msgstr ""
+msgstr "ein"
 
 msgid "one after another"
 msgstr "nacheinander"
@@ -3939,7 +3949,7 @@ msgid "star"
 msgstr "die Sterntaste"
 
 msgid "switched by key until the next change"
-msgstr ""
+msgstr "per Taste umgeschaltet bis zur nächsten Änderung"
 
 msgid "switched manually"
 msgstr "manuell umgeschaltet"
@@ -3954,7 +3964,7 @@ msgstr "Funktionscode der Geschäftszeiten %(name)s"
 
 #, python-format
 msgid "the feature code of the special period %(name)s"
-msgstr ""
+msgstr "Funktionscode des Sonderzeitraums %(name)s"
 
 msgid "the hash key"
 msgstr "die Rautetaste"

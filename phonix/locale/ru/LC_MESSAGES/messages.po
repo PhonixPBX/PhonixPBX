@@ -52,7 +52,7 @@ msgstr "Журнал %(name)s"
 
 #, python-format
 msgid "%(name)s until %(date)s"
-msgstr ""
+msgstr "%(name)s до %(date)s"
 
 #, python-format
 msgid "%(num)d CPU"
@@ -306,7 +306,7 @@ msgid "Add route"
 msgstr "Добавить маршрут"
 
 msgid "Add special period"
-msgstr ""
+msgstr "Добавить особый период"
 
 msgid "Add time range"
 msgstr "Добавить интервал"
@@ -604,7 +604,7 @@ msgstr ""
 "нерабочего времени."
 
 msgid "Business hours used by a special period cannot have special periods"
-msgstr ""
+msgstr "Рабочее время, используемое особым периодом, не может иметь особых периодов"
 
 msgid "Busy"
 msgstr "Занят"
@@ -760,7 +760,7 @@ msgid "Choose a sound"
 msgstr "Выберите звук"
 
 msgid "Choose business hours without special periods of their own"
-msgstr ""
+msgstr "Выберите рабочее время без собственных особых периодов"
 
 msgid "Choose or upload an announcement"
 msgstr "Выберите или загрузите объявление"
@@ -789,7 +789,7 @@ msgid "Cloud API token"
 msgstr "Токен Cloud API"
 
 msgid "Code, e.g. *32"
-msgstr ""
+msgstr "Код, например *32"
 
 msgid "Codecs"
 msgstr "Кодеки"
@@ -1226,7 +1226,7 @@ msgid "Enter a time as HH:MM"
 msgstr "Введите время в формате HH:MM"
 
 msgid "Enter both the first and the last day, or neither"
-msgstr ""
+msgstr "Укажите и первый, и последний день или ни одного"
 
 msgid "Enter the directory URL of the ACME server"
 msgstr "Введите URL каталога сервера ACME"
@@ -1302,7 +1302,7 @@ msgid "Firmware"
 msgstr "Прошивка"
 
 msgid "First day"
-msgstr ""
+msgstr "Первый день"
 
 msgid "First port"
 msgstr "Первый порт"
@@ -1314,7 +1314,7 @@ msgid "Fixed caller ID"
 msgstr "Фиксированный АОН"
 
 msgid "Follow the special periods, holidays and opening hours."
-msgstr ""
+msgstr "По особым периодам, праздникам и расписанию работы."
 
 #, python-format
 msgid "For %(what)s, press %(key)s."
@@ -1699,7 +1699,7 @@ msgid "Language of the web interface for %(user)s."
 msgstr "Язык веб-интерфейса для %(user)s."
 
 msgid "Last day"
-msgstr ""
+msgstr "Последний день"
 
 msgid "Last login"
 msgstr "Последний вход"
@@ -1934,7 +1934,7 @@ msgid "Name, e.g. Christmas Day"
 msgstr "Название, например Рождество"
 
 msgid "Name, e.g. Christmas or Emergency"
-msgstr ""
+msgstr "Название, например Рождество или Авария"
 
 msgid "Names"
 msgstr "Имена"
@@ -2145,10 +2145,10 @@ msgid "On Hold"
 msgstr "На удержании"
 
 msgid "On, applies today"
-msgstr ""
+msgstr "Вкл., действует сегодня"
 
 msgid "On, but not today"
-msgstr ""
+msgstr "Вкл., но не сегодня"
 
 msgid "One CIDR per line, e.g. 192.168.1.0/24."
 msgstr "По одной сети CIDR в строке, например 192.168.1.0/24."
@@ -2223,6 +2223,9 @@ msgid ""
 "latest; dialled again, it returns to “Automatic”. It also ends a permanent mode set here. A phone key (BLF) on this "
 "code shows the state: lit means closed."
 msgstr ""
+"Необязательно. При наборе на внутреннем телефоне переключает в противоположное состояние до следующего изменения, но "
+"не дольше чем до полуночи; повторный набор возвращает в режим «Автоматически». Также отменяет постоянный режим, "
+"заданный здесь. Клавиша телефона (BLF) с этим кодом показывает состояние: горит — значит закрыто."
 
 msgid "Optional. Joins as moderator."
 msgstr "Необязательно. Вход в качестве модератора."
@@ -2594,7 +2597,7 @@ msgid "Remove option"
 msgstr "Удалить вариант"
 
 msgid "Remove special period"
-msgstr ""
+msgstr "Удалить особый период"
 
 msgid "Remove the password (key logins only)"
 msgstr "Удалить пароль (только вход по ключу)"
@@ -2770,7 +2773,7 @@ msgid "Save and request certificate now"
 msgstr "Сохранить и запросить сертификат"
 
 msgid "Saved periods are switched on and off at the top of the page."
-msgstr ""
+msgstr "Сохранённые периоды включаются и выключаются в верхней части страницы."
 
 msgid "Saving a backup of the configuration ..."
 msgstr "Сохранение резервной копии конфигурации ..."
@@ -2878,10 +2881,10 @@ msgid "Spanish"
 msgstr "Испанский"
 
 msgid "Special period not found"
-msgstr ""
+msgstr "Особый период не найден"
 
 msgid "Special periods"
-msgstr ""
+msgstr "Особые периоды"
 
 msgid "State"
 msgstr "Состояние"
@@ -2921,11 +2924,11 @@ msgstr "Шведский"
 
 #, python-format
 msgid "Switch %(name)s off"
-msgstr ""
+msgstr "Выключить %(name)s"
 
 #, python-format
 msgid "Switch %(name)s on"
-msgstr ""
+msgstr "Включить %(name)s"
 
 msgid "Switch now"
 msgstr "Переключить сейчас"
@@ -2980,12 +2983,15 @@ msgid ""
 "Take precedence over holidays and the weekly hours: the first period in this list that is on and whose days include "
 "today sends calls to its destination. Without days, a period applies whenever it is on, e.g. emergency routing."
 msgstr ""
+"Имеют приоритет над праздниками и недельным расписанием: первый включённый период в этом списке, дни которого "
+"включают сегодняшний, направляет вызовы на своё назначение. Без дней период действует всё время, пока он включён, "
+"например для аварийной маршрутизации."
 
 msgid "Takes effect immediately, without applying the configuration."
 msgstr "Действует сразу, без применения конфигурации."
 
 msgid "Takes effect immediately. A period that is on applies only on its days, if it has any."
-msgstr ""
+msgstr "Действует сразу. Включённый период действует только в свои дни, если они заданы."
 
 msgid "Telephony"
 msgstr "Телефония"
@@ -3045,6 +3051,9 @@ msgid ""
 "between open and closed. The feature code switches the period on or off; a phone key (BLF) on it is lit while the "
 "period is on."
 msgstr ""
+"Назначением может быть и другое рабочее время, например сокращённое расписание на Рождество; тогда оно определяет, "
+"открыто или закрыто. Сервисный код включает или выключает период; клавиша телефона (BLF) с этим кодом горит, пока "
+"период включён."
 
 msgid "The directory URL must start with https://"
 msgstr "URL каталога должен начинаться с https://"
@@ -3078,7 +3087,7 @@ msgid "The last administrator cannot be deleted"
 msgstr "Последнего администратора удалить нельзя"
 
 msgid "The last day must not be before the first day"
-msgstr ""
+msgstr "Последний день не может быть раньше первого"
 
 msgid "The lego ACME client is not installed."
 msgstr "ACME-клиент lego не установлен."
@@ -3159,7 +3168,7 @@ msgid "This backup was made by an older PhonixPBX release in a format that can n
 msgstr "Эта резервная копия создана более старой версией PhonixPBX в формате, который больше нельзя восстановить."
 
 msgid "This code is used more than once"
-msgstr ""
+msgstr "Этот код используется несколько раз"
 
 msgid "This day is listed more than once"
 msgstr "Этот день указан несколько раз"
@@ -3827,7 +3836,7 @@ msgid "offer SRTP (SDES), fall back to RTP"
 msgstr "предлагать SRTP (SDES), при отказе — RTP"
 
 msgid "on"
-msgstr ""
+msgstr "вкл."
 
 msgid "one after another"
 msgstr "по очереди"
@@ -3922,7 +3931,7 @@ msgid "star"
 msgstr "звёздочку"
 
 msgid "switched by key until the next change"
-msgstr ""
+msgstr "переключено клавишей до следующего изменения"
 
 msgid "switched manually"
 msgstr "переключено вручную"
@@ -3937,7 +3946,7 @@ msgstr "сервисный код рабочего времени %(name)s"
 
 #, python-format
 msgid "the feature code of the special period %(name)s"
-msgstr ""
+msgstr "сервисный код особого периода %(name)s"
 
 msgid "the hash key"
 msgstr "решётку"

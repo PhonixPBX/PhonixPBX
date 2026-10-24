@@ -52,7 +52,7 @@ msgstr "%(name)s ログ"
 
 #, python-format
 msgid "%(name)s until %(date)s"
-msgstr ""
+msgstr "%(name)s（%(date)s まで）"
 
 #, python-format
 msgid "%(num)d CPU"
@@ -293,7 +293,7 @@ msgid "Add route"
 msgstr "ルートを追加"
 
 msgid "Add special period"
-msgstr ""
+msgstr "特別期間を追加"
 
 msgid "Add time range"
 msgstr "時間帯を追加"
@@ -587,7 +587,7 @@ msgid ""
 msgstr "営業時間は、営業中の着信をある宛先に、営業時間外の着信を別の宛先（例: 時間外メニュー）に転送します。"
 
 msgid "Business hours used by a special period cannot have special periods"
-msgstr ""
+msgstr "特別期間で使用される営業時間には特別期間を設定できません"
 
 msgid "Busy"
 msgstr "話中"
@@ -743,7 +743,7 @@ msgid "Choose a sound"
 msgstr "サウンドを選択してください"
 
 msgid "Choose business hours without special periods of their own"
-msgstr ""
+msgstr "独自の特別期間を持たない営業時間を選択してください"
 
 msgid "Choose or upload an announcement"
 msgstr "アナウンスを選択またはアップロードしてください"
@@ -770,7 +770,7 @@ msgid "Cloud API token"
 msgstr "Cloud API トークン"
 
 msgid "Code, e.g. *32"
-msgstr ""
+msgstr "コード（例: *32）"
 
 msgid "Codecs"
 msgstr "コーデック"
@@ -1207,7 +1207,7 @@ msgid "Enter a time as HH:MM"
 msgstr "時刻を HH:MM で入力してください"
 
 msgid "Enter both the first and the last day, or neither"
-msgstr ""
+msgstr "初日と最終日の両方を入力するか、どちらも入力しないでください"
 
 msgid "Enter the directory URL of the ACME server"
 msgstr "ACME サーバーのディレクトリ URL を入力してください"
@@ -1283,7 +1283,7 @@ msgid "Firmware"
 msgstr "ファームウェア"
 
 msgid "First day"
-msgstr ""
+msgstr "初日"
 
 msgid "First port"
 msgstr "開始ポート"
@@ -1295,7 +1295,7 @@ msgid "Fixed caller ID"
 msgstr "固定の発信者 ID"
 
 msgid "Follow the special periods, holidays and opening hours."
-msgstr ""
+msgstr "特別期間、休日、営業時間に従います。"
 
 #, python-format
 msgid "For %(what)s, press %(key)s."
@@ -1676,7 +1676,7 @@ msgid "Language of the web interface for %(user)s."
 msgstr "%(user)s の Web インターフェースの言語です。"
 
 msgid "Last day"
-msgstr ""
+msgstr "最終日"
 
 msgid "Last login"
 msgstr "最終ログイン"
@@ -1909,7 +1909,7 @@ msgid "Name, e.g. Christmas Day"
 msgstr "名前（例: 元日）"
 
 msgid "Name, e.g. Christmas or Emergency"
-msgstr ""
+msgstr "名前（例: 年末年始、緊急）"
 
 msgid "Names"
 msgstr "名前"
@@ -2120,10 +2120,10 @@ msgid "On Hold"
 msgstr "保留中"
 
 msgid "On, applies today"
-msgstr ""
+msgstr "オン（本日適用）"
 
 msgid "On, but not today"
-msgstr ""
+msgstr "オン（本日は適用外）"
 
 msgid "One CIDR per line, e.g. 192.168.1.0/24."
 msgstr "1 行に 1 つの CIDR を記述します（例: 192.168.1.0/24）。"
@@ -2196,6 +2196,8 @@ msgid ""
 "latest; dialled again, it returns to “Automatic”. It also ends a permanent mode set here. A phone key (BLF) on this "
 "code shows the state: lit means closed."
 msgstr ""
+"任意。内線電話でダイヤルすると、次の変更まで（遅くとも午前 0 "
+"時まで）反対の状態に切り替わります。もう一度ダイヤルすると「自動」に戻ります。ここで設定した固定モードも解除されます。このコードを割り当てた電話機のキー（BLF）に状態が表示され、点灯は営業時間外を意味します。"
 
 msgid "Optional. Joins as moderator."
 msgstr "任意。モデレーターとして参加します。"
@@ -2556,7 +2558,7 @@ msgid "Remove option"
 msgstr "選択肢を削除"
 
 msgid "Remove special period"
-msgstr ""
+msgstr "特別期間を削除"
 
 msgid "Remove the password (key logins only)"
 msgstr "パスワードを削除する（鍵によるログインのみ）"
@@ -2724,7 +2726,7 @@ msgid "Save and request certificate now"
 msgstr "保存して今すぐ証明書をリクエスト"
 
 msgid "Saved periods are switched on and off at the top of the page."
-msgstr ""
+msgstr "保存済みの期間は、ページ上部でオン／オフを切り替えます。"
 
 msgid "Saving a backup of the configuration ..."
 msgstr "設定のバックアップを保存しています ..."
@@ -2830,10 +2832,10 @@ msgid "Spanish"
 msgstr "スペイン語"
 
 msgid "Special period not found"
-msgstr ""
+msgstr "特別期間が見つかりません"
 
 msgid "Special periods"
-msgstr ""
+msgstr "特別期間"
 
 msgid "State"
 msgstr "状態"
@@ -2873,11 +2875,11 @@ msgstr "スウェーデン語"
 
 #, python-format
 msgid "Switch %(name)s off"
-msgstr ""
+msgstr "%(name)s をオフにする"
 
 #, python-format
 msgid "Switch %(name)s on"
-msgstr ""
+msgstr "%(name)s をオンにする"
 
 msgid "Switch now"
 msgstr "今すぐ切り替え"
@@ -2930,13 +2932,13 @@ msgstr "最初にコンテナーのスナップショットを作成してくだ
 msgid ""
 "Take precedence over holidays and the weekly hours: the first period in this list that is on and whose days include "
 "today sends calls to its destination. Without days, a period applies whenever it is on, e.g. emergency routing."
-msgstr ""
+msgstr "休日と週間の営業時間より優先されます。このリストで、オンになっていて今日がその日付に含まれる最初の期間が、着信をその宛先に送ります。日付のない期間は、オンの間は常に適用されます（例: 緊急時のルーティング）。"
 
 msgid "Takes effect immediately, without applying the configuration."
 msgstr "設定を適用しなくても、すぐに有効になります。"
 
 msgid "Takes effect immediately. A period that is on applies only on its days, if it has any."
-msgstr ""
+msgstr "すぐに反映されます。オンの期間は、日付がある場合はその日付の間だけ適用されます。"
 
 msgid "Telephony"
 msgstr "電話"
@@ -2992,6 +2994,8 @@ msgid ""
 "between open and closed. The feature code switches the period on or off; a phone key (BLF) on it is lit while the "
 "period is on."
 msgstr ""
+"宛先には別の営業時間も指定できます（例: "
+"年末年始の短縮営業時間）。その場合は、その営業時間によって営業中か営業時間外かが決まります。機能コードで期間のオン／オフを切り替えます。このコードを割り当てた電話機のキー（BLF）は、期間がオンの間点灯します。"
 
 msgid "The directory URL must start with https://"
 msgstr "ディレクトリ URL は https:// で始まる必要があります"
@@ -3025,7 +3029,7 @@ msgid "The last administrator cannot be deleted"
 msgstr "最後の管理者は削除できません"
 
 msgid "The last day must not be before the first day"
-msgstr ""
+msgstr "最終日を初日より前にすることはできません"
 
 msgid "The lego ACME client is not installed."
 msgstr "lego ACME クライアントがインストールされていません。"
@@ -3102,7 +3106,7 @@ msgid "This backup was made by an older PhonixPBX release in a format that can n
 msgstr "このバックアップは古い PhonixPBX リリースで作成されたもので、その形式はもう復元できません。"
 
 msgid "This code is used more than once"
-msgstr ""
+msgstr "このコードは複数回使用されています"
 
 msgid "This day is listed more than once"
 msgstr "この日が複数回指定されています"
@@ -3746,7 +3750,7 @@ msgid "offer SRTP (SDES), fall back to RTP"
 msgstr "SRTP（SDES）を提示し、RTP にフォールバック"
 
 msgid "on"
-msgstr ""
+msgstr "オン"
 
 msgid "one after another"
 msgstr "順番に"
@@ -3839,7 +3843,7 @@ msgid "star"
 msgstr "米印"
 
 msgid "switched by key until the next change"
-msgstr ""
+msgstr "キーで切り替え（次の変更まで）"
 
 msgid "switched manually"
 msgstr "手動で切り替え"
@@ -3854,7 +3858,7 @@ msgstr "営業時間 %(name)s の機能コード"
 
 #, python-format
 msgid "the feature code of the special period %(name)s"
-msgstr ""
+msgstr "特別期間 %(name)s の機能コード"
 
 msgid "the hash key"
 msgstr "シャープ"
