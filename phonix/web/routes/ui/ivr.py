@@ -271,6 +271,27 @@ def _hours_form_data(form: FormData) -> dict[str, Any]:
         for idx in _rows(form, "hol_date_")
         if form.get(f"hol_date_{idx}") or form.get(f"hol_name_{idx}")
     ]
+    specials = []
+    for idx in _rows(form, "sp_id_"):
+        name, start, end, code = (str(form.get(f"sp_{k}_{idx}", "")).strip() for k in ("name", "start", "end", "code"))
+        sid = str(form.get(f"sp_id_{idx}", ""))
+        if not (sid or name or start or end or code):
+            continue  # an empty new row
+        parsed = dst.parse_value(str(form.get(f"sp_dest_{idx}", "")))
+        specials.append(
+            {
+                "id": int(sid) if sid.isdigit() else None,
+                "name": name,
+                "enabled": form.get(f"sp_enabled_{idx}") == "true",
+                "start": start or None,
+                "end": end or None,
+                "yearly": form.get(f"sp_yearly_{idx}") == "true",
+                "feature_code": code,
+                "dest_type": parsed[0] if parsed else "",
+                "dest_id": parsed[1] if parsed else None,
+            }
+        )
+    data["specials"] = specials
     return data
 
 
@@ -304,6 +325,12 @@ def _hours_page(
     status_code: int = 200,
 ) -> Response:
     live = hours_svc.live_status(db, hours_id) if hours_id else None
+    # special periods may point to business hours, one level deep: not to themselves or to ones with periods
+    excluded = {f"hours:{h.id}" for h in hours_svc.list_hours(db) if h.id == hours_id or h.specials}
+    special_choices = [
+        (title, [(value, text) for value, text in options if value not in excluded])
+        for title, options in dst.choices(db, dst.SPECIAL_TYPES)
+    ]
     return page(
         request,
         "pages/hours_form.html",
@@ -317,21 +344,31 @@ def _hours_page(
         today=dt.date.today().weekday(),
         now_pct=round((dt.datetime.now().hour * 60 + dt.datetime.now().minute) / 14.4, 2),
         choices=dst.choices(db, dst.HOURS_TYPES),
+        special_choices=[(title, options) for title, options in special_choices if options],
         dest_value=dst.value,
         live=live,
     )
 
 
-def _status_rows(db: Session) -> list[tuple[Any, dict[str, Any]]]:
+def _status_rows(db: Session, only: int | None = None) -> list[tuple[Any, dict[str, Any]]]:
+    """The list rows: business hours with their status, mode and special period switches."""
     now = dt.datetime.now()
-    rt = hours_svc.load_runtime()
+    loaded = hours_svc.load_runtime()
+    rt = loaded or hours_svc.Runtime()
     items = hours_svc.list_hours(db)
     others = {h.id: h for h in items}
-    rows = []
-    for h in items:
-        st = hours_svc.status(h, rt or hours_svc.Runtime(), now, others)
-        rows.append((h, {**st, "mode": None if rt is None else rt.modes.get(h.id, "auto")}))
-    return rows
+    return [
+        (
+            h,
+            {
+                **hours_svc.status(h, rt, now, others),
+                "mode": None if loaded is None else rt.modes.get(h.id, "auto"),
+                "specials": hours_svc.special_states(h, rt, now.date()),
+            },
+        )
+        for h in items
+        if only is None or h.id == only
+    ]
 
 
 @router.get("/hours")
@@ -413,4 +450,28 @@ async def hours_mode(
         error = "; ".join(service_errors(exc).values())
     live = hours_svc.live_status(db, hours_id)
     resp = render(request, "partials/hours_mode.html", {"live": live, "hours_id": hours_id, "mode_error": error})
+    return HTMLResponse(resp.body)
+
+
+@router.post("/hours/{hours_id}/special/{special_id}")
+async def hours_special(
+    request: Request, hours_id: int, special_id: int, user: User = Depends(ui_user), db: Session = Depends(get_db)
+) -> Response:
+    """Switch a special period on or off; answers with the status card, or the list row (``view=row``)."""
+    form = await request.form()
+    error = ""
+    try:
+        hours_svc.set_special_active(db, hours_id, special_id, form.get("active") == "true", user.username)
+    except NotFound as exc:
+        return _404(exc)
+    except ServiceError as exc:
+        db.rollback()
+        error = "; ".join(service_errors(exc).values())
+    if form.get("view") == "row":
+        [(h, st)] = _status_rows(db, only=hours_id)
+        ctx = {"h": h, "st": st, "row_error": error, "dest_label": lambda t, i: dst.label(db, t, i)}
+        resp = render(request, "partials/hours_row.html", ctx)
+    else:
+        live = hours_svc.live_status(db, hours_id)
+        resp = render(request, "partials/hours_mode.html", {"live": live, "hours_id": hours_id, "special_error": error})
     return HTMLResponse(resp.body)

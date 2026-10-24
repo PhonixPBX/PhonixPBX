@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-23 08:48+0200\n"
+"POT-Creation-Date: 2026-10-24 13:41+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: nl\n"
@@ -49,6 +49,10 @@ msgstr "%(name)s is geen volledig gekwalificeerde domeinnaam"
 #, python-format
 msgid "%(name)s log"
 msgstr "%(name)s-log"
+
+#, python-format
+msgid "%(name)s until %(date)s"
+msgstr ""
 
 #, python-format
 msgid "%(num)d CPU"
@@ -299,6 +303,9 @@ msgstr "Optie toevoegen"
 
 msgid "Add route"
 msgstr "Route toevoegen"
+
+msgid "Add special period"
+msgstr ""
 
 msgid "Add time range"
 msgstr "Tijdvak toevoegen"
@@ -595,6 +602,9 @@ msgstr ""
 "Openingstijden sturen gesprekken naar de ene bestemming zolang u open bent en naar een andere zolang u gesloten bent,"
 " bijv. een menu buiten kantooruren."
 
+msgid "Business hours used by a special period cannot have special periods"
+msgstr ""
+
 msgid "Busy"
 msgstr "Bezet"
 
@@ -748,6 +758,9 @@ msgstr "Kies een toets uit 0-9, * of #"
 msgid "Choose a sound"
 msgstr "Kies een geluid"
 
+msgid "Choose business hours without special periods of their own"
+msgstr ""
+
 msgid "Choose or upload an announcement"
 msgstr "Kies of upload een aankondiging"
 
@@ -773,6 +786,9 @@ msgstr "Gesloten tot er wordt teruggeschakeld, bijv. als het kantoor eerder slui
 
 msgid "Cloud API token"
 msgstr "Cloud-API-token"
+
+msgid "Code, e.g. *32"
+msgstr ""
 
 msgid "Codecs"
 msgstr "Codecs"
@@ -1208,6 +1224,9 @@ msgstr "Voer een aantal dagen in"
 msgid "Enter a time as HH:MM"
 msgstr "Voer een tijd in als HH:MM"
 
+msgid "Enter both the first and the last day, or neither"
+msgstr ""
+
 msgid "Enter the directory URL of the ACME server"
 msgstr "Voer de directory-URL van de ACME-server in"
 
@@ -1281,6 +1300,9 @@ msgstr "Firewall"
 msgid "Firmware"
 msgstr "Firmware"
 
+msgid "First day"
+msgstr ""
+
 msgid "First port"
 msgstr "Eerste poort"
 
@@ -1290,8 +1312,8 @@ msgstr "Eerste plaats"
 msgid "Fixed caller ID"
 msgstr "Vaste beller-ID"
 
-msgid "Follow the opening hours and holidays."
-msgstr "De openingstijden en feestdagen volgen."
+msgid "Follow the special periods, holidays and opening hours."
+msgstr ""
 
 #, python-format
 msgid "For %(what)s, press %(key)s."
@@ -1675,6 +1697,9 @@ msgstr "Taal van de voicemail- en gemiste-oproepe-mails. De teksten kunnen worde
 msgid "Language of the web interface for %(user)s."
 msgstr "Taal van de webinterface voor %(user)s."
 
+msgid "Last day"
+msgstr ""
+
 msgid "Last login"
 msgstr "Laatste aanmelding"
 
@@ -1905,6 +1930,9 @@ msgstr "Naam die aan gebelde partijen wordt getoond."
 msgid "Name, e.g. Christmas Day"
 msgstr "Naam, bijv. Eerste Kerstdag"
 
+msgid "Name, e.g. Christmas or Emergency"
+msgstr ""
+
 msgid "Names"
 msgstr "Namen"
 
@@ -2113,6 +2141,12 @@ msgstr "Ouder"
 msgid "On Hold"
 msgstr "In de wacht"
 
+msgid "On, applies today"
+msgstr ""
+
+msgid "On, but not today"
+msgstr ""
+
 msgid "One CIDR per line, e.g. 192.168.1.0/24."
 msgstr "Eén CIDR per regel, bijv. 192.168.1.0/24."
 
@@ -2180,8 +2214,11 @@ msgstr "Optionele alias in de openbare context (bijv. 'sales' voor sip:sales@pbx
 msgid "Optional. Callers must enter it to join."
 msgstr "Optioneel. Bellers moeten deze invoeren om deel te nemen."
 
-msgid "Optional. Dialled on an internal phone, it switches between “Automatic” and “Closed”."
-msgstr "Optioneel. Gekozen op een intern toestel schakelt deze tussen ‘Automatisch’ en ‘Gesloten’."
+msgid ""
+"Optional. Dialled on an internal phone, it switches to the opposite state until the next change, at midnight at the "
+"latest; dialled again, it returns to “Automatic”. It also ends a permanent mode set here. A phone key (BLF) on this "
+"code shows the state: lit means closed."
+msgstr ""
 
 msgid "Optional. Joins as moderator."
 msgstr "Optioneel. Neemt deel als moderator."
@@ -2554,6 +2591,9 @@ msgstr "Dag verwijderen"
 msgid "Remove option"
 msgstr "Optie verwijderen"
 
+msgid "Remove special period"
+msgstr ""
+
 msgid "Remove the password (key logins only)"
 msgstr "Wachtwoord verwijderen (alleen aanmelden met sleutel)"
 
@@ -2832,6 +2872,12 @@ msgstr "Spanje"
 msgid "Spanish"
 msgstr "Spaans"
 
+msgid "Special period not found"
+msgstr ""
+
+msgid "Special periods"
+msgstr ""
+
 msgid "State"
 msgstr "Status"
 
@@ -2867,6 +2913,14 @@ msgstr "Zweden"
 
 msgid "Swedish"
 msgstr "Zweeds"
+
+#, python-format
+msgid "Switch %(name)s off"
+msgstr ""
+
+#, python-format
+msgid "Switch %(name)s on"
+msgstr ""
 
 msgid "Switch now"
 msgstr "Nu omschakelen"
@@ -2917,8 +2971,16 @@ msgstr "Taiwan"
 msgid "Take a snapshot of the container first"
 msgstr "Maak eerst een snapshot van de container"
 
+msgid ""
+"Take precedence over holidays and the weekly hours: the first period in this list that is on and whose days include "
+"today sends calls to its destination. Without days, a period applies whenever it is on, e.g. emergency routing."
+msgstr ""
+
 msgid "Takes effect immediately, without applying the configuration."
 msgstr "Werkt direct, zonder de configuratie toe te passen."
+
+msgid "Takes effect immediately. A period that is on applies only on its days, if it has any."
+msgstr ""
 
 msgid "Telephony"
 msgstr "Telefonie"
@@ -2975,6 +3037,12 @@ msgstr ""
 "De configuratie is gemaakt met PhonixPBX %(release)s en is nieuwer dan dit systeem ondersteunt. Werk eerst dit "
 "systeem bij."
 
+msgid ""
+"The destination may also be other business hours, e.g. shorter opening hours over Christmas; then those decide "
+"between open and closed. The feature code switches the period on or off; a phone key (BLF) on it is lit while the "
+"period is on."
+msgstr ""
+
 msgid "The directory URL must start with https://"
 msgstr "De directory-URL moet met https:// beginnen"
 
@@ -3005,6 +3073,9 @@ msgstr "Het initiële wachtwoord wordt op de systeemconsole getoond. Kwijt? Gebr
 
 msgid "The last administrator cannot be deleted"
 msgstr "De laatste beheerder kan niet worden verwijderd"
+
+msgid "The last day must not be before the first day"
+msgstr ""
 
 msgid "The lego ACME client is not installed."
 msgstr "De lego-ACME-client is niet geïnstalleerd."
@@ -3085,6 +3156,9 @@ msgstr "Upload het gedownloade bestand daarna onder <em>Een update installeren</
 
 msgid "This backup was made by an older PhonixPBX release in a format that can no longer be restored."
 msgstr "Deze back-up is gemaakt met een oudere PhonixPBX-versie in een formaat dat niet meer kan worden hersteld."
+
+msgid "This code is used more than once"
+msgstr ""
 
 msgid "This day is listed more than once"
 msgstr "Deze dag staat er meer dan eens in"
@@ -3752,6 +3826,9 @@ msgstr "uit"
 msgid "offer SRTP (SDES), fall back to RTP"
 msgstr "SRTP (SDES) aanbieden, terugvallen op RTP"
 
+msgid "on"
+msgstr ""
+
 msgid "one after another"
 msgstr "na elkaar"
 
@@ -3844,6 +3921,9 @@ msgstr "overslaan"
 msgid "star"
 msgstr "sterretje"
 
+msgid "switched by key until the next change"
+msgstr ""
+
 msgid "switched manually"
 msgstr "handmatig omgeschakeld"
 
@@ -3854,6 +3934,10 @@ msgstr "de configuratie is gewijzigd (%(areas)s). Pas toe om te activeren."
 #, python-format
 msgid "the feature code of business hours %(name)s"
 msgstr "de functiecode van openingstijden %(name)s"
+
+#, python-format
+msgid "the feature code of the special period %(name)s"
+msgstr ""
 
 msgid "the hash key"
 msgstr "hekje"

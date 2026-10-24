@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-23 08:48+0200\n"
+"POT-Creation-Date: 2026-10-24 13:41+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: es\n"
@@ -49,6 +49,10 @@ msgstr "%(name)s no es un nombre de dominio completo"
 #, python-format
 msgid "%(name)s log"
 msgstr "Registro de %(name)s"
+
+#, python-format
+msgid "%(name)s until %(date)s"
+msgstr ""
 
 #, python-format
 msgid "%(num)d CPU"
@@ -300,6 +304,9 @@ msgstr "Añadir opción"
 
 msgid "Add route"
 msgstr "Añadir ruta"
+
+msgid "Add special period"
+msgstr ""
 
 msgid "Add time range"
 msgstr "Añadir franja horaria"
@@ -598,6 +605,9 @@ msgstr ""
 "El horario comercial envía las llamadas a un destino mientras está abierto y a otro mientras está cerrado, p. ej., a "
 "un menú fuera de horario."
 
+msgid "Business hours used by a special period cannot have special periods"
+msgstr ""
+
 msgid "Busy"
 msgstr "Ocupado"
 
@@ -751,6 +761,9 @@ msgstr "Elija una tecla entre 0-9, * o #"
 msgid "Choose a sound"
 msgstr "Elija un sonido"
 
+msgid "Choose business hours without special periods of their own"
+msgstr ""
+
 msgid "Choose or upload an announcement"
 msgstr "Elija o suba un anuncio"
 
@@ -776,6 +789,9 @@ msgstr "Cerrado hasta que se vuelva a cambiar, p. ej., cuando la oficina cierra 
 
 msgid "Cloud API token"
 msgstr "Token de API de Cloud"
+
+msgid "Code, e.g. *32"
+msgstr ""
 
 msgid "Codecs"
 msgstr "Códecs"
@@ -1211,6 +1227,9 @@ msgstr "Introduzca un número de días"
 msgid "Enter a time as HH:MM"
 msgstr "Introduzca una hora con el formato HH:MM"
 
+msgid "Enter both the first and the last day, or neither"
+msgstr ""
+
 msgid "Enter the directory URL of the ACME server"
 msgstr "Introduzca la URL del directorio del servidor ACME"
 
@@ -1286,6 +1305,9 @@ msgstr "Cortafuegos"
 msgid "Firmware"
 msgstr "Firmware"
 
+msgid "First day"
+msgstr ""
+
 msgid "First port"
 msgstr "Primer puerto"
 
@@ -1295,8 +1317,8 @@ msgstr "Primera posición"
 msgid "Fixed caller ID"
 msgstr "ID de llamante fijo"
 
-msgid "Follow the opening hours and holidays."
-msgstr "Seguir el horario de apertura y los festivos."
+msgid "Follow the special periods, holidays and opening hours."
+msgstr ""
 
 #, python-format
 msgid "For %(what)s, press %(key)s."
@@ -1682,6 +1704,9 @@ msgstr ""
 msgid "Language of the web interface for %(user)s."
 msgstr "Idioma de la interfaz web para %(user)s."
 
+msgid "Last day"
+msgstr ""
+
 msgid "Last login"
 msgstr "Último inicio de sesión"
 
@@ -1914,6 +1939,9 @@ msgstr "Nombre que se muestra a los destinatarios de la llamada."
 msgid "Name, e.g. Christmas Day"
 msgstr "Nombre, p. ej., Navidad"
 
+msgid "Name, e.g. Christmas or Emergency"
+msgstr ""
+
 msgid "Names"
 msgstr "Nombres"
 
@@ -2124,6 +2152,12 @@ msgstr "Más antiguas"
 msgid "On Hold"
 msgstr "En espera"
 
+msgid "On, applies today"
+msgstr ""
+
+msgid "On, but not today"
+msgstr ""
+
 msgid "One CIDR per line, e.g. 192.168.1.0/24."
 msgstr "Un CIDR por línea, p. ej., 192.168.1.0/24."
 
@@ -2190,8 +2224,11 @@ msgstr "Alias opcional usado en el contexto público (p. ej., 'sales' para sip:s
 msgid "Optional. Callers must enter it to join."
 msgstr "Opcional. Los llamantes deben introducirlo para unirse."
 
-msgid "Optional. Dialled on an internal phone, it switches between “Automatic” and “Closed”."
-msgstr "Opcional. Marcado desde un teléfono interno, cambia entre «Automático» y «Cerrado»."
+msgid ""
+"Optional. Dialled on an internal phone, it switches to the opposite state until the next change, at midnight at the "
+"latest; dialled again, it returns to “Automatic”. It also ends a permanent mode set here. A phone key (BLF) on this "
+"code shows the state: lit means closed."
+msgstr ""
 
 msgid "Optional. Joins as moderator."
 msgstr "Opcional. Se une como moderador."
@@ -2564,6 +2601,9 @@ msgstr "Eliminar día"
 msgid "Remove option"
 msgstr "Eliminar opción"
 
+msgid "Remove special period"
+msgstr ""
+
 msgid "Remove the password (key logins only)"
 msgstr "Eliminar la contraseña (solo inicio de sesión con clave)"
 
@@ -2844,6 +2884,12 @@ msgstr "España"
 msgid "Spanish"
 msgstr "Español"
 
+msgid "Special period not found"
+msgstr ""
+
+msgid "Special periods"
+msgstr ""
+
 msgid "State"
 msgstr "Estado"
 
@@ -2879,6 +2925,14 @@ msgstr "Suecia"
 
 msgid "Swedish"
 msgstr "Sueco"
+
+#, python-format
+msgid "Switch %(name)s off"
+msgstr ""
+
+#, python-format
+msgid "Switch %(name)s on"
+msgstr ""
 
 msgid "Switch now"
 msgstr "Cambiar ahora"
@@ -2929,8 +2983,16 @@ msgstr "Taiwán"
 msgid "Take a snapshot of the container first"
 msgstr "Cree primero una instantánea del contenedor"
 
+msgid ""
+"Take precedence over holidays and the weekly hours: the first period in this list that is on and whose days include "
+"today sends calls to its destination. Without days, a period applies whenever it is on, e.g. emergency routing."
+msgstr ""
+
 msgid "Takes effect immediately, without applying the configuration."
 msgstr "Surte efecto de inmediato, sin aplicar la configuración."
+
+msgid "Takes effect immediately. A period that is on applies only on its days, if it has any."
+msgstr ""
 
 msgid "Telephony"
 msgstr "Telefonía"
@@ -2987,6 +3049,12 @@ msgstr ""
 "La configuración se creó con PhonixPBX %(release)s y es más reciente de lo que admite este sistema. Actualice primero"
 " este sistema."
 
+msgid ""
+"The destination may also be other business hours, e.g. shorter opening hours over Christmas; then those decide "
+"between open and closed. The feature code switches the period on or off; a phone key (BLF) on it is lit while the "
+"period is on."
+msgstr ""
+
 msgid "The directory URL must start with https://"
 msgstr "La URL del directorio debe empezar por https://"
 
@@ -3019,6 +3087,9 @@ msgstr ""
 
 msgid "The last administrator cannot be deleted"
 msgstr "No se puede eliminar el último administrador"
+
+msgid "The last day must not be before the first day"
+msgstr ""
 
 msgid "The lego ACME client is not installed."
 msgstr "El cliente ACME lego no está instalado."
@@ -3097,6 +3168,9 @@ msgstr "A continuación, suba el archivo descargado en <em>Instalar una actualiz
 
 msgid "This backup was made by an older PhonixPBX release in a format that can no longer be restored."
 msgstr "Esta copia de seguridad se creó con una versión anterior de PhonixPBX en un formato que ya no se puede restaurar."
+
+msgid "This code is used more than once"
+msgstr ""
 
 msgid "This day is listed more than once"
 msgstr "Este día aparece más de una vez"
@@ -3763,6 +3837,9 @@ msgstr "desactivado"
 msgid "offer SRTP (SDES), fall back to RTP"
 msgstr "ofrecer SRTP (SDES), recurrir a RTP"
 
+msgid "on"
+msgstr ""
+
 msgid "one after another"
 msgstr "uno tras otro"
 
@@ -3855,6 +3932,9 @@ msgstr "omitir"
 msgid "star"
 msgstr "asterisco"
 
+msgid "switched by key until the next change"
+msgstr ""
+
 msgid "switched manually"
 msgstr "cambiado manualmente"
 
@@ -3865,6 +3945,10 @@ msgstr "la configuración ha cambiado (%(areas)s). Aplique los cambios para acti
 #, python-format
 msgid "the feature code of business hours %(name)s"
 msgstr "el código de función del horario comercial %(name)s"
+
+#, python-format
+msgid "the feature code of the special period %(name)s"
+msgstr ""
 
 msgid "the hash key"
 msgstr "almohadilla"

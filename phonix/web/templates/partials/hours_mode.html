@@ -1,6 +1,6 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
-{# the live status and mode switch of business hours; `live`: services.hours.live_status() #}
-{% from "macros/hours.html" import hours_status with context %}
+{# the live status, mode switch and special period switches of business hours; `live`: services.hours.live_status() #}
+{% from "macros/hours.html" import hours_status, special_toggle with context %}
 {% if live %}
 <div class="card mb-3" id="hours-mode">
   <form class="card-body d-flex flex-wrap align-items-center gap-3" hx-post="/dialplan/hours/{{ live.id }}/mode" hx-target="#hours-mode" hx-swap="outerHTML" hx-disable="find button">
@@ -10,7 +10,7 @@
     {% else %}
     <div class="btn-group" role="group" aria-label="{{ _("Mode") }}">
       {% for value, title, help in [
-        ("auto", _("Automatic"), _("Follow the opening hours and holidays.")),
+        ("auto", _("Automatic"), _("Follow the special periods, holidays and opening hours.")),
         ("open", _("Open"), _("Open until switched back, e.g. for a special event.")),
         ("closed", _("Closed"), _("Closed until switched back, e.g. when the office closes early.")),
       ] %}
@@ -23,5 +23,13 @@
     {% endif %}
     {% if mode_error %}<div class="alert alert-danger mb-0 w-100">{{ mode_error }}</div>{% endif %}
   </form>
+  {% if live.specials %}
+  <div class="card-body border-top d-flex flex-wrap align-items-center gap-2">
+    <div class="text-secondary small me-2">{{ _("Special periods") }}</div>
+    {% for sp in live.specials %}{{ special_toggle(live.id, sp, "#hours-mode", disabled=live.mode is none) }}{% endfor %}
+    <div class="small text-secondary w-100">{{ _("Takes effect immediately. A period that is on applies only on its days, if it has any.") }}</div>
+    {% if special_error %}<div class="alert alert-danger mb-0 w-100">{{ special_error }}</div>{% endif %}
+  </div>
+  {% endif %}
 </div>
 {% endif %}

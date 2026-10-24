@@ -1,0 +1,19 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+{# one business hours row of the list; `h`: BusinessHours, `st`: status() plus `mode` and `specials` #}
+{% from "macros/ui.html" import delete_button with context %}
+{% from "macros/hours.html" import hours_status, special_toggle with context %}
+<tr id="hours-row-{{ h.id }}">
+  <td><a href="/dialplan/hours/{{ h.id }}" class="fw-bold">{{ h.name }}</a>{% if h.description %}<div class="small text-secondary">{{ h.description }}</div>{% endif %}</td>
+  <td>
+    {{ hours_status(st) }}
+    {% if st.specials %}<div class="d-flex flex-wrap gap-1 mt-1">{% for sp in st.specials %}{{ special_toggle(h.id, sp, "#hours-row-" ~ h.id, view="row", disabled=st.mode is none) }}{% endfor %}</div>{% endif %}
+    {% if row_error %}<div class="text-danger small mt-1">{{ row_error }}</div>{% endif %}
+  </td>
+  <td class="small">{{ dest_label(h.open_dest_type, h.open_dest_id) }}</td>
+  <td class="small">{{ dest_label(h.closed_dest_type, h.closed_dest_id) }}</td>
+  <td class="font-monospace">{{ h.feature_code or "–" }}</td>
+  <td class="table-actions">
+    <a href="/dialplan/hours/{{ h.id }}" class="btn btn-ghost-primary btn-icon btn-sm" aria-label="{{ _("Edit %(name)s", name=h.name) }}">{{ icon("edit") }}</a>
+    {{ delete_button("/dialplan/hours/" ~ h.id, _("business hours %(name)s", name=h.name)) }}
+  </td>
+</tr>

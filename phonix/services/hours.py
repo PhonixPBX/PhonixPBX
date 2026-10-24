@@ -297,18 +297,24 @@ def update_hours(session: Session, hours_id: int, data: BusinessHoursIn, user: s
     session.flush()
     audit(session, user, "update", "hours", hours.id, hours.name, diff_dicts(before, to_dict(hours)))
     mark_dirty(session, "dialplan")
-    _push_special_state(hours)
+    was = {sp["id"]: sp["enabled"] for sp in before["specials"]}
+    _push_special_state(session, [sp for sp in hours.specials if was.get(sp.id) != sp.enabled])
     return hours
 
 
-def _push_special_state(hours: BusinessHours) -> None:
-    """Write the switches saved in the form to the Asterisk database (best effort, the monitor reconciles)."""
-    if not hours.specials:
+def _push_special_state(session: Session, changed: list[BusinessHoursSpecial]) -> None:
+    """Write switches changed in the form to the Asterisk database and refresh the lamps.
+
+    Only changed switches are written, so saving a form opened before a phone switched a
+    period does not undo that. Best effort: the monitor reconciles when Asterisk is down.
+    """
+    if not changed:
         return
     try:
         with ami.AmiClient(timeout=3.0) as client:
-            for sp in hours.specials:
+            for sp in changed:
                 client.command(f"database put {SPECIAL_DB} {sp.id} {int(sp.enabled)}")
+            refresh_lamps(session, client, read_runtime(client), dt.datetime.now())
     except (ami.AmiError, OSError):
         pass
 
@@ -539,23 +545,27 @@ def live_status(session: Session, hours_id: int, now: dt.datetime | None = None)
     rt = loaded or Runtime()
     mode = None if loaded is None else rt.modes.get(hours.id, "auto")
     others = {h.id: h for h in list_hours(session)}
-    specials = [
-        {
-            "id": sp.id,
-            "name": sp.name,
-            "active": special_on(sp, rt),
-            "applies": special_on(sp, rt) and special_matches(sp, now.date()),
-            "feature_code": sp.feature_code or "",
-        }
-        for sp in hours.specials
-    ]
     return {
         "id": hours.id,
         "name": hours.name,
         "mode": mode,
         **status(hours, rt, now, others),
-        "specials": specials,
+        "specials": special_states(hours, rt, now.date()),
     }
+
+
+def special_states(hours: BusinessHours, rt: Runtime, day: dt.date) -> list[dict[str, Any]]:
+    """The special periods with their switch (``active``) and whether they apply on ``day``."""
+    return [
+        {
+            "id": sp.id,
+            "name": sp.name,
+            "active": special_on(sp, rt),
+            "applies": special_on(sp, rt) and special_matches(sp, day),
+            "feature_code": sp.feature_code or "",
+        }
+        for sp in hours.specials
+    ]
 
 
 Mode = Literal["auto", "open", "closed"]

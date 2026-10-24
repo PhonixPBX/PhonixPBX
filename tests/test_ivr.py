@@ -733,6 +733,127 @@ def test_hours_form(client, fake_ami):
     assert fake_ami.astdb == {("phonix-hours", str(ids["office"])): "closed"}
 
 
+def _special_rows(rows):
+    """Form fields of special period rows ``(index, id, name, enabled, start, end, yearly, code, dest)``."""
+    out = []
+    for idx, sid, name, enabled, start, end, yearly, code, dest in rows:
+        out += [(f"sp_id_{idx}", sid), (f"sp_name_{idx}", name)]
+        if enabled:
+            out.append((f"sp_enabled_{idx}", "true"))
+        out += [(f"sp_start_{idx}", start), (f"sp_end_{idx}", end)]
+        if yearly:
+            out.append((f"sp_yearly_{idx}", "true"))
+        out += [(f"sp_code_{idx}", code), (f"sp_dest_{idx}", dest)]
+    return out
+
+
+def test_hours_form_special_periods(client, fake_ami):
+    ids = client.ids
+    login(client)
+    token = csrf(client, "/dialplan/hours/new")
+    base = [("csrf_token", token), ("name", "Hotline"), ("open_dest", "hangup"), ("closed_dest", "hangup")]
+    rows = [
+        ("k", "", "Emergency", False, "", "", False, "*70", f"callgroup:{ids['group']}"),
+        ("a", "", "Xmas", True, "2026-12-24", "2027-01-02", True, "", f"hours:{ids['office']}"),
+    ]
+    r = _post(client, "/dialplan/hours/new", base + _special_rows(rows), follow_redirects=False)
+    assert r.status_code == 303, r.text
+    with session_scope() as s:
+        h = s.query(BusinessHours).filter_by(name="Hotline").one()
+        got = [(sp.name, sp.enabled, sp.yearly, sp.feature_code, sp.dest_type) for sp in h.specials]
+        assert got == [("Emergency", False, False, "*70", "callgroup"), ("Xmas", True, True, None, "hours")]
+        hid, (emergency, xmas) = h.id, [sp.id for sp in h.specials]
+
+    page = client.get(f"/dialplan/hours/{hid}").text
+    assert 'value="Emergency"' in page and 'value="Xmas"' in page and 'value="2026-12-24"' in page
+    assert f'name="sp_id_0" value="{emergency}"' in page and 'data-move="up"' in page
+    # the live toggles of the periods
+    assert f'hx-post="/dialplan/hours/{hid}/special/{xmas}"' in page
+    # the target picker offers neither the object itself nor business hours with periods
+    assert f'value="hours:{hid}"' not in page and f'value="hours:{ids["office"]}"' in page
+
+    # reversed on the second save: order follows the form, ids are kept
+    rows = [
+        ("b", str(xmas), "Xmas", True, "2026-12-24", "2027-01-02", True, "", f"hours:{ids['office']}"),
+        ("c", str(emergency), "Emergency", False, "", "", False, "*70", f"callgroup:{ids['group']}"),
+    ]
+    r = _post(client, f"/dialplan/hours/{hid}", base + _special_rows(rows), follow_redirects=False)
+    assert r.status_code == 303, r.text
+    with session_scope() as s:
+        got = [(sp.id, sp.name) for sp in s.get(BusinessHours, hid).specials]
+        assert got == [(xmas, "Xmas"), (emergency, "Emergency")]
+
+    # errors are shown on the row
+    bad = [("x", "", "Broken", False, "2026-12-24", "", False, "", "hangup")]
+    r = _post(client, f"/dialplan/hours/{hid}", base + _special_rows(bad))
+    assert r.status_code == 422 and "Enter both the first and the last day" in r.text
+
+
+def test_hours_special_toggle(client, fake_ami):
+    login(client)
+    with session_scope() as s:
+        h = hours.create_hours(s, _hours(name="Hotline", specials=[{"name": "Emergency", "dest_type": "hangup"}]))
+        s.flush()
+        hid, sid = h.id, h.specials[0].id
+    url = f"/dialplan/hours/{hid}/special/{sid}"
+    assert client.post(url, data={"active": "true"}).status_code == 403
+    headers = {"X-CSRF-Token": csrf(client, "/dialplan/hours"), "HX-Request": "true"}
+    r = client.post(url, data={"active": "true"}, headers=headers)
+    assert r.status_code == 200 and 'id="hours-mode"' in r.text and "Emergency" in r.text
+    assert fake_ami.astdb[("phonix-special", str(sid))] == "1"
+    with session_scope() as s:
+        assert s.get(BusinessHours, hid).specials[0].enabled is True
+    # from the list page: the row is returned
+    r = client.post(url, data={"active": "false", "view": "row"}, headers=headers)
+    assert r.status_code == 200 and f'id="hours-row-{hid}"' in r.text
+    assert fake_ami.astdb[("phonix-special", str(sid))] == "0"
+    r = client.post(f"/dialplan/hours/{hid}/special/999999", data={"active": "true"}, headers=headers)
+    assert r.status_code == 404
+
+
+def test_hours_special_toggle_without_asterisk(client):
+    login(client)
+    with session_scope() as s:
+        h = hours.create_hours(s, _hours(name="Hotline", specials=[{"name": "Emergency", "dest_type": "hangup"}]))
+        s.flush()
+        hid, sid = h.id, h.specials[0].id
+    headers = {"X-CSRF-Token": csrf(client, "/dialplan/hours"), "HX-Request": "true"}
+    r = client.post(f"/dialplan/hours/{hid}/special/{sid}", data={"active": "true"}, headers=headers)
+    assert r.status_code == 200 and "Asterisk is not running" in r.text
+
+
+def test_hours_list_shows_special_period(client, fake_ami):
+    login(client)
+    today = dt.date.today()
+    with session_scope() as s:
+        h = hours.create_hours(
+            s,
+            _hours(
+                name="Hotline",
+                specials=[
+                    {"name": "Off", "dest_type": "hangup"},
+                    {
+                        "name": "Xmas",
+                        "enabled": True,
+                        "start": today.isoformat(),
+                        "end": (today + dt.timedelta(days=3)).isoformat(),
+                        "dest_type": "hangup",
+                    },
+                ],
+            ),
+        )
+        s.flush()
+        hid, (off, _xmas) = h.id, [sp.id for sp in h.specials]
+    page = client.get("/dialplan/hours").text
+    row = page.split(f'id="hours-row-{hid}"', 1)[1].split("</tr>", 1)[0]
+    assert "Xmas" in row and f"until {(today + dt.timedelta(days=3)).isoformat()}" in row
+    assert f'hx-post="/dialplan/hours/{hid}/special/{off}"' in row
+    # a key override is explained
+    fake_ami.astdb[("phonix-hours-tmp", str(hid))] = f"open:{today}"
+    page = client.get("/dialplan/hours").text
+    assert "switched by key until the next change" in page
+
+
 # --- REST and MCP -----------------------------------------------------------------------
 
 
@@ -938,3 +1059,18 @@ def test_update_hours_pushes_special_state(session, ids, fake_ami):
     )
     hours.update_hours(session, h.id, data, "admin")
     assert fake_ami.astdb[("phonix-special", str(h.specials[0].id))] == "1"
+
+
+def test_update_hours_keeps_switches_made_by_phones(session, ids, fake_ami):
+    h = hours.create_hours(session, _hours(specials=[{"name": "E", "dest_type": "hangup", "feature_code": "*70"}]))
+    sid = h.specials[0].id
+    # a phone switched the period on after the form was opened (not yet copied to SQLite)
+    fake_ami.astdb[("phonix-special", str(sid))] = "1"
+    form = hours.to_dict(h)
+    form["specials"].append({"name": "New", "dest_type": "hangup"})
+    hours.update_hours(session, h.id, hours.BusinessHoursIn.model_validate(form), "admin")
+    new = hours.get_hours(session, h.id).specials[1].id
+    # unchanged switch: the phone's value stays; new period: written
+    assert fake_ami.astdb[("phonix-special", str(sid))] == "1"
+    assert fake_ami.astdb[("phonix-special", str(new))] == "0"
+    assert ("Command", {"Command": f"devstate change Custom:phonix-special-{sid} INUSE"}) in fake_ami.actions
