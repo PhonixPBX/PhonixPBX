@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-24 16:36+0200\n"
+"POT-Creation-Date: 2026-10-24 18:59+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: fr\n"
@@ -43,6 +43,10 @@ msgid "%(language)s (default)"
 msgstr "%(language)s (par défaut)"
 
 #, python-format
+msgid "%(month)s %(year)s"
+msgstr "%(month)s %(year)s"
+
+#, python-format
 msgid "%(name)s is not a fully qualified domain name"
 msgstr "%(name)s n'est pas un nom de domaine pleinement qualifié"
 
@@ -59,6 +63,12 @@ msgid "%(num)d CPU"
 msgid_plural "%(num)d CPUs"
 msgstr[0] "%(num)d processeur"
 msgstr[1] "%(num)d processeurs"
+
+#, python-format
+msgid "%(num)d month"
+msgid_plural "%(num)d months"
+msgstr[0] "%(num)d mois"
+msgstr[1] "%(num)d mois"
 
 #, python-format
 msgid "%(num)d route"
@@ -415,6 +425,9 @@ msgstr "Échec de l'application : %(errors)s"
 msgid "Applying the configuration failed."
 msgstr "L'application de la configuration a échoué."
 
+msgid "April"
+msgstr "Avril"
+
 msgid "As saved."
 msgstr "Tel qu'enregistré."
 
@@ -475,6 +488,9 @@ msgstr "Audio : %(audio)s. Vidéo : %(video)s"
 
 msgid "Audit Log"
 msgstr "Journal d'audit"
+
+msgid "August"
+msgstr "Août"
 
 msgid "Australia"
 msgstr "Australie"
@@ -725,6 +741,9 @@ msgstr "Rechercher des mises à jour"
 msgid "Check now"
 msgstr "Vérifier maintenant"
 
+msgid "Check the entries in this tab"
+msgstr "Vérifiez les entrées de cet onglet"
+
 msgid "Checking the signature and checksums of the update ..."
 msgstr "Vérification de la signature et des sommes de contrôle de la mise à jour ..."
 
@@ -947,6 +966,9 @@ msgstr "Partition de données"
 
 msgid "Date"
 msgstr "Date"
+
+msgid "December"
+msgstr "Décembre"
 
 msgid "Default expiry (s)"
 msgstr "Expiration par défaut (s)"
@@ -1293,6 +1315,9 @@ msgstr "Les codes de service se composent de chiffres, '*' et '#'"
 msgid "Feature digit timeout (ms)"
 msgstr "Délai entre les chiffres des codes de service (ms)"
 
+msgid "February"
+msgstr "Février"
+
 msgid "Finland"
 msgstr "Finlande"
 
@@ -1431,8 +1456,11 @@ msgstr ""
 msgid "Help"
 msgstr "Aide"
 
-msgid "Holidays and closing days"
-msgstr "Jours fériés et jours de fermeture"
+msgid "Holiday"
+msgstr "Jour férié"
+
+msgid "Holidays"
+msgstr "Jours fériés"
 
 msgid "Host"
 msgstr "Hôte"
@@ -1642,11 +1670,20 @@ msgstr "Italien"
 msgid "Italy"
 msgstr "Italie"
 
+msgid "January"
+msgstr "Janvier"
+
 msgid "Japan"
 msgstr "Japon"
 
 msgid "Japanese"
 msgstr "Japonais"
+
+msgid "July"
+msgstr "Juillet"
+
+msgid "June"
+msgstr "Juin"
 
 msgid "Keep messages on the PBX after e-mailing"
 msgstr "Conserver les messages sur le PBX après l'envoi par e-mail"
@@ -1795,6 +1832,9 @@ msgstr "Utilisateurs manager"
 msgid "Manual"
 msgstr "Manuel"
 
+msgid "March"
+msgstr "Mars"
+
 msgid "Max. message length (s)"
 msgstr "Durée max. d'un message (s)"
 
@@ -1803,6 +1843,9 @@ msgstr "Nombre max. d'appareils enregistrés"
 
 msgid "Maximum expiry (s)"
 msgstr "Expiration maximale (s)"
+
+msgid "May"
+msgstr "Mai"
 
 msgid "May place calls"
 msgstr "Peut passer des appels"
@@ -1856,6 +1899,9 @@ msgstr "Lundi"
 
 msgid "Monitor"
 msgstr "Moniteur"
+
+msgid "Months shown"
+msgstr "Mois affichés"
 
 msgid "Move down"
 msgstr "Descendre"
@@ -2113,6 +2159,9 @@ msgstr "Adresse de notification"
 msgid "Notifications"
 msgstr "Notifications"
 
+msgid "November"
+msgstr "Novembre"
+
 msgid "Now"
 msgstr "Maintenant"
 
@@ -2140,6 +2189,9 @@ msgstr "Objet"
 
 msgid "Obtain and renew the certificate automatically"
 msgstr "Obtenir et renouveler le certificat automatiquement"
+
+msgid "October"
+msgstr "Octobre"
 
 msgid "Off"
 msgstr "Désactivé"
@@ -2724,9 +2776,6 @@ msgstr ""
 "Acheminez les appels entrants selon le numéro composé (SDA). Laissez le modèle vide pour intercepter tous les appels."
 " Plusieurs destinations avec le même modèle sonnent en parallèle."
 
-msgid "Routing"
-msgstr "Acheminement"
-
 msgid "Russia"
 msgstr "Russie"
 
@@ -2837,6 +2886,9 @@ msgstr "Nom de l'expéditeur"
 #, python-format
 msgid "Sending failed (did you apply the settings?): %(detail)s"
 msgstr "L'envoi a échoué (avez-vous appliqué les réglages ?) : %(detail)s"
+
+msgid "September"
+msgstr "Septembre"
 
 msgid "Server requires authentication"
 msgstr "Le serveur exige une authentification"
@@ -3631,8 +3683,13 @@ msgstr "Mercredi"
 msgid "Week at a glance"
 msgstr "Aperçu de la semaine"
 
-msgid "Weekly opening hours"
+msgid "Weekly hours"
 msgstr "Horaires hebdomadaires"
+
+msgid "What applies on each day of the coming months, as saved. Manual modes and the out-of-office key are not shown."
+msgstr ""
+"Ce qui s'applique chaque jour des prochains mois, tel qu'enregistré. Les modes manuels et la touche d'absence ne sont"
+" pas affichés."
 
 msgid ""
 "What happens when the caller presses a key. Drag the handle (or use the arrows) to change the order in which the "
@@ -3670,6 +3727,9 @@ msgstr "Droits d'écriture"
 
 msgid "Writing the new version to the inactive system slot ..."
 msgstr "Écriture de la nouvelle version dans le slot système inactif ..."
+
+msgid "Year at a glance"
+msgstr "Aperçu de l'année"
 
 #, python-format
 msgid "You are running the latest version (%(version)s)."

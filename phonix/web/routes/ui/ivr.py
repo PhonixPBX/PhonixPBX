@@ -320,6 +320,37 @@ def _week(values: dict[str, Any]) -> list[dict[str, Any]]:
     return days
 
 
+# year at a glance: 12 months unless ?months=N (1 to YEAR_MONTHS_MAX) asks for more or fewer
+YEAR_MONTHS = 12
+YEAR_MONTHS_MAX = 60
+YEAR_CHOICES = (12, 24, 36)
+
+
+def _year_months(request: Request) -> int:
+    try:
+        months = int(request.query_params.get("months", YEAR_MONTHS))
+    except ValueError:
+        return YEAR_MONTHS
+    return months if 1 <= months <= YEAR_MONTHS_MAX else YEAR_MONTHS
+
+
+def _year(db: Session, hours_id: int, months: int) -> dict[str, Any]:
+    """Template values of the year at a glance (``partials/hours_year.html``)."""
+    rt = hours_svc.load_runtime() or hours_svc.Runtime()
+    year = hours_svc.year_plan(hours_svc.get_hours(db, hours_id), rt, dt.date.today(), months)
+    legend = {(d["special"], d["name"]) for m in year for w in m["weeks"] for d in w if d and d["special"] is not None}
+    return {
+        "hours_id": hours_id,
+        "year": year,
+        "year_months": months,
+        "year_choices": YEAR_CHOICES,
+        "year_specials": sorted(legend),
+        "weekdays": hours_svc.WEEKDAYS,
+        "months": hours_svc.MONTHS,
+        "today_date": dt.date.today(),
+    }
+
+
 def _hours_page(
     request: Request,
     db: Session,
@@ -327,6 +358,7 @@ def _hours_page(
     errors: dict[str, str],
     hours_id: int | None,
     status_code: int = 200,
+    months: int = YEAR_MONTHS,
 ) -> Response:
     live = hours_svc.live_status(db, hours_id) if hours_id else None
     # special periods may point to business hours, one level deep: not to themselves or to ones with periods
@@ -341,16 +373,19 @@ def _hours_page(
         status_code=status_code,
         values=values,
         errors=errors,
-        hours_id=hours_id,
         is_new=hours_id is None,
         week=_week(values),
-        weekdays=hours_svc.WEEKDAYS,
         today=dt.date.today().weekday(),
         now_pct=round((dt.datetime.now().hour * 60 + dt.datetime.now().minute) / 14.4, 2),
         choices=dst.choices(db, dst.HOURS_TYPES),
         special_choices=[(title, options) for title, options in special_choices if options],
         dest_value=dst.value,
         live=live,
+        **(
+            _year(db, hours_id, months)
+            if hours_id
+            else {"hours_id": None, "year": None, "weekdays": hours_svc.WEEKDAYS}
+        ),
     )
 
 
@@ -394,7 +429,20 @@ def hours_edit(
         hours = hours_svc.get_hours(db, hours_id)
     except NotFound as exc:
         return _404(exc)
-    return _hours_page(request, db, hours_svc.to_dict(hours), {}, hours_id)
+    return _hours_page(request, db, hours_svc.to_dict(hours), {}, hours_id, months=_year_months(request))
+
+
+@router.get("/hours/{hours_id}/year")
+def hours_year(
+    request: Request, hours_id: int, user: User = Depends(ui_user), db: Session = Depends(get_db)
+) -> Response:
+    """The year at a glance alone, so switching the number of months leaves the form as it is."""
+    try:
+        hours_svc.get_hours(db, hours_id)
+    except NotFound as exc:
+        return _404(exc)
+    resp = render(request, "partials/hours_year.html", _year(db, hours_id, _year_months(request)))
+    return HTMLResponse(resp.body)
 
 
 async def _save_hours(request: Request, db: Session, user: User, hours_id: int | None) -> Response:

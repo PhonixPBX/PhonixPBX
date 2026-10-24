@@ -10,6 +10,7 @@ without an apply, and it survives restarts like call forwarding.
 
 from __future__ import annotations
 
+import calendar
 import datetime as dt
 import logging
 import re
@@ -35,6 +36,20 @@ log = logging.getLogger(__name__)
 ASTDB_FAMILY = HOURS_DB
 MODES = ("auto", "open", "closed")
 WEEKDAYS = (N_("Monday"), N_("Tuesday"), N_("Wednesday"), N_("Thursday"), N_("Friday"), N_("Saturday"), N_("Sunday"))
+MONTHS = (
+    N_("January"),
+    N_("February"),
+    N_("March"),
+    N_("April"),
+    N_("May"),
+    N_("June"),
+    N_("July"),
+    N_("August"),
+    N_("September"),
+    N_("October"),
+    N_("November"),
+    N_("December"),
+)
 _TIME = re.compile(r"^([01][0-9]|2[0-3]):[0-5][0-9]$")
 
 
@@ -494,6 +509,34 @@ def automatic(
     if holiday is not None:
         return {"open": False, "reason": "holiday", **out, "holiday": holiday.name}
     return {"open": scheduled_open(hours, now), "reason": "schedule", **out}
+
+
+def day_plan(hours: BusinessHours, rt: Runtime, day: dt.date) -> dict[str, Any]:
+    """What applies on ``day`` by plan, ignoring manual modes and overrides: ``kind`` is ``special``
+    (with the period's name and position), ``holiday``, ``open`` (weekly hours on that weekday) or ``closed``."""
+    for idx, p in enumerate(hours.specials):
+        if special_on(p, rt) and special_matches(p, day):
+            return {"date": day, "kind": "special", "name": p.name, "special": idx}
+    holiday = holiday_on(hours, day)
+    if holiday is not None:
+        return {"date": day, "kind": "holiday", "name": holiday.name, "special": None}
+    kind = "open" if any(r.weekday == day.weekday() for r in hours.ranges) else "closed"
+    return {"date": day, "kind": kind, "name": "", "special": None}
+
+
+def year_plan(hours: BusinessHours, rt: Runtime, today: dt.date, count: int = 12) -> list[dict[str, Any]]:
+    """``count`` months from the month of ``today``: per month the weeks (Monday first) of ``day_plan()``
+    entries, ``None`` for the days outside the month."""
+    months = []
+    year, month = today.year, today.month
+    for _i in range(count):
+        weeks = [
+            [day_plan(hours, rt, dt.date(year, month, d)) if d else None for d in week]
+            for week in calendar.monthcalendar(year, month)
+        ]
+        months.append({"year": year, "month": month, "weeks": weeks})
+        year, month = (year + 1, 1) if month == 12 else (year, month + 1)
+    return months
 
 
 def get_mode(hours_id: int) -> str | None:

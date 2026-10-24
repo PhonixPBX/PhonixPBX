@@ -20,9 +20,14 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   dates include today applies. Periods are switched on the list page, on the edit page, through the REST API and
   through MCP immediately, without applying the configuration. The list page shows why business hours are open or
   closed right now.
+- *Dialplan → Business Hours*: **Year at a glance** on the edit page shows the next twelve months (or 24, 36, up to 60)
+  as calendars, with each day coloured by what applies: the weekly hours, closed all day, a holiday or a special
+  period.
 
 ### Changed
 
+- *Dialplan → Business Hours*: the edit page is organised in tabs (General, Weekly hours, Holidays, Special periods,
+  Year at a glance). A tab with a wrong entry opens and is marked after saving, and `#tab-…` links open a tab directly.
 - The card **Numbers with +** (**Replace a leading + with**) moved from *Accounts → Providers* to
   *Dialplan → Transfers & Parking*. The setting itself is unchanged.
 - *Dialplan → Business Hours*: the feature code no longer switches between “Closed” and “Automatic”. It now switches

@@ -23,7 +23,21 @@ Mit den Schaltflächen am Ende jeder Zeile bearbeiten und löschen Sie den Zeitp
 
 ## Geschäftszeiten anlegen oder bearbeiten {#edit}
 
-### Wöchentliche Öffnungszeiten {#weekly}
+Das Formular hat fünf Reiter: **Allgemein**, **Wochenzeiten**, **Feiertage**, **Sonderzeiträume** und, bei gespeicherten Geschäftszeiten, **Jahresübersicht**. **Speichern** unten speichert alle Reiter zusammen. Ist eine Eingabe falsch, öffnet sich der Reiter mit dem Fehler und ist mit einem roten Zeichen markiert. Ein Link auf die Seite mit `#tab-specials` (oder einem anderen Reiternamen) öffnet diesen Reiter direkt.
+
+### Allgemein {#routing}
+
+| Feld | Bedeutung | Standard |
+|---|---|---|
+| Name | Ein Name für Listen und Zielauswahl. | – |
+| Beschreibung | Eine Notiz für Sie. | leer |
+| Wenn geöffnet | Wohin Anrufe während der Öffnungszeiten gehen. | Auflegen |
+| Wenn geschlossen | Wohin Anrufe außerhalb der Öffnungszeiten und an Feiertagen gehen. | Auflegen |
+| Funktionscode | Optionaler Code, zum Beispiel `*31`, der [Abwesenheitstaste](#key). Ziffern, `*` und `#`; er darf nicht anderweitig als Nummer vergeben sein und nicht mit dem Code für die Gesprächsübernahme beginnen (standardmäßig `*8`). | leer |
+
+Beide Ziele können ein Telefon, eine Rufgruppe, ein Konferenzraum, eine Anwendung, ein IVR-Menü, eine Mailbox oder *Auflegen* sein, aber keine anderen Geschäftszeiten (nur ein [Sonderzeitraum](#specials) kann zu anderen Geschäftszeiten führen). Siehe [Ziele]({{< relref "/dialplan/ivr.md#destinations" >}}).
+
+### Wochenzeiten {#weekly}
 
 Jeder Wochentag hat eigene Zeitbereiche. Mit **Zeitbereich hinzufügen** fügen Sie einen hinzu; ein Tag kann mehrere Bereiche haben, zum Beispiel `08:00`–`12:00` und `13:00`–`17:00` für eine Mittagspause. Ein Tag ohne Bereiche ist *Ganztägig geschlossen*. Die Schaltfläche **x** entfernt einen Bereich.
 
@@ -32,9 +46,9 @@ Jeder Wochentag hat eigene Zeitbereiche. Mit **Zeitbereich hinzufügen** fügen 
 - Ein Ende von `23:59` bedeutet bis Mitternacht.
 - Das Ende muss nach dem Beginn liegen. Einen Bereich über Mitternacht tragen Sie als zwei Bereiche an zwei Tagen ein.
 
-Neue Geschäftszeiten beginnen mit Montag bis Freitag, 08:00–12:00 und 13:00–17:00. Die **Wochenübersicht** zeigt die Öffnungszeiten als grüne Balken; bei einem gespeicherten Zeitplan markiert eine Linie die aktuelle Uhrzeit.
+Neue Geschäftszeiten beginnen mit Montag bis Freitag, 08:00–12:00 und 13:00–17:00. Die **Wochenübersicht** neben den Wochentagen zeigt die Öffnungszeiten als grüne Balken; bei einem gespeicherten Zeitplan markiert eine Linie die aktuelle Uhrzeit.
 
-### Feiertage und Schließtage {#holidays}
+### Feiertage {#holidays}
 
 An den hier eingetragenen Tagen ist ganztägig geschlossen, unabhängig vom Wochenplan. Klicken Sie auf **Tag hinzufügen** und geben Sie das **Datum** und optional einen **Namen** ein, zum Beispiel `1. Weihnachtstag`. Mit **jedes Jahr** wiederholt sich der Tag jedes Jahr am selben Datum. Bewegliche Feiertage wie Ostern tragen Sie für jedes Jahr einzeln ein. Es können bis zu 200 Tage eingetragen werden.
 
@@ -55,17 +69,9 @@ Ein Zeitraum **gilt**, wenn er eingeschaltet ist und, falls er Tage hat, heute e
 
 Geschäftszeiten, die Ziel eines Sonderzeitraums sind, dürfen selbst keine Sonderzeiträume haben, und Geschäftszeiten mit Sonderzeiträumen können kein solches Ziel sein.
 
-### Weiterleitung {#routing}
+### Jahresübersicht {#year}
 
-| Feld | Bedeutung | Standard |
-|---|---|---|
-| Name | Ein Name für Listen und Zielauswahl. | – |
-| Beschreibung | Eine Notiz für Sie. | leer |
-| Wenn geöffnet | Wohin Anrufe während der Öffnungszeiten gehen. | Auflegen |
-| Wenn geschlossen | Wohin Anrufe außerhalb der Öffnungszeiten und an Feiertagen gehen. | Auflegen |
-| Funktionscode | Optionaler Code, zum Beispiel `*31`, der [Abwesenheitstaste](#key). Ziffern, `*` und `#`; er darf nicht anderweitig als Nummer vergeben sein und nicht mit dem Code für die Gesprächsübernahme beginnen (standardmäßig `*8`). | leer |
-
-Beide Ziele können ein Telefon, eine Rufgruppe, ein Konferenzraum, eine Anwendung, ein IVR-Menü, eine Mailbox oder *Auflegen* sein, aber keine anderen Geschäftszeiten (nur ein [Sonderzeitraum](#specials) kann zu anderen Geschäftszeiten führen). Siehe [Ziele]({{< relref "/dialplan/ivr.md#destinations" >}}).
+Der Reiter **Jahresübersicht** gespeicherter Geschäftszeiten zeigt die nächsten zwölf Monate, einen Kalender pro Monat; die Schaltflächen über den Kalendern zeigen stattdessen 24 oder 36 Monate, ein Link mit `?months=48#tab-year` bis zu 60 Monate. Jeder Tag ist danach eingefärbt, was laut Plan gilt: die Wochenzeiten (grün), ganztägig geschlossen, weil der Wochentag keine Öffnungszeiten hat (grau), ein Feiertag (orange) oder ein Sonderzeitraum (eigene Farbe, in der Legende benannt). Sonderzeiträume zählen, wenn sie eingeschaltet sind, in der Reihenfolge der Liste, wie bei Anrufen. Fahren Sie mit der Maus über einen Tag, um Datum und geltende Regel zu sehen. Der Kalender zeigt den gespeicherten Stand: Speichern Sie das Formular, um Änderungen zu sehen; manuelle Modi und die [Abwesenheitstaste](#key) werden nicht angezeigt.
 
 ## Zwischen geöffnet und geschlossen umschalten {#mode}
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-24 16:36+0200\n"
+"POT-Creation-Date: 2026-10-24 18:59+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: sv\n"
@@ -43,6 +43,10 @@ msgid "%(language)s (default)"
 msgstr "%(language)s (standard)"
 
 #, python-format
+msgid "%(month)s %(year)s"
+msgstr "%(month)s %(year)s"
+
+#, python-format
 msgid "%(name)s is not a fully qualified domain name"
 msgstr "%(name)s är inte ett fullständigt domännamn (FQDN)"
 
@@ -59,6 +63,12 @@ msgid "%(num)d CPU"
 msgid_plural "%(num)d CPUs"
 msgstr[0] "%(num)d processor"
 msgstr[1] "%(num)d processorer"
+
+#, python-format
+msgid "%(num)d month"
+msgid_plural "%(num)d months"
+msgstr[0] "%(num)d månad"
+msgstr[1] "%(num)d månader"
 
 #, python-format
 msgid "%(num)d route"
@@ -412,6 +422,9 @@ msgstr "Verkställandet misslyckades: %(errors)s"
 msgid "Applying the configuration failed."
 msgstr "Det gick inte att verkställa konfigurationen."
 
+msgid "April"
+msgstr "April"
+
 msgid "As saved."
 msgstr "Som sparat."
 
@@ -472,6 +485,9 @@ msgstr "Ljud: %(audio)s. Video: %(video)s"
 
 msgid "Audit Log"
 msgstr "Granskningslogg"
+
+msgid "August"
+msgstr "Augusti"
 
 msgid "Australia"
 msgstr "Australien"
@@ -722,6 +738,9 @@ msgstr "Sök efter uppdateringar"
 msgid "Check now"
 msgstr "Kontrollera nu"
 
+msgid "Check the entries in this tab"
+msgstr "Kontrollera posterna på den här fliken"
+
 msgid "Checking the signature and checksums of the update ..."
 msgstr "Uppdateringens signatur och kontrollsummor kontrolleras ..."
 
@@ -942,6 +961,9 @@ msgstr "Datapartition"
 
 msgid "Date"
 msgstr "Datum"
+
+msgid "December"
+msgstr "December"
 
 msgid "Default expiry (s)"
 msgstr "Standardgiltighetstid (s)"
@@ -1288,6 +1310,9 @@ msgstr "Funktionskoder består av siffror, '*' och '#'"
 msgid "Feature digit timeout (ms)"
 msgstr "Tidsgräns för funktionssiffror (ms)"
 
+msgid "February"
+msgstr "Februari"
+
 msgid "Finland"
 msgstr "Finland"
 
@@ -1424,8 +1449,11 @@ msgstr ""
 msgid "Help"
 msgstr "Hjälp"
 
-msgid "Holidays and closing days"
-msgstr "Helgdagar och stängda dagar"
+msgid "Holiday"
+msgstr "Helgdag"
+
+msgid "Holidays"
+msgstr "Helgdagar"
 
 msgid "Host"
 msgstr "Värd"
@@ -1635,11 +1663,20 @@ msgstr "Italienska"
 msgid "Italy"
 msgstr "Italien"
 
+msgid "January"
+msgstr "Januari"
+
 msgid "Japan"
 msgstr "Japan"
 
 msgid "Japanese"
 msgstr "Japanska"
+
+msgid "July"
+msgstr "Juli"
+
+msgid "June"
+msgstr "Juni"
 
 msgid "Keep messages on the PBX after e-mailing"
 msgstr "Behåll meddelandena på växeln efter e-postutskick"
@@ -1786,6 +1823,9 @@ msgstr "Manager-användare"
 msgid "Manual"
 msgstr "Handbok"
 
+msgid "March"
+msgstr "Mars"
+
 msgid "Max. message length (s)"
 msgstr "Max. meddelandelängd (s)"
 
@@ -1794,6 +1834,9 @@ msgstr "Max. antal registrerade enheter"
 
 msgid "Maximum expiry (s)"
 msgstr "Maximal giltighetstid (s)"
+
+msgid "May"
+msgstr "Maj"
 
 msgid "May place calls"
 msgstr "Får ringa samtal"
@@ -1847,6 +1890,9 @@ msgstr "Måndag"
 
 msgid "Monitor"
 msgstr "Monitor"
+
+msgid "Months shown"
+msgstr "Visade månader"
 
 msgid "Move down"
 msgstr "Flytta ned"
@@ -2100,6 +2146,9 @@ msgstr "Aviseringsadress"
 msgid "Notifications"
 msgstr "Aviseringar"
 
+msgid "November"
+msgstr "November"
+
 msgid "Now"
 msgstr "Nu"
 
@@ -2127,6 +2176,9 @@ msgstr "Objekt"
 
 msgid "Obtain and renew the certificate automatically"
 msgstr "Hämta och förnya certifikatet automatiskt"
+
+msgid "October"
+msgstr "Oktober"
 
 msgid "Off"
 msgstr "Av"
@@ -2711,9 +2763,6 @@ msgstr ""
 "Dirigera inkommande samtal efter det slagna numret (DID). Lämna mönstret tomt för att fånga alla samtal. Flera "
 "destinationer med samma mönster ringer parallellt."
 
-msgid "Routing"
-msgstr "Routning"
-
 msgid "Russia"
 msgstr "Ryssland"
 
@@ -2822,6 +2871,9 @@ msgstr "Avsändarnamn"
 #, python-format
 msgid "Sending failed (did you apply the settings?): %(detail)s"
 msgstr "Det gick inte att skicka (har du verkställt inställningarna?): %(detail)s"
+
+msgid "September"
+msgstr "September"
 
 msgid "Server requires authentication"
 msgstr "Servern kräver autentisering"
@@ -3606,8 +3658,11 @@ msgstr "Onsdag"
 msgid "Week at a glance"
 msgstr "Veckoöversikt"
 
-msgid "Weekly opening hours"
-msgstr "Öppettider per vecka"
+msgid "Weekly hours"
+msgstr "Veckotider"
+
+msgid "What applies on each day of the coming months, as saved. Manual modes and the out-of-office key are not shown."
+msgstr "Vad som gäller varje dag under de kommande månaderna, som sparat. Manuella lägen och frånvaroknappen visas inte."
 
 msgid ""
 "What happens when the caller presses a key. Drag the handle (or use the arrows) to change the order in which the "
@@ -3645,6 +3700,9 @@ msgstr "Skrivbehörigheter"
 
 msgid "Writing the new version to the inactive system slot ..."
 msgstr "Skriver den nya versionen till den inaktiva systemplatsen ..."
+
+msgid "Year at a glance"
+msgstr "Årsöversikt"
 
 #, python-format
 msgid "You are running the latest version (%(version)s)."

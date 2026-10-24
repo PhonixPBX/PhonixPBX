@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-24 16:36+0200\n"
+"POT-Creation-Date: 2026-10-24 18:59+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: nl\n"
@@ -43,6 +43,10 @@ msgid "%(language)s (default)"
 msgstr "%(language)s (standaard)"
 
 #, python-format
+msgid "%(month)s %(year)s"
+msgstr "%(month)s %(year)s"
+
+#, python-format
 msgid "%(name)s is not a fully qualified domain name"
 msgstr "%(name)s is geen volledig gekwalificeerde domeinnaam"
 
@@ -59,6 +63,12 @@ msgid "%(num)d CPU"
 msgid_plural "%(num)d CPUs"
 msgstr[0] "%(num)d CPU"
 msgstr[1] "%(num)d CPU's"
+
+#, python-format
+msgid "%(num)d month"
+msgid_plural "%(num)d months"
+msgstr[0] "%(num)d maand"
+msgstr[1] "%(num)d maanden"
 
 #, python-format
 msgid "%(num)d route"
@@ -413,6 +423,9 @@ msgstr "Toepassen mislukt: %(errors)s"
 msgid "Applying the configuration failed."
 msgstr "Het toepassen van de configuratie is mislukt."
 
+msgid "April"
+msgstr "April"
+
 msgid "As saved."
 msgstr "Zoals opgeslagen."
 
@@ -473,6 +486,9 @@ msgstr "Audio: %(audio)s. Video: %(video)s"
 
 msgid "Audit Log"
 msgstr "Auditlog"
+
+msgid "August"
+msgstr "Augustus"
 
 msgid "Australia"
 msgstr "Australië"
@@ -723,6 +739,9 @@ msgstr "Controleren op updates"
 msgid "Check now"
 msgstr "Nu controleren"
 
+msgid "Check the entries in this tab"
+msgstr "Controleer de items op dit tabblad"
+
 msgid "Checking the signature and checksums of the update ..."
 msgstr "Handtekening en controlesommen van de update worden gecontroleerd ..."
 
@@ -945,6 +964,9 @@ msgstr "Datapartitie"
 
 msgid "Date"
 msgstr "Datum"
+
+msgid "December"
+msgstr "December"
 
 msgid "Default expiry (s)"
 msgstr "Standaard verlooptijd (s)"
@@ -1291,6 +1313,9 @@ msgstr "Functiecodes bestaan uit cijfers, '*' en '#'"
 msgid "Feature digit timeout (ms)"
 msgstr "Time-out voor functiecijfers (ms)"
 
+msgid "February"
+msgstr "Februari"
+
 msgid "Finland"
 msgstr "Finland"
 
@@ -1427,8 +1452,11 @@ msgstr ""
 msgid "Help"
 msgstr "Help"
 
-msgid "Holidays and closing days"
-msgstr "Feestdagen en sluitingsdagen"
+msgid "Holiday"
+msgstr "Feestdag"
+
+msgid "Holidays"
+msgstr "Feestdagen"
 
 msgid "Host"
 msgstr "Host"
@@ -1638,11 +1666,20 @@ msgstr "Italiaans"
 msgid "Italy"
 msgstr "Italië"
 
+msgid "January"
+msgstr "Januari"
+
 msgid "Japan"
 msgstr "Japan"
 
 msgid "Japanese"
 msgstr "Japans"
+
+msgid "July"
+msgstr "Juli"
+
+msgid "June"
+msgstr "Juni"
 
 msgid "Keep messages on the PBX after e-mailing"
 msgstr "Berichten na het e-mailen op de PBX bewaren"
@@ -1789,6 +1826,9 @@ msgstr "Managergebruikers"
 msgid "Manual"
 msgstr "Handleiding"
 
+msgid "March"
+msgstr "Maart"
+
 msgid "Max. message length (s)"
 msgstr "Max. berichtlengte (s)"
 
@@ -1797,6 +1837,9 @@ msgstr "Max. geregistreerde apparaten"
 
 msgid "Maximum expiry (s)"
 msgstr "Maximale verlooptijd (s)"
+
+msgid "May"
+msgstr "Mei"
 
 msgid "May place calls"
 msgstr "Mag bellen"
@@ -1850,6 +1893,9 @@ msgstr "Maandag"
 
 msgid "Monitor"
 msgstr "Monitor"
+
+msgid "Months shown"
+msgstr "Getoonde maanden"
 
 msgid "Move down"
 msgstr "Omlaag"
@@ -2101,6 +2147,9 @@ msgstr "Meldingsadres"
 msgid "Notifications"
 msgstr "Meldingen"
 
+msgid "November"
+msgstr "November"
+
 msgid "Now"
 msgstr "Nu"
 
@@ -2128,6 +2177,9 @@ msgstr "Object"
 
 msgid "Obtain and renew the certificate automatically"
 msgstr "Het certificaat automatisch verkrijgen en vernieuwen"
+
+msgid "October"
+msgstr "Oktober"
 
 msgid "Off"
 msgstr "Uit"
@@ -2712,9 +2764,6 @@ msgstr ""
 "Routeer inkomende gesprekken op basis van het gekozen nummer (DID). Laat het patroon leeg om alle gesprekken op te "
 "vangen. Meerdere bestemmingen met hetzelfde patroon gaan tegelijk over."
 
-msgid "Routing"
-msgstr "Routering"
-
 msgid "Russia"
 msgstr "Rusland"
 
@@ -2823,6 +2872,9 @@ msgstr "Afzendernaam"
 #, python-format
 msgid "Sending failed (did you apply the settings?): %(detail)s"
 msgstr "Verzenden mislukt (hebt u de instellingen toegepast?): %(detail)s"
+
+msgid "September"
+msgstr "September"
 
 msgid "Server requires authentication"
 msgstr "Server vereist authenticatie"
@@ -3616,8 +3668,13 @@ msgstr "Woensdag"
 msgid "Week at a glance"
 msgstr "Weekoverzicht"
 
-msgid "Weekly opening hours"
-msgstr "Wekelijkse openingstijden"
+msgid "Weekly hours"
+msgstr "Weektijden"
+
+msgid "What applies on each day of the coming months, as saved. Manual modes and the out-of-office key are not shown."
+msgstr ""
+"Wat er op elke dag van de komende maanden geldt, zoals opgeslagen. Handmatige modi en de afwezigheidstoets worden "
+"niet getoond."
 
 msgid ""
 "What happens when the caller presses a key. Drag the handle (or use the arrows) to change the order in which the "
@@ -3655,6 +3712,9 @@ msgstr "Schrijfrechten"
 
 msgid "Writing the new version to the inactive system slot ..."
 msgstr "De nieuwe versie wordt naar het inactieve systeemslot geschreven ..."
+
+msgid "Year at a glance"
+msgstr "Jaaroverzicht"
 
 #, python-format
 msgid "You are running the latest version (%(version)s)."

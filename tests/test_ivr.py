@@ -790,6 +790,22 @@ def test_hours_form(client, fake_ami):
     assert "open" in client.get("/dialplan/hours").text
     page = client.get(f"/dialplan/hours/{ids['office']}").text
     assert "Christmas Day" in page and 'value="23:59"' in page and "Switch now" in page
+    # year at a glance: twelve months, the yearly holiday marked
+    assert "Year at a glance" in page and page.count('<table class="hours-cal">') == 12
+    assert re.search(r'class="hours-cal-holiday[^"]*" title="\d{4}-12-25: Christmas Day"', page)
+    assert "Year at a glance" not in client.get("/dialplan/hours/new").text
+    # ?months=N shows more or fewer months; out of range falls back to twelve
+    for query, count in (("?months=24", 24), ("?months=3", 3), ("?months=61", 12), ("?months=x", 12)):
+        page = client.get(f"/dialplan/hours/{ids['office']}{query}").text
+        assert page.count('<table class="hours-cal">') == count, query
+    page = client.get(f"/dialplan/hours/{ids['office']}?months=24").text
+    assert f'hx-get="/dialplan/hours/{ids["office"]}/year?months=24" hx-target="#hours-year"' in page
+    assert re.search(r'href="\?months=24#tab-year"[^>]* class="btn active"', page)
+    # the buttons reload only the calendars (htmx), so unsaved entries in the form stay
+    part = client.get(f"/dialplan/hours/{ids['office']}/year?months=36").text
+    assert part.startswith('<div id="hours-year">') and part.count('<table class="hours-cal">') == 36
+    assert "<form" not in part and "<html" not in part
+    assert client.get("/dialplan/hours/999/year").status_code == 404
     form = [
         ("csrf_token", csrf(client, "/dialplan/hours/new")),
         ("name", "Support line"),
@@ -1066,6 +1082,60 @@ def test_mcp_special(client, fake_ami):
     assert "isError" not in result or not result["isError"]
     assert call(client, "set_business_hours_special", id=a, special_id=pb, active=True)["isError"] is True
     assert call(client, "set_business_hours_special", id=a, special_id=pa, active="yes")["isError"] is True
+
+
+def test_hours_form_opens_tab_with_error(client):
+    login(client)
+    page = client.get("/dialplan/hours/new").text
+    assert 'href="#tab-general" class="nav-link active"' in page and "#tab-year" not in page
+    form = {
+        "csrf_token": csrf(client, "/dialplan/hours/new"),
+        "name": "Support",
+        "open_dest": "hangup",
+        "closed_dest": "hangup",
+        "hol_date_0": "2026-08-01",
+        "hol_date_1": "2026-08-01",
+    }
+    r = client.post("/dialplan/hours/new", data=form)
+    assert r.status_code == 422
+    assert 'href="#tab-holidays" class="nav-link active"' in r.text
+    assert 'id="tab-holidays" role="tabpanel"' in r.text and 'tab-pane active show" id="tab-holidays"' in r.text
+    assert 'href="#tab-general" class="nav-link active"' not in r.text
+
+
+def test_year_plan(session, ids):
+    office = hours.get_hours(session, ids["office"])
+    data = hours.to_dict(office)
+    data["specials"] = [
+        {"name": "Emergency", "dest_type": "hangup"},  # off: not planned
+        {
+            "name": "Xmas",
+            "enabled": True,
+            "start": "2026-12-24",
+            "end": "2027-01-02",
+            "yearly": True,
+            "dest_type": "hangup",
+        },
+    ]
+    office = hours.update_hours(session, office.id, hours.BusinessHoursIn.model_validate(data))
+    months = hours.year_plan(office, hours.Runtime(), dt.date(2026, 10, 24))
+    assert [(m["year"], m["month"]) for m in months][:3] == [(2026, 10), (2026, 11), (2026, 12)]
+    assert (months[-1]["year"], months[-1]["month"]) == (2027, 9)
+    longer = hours.year_plan(office, hours.Runtime(), dt.date(2026, 10, 24), 36)
+    assert len(longer) == 36 and (longer[-1]["year"], longer[-1]["month"]) == (2029, 9)
+    days = {d["date"]: d for m in months for w in m["weeks"] for d in w if d}
+    assert len(days) == 365 and min(days) == dt.date(2026, 10, 1)
+    assert days[dt.date(2026, 10, 19)]["kind"] == "open"  # Monday
+    assert days[dt.date(2026, 10, 25)]["kind"] == "closed"  # Sunday
+    assert (days[dt.date(2027, 3, 26)]["kind"], days[dt.date(2027, 3, 26)]["name"]) == ("holiday", "Good Friday")
+    # the special period wins over the Christmas Day holiday, across the new year
+    xmas = [days[dt.date(2026, 12, 25)], days[dt.date(2027, 1, 2)]]
+    assert [(d["kind"], d["name"], d["special"]) for d in xmas] == [("special", "Xmas", 1)] * 2
+    assert days[dt.date(2027, 1, 4)]["kind"] == "open"
+    # the runtime switch decides, as for calls
+    emergency = office.specials[0].id
+    switched = hours.year_plan(office, hours.Runtime(active={emergency: True}), dt.date(2026, 10, 24))
+    assert {d["name"] for m in switched for w in m["weeks"] for d in w if d} == {"Emergency"}
 
 
 def test_special_yearly_needs_dates():

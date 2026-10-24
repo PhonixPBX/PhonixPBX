@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-24 16:36+0200\n"
+"POT-Creation-Date: 2026-10-24 18:59+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ja\n"
@@ -43,6 +43,10 @@ msgid "%(language)s (default)"
 msgstr "%(language)s（デフォルト）"
 
 #, python-format
+msgid "%(month)s %(year)s"
+msgstr "%(year)s年%(month)s"
+
+#, python-format
 msgid "%(name)s is not a fully qualified domain name"
 msgstr "%(name)s は完全修飾ドメイン名ではありません"
 
@@ -58,6 +62,11 @@ msgstr "%(name)s（%(date)s まで）"
 msgid "%(num)d CPU"
 msgid_plural "%(num)d CPUs"
 msgstr[0] "%(num)d CPU"
+
+#, python-format
+msgid "%(num)d month"
+msgid_plural "%(num)d months"
+msgstr[0] "%(num)d か月"
 
 #, python-format
 msgid "%(num)d route"
@@ -399,6 +408,9 @@ msgstr "適用に失敗しました: %(errors)s"
 msgid "Applying the configuration failed."
 msgstr "設定の適用に失敗しました。"
 
+msgid "April"
+msgstr "4月"
+
 msgid "As saved."
 msgstr "保存済みの内容です。"
 
@@ -459,6 +471,9 @@ msgstr "音声: %(audio)s。ビデオ: %(video)s"
 
 msgid "Audit Log"
 msgstr "監査ログ"
+
+msgid "August"
+msgstr "8月"
 
 msgid "Australia"
 msgstr "オーストラリア"
@@ -707,6 +722,9 @@ msgstr "アップデートを確認"
 msgid "Check now"
 msgstr "今すぐ確認"
 
+msgid "Check the entries in this tab"
+msgstr "このタブの入力内容を確認してください"
+
 msgid "Checking the signature and checksums of the update ..."
 msgstr "アップデートの署名とチェックサムを確認しています ..."
 
@@ -927,6 +945,9 @@ msgstr "データパーティション"
 
 msgid "Date"
 msgstr "日付"
+
+msgid "December"
+msgstr "12月"
 
 msgid "Default expiry (s)"
 msgstr "デフォルトの有効期限（秒）"
@@ -1273,6 +1294,9 @@ msgstr "機能コードは数字、'*'、'#' で構成してください"
 msgid "Feature digit timeout (ms)"
 msgstr "機能コード入力のタイムアウト（ミリ秒）"
 
+msgid "February"
+msgstr "2月"
+
 msgid "Finland"
 msgstr "フィンランド"
 
@@ -1408,8 +1432,11 @@ msgstr ""
 msgid "Help"
 msgstr "ヘルプ"
 
-msgid "Holidays and closing days"
-msgstr "祝日と休業日"
+msgid "Holiday"
+msgstr "休日"
+
+msgid "Holidays"
+msgstr "休日"
 
 msgid "Host"
 msgstr "ホスト"
@@ -1616,11 +1643,20 @@ msgstr "イタリア語"
 msgid "Italy"
 msgstr "イタリア"
 
+msgid "January"
+msgstr "1月"
+
 msgid "Japan"
 msgstr "日本"
 
 msgid "Japanese"
 msgstr "日本語"
+
+msgid "July"
+msgstr "7月"
+
+msgid "June"
+msgstr "6月"
 
 msgid "Keep messages on the PBX after e-mailing"
 msgstr "メール送信後もメッセージを PBX に保持する"
@@ -1767,6 +1803,9 @@ msgstr "マネージャーユーザー"
 msgid "Manual"
 msgstr "マニュアル"
 
+msgid "March"
+msgstr "3月"
+
 msgid "Max. message length (s)"
 msgstr "メッセージの最大長（秒）"
 
@@ -1775,6 +1814,9 @@ msgstr "最大登録デバイス数"
 
 msgid "Maximum expiry (s)"
 msgstr "最大有効期限（秒）"
+
+msgid "May"
+msgstr "5月"
 
 msgid "May place calls"
 msgstr "発信を許可"
@@ -1828,6 +1870,9 @@ msgstr "月曜日"
 
 msgid "Monitor"
 msgstr "モニター"
+
+msgid "Months shown"
+msgstr "表示する月数"
 
 msgid "Move down"
 msgstr "下へ移動"
@@ -2079,6 +2124,9 @@ msgstr "通知先アドレス"
 msgid "Notifications"
 msgstr "通知"
 
+msgid "November"
+msgstr "11月"
+
 msgid "Now"
 msgstr "現在"
 
@@ -2106,6 +2154,9 @@ msgstr "対象"
 
 msgid "Obtain and renew the certificate automatically"
 msgstr "証明書を自動的に取得・更新する"
+
+msgid "October"
+msgstr "10月"
 
 msgid "Off"
 msgstr "オフ"
@@ -2669,9 +2720,6 @@ msgid ""
 "with the same pattern ring in parallel."
 msgstr "着信をダイヤルされた番号（DID）で振り分けます。すべての着信を受けるにはパターンを空欄にしてください。同じパターンの宛先が複数ある場合は同時に呼び出します。"
 
-msgid "Routing"
-msgstr "ルーティング"
-
 msgid "Russia"
 msgstr "ロシア"
 
@@ -2776,6 +2824,9 @@ msgstr "送信者名"
 #, python-format
 msgid "Sending failed (did you apply the settings?): %(detail)s"
 msgstr "送信に失敗しました（設定を適用しましたか？）: %(detail)s"
+
+msgid "September"
+msgstr "9月"
 
 msgid "Server requires authentication"
 msgstr "サーバーで認証が必要"
@@ -3528,8 +3579,11 @@ msgstr "水曜日"
 msgid "Week at a glance"
 msgstr "週間の概要"
 
-msgid "Weekly opening hours"
+msgid "Weekly hours"
 msgstr "週間の営業時間"
+
+msgid "What applies on each day of the coming months, as saved. Manual modes and the out-of-office key are not shown."
+msgstr "今後数か月の各日に適用される内容です（保存済みの設定）。手動モードと不在キーは表示されません。"
 
 msgid ""
 "What happens when the caller presses a key. Drag the handle (or use the arrows) to change the order in which the "
@@ -3565,6 +3619,9 @@ msgstr "書き込み権限"
 
 msgid "Writing the new version to the inactive system slot ..."
 msgstr "新しいバージョンを非アクティブなシステムスロットに書き込んでいます ..."
+
+msgid "Year at a glance"
+msgstr "年間の概要"
 
 #, python-format
 msgid "You are running the latest version (%(version)s)."

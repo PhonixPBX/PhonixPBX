@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-24 16:36+0200\n"
+"POT-Creation-Date: 2026-10-24 18:59+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: da\n"
@@ -43,6 +43,10 @@ msgid "%(language)s (default)"
 msgstr "%(language)s (standard)"
 
 #, python-format
+msgid "%(month)s %(year)s"
+msgstr "%(month)s %(year)s"
+
+#, python-format
 msgid "%(name)s is not a fully qualified domain name"
 msgstr "%(name)s er ikke et fuldt kvalificeret domænenavn"
 
@@ -59,6 +63,12 @@ msgid "%(num)d CPU"
 msgid_plural "%(num)d CPUs"
 msgstr[0] "%(num)d CPU"
 msgstr[1] "%(num)d CPU'er"
+
+#, python-format
+msgid "%(num)d month"
+msgid_plural "%(num)d months"
+msgstr[0] "%(num)d måned"
+msgstr[1] "%(num)d måneder"
 
 #, python-format
 msgid "%(num)d route"
@@ -410,6 +420,9 @@ msgstr "Anvendelse mislykkedes: %(errors)s"
 msgid "Applying the configuration failed."
 msgstr "Konfigurationen kunne ikke anvendes."
 
+msgid "April"
+msgstr "April"
+
 msgid "As saved."
 msgstr "Som gemt."
 
@@ -470,6 +483,9 @@ msgstr "Lyd: %(audio)s. Video: %(video)s"
 
 msgid "Audit Log"
 msgstr "Revisionslog"
+
+msgid "August"
+msgstr "August"
 
 msgid "Australia"
 msgstr "Australien"
@@ -720,6 +736,9 @@ msgstr "Søg efter opdateringer"
 msgid "Check now"
 msgstr "Søg nu"
 
+msgid "Check the entries in this tab"
+msgstr "Kontrollér posterne på denne fane"
+
 msgid "Checking the signature and checksums of the update ..."
 msgstr "Opdateringens signatur og kontrolsummer kontrolleres ..."
 
@@ -942,6 +961,9 @@ msgstr "Datapartition"
 
 msgid "Date"
 msgstr "Dato"
+
+msgid "December"
+msgstr "December"
 
 msgid "Default expiry (s)"
 msgstr "Standardudløbstid (s)"
@@ -1288,6 +1310,9 @@ msgstr "Funktionskoder består af cifre, '*' og '#'"
 msgid "Feature digit timeout (ms)"
 msgstr "Timeout for funktionscifre (ms)"
 
+msgid "February"
+msgstr "Februar"
+
 msgid "Finland"
 msgstr "Finland"
 
@@ -1424,8 +1449,11 @@ msgstr ""
 msgid "Help"
 msgstr "Hjælp"
 
-msgid "Holidays and closing days"
-msgstr "Helligdage og lukkedage"
+msgid "Holiday"
+msgstr "Helligdag"
+
+msgid "Holidays"
+msgstr "Helligdage"
 
 msgid "Host"
 msgstr "Vært"
@@ -1634,11 +1662,20 @@ msgstr "Italiensk"
 msgid "Italy"
 msgstr "Italien"
 
+msgid "January"
+msgstr "Januar"
+
 msgid "Japan"
 msgstr "Japan"
 
 msgid "Japanese"
 msgstr "Japansk"
+
+msgid "July"
+msgstr "Juli"
+
+msgid "June"
+msgstr "Juni"
 
 msgid "Keep messages on the PBX after e-mailing"
 msgstr "Behold beskeder på PBX'en efter afsendelse via e-mail"
@@ -1785,6 +1822,9 @@ msgstr "Manager-brugere"
 msgid "Manual"
 msgstr "Brugervejledning"
 
+msgid "March"
+msgstr "Marts"
+
 msgid "Max. message length (s)"
 msgstr "Maks. beskedlængde (s)"
 
@@ -1793,6 +1833,9 @@ msgstr "Maks. registrerede enheder"
 
 msgid "Maximum expiry (s)"
 msgstr "Maksimal udløbstid (s)"
+
+msgid "May"
+msgstr "Maj"
 
 msgid "May place calls"
 msgstr "Må foretage opkald"
@@ -1846,6 +1889,9 @@ msgstr "Mandag"
 
 msgid "Monitor"
 msgstr "Monitor"
+
+msgid "Months shown"
+msgstr "Viste måneder"
 
 msgid "Move down"
 msgstr "Flyt ned"
@@ -2097,6 +2143,9 @@ msgstr "Notifikationsadresse"
 msgid "Notifications"
 msgstr "Notifikationer"
 
+msgid "November"
+msgstr "November"
+
 msgid "Now"
 msgstr "Nu"
 
@@ -2124,6 +2173,9 @@ msgstr "Objekt"
 
 msgid "Obtain and renew the certificate automatically"
 msgstr "Hent og forny certifikatet automatisk"
+
+msgid "October"
+msgstr "Oktober"
 
 msgid "Off"
 msgstr "Fra"
@@ -2708,9 +2760,6 @@ msgstr ""
 "Rut indgående opkald efter det kaldte nummer (DID). Lad mønsteret være tomt for at fange alle opkald. Flere "
 "destinationer med samme mønster ringer parallelt."
 
-msgid "Routing"
-msgstr "Routing"
-
 msgid "Russia"
 msgstr "Rusland"
 
@@ -2819,6 +2868,9 @@ msgstr "Afsendernavn"
 #, python-format
 msgid "Sending failed (did you apply the settings?): %(detail)s"
 msgstr "Afsendelse mislykkedes (har du anvendt indstillingerne?): %(detail)s"
+
+msgid "September"
+msgstr "September"
 
 msgid "Server requires authentication"
 msgstr "Serveren kræver godkendelse"
@@ -3601,8 +3653,11 @@ msgstr "Onsdag"
 msgid "Week at a glance"
 msgstr "Ugeoversigt"
 
-msgid "Weekly opening hours"
-msgstr "Ugentlige åbningstider"
+msgid "Weekly hours"
+msgstr "Ugentlige tider"
+
+msgid "What applies on each day of the coming months, as saved. Manual modes and the out-of-office key are not shown."
+msgstr "Hvad der gælder på hver dag i de kommende måneder, som gemt. Manuelle tilstande og fraværstasten vises ikke."
 
 msgid ""
 "What happens when the caller presses a key. Drag the handle (or use the arrows) to change the order in which the "
@@ -3640,6 +3695,9 @@ msgstr "Skriverettigheder"
 
 msgid "Writing the new version to the inactive system slot ..."
 msgstr "Skriver den nye version til den inaktive systemplads ..."
+
+msgid "Year at a glance"
+msgstr "Årsoversigt"
 
 #, python-format
 msgid "You are running the latest version (%(version)s)."

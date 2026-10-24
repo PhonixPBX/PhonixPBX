@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import copy
+import datetime as dt
 import json
 import os
 from pathlib import Path
@@ -227,7 +228,14 @@ def _hours_with_specials(session) -> dict:
                     feature_code="*71",
                     dest_type="hangup",
                 ),
-                hours_svc.SpecialIn(name="Christmas", yearly=True, dest_type="hours", dest_id=holiday.id),
+                hours_svc.SpecialIn(
+                    name="Christmas",
+                    yearly=True,
+                    start=dt.date(2026, 12, 24),
+                    end=dt.date(2027, 1, 2),
+                    dest_type="hours",
+                    dest_id=holiday.id,
+                ),
             ],
         ),
     )

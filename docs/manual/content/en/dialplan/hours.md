@@ -23,7 +23,21 @@ The buttons at the end of each row edit and delete the schedule. Deleting it rem
 
 ## Create or edit business hours {#edit}
 
-### Weekly opening hours {#weekly}
+The form has five tabs: **General**, **Weekly hours**, **Holidays**, **Special periods** and, for saved business hours, **Year at a glance**. **Save** at the bottom saves all tabs together. If an entry is wrong, the tab with the error opens and is marked with a red sign. A link to the page with `#tab-specials` (or another tab name) opens that tab directly.
+
+### General {#routing}
+
+| Field | Meaning | Default |
+|---|---|---|
+| Name | A name for lists and destination pickers. | – |
+| Description | A note for your reference. | empty |
+| When open | Where calls go during the opening hours. | Hang up |
+| When closed | Where calls go outside the opening hours and on holidays. | Hang up |
+| Feature code | Optional code, for example `*31`, of the [out-of-office key](#key). Digits, `*` and `#`; it must not be used by another number and must not start with the call pickup code (`*8` by default). | empty |
+
+Both destinations can be a phone, call group, conference room, application, IVR menu, voicemail box or *Hang up*, but not other business hours (only a [special period](#specials) can lead to other business hours). See [Destinations]({{< relref "/dialplan/ivr.md#destinations" >}}).
+
+### Weekly hours {#weekly}
 
 Each weekday has its own time ranges. Click **Add time range** to add one; a day can have several ranges, for example `08:00`–`12:00` and `13:00`–`17:00` for a lunch break. A day without ranges is *Closed all day*. The **x** button removes a range.
 
@@ -32,9 +46,9 @@ Each weekday has its own time ranges. Click **Add time range** to add one; a day
 - An end of `23:59` means until midnight.
 - The end must be after the start. A range over midnight is entered as two ranges on two days.
 
-New business hours start with Monday to Friday, 08:00–12:00 and 13:00–17:00. **Week at a glance** shows the open times as green bars; on a saved schedule, a line marks the current time.
+New business hours start with Monday to Friday, 08:00–12:00 and 13:00–17:00. **Week at a glance**, next to the weekdays, shows the open times as green bars; on a saved schedule, a line marks the current time.
 
-### Holidays and closing days {#holidays}
+### Holidays {#holidays}
 
 On the days listed here you are closed all day, whatever the weekly hours say. Click **Add day** and enter the **Date** and an optional **Name**, for example `Christmas Day`. With **every year** the day repeats on the same date every year. Days that move every year, like Easter, are entered once per year. Up to 200 days can be listed.
 
@@ -55,17 +69,9 @@ A period **applies** when it is switched on and, if it has days, today is one of
 
 Business hours used as the destination of a special period must not have special periods of their own, and business hours with special periods cannot be such a destination.
 
-### Routing {#routing}
+### Year at a glance {#year}
 
-| Field | Meaning | Default |
-|---|---|---|
-| Name | A name for lists and destination pickers. | – |
-| Description | A note for your reference. | empty |
-| When open | Where calls go during the opening hours. | Hang up |
-| When closed | Where calls go outside the opening hours and on holidays. | Hang up |
-| Feature code | Optional code, for example `*31`, of the [out-of-office key](#key). Digits, `*` and `#`; it must not be used by another number and must not start with the call pickup code (`*8` by default). | empty |
-
-Both destinations can be a phone, call group, conference room, application, IVR menu, voicemail box or *Hang up*, but not other business hours (only a [special period](#specials) can lead to other business hours). See [Destinations]({{< relref "/dialplan/ivr.md#destinations" >}}).
+The **Year at a glance** tab of saved business hours shows the next twelve months, one calendar per month; the buttons above the calendars show 24 or 36 months instead, and a link with `?months=48#tab-year` up to 60 months. Each day is coloured by what applies on it according to the plan: the weekly hours (green), closed all day because the weekday has no opening hours (grey), a holiday (orange) or a special period (its own colour, named in the legend). Special periods count when they are switched on, in the order of the list, as for calls. Hover over a day to see its date and what applies. The calendar shows what is saved: save the form to see changes, and manual modes and the [out-of-office key](#key) are not shown.
 
 ## Switch between open and closed {#mode}
 

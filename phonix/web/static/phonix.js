@@ -445,7 +445,19 @@
     setInterval(tick, 5000);
   }
 
+  // tabs as links: /page#tab-x opens that tab, and the address follows the open tab
+  function openTabFromHash() {
+    if (!location.hash.startsWith("#tab-")) return;
+    const link = document.querySelector(`[data-bs-toggle="tab"][href="${CSS.escape(location.hash)}"]`);
+    if (link && !link.classList.contains("active")) link.click();
+  }
+  document.addEventListener("shown.bs.tab", (evt) => {
+    const href = evt.target.getAttribute("href");
+    if (href && href.startsWith("#tab-")) history.replaceState(null, "", href);
+  });
+
   function ready() {
+    openTabFromHash();
     document.querySelectorAll("[data-reload-when-up]").forEach(watchReboot);
     init(document);
     document.querySelectorAll("form").forEach(updateConditional);

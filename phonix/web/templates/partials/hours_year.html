@@ -1,0 +1,36 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+{# the year at a glance of business hours, also returned alone by GET /dialplan/hours/{id}/year?months=N #}
+<div id="hours-year">
+  <div class="d-flex flex-wrap align-items-start gap-2 mb-3">
+    <p class="text-secondary mb-0 me-auto">{{ _("What applies on each day of the coming months, as saved. Manual modes and the out-of-office key are not shown.") }}</p>
+    <div class="btn-group btn-group-sm" role="group" aria-label="{{ _("Months shown") }}">
+      {% for n in year_choices %}<a href="?months={{ n }}#tab-year" hx-get="/dialplan/hours/{{ hours_id }}/year?months={{ n }}" hx-target="#hours-year" hx-swap="outerHTML" class="btn{% if n == year_months %} active{% endif %}"{% if n == year_months %} aria-current="true"{% endif %}>{{ ngettext("%(num)d month", "%(num)d months", n) }}</a>{% endfor %}
+    </div>
+  </div>
+  <div class="hours-cal-legend">
+    <span><span class="hours-cal-swatch hours-cal-open"></span>{{ _("Weekly hours") }}</span>
+    <span><span class="hours-cal-swatch hours-cal-closed"></span>{{ _("Closed all day") }}</span>
+    <span><span class="hours-cal-swatch hours-cal-holiday"></span>{{ _("Holiday") }}</span>
+    {% for idx, name in year_specials %}<span><span class="hours-cal-swatch hours-cal-sp{{ idx % 6 }}"></span>{{ name }}</span>{% endfor %}
+  </div>
+  <div class="hours-year">
+    {% for m in year %}
+    <table class="hours-cal">
+      <caption>{{ _("%(month)s %(year)s", month=_(months[m.month - 1]), year=m.year) }}</caption>
+      <thead><tr>{% for d in range(7) %}<th scope="col" title="{{ _(weekdays[d]) }}">{{ _(weekdays[d])[:2] }}</th>{% endfor %}</tr></thead>
+      <tbody>
+      {% for week in m.weeks %}
+      <tr>
+        {% for day in week %}
+        {% if day %}
+        {% set label = day.name if day.kind == "special" else (day.name or _("Holiday")) if day.kind == "holiday" else _("Weekly hours") if day.kind == "open" else _("Closed all day") %}
+        <td class="hours-cal-{{ day.kind }}{% if day.special is not none %} hours-cal-sp{{ day.special % 6 }}{% endif %}{% if day.date == today_date %} is-today{% endif %}" title="{{ day.date.isoformat() }}: {{ label }}">{{ day.date.day }}</td>
+        {% else %}<td></td>{% endif %}
+        {% endfor %}
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    {% endfor %}
+  </div>
+</div>

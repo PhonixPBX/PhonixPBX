@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-24 16:36+0200\n"
+"POT-Creation-Date: 2026-10-24 18:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,6 +44,10 @@ msgid "%(language)s (default)"
 msgstr ""
 
 #, python-format
+msgid "%(month)s %(year)s"
+msgstr ""
+
+#, python-format
 msgid "%(name)s is not a fully qualified domain name"
 msgstr ""
 
@@ -58,6 +62,12 @@ msgstr ""
 #, python-format
 msgid "%(num)d CPU"
 msgid_plural "%(num)d CPUs"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(num)d month"
+msgid_plural "%(num)d months"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -413,6 +423,9 @@ msgstr ""
 msgid "Applying the configuration failed."
 msgstr ""
 
+msgid "April"
+msgstr ""
+
 msgid "As saved."
 msgstr ""
 
@@ -474,6 +487,9 @@ msgid "Audio: %(audio)s. Video: %(video)s"
 msgstr ""
 
 msgid "Audit Log"
+msgstr ""
+
+msgid "August"
 msgstr ""
 
 msgid "Australia"
@@ -725,6 +741,9 @@ msgstr ""
 msgid "Check now"
 msgstr ""
 
+msgid "Check the entries in this tab"
+msgstr ""
+
 msgid "Checking the signature and checksums of the update ..."
 msgstr ""
 
@@ -946,6 +965,9 @@ msgid "Data partition"
 msgstr ""
 
 msgid "Date"
+msgstr ""
+
+msgid "December"
 msgstr ""
 
 msgid "Default expiry (s)"
@@ -1299,6 +1321,9 @@ msgstr ""
 msgid "Feature digit timeout (ms)"
 msgstr ""
 
+msgid "February"
+msgstr ""
+
 msgid "Finland"
 msgstr ""
 
@@ -1420,7 +1445,10 @@ msgstr ""
 msgid "Help"
 msgstr ""
 
-msgid "Holidays and closing days"
+msgid "Holiday"
+msgstr ""
+
+msgid "Holidays"
 msgstr ""
 
 msgid "Host"
@@ -1630,10 +1658,19 @@ msgstr ""
 msgid "Italy"
 msgstr ""
 
+msgid "January"
+msgstr ""
+
 msgid "Japan"
 msgstr ""
 
 msgid "Japanese"
+msgstr ""
+
+msgid "July"
+msgstr ""
+
+msgid "June"
 msgstr ""
 
 msgid "Keep messages on the PBX after e-mailing"
@@ -1787,6 +1824,9 @@ msgstr ""
 msgid "Manual"
 msgstr ""
 
+msgid "March"
+msgstr ""
+
 msgid "Max. message length (s)"
 msgstr ""
 
@@ -1794,6 +1834,9 @@ msgid "Max. registered devices"
 msgstr ""
 
 msgid "Maximum expiry (s)"
+msgstr ""
+
+msgid "May"
 msgstr ""
 
 msgid "May place calls"
@@ -1847,6 +1890,9 @@ msgid "Monday"
 msgstr ""
 
 msgid "Monitor"
+msgstr ""
+
+msgid "Months shown"
 msgstr ""
 
 msgid "Move down"
@@ -2107,6 +2153,9 @@ msgstr ""
 msgid "Notifications"
 msgstr ""
 
+msgid "November"
+msgstr ""
+
 msgid "Now"
 msgstr ""
 
@@ -2133,6 +2182,9 @@ msgid "Object"
 msgstr ""
 
 msgid "Obtain and renew the certificate automatically"
+msgstr ""
+
+msgid "October"
 msgstr ""
 
 msgid "Off"
@@ -2714,9 +2766,6 @@ msgid ""
 "parallel."
 msgstr ""
 
-msgid "Routing"
-msgstr ""
-
 msgid "Russia"
 msgstr ""
 
@@ -2824,6 +2873,9 @@ msgstr ""
 
 #, python-format
 msgid "Sending failed (did you apply the settings?): %(detail)s"
+msgstr ""
+
+msgid "September"
 msgstr ""
 
 msgid "Server requires authentication"
@@ -3610,7 +3662,12 @@ msgstr ""
 msgid "Week at a glance"
 msgstr ""
 
-msgid "Weekly opening hours"
+msgid "Weekly hours"
+msgstr ""
+
+msgid ""
+"What applies on each day of the coming months, as saved. Manual modes and"
+" the out-of-office key are not shown."
 msgstr ""
 
 msgid ""
@@ -3646,6 +3703,9 @@ msgid "Write permissions"
 msgstr ""
 
 msgid "Writing the new version to the inactive system slot ..."
+msgstr ""
+
+msgid "Year at a glance"
 msgstr ""
 
 #, python-format

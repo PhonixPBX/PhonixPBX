@@ -60,95 +60,99 @@
 
 {% block content %}
 {% include "partials/hours_mode.html" %}
-<form method="post" action="/dialplan/hours/{{ 'new' if is_new else hours_id }}">
+{# the tab with the first error opens, so no error hides in a tab that is not shown #}
+{% set err = namespace(general=false, hours=false, holidays=false, specials=false) %}
+{% for key in (errors or {}) %}
+  {% if key.startswith("ranges") %}{% set err.hours = true %}
+  {% elif key.startswith("holidays") %}{% set err.holidays = true %}
+  {% elif key.startswith("specials") %}{% set err.specials = true %}
+  {% else %}{% set err.general = true %}{% endif %}
+{% endfor %}
+{% set active = "general" if err.general else "hours" if err.hours else "holidays" if err.holidays else "specials" if err.specials else "general" %}
+{% macro tab(name, title, failed, count=none) %}
+<li class="nav-item" role="presentation"><a href="#tab-{{ name }}" class="nav-link{% if active == name %} active{% endif %}" data-bs-toggle="tab" role="tab">{{ title }}{% if count %}<span class="badge bg-secondary-lt ms-2">{{ count }}</span>{% endif %}{% if failed %}<span class="text-danger ms-1" title="{{ _("Check the entries in this tab") }}">{{ icon("alert-circle") }}</span>{% endif %}</a></li>
+{% endmacro %}
+<form method="post" action="/dialplan/hours/{{ 'new' if is_new else hours_id }}" class="card">
   {{ csrf() }}
-  {{ form_errors(errors) }}
-  <div class="row row-cards">
-    <div class="col-lg-8">
-      <div class="card mb-3">
-        <div class="card-header">
-          <div>
-            <h3 class="card-title">{{ _("Weekly opening hours") }}</h3>
-            <div class="card-subtitle">{{ _("In the time zone of the system. A day can have several time ranges, e.g. for a lunch break; the end is the first minute you are closed.") }}</div>
-          </div>
+  <div class="card-header">
+    <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs" role="tablist">
+      {{ tab("general", _("General"), err.general) }}
+      {{ tab("hours", _("Weekly hours"), err.hours) }}
+      {{ tab("holidays", _("Holidays"), err.holidays, (values.holidays or []) | length) }}
+      {{ tab("specials", _("Special periods"), err.specials, (values.specials or []) | length) }}
+      {% if year %}{{ tab("year", _("Year at a glance"), false) }}{% endif %}
+    </ul>
+  </div>
+  <div class="card-body">
+    {{ form_errors(errors) }}
+    <div class="tab-content">
+      <div class="tab-pane{% if active == "general" %} active show{% endif %}" id="tab-general" role="tabpanel">
+        <div class="row">
+          <div class="col-md-6">{{ input("name", _("Name"), values, errors, required=True) }}</div>
+          <div class="col-md-6">{{ input("description", _("Description"), values, errors) }}</div>
+          <div class="col-md-6">{{ dest_select("open_dest", _("When open"), dest_value(values.open_dest_type, values.open_dest_id) if values.open_dest_type else "", choices, errors) }}</div>
+          <div class="col-md-6">{{ dest_select("closed_dest", _("When closed"), dest_value(values.closed_dest_type, values.closed_dest_id) if values.closed_dest_type else "hangup", choices, errors) }}</div>
+          <div class="col-md-6">{{ input("feature_code", _("Feature code"), values, errors, placeholder="*31", attrs='inputmode="tel" data-mask="dialcode"', help=_("Optional. Dialled on an internal phone, it switches to the opposite state until the next change, at midnight at the latest; dialled again, it returns to “Automatic”. It also ends a permanent mode set here. A phone key (BLF) on this code shows the state: lit means closed.")) }}</div>
         </div>
-        <div class="card-body py-2">
-          {% for day in range(7) %}
-          <div class="hours-day{% if day == today %} is-today{% endif %}">
-            <div class="hours-day-name">{{ _(weekdays[day]) }}</div>
-            <div>
-              <div class="hours-ranges" id="day-{{ day }}">{% for r in week[day].ranges %}{{ range_row(day, r.idx, r) }}{% endfor %}</div>
-              <div class="hours-closed text-secondary">{{ _("Closed all day") }}</div>
-              <button type="button" class="btn btn-ghost-primary btn-sm mt-1" data-add-row="#range-template-{{ day }}" data-into="#day-{{ day }}">{{ icon("plus") }}{{ _("Add time range") }}</button>
-              <template id="range-template-{{ day }}">{{ range_row(day, "__INDEX__", None) }}</template>
+      </div>
+
+      <div class="tab-pane{% if active == "hours" %} active show{% endif %}" id="tab-hours" role="tabpanel">
+        <p class="text-secondary">{{ _("In the time zone of the system. A day can have several time ranges, e.g. for a lunch break; the end is the first minute you are closed.") }}</p>
+        <div class="row g-4">
+          <div class="col-lg-8">
+            {% for day in range(7) %}
+            <div class="hours-day{% if day == today %} is-today{% endif %}">
+              <div class="hours-day-name">{{ _(weekdays[day]) }}</div>
+              <div>
+                <div class="hours-ranges" id="day-{{ day }}">{% for r in week[day].ranges %}{{ range_row(day, r.idx, r) }}{% endfor %}</div>
+                <div class="hours-closed text-secondary">{{ _("Closed all day") }}</div>
+                <button type="button" class="btn btn-ghost-primary btn-sm mt-1" data-add-row="#range-template-{{ day }}" data-into="#day-{{ day }}">{{ icon("plus") }}{{ _("Add time range") }}</button>
+                <template id="range-template-{{ day }}">{{ range_row(day, "__INDEX__", None) }}</template>
+              </div>
             </div>
+            {% endfor %}
           </div>
-          {% endfor %}
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <h3 class="card-title">{{ _("Holidays and closing days") }}</h3>
-            <div class="card-subtitle">{{ _("Closed all day, whatever the weekly hours say. Days that move every year, like Easter, are entered once per year.") }}</div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div id="holidays">{% for h in values.holidays or [] %}{{ holiday_row(loop.index0, h) }}{% endfor %}</div>
-          <button type="button" class="btn mt-2" data-add-row="#holiday-template" data-into="#holidays">{{ icon("plus") }}{{ _("Add day") }}</button>
-          <template id="holiday-template">{{ holiday_row("__INDEX__", None) }}</template>
-        </div>
-      </div>
-
-      <div class="card mt-3">
-        <div class="card-header">
-          <div>
-            <h3 class="card-title">{{ _("Special periods") }}</h3>
-            <div class="card-subtitle">{{ _("Take precedence over holidays and the weekly hours: the first period in this list that is on and whose days include today sends calls to its destination. Without days, a period applies whenever it is on, e.g. emergency routing.") }}</div>
-          </div>
-        </div>
-        <div class="card-body">
-          {% if (errors or {}).get("specials") %}<div class="alert alert-danger">{{ errors.get("specials") }}</div>{% endif %}
-          <div class="alert alert-info">{{ icon("bulb", "me-1") }} {{ _("Shorter opening hours, e.g. over Christmas: create separate business hours with those times and choose them as the destination of the period. They then decide between open and closed.") }}</div>
-          <div id="specials" class="hours-specials" data-sortable='{"handle": "[data-sortable-handle]", "animation": 150}'>{% for sp in values.specials or [] %}{{ special_row(loop.index0, sp) }}{% endfor %}</div>
-          <button type="button" class="btn mt-2" data-add-row="#special-template" data-into="#specials">{{ icon("plus") }}{{ _("Add special period") }}</button>
-          <template id="special-template">{{ special_row("__INDEX__", None) }}</template>
-          <div class="form-hint mt-2">{{ _("The feature code switches the period on or off; a phone key (BLF) on it is lit while the period is on.") }} {{ _("Saved periods are switched on and off at the top of the page.") }}</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-lg-4">
-      <div class="card mb-3">
-        <div class="card-header"><h3 class="card-title">{{ _("Routing") }}</h3></div>
-        <div class="card-body">
-          {{ input("name", _("Name"), values, errors, required=True) }}
-          {{ input("description", _("Description"), values, errors) }}
-          {{ dest_select("open_dest", _("When open"), dest_value(values.open_dest_type, values.open_dest_id) if values.open_dest_type else "", choices, errors) }}
-          {{ dest_select("closed_dest", _("When closed"), dest_value(values.closed_dest_type, values.closed_dest_id) if values.closed_dest_type else "hangup", choices, errors) }}
-          {{ input("feature_code", _("Feature code"), values, errors, placeholder="*31", attrs='inputmode="tel" data-mask="dialcode"', help=_("Optional. Dialled on an internal phone, it switches to the opposite state until the next change, at midnight at the latest; dialled again, it returns to “Automatic”. It also ends a permanent mode set here. A phone key (BLF) on this code shows the state: lit means closed.")) }}
-        </div>
-        {{ submit(_("Create") if is_new else _("Save"), cancel="/dialplan/hours") }}
-      </div>
-
-      <div class="card">
-        <div class="card-header"><div><h3 class="card-title">{{ _("Week at a glance") }}</h3><div class="card-subtitle">{{ _("Green: open.") }}{% if not is_new %} {{ _("The line is now.") }}{% endif %}</div></div></div>
-        <div class="card-body">
-          {% for day in range(7) %}
-          <div class="hours-week-row{% if day == today %} is-today{% endif %}">
-            <span>{{ _(weekdays[day])[:3] }}</span>
-            <div class="hours-track">
-              {% for b in week[day].bars %}<span class="hours-bar" style="left: {{ b.left }}%; width: {{ b.width }}%"></span>{% endfor %}
-              {% if day == today and not is_new %}<span class="hours-now" style="left: {{ now_pct }}%"></span>{% endif %}
+          <div class="col-lg-4">
+            <h4 class="mb-1">{{ _("Week at a glance") }}</h4>
+            <div class="text-secondary small mb-2">{{ _("Green: open.") }}{% if not is_new %} {{ _("The line is now.") }}{% endif %}</div>
+            {% for day in range(7) %}
+            <div class="hours-week-row{% if day == today %} is-today{% endif %}">
+              <span>{{ _(weekdays[day])[:3] }}</span>
+              <div class="hours-track">
+                {% for b in week[day].bars %}<span class="hours-bar" style="left: {{ b.left }}%; width: {{ b.width }}%"></span>{% endfor %}
+                {% if day == today and not is_new %}<span class="hours-now" style="left: {{ now_pct }}%"></span>{% endif %}
+              </div>
             </div>
+            {% endfor %}
+            <div class="hours-week-row hours-ticks"><span></span><div><span>0</span><span>6</span><span>12</span><span>18</span><span>24</span></div></div>
           </div>
-          {% endfor %}
-          <div class="hours-week-row hours-ticks"><span></span><div><span>0</span><span>6</span><span>12</span><span>18</span><span>24</span></div></div>
         </div>
       </div>
+
+      <div class="tab-pane{% if active == "holidays" %} active show{% endif %}" id="tab-holidays" role="tabpanel">
+        <p class="text-secondary">{{ _("Closed all day, whatever the weekly hours say. Days that move every year, like Easter, are entered once per year.") }}</p>
+        <div id="holidays">{% for h in values.holidays or [] %}{{ holiday_row(loop.index0, h) }}{% endfor %}</div>
+        <button type="button" class="btn mt-2" data-add-row="#holiday-template" data-into="#holidays">{{ icon("plus") }}{{ _("Add day") }}</button>
+        <template id="holiday-template">{{ holiday_row("__INDEX__", None) }}</template>
+      </div>
+
+      <div class="tab-pane{% if active == "specials" %} active show{% endif %}" id="tab-specials" role="tabpanel">
+        <p class="text-secondary">{{ _("Take precedence over holidays and the weekly hours: the first period in this list that is on and whose days include today sends calls to its destination. Without days, a period applies whenever it is on, e.g. emergency routing.") }}</p>
+        {% if (errors or {}).get("specials") %}<div class="alert alert-danger">{{ errors.get("specials") }}</div>{% endif %}
+        <div class="alert alert-info">{{ icon("bulb", "me-1") }} {{ _("Shorter opening hours, e.g. over Christmas: create separate business hours with those times and choose them as the destination of the period. They then decide between open and closed.") }}</div>
+        <div id="specials" class="hours-specials" data-sortable='{"handle": "[data-sortable-handle]", "animation": 150}'>{% for sp in values.specials or [] %}{{ special_row(loop.index0, sp) }}{% endfor %}</div>
+        <button type="button" class="btn mt-2" data-add-row="#special-template" data-into="#specials">{{ icon("plus") }}{{ _("Add special period") }}</button>
+        <template id="special-template">{{ special_row("__INDEX__", None) }}</template>
+        <div class="form-hint mt-2">{{ _("The feature code switches the period on or off; a phone key (BLF) on it is lit while the period is on.") }} {{ _("Saved periods are switched on and off at the top of the page.") }}</div>
+      </div>
+
+      {% if year %}
+      <div class="tab-pane" id="tab-year" role="tabpanel">
+        {% include "partials/hours_year.html" %}
+      </div>
+      {% endif %}
     </div>
   </div>
+  {{ submit(_("Create") if is_new else _("Save"), cancel="/dialplan/hours") }}
 </form>
-
 {% endblock %}
