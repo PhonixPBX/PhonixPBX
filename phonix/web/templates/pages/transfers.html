@@ -28,4 +28,16 @@
   </div>
   {{ submit() }}
 </form>
+
+<form method="post" action="/dialplan/transfers/outgoing" class="card mt-3" id="plus">
+  {{ csrf() }}
+  <div class="card-body">
+    <h3 class="card-title">{{ _("Numbers with +") }}</h3>
+    {{ form_errors(plus_errors) }}
+    <div class="row">
+      <div class="col-md-4">{{ input("plus_replacement", _("Replace a leading + with"), plus_values, plus_errors, attrs='data-mask="dialcode"', help=_("A number dialled as +41 44 123 45 67 is dialled as 0041441234567 with 00, before the dial patterns are matched. Use 000 with an outside line prefix 0, 011 in North America. Empty: numbers with + are not dialled.")) }}</div>
+    </div>
+  </div>
+  {{ submit() }}
+</form>
 {% endblock %}

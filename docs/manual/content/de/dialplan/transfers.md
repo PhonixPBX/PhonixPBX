@@ -1,9 +1,9 @@
 ---
 title: "Vermittlung & Parken"
 weight: 50
-description: "Funktionscodes zum Vermitteln, Übernehmen und Beenden von Gesprächen sowie die Nummern zum Parken."
+description: "Funktionscodes zum Vermitteln, Übernehmen und Beenden von Gesprächen die Nummern zum Parken und die Wahl von Nummern mit führendem +."
 ---
-Unter *Wählplan → Vermittlung & Parken* legen Sie die Funktionscodes fest, die Telefonbenutzer während eines Gesprächs wählen, um es zu vermitteln oder zu beenden, den Code zur Übernahme eines klingelnden Telefons und die Nummern zum Parken von Gesprächen. Die Codes werden auf der Telefontastatur eingegeben und funktionieren daher an jedem Telefon, unabhängig von dessen eigenen Vermittlungstasten.
+Unter *Wählplan → Vermittlung & Parken* legen Sie die Funktionscodes fest, die Telefonbenutzer während eines Gesprächs wählen, um es zu vermitteln oder zu beenden, den Code zur Übernahme eines klingelnden Telefons, die Nummern zum Parken von Gesprächen und wodurch ein führendes `+` in einer gewählten Nummer ersetzt wird. Die Codes werden auf der Telefontastatur eingegeben und funktionieren daher an jedem Telefon, unabhängig von dessen eigenen Vermittlungstasten.
 
 Mit **Speichern** sichern Sie die Einstellungen. Sie werden wirksam, sobald Sie sie übernehmen, siehe [Änderungen übernehmen]({{< relref "/getting-started/_index.md#apply" >}}). Wie Benutzer die Codes wählen, ist unter [Telefonieren mit PhonixPBX]({{< relref "/phone-users/_index.md#transfer" >}}) beschrieben.
 
@@ -39,3 +39,19 @@ Beim Parken wird ein Gespräch auf einem nummerierten Parkplatz gehalten, sodass
 Um ein Gespräch zu parken, vermitteln Sie es an die Parknummer (zum Beispiel mit **Vermittlung ohne Rückfrage**, `##700`) und merken sich den angesagten Parkplatz. Um es zu übernehmen, wählen Sie die Nummer des Parkplatzes an einem beliebigen Telefon. Der geparkte Anrufer hört Wartemusik.
 
 Die Parknummer und die Parkplätze sind reserviert: Telefone, Rufgruppen und andere Objekte können diese Nummern nicht verwenden.
+
+## Nummern mit + {#plus}
+
+Telefone, Adressbücher und Anruflisten zeigen Nummern oft in internationaler Form, zum Beispiel `+41 44 123 45 67`. Ein Wählmuster kann das `+` nicht erfassen (es trennt das hinzuzufügende Präfix ab, siehe [Wählmuster]({{< relref "/accounts/providers.md#dial-patterns" >}})). Darum ersetzt die Telefonanlage ein führendes `+` zuerst und wählt die Nummer dann erneut: zuerst die internen Nummern, dann die Wählmuster. Das gilt auch für Click-to-Call und für Rufumleitungen auf solche Nummern.
+
+Die Einstellung steht in der Karte **Nummern mit +**:
+
+| Feld | Bedeutung | Standard |
+|---|---|---|
+| Führendes + ersetzen durch | Was aus einem führenden `+` wird. Leer: Nummern mit `+` werden nicht gewählt. | `00` |
+
+| Einrichtung | Wert | Das Telefon wählt | Erneut gewählt als |
+|---|---|---|---|
+| Internationale Vorwahl `00` (die meisten Länder Europas) | `00` | `+41441234567` | `0041441234567` |
+| Mit Amtsholung `0` (Muster wie `0\|00X.`) | `000` | `+41441234567` | `00041441234567` |
+| Nordamerika | `011` | `+41441234567` | `01141441234567` |

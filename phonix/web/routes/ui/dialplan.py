@@ -195,16 +195,44 @@ register(GROUPS)
 # --- transfers & parking ----------------------------------------------------------------
 
 
+def _transfers_page(
+    request: Request,
+    db: Session,
+    values: dict[str, Any] | None = None,
+    errors: dict[str, str] | None = None,
+    plus_values: dict[str, Any] | None = None,
+    plus_errors: dict[str, str] | None = None,
+    status_code: int = 200,
+) -> Response:
+    return page(
+        request,
+        "pages/transfers.html",
+        status_code=status_code,
+        values=values if values is not None else st.load(db, st.FeatureSettings).model_dump(),
+        errors=errors or {},
+        plus_values=plus_values if plus_values is not None else st.load(db, st.OutgoingSettings).model_dump(),
+        plus_errors=plus_errors or {},
+    )
+
+
 @router.get("/transfers")
 def transfers(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
-    return page(request, "pages/transfers.html", values=st.load(db, st.FeatureSettings).model_dump())
+    return _transfers_page(request, db)
 
 
 @router.post("/transfers")
 async def transfers_save(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
     saved, values, errors = await save_settings_form(request, db, st.FeatureSettings, ("dialplan",))
     if not saved:
-        return page(request, "pages/transfers.html", status_code=422, values=values, errors=errors)
+        return _transfers_page(request, db, values, errors, status_code=422)
+    return redirect(request, "/dialplan/transfers")
+
+
+@router.post("/transfers/outgoing")
+async def outgoing_save(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
+    saved, values, errors = await save_settings_form(request, db, st.OutgoingSettings, ("dialplan",))
+    if not saved:
+        return _transfers_page(request, db, plus_values=values, plus_errors=errors, status_code=422)
     return redirect(request, "/dialplan/transfers")
 
 

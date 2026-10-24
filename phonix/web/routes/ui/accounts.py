@@ -12,7 +12,6 @@ from fastapi.responses import Response
 from sqlalchemy.orm import Session
 from starlette.datastructures import FormData
 
-from phonix.core import settings as st
 from phonix.core.models import User
 from phonix.i18n import N_, _
 from phonix.services import phones as phone_svc
@@ -20,14 +19,7 @@ from phonix.services import providers as provider_svc
 from phonix.services import status as status_svc
 from phonix.services.common import NotFound, ServiceError
 from phonix.web.deps import form_to_dict, get_db, ui_user
-from phonix.web.routes.ui.common import (
-    dirty_trigger,
-    model_values,
-    page,
-    redirect,
-    save_settings_form,
-    service_errors,
-)
+from phonix.web.routes.ui.common import dirty_trigger, model_values, page, redirect, service_errors
 from phonix.web.templating import flash, render
 
 router = APIRouter(prefix="/accounts")
@@ -182,35 +174,9 @@ def phone_toggle(
 # --- providers ------------------------------------------------------------------
 
 
-def _provider_list(
-    request: Request,
-    db: Session,
-    values: dict[str, Any] | None = None,
-    errors: dict[str, str] | None = None,
-    status_code: int = 200,
-) -> Response:
-    return page(
-        request,
-        "pages/providers.html",
-        status_code=status_code,
-        providers=provider_svc.list_providers(db),
-        techs=TECH_LABELS,
-        values=values if values is not None else st.load(db, st.OutgoingSettings).model_dump(),
-        errors=errors or {},
-    )
-
-
 @router.get("/providers")
 def provider_list(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
-    return _provider_list(request, db)
-
-
-@router.post("/providers/outgoing")
-async def outgoing_save(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
-    saved, values, errors = await save_settings_form(request, db, st.OutgoingSettings, ("dialplan",))
-    if not saved:
-        return _provider_list(request, db, values, errors, status_code=422)
-    return redirect(request, "/accounts/providers")
+    return page(request, "pages/providers.html", providers=provider_svc.list_providers(db), techs=TECH_LABELS)
 
 
 def _provider_form(

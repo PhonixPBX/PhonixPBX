@@ -146,7 +146,6 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 **Accounts**
 - Phones: PJSIP, IAX, External
 - Providers: PJSIP trunk with registration, IAX trunk
-- Numbers with a leading `+`: the settings group `outgoing` (`plus_replacement`, default `00`, empty = off, digits/`*`/`#`, max 16) is edited on *Accounts → Providers*. Every `phone-<ext>` context gets `_+X.` → `Goto(phone-<ext>,<replacement>${EXTEN:1},1)`, so the number runs through the internal numbers and the dial patterns again. A dial pattern cannot match `+` because `+` separates its prefix to add. This also covers click-to-call and call forwarding.
 
 **Dialplan**
 - Applications, edited in a monospace auto-growing textarea (Tabler's Autosize; CodeMirror is not part of the Tabler-supported libraries) with server-side validation of every line
@@ -154,6 +153,7 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 - IVR menus (auto attendant): an announcement (uploaded audio, converted to 8 kHz, or an Asterisk sound), then one destination per key. The key options are reordered by drag and drop (or with up/down buttons); the order is the order of the announcement, and "Write from options" turns it into a recording script in the prompt language. Settings: wait time, repeats, destinations for no key and for an unknown key, direct dialling of extensions. A menu reached from outside (`ivr-<id>-pub`) only allows public direct dial and gives callers no transfer feature. A read-only call flow tree and a test call (Originate into the menu) are on the edit page. Text-to-speech is postponed (piper changed its licence and maintainers; no espeak-ng stopgap); `prompt_mode` leaves room for it.
 - Business hours: weekly time ranges, holidays (one-off or yearly) and a destination while open and while closed; usable as the destination of incoming routes and IVR keys. The live mode (automatic, open, closed) is runtime state in the Asterisk database (`phonix-hours/<id>`): the UI, `PUT /api/v1/business-hours/{id}/mode`, the MCP tool `set_business_hours_mode` and an optional feature code (closed ⇄ automatic) switch it immediately, without an apply. The dialplan uses `GotoIfTime()` (whose end minute is inclusive, so `17:30` becomes `17:29`) and compares the date for holidays.
 - Transfers/Features: feature codes and parking
+- Numbers with a leading `+`: the settings group `outgoing` (`plus_replacement`, default `00`, empty = off, digits/`*`/`#`, max 16) is edited on *Dialplan → Transfers & Parking*. Every `phone-<ext>` context gets `_+X.` → `Goto(phone-<ext>,<replacement>${EXTEN:1},1)`, so the number runs through the internal numbers and the dial patterns again. A dial pattern cannot match `+` because `+` separates its prefix to add. This also covers click-to-call and call forwarding.
 - The printable dialplan view stays
 
 **Services**

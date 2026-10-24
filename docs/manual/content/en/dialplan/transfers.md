@@ -1,9 +1,9 @@
 ---
 title: "Transfers & Parking"
 weight: 50
-description: "Feature codes for transferring, picking up and ending calls, and the call parking numbers."
+description: "Feature codes for transferring, picking up and ending calls, the call parking numbers and how numbers with a leading + are dialled."
 ---
-*Dialplan → Transfers & Parking* sets the feature codes that phone users dial during a call to transfer it or end it, the code for picking up a ringing phone, and the numbers used to park calls. The codes are typed on the phone's keypad, so they work on every phone, independent of its own transfer buttons.
+*Dialplan → Transfers & Parking* sets the feature codes that phone users dial during a call to transfer it or end it, the code for picking up a ringing phone, the numbers used to park calls, and what a leading `+` in a dialled number is replaced with. The codes are typed on the phone's keypad, so they work on every phone, independent of its own transfer buttons.
 
 Click **Save** to store the settings. They take effect after you apply them, see [Applying changes]({{< relref "/getting-started/_index.md#apply" >}}). How users dial the codes is described in [Using your phone]({{< relref "/phone-users/_index.md#transfer" >}}).
 
@@ -39,3 +39,19 @@ Parking puts a call on hold in a numbered slot, so that it can be picked up from
 To park a call, transfer it (for example with **Blind transfer**, `##700`) to the parking number and note the slot the PBX announces. To pick it up, dial the slot number from any phone. The parked caller hears music on hold.
 
 The parking number and the slots are reserved: phones, call groups and other objects cannot use these numbers.
+
+## Numbers with + {#plus}
+
+Phones, address books and call lists often show numbers in the international form, for example `+41 44 123 45 67`. A dial pattern cannot match the `+` (it separates the prefix to add, see [Dial patterns]({{< relref "/accounts/providers.md#dial-patterns" >}})). So the PBX first replaces a leading `+` and then dials the number again: internal numbers first, then the dial patterns. This also applies to click-to-call and to call forwarding to such numbers.
+
+The setting is in the card **Numbers with +**:
+
+| Field | Meaning | Default |
+|---|---|---|
+| Replace a leading + with | What a leading `+` becomes. Empty: numbers with `+` are not dialled. | `00` |
+
+| Setup | Value | The phone dials | Dialled again as |
+|---|---|---|---|
+| International prefix `00` (most of Europe) | `00` | `+41441234567` | `0041441234567` |
+| With an outside line prefix `0` (patterns like `0\|00X.`) | `000` | `+41441234567` | `00041441234567` |
+| North America | `011` | `+41441234567` | `01141441234567` |

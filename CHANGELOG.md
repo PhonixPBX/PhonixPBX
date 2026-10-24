@@ -4,6 +4,13 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- The card **Numbers with +** (**Replace a leading + with**) moved from *Accounts → Providers* to
+  *Dialplan → Transfers & Parking*. The setting itself is unchanged.
+
 ## [1.9.0rc2] - 2026-10-23
 
 ### Added

@@ -192,15 +192,16 @@ def test_outgoing_settings_form(client):
     from phonix.services.common import dirty_areas
 
     login(client)
-    page = client.get("/accounts/providers").text
+    assert 'name="plus_replacement"' not in client.get("/accounts/providers").text
+    page = client.get("/dialplan/transfers").text
     assert 'name="plus_replacement"' in page and 'value="00"' in page
-    token = csrf(client, "/accounts/providers")
+    token = csrf(client, "/dialplan/transfers")
     r = client.post(
-        "/accounts/providers/outgoing", data={"csrf_token": token, "plus_replacement": "+0"}, follow_redirects=False
+        "/dialplan/transfers/outgoing", data={"csrf_token": token, "plus_replacement": "+0"}, follow_redirects=False
     )
     assert r.status_code == 422 and "is-invalid" in r.text
     r = client.post(
-        "/accounts/providers/outgoing", data={"csrf_token": token, "plus_replacement": "000"}, follow_redirects=False
+        "/dialplan/transfers/outgoing", data={"csrf_token": token, "plus_replacement": "000"}, follow_redirects=False
     )
     assert r.status_code == 303
     with session_scope() as s:
