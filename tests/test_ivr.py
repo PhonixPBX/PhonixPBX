@@ -570,6 +570,20 @@ def test_dialplan_no_gosub_to_deleted_hours(session, ids):
     assert f"Return(closed-{h.specials[0].id})" in _block(out, f"hours-{h.id}-auto")
 
 
+def test_dialplan_special_never_routes_to_itself(session, ids):
+    h = hours.create_hours(session, _hours(name="Shop", specials=[{"name": "Loop", "dest_type": "hangup"}]))
+    # only possible by editing the database directly
+    sp = h.specials[0]
+    sp.dest_type, sp.dest_id = "hours", h.id
+    session.flush()
+    out = dialplan.generate(build_snapshot(session))
+    for ctx in (f"hours-{h.id}", f"hours-{h.id}-pub"):
+        block = _block(out, ctx)
+        assert f"Goto(hours-{h.id}" not in block
+        period = block.split("Special period Loop", 1)[1]
+        assert "Hangup()" in period.split("\n", 2)[1]
+
+
 def test_dialplan_uploaded_prompt_and_unsafe_names(session, ids, runtime):
     prompt = media.add_media(session, "ivr_prompt", "Welcome.wav", _wav())
     menu = ivr.create_menu(

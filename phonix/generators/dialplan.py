@@ -815,7 +815,11 @@ class DialplanBuilder:
                 steps += self.dest_steps(hours.closed_dest_type, hours.closed_dest_id, public)
                 for sp in hours.specials:
                     steps.append(f"@p{sp.id} NoOp(Special period {safe_text(sp.name)})")
-                    steps += self.dest_steps(sp.dest_type, sp.dest_id, public)
+                    if sp.dest_type == "hours" and self.special_target(hours, sp) is None:
+                        # never back into these business hours (only by editing the database)
+                        steps += self.dest_steps("hangup", None, public)
+                    else:
+                        steps += self.dest_steps(sp.dest_type, sp.dest_id, public)
                 ctx.ext("s", steps)
 
     # -- providers --------------------------------------------------------------
