@@ -421,6 +421,81 @@ def test_live_status_specials(session, ids, fake_ami):
     assert live["specials"][0]["active"] is live["specials"][0]["applies"] is True
 
 
+def test_reset_runtime(session, ids, fake_ami):
+    h = hours.create_hours(
+        session,
+        _hours(
+            feature_code="*95",
+            specials=[
+                {"name": "Emergency", "enabled": True, "feature_code": "*96", "dest_type": "hangup"},
+                {"name": "Xmas", "enabled": False, "dest_type": "hangup"},
+            ],
+        ),
+    )
+    emergency, xmas = (sp.id for sp in h.specials)
+    office = ids["office"]
+    # left over from before the restore: they must not attach to the restored objects
+    fake_ami.astdb = {
+        ("phonix-hours", str(h.id)): "open",
+        ("phonix-hours", str(office)): "closed",
+        ("phonix-hours-tmp", str(h.id)): "closed:2026-10-24",
+        ("phonix-special", str(emergency)): "0",
+        ("phonix-special", str(xmas)): "1",
+        ("phonix-special", "999"): "1",
+        ("phonix-other", "1"): "kept",
+    }
+    hours.reset_runtime(session)
+    assert fake_ami.astdb == {
+        ("phonix-special", str(emergency)): "1",
+        ("phonix-special", str(xmas)): "0",
+        ("phonix-other", "1"): "kept",
+    }
+    commands = [a[1].get("Command") for a in fake_ami.actions]
+    assert f"devstate change Custom:phonix-special-{emergency} INUSE" in commands
+    assert f"devstate change Custom:phonix-hours-{h.id} INUSE" in commands
+
+
+def test_reset_runtime_without_asterisk(session, ids):
+    hours.reset_runtime(session)  # best effort: never fails
+
+
+def test_delete_forgets_runtime_state(session, ids, fake_ami):
+    h = hours.create_hours(
+        session,
+        _hours(
+            specials=[
+                {"name": "Emergency", "enabled": True, "dest_type": "hangup"},
+                {"name": "Xmas", "enabled": False, "dest_type": "hangup"},
+            ],
+        ),
+    )
+    emergency, xmas = (sp.id for sp in h.specials)
+    office = ids["office"]
+    fake_ami.astdb = {
+        ("phonix-hours", str(h.id)): "open",
+        ("phonix-hours-tmp", str(h.id)): "closed:2026-10-24",
+        ("phonix-special", str(emergency)): "1",
+        ("phonix-special", str(xmas)): "0",
+        ("phonix-hours", str(office)): "closed",
+    }
+    # a period removed in a save loses its switch, the others keep theirs
+    data = hours.to_dict(h)
+    data["specials"] = [sp for sp in data["specials"] if sp["id"] == xmas]
+    hours.update_hours(session, h.id, _hours(**data))
+    assert ("phonix-special", str(emergency)) not in fake_ami.astdb
+    assert fake_ami.astdb[("phonix-special", str(xmas))] == "0"
+    assert fake_ami.astdb[("phonix-hours", str(h.id))] == "open"
+
+    hours.delete_hours(session, h.id)
+    assert fake_ami.astdb == {("phonix-hours", str(office)): "closed"}
+
+
+def test_delete_without_asterisk(session, ids):
+    h = hours.create_hours(session, _hours(specials=[{"name": "Emergency", "dest_type": "hangup"}]))
+    hours.update_hours(session, h.id, _hours(**{**hours.to_dict(h), "specials": []}))
+    hours.delete_hours(session, h.id)
+
+
 def test_live_mode_without_asterisk(session, ids):
     assert hours.live_status(session, ids["office"])["mode"] is None
     with pytest.raises(ServiceError, match="Asterisk is not running"):

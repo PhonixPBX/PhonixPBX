@@ -300,3 +300,15 @@ def test_report_rendering(initialized: config.RuntimeConfig) -> None:
     data = report.to_dict()
     assert data["summary"]["error"] == len(report.errors)
     assert data["counts"]["phones"]["skip"] == 1
+
+
+def test_replace_import_resets_business_hours_runtime(initialized: config.RuntimeConfig, monkeypatch) -> None:
+    from phonix.services import hours
+
+    calls: list[object] = []
+    monkeypatch.setattr(hours, "reset_runtime", lambda session: calls.append(session))
+    assert importer.import_bytes(fixture("synthetic-2.1.xml"), dry_run=True).ok
+    assert importer.import_bytes(fixture("synthetic-2.1.xml"), mode="merge").ok
+    assert calls == []
+    assert importer.import_bytes(fixture("synthetic-2.1.xml"), mode="replace").ok
+    assert len(calls) == 1

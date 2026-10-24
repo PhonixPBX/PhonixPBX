@@ -11,8 +11,9 @@ without an apply, and it survives restarts like call forwarding.
 from __future__ import annotations
 
 import datetime as dt
+import logging
 import re
-from collections.abc import Mapping
+from collections.abc import Collection, Mapping
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
@@ -28,6 +29,8 @@ from phonix.generators.dialplan import HOURS_DB, OVERRIDE_DB, SPECIAL_DB, hours_
 from phonix.i18n import N_, _
 from phonix.services import destinations as dst
 from phonix.services.common import NotFound, ServiceError, audit, diff_dicts, ensure_extension_free, mark_dirty
+
+log = logging.getLogger(__name__)
 
 ASTDB_FAMILY = HOURS_DB
 MODES = ("auto", "open", "closed")
@@ -298,6 +301,7 @@ def update_hours(session: Session, hours_id: int, data: BusinessHoursIn, user: s
     audit(session, user, "update", "hours", hours.id, hours.name, diff_dicts(before, to_dict(hours)))
     mark_dirty(session, "dialplan")
     was = {sp["id"]: sp["enabled"] for sp in before["specials"]}
+    _forget_runtime(specials=set(was) - {sp.id for sp in hours.specials})
     _push_special_state(session, [sp for sp in hours.specials if was.get(sp.id) != sp.enabled])
     return hours
 
@@ -319,13 +323,51 @@ def _push_special_state(session: Session, changed: list[BusinessHoursSpecial]) -
         pass
 
 
+def _forget_runtime(hours: Collection[int] = (), specials: Collection[int] = ()) -> None:
+    """Remove the runtime state of deleted business hours and periods, so a reused id starts clean.
+
+    Best effort: the minute sync removes entries of unknown ids when Asterisk is down now.
+    """
+    commands = [f"database del {family} {i}" for i in hours for family in (ASTDB_FAMILY, OVERRIDE_DB)]
+    commands += [f"database del {SPECIAL_DB} {i}" for i in specials]
+    if not commands:
+        return
+    try:
+        with ami.AmiClient(timeout=3.0) as client:
+            for command in commands:
+                client.command(command)
+    except (ami.AmiError, OSError):
+        pass
+
+
 def delete_hours(session: Session, hours_id: int, user: str = "") -> None:
     hours = get_hours(session, hours_id)
     audit(session, user, "delete", "hours", hours.id, hours.name)
     dst.forget(session, "hours", hours.id)
+    specials = [sp.id for sp in hours.specials]
     session.delete(hours)
     session.flush()
     mark_dirty(session, "dialplan")
+    _forget_runtime(hours=[hours_id], specials=specials)
+
+
+def reset_runtime(session: Session) -> None:
+    """After a restore or import: drop all runtime state and switch the periods as configured.
+
+    The database ids start again at 1, so permanent modes, overrides and switches of the
+    replaced configuration would otherwise attach to the restored objects. Best effort: a
+    restore never fails because Asterisk is not running.
+    """
+    try:
+        with ami.AmiClient(timeout=3.0) as client:
+            for family in (ASTDB_FAMILY, OVERRIDE_DB, SPECIAL_DB):
+                client.command(f"database deltree {family}")
+            for h in list_hours(session):
+                for sp in h.specials:
+                    client.command(f"database put {SPECIAL_DB} {sp.id} {int(sp.enabled)}")
+            refresh_lamps(session, client, read_runtime(client), dt.datetime.now())
+    except (ami.AmiError, OSError) as exc:
+        log.warning("business hours: runtime state not reset, Asterisk unavailable (%s)", exc)
 
 
 # --- schedule and live mode -------------------------------------------------------------

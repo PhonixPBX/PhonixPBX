@@ -38,7 +38,7 @@ import zstandard
 from phonix import __version__, config
 from phonix.core import db
 from phonix.i18n import _
-from phonix.services import configdoc, privileged
+from phonix.services import configdoc, hours, privileged
 from phonix.services.common import ServiceError, audit
 
 log = logging.getLogger(__name__)
@@ -292,6 +292,8 @@ def restore(source: Path, user: str = "", keep: Collection[str] = ()) -> Restore
             if old is not None:
                 shutil.rmtree(old, ignore_errors=True)
 
+    with db.session_scope() as session:
+        hours.reset_runtime(session)
     result = RestoreResult(manifest=manifest, counts=counts, files=names, kept=sorted(keep))
     try:
         with db.session_scope() as session:

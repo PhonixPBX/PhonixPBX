@@ -83,7 +83,7 @@ Das Umschalten des Modus beendet auch eine vorübergehende Umschaltung mit der [
 
 Sind Sonderzeiträume eingerichtet, enthält der Kasten unter **Sonderzeiträume** zusätzlich einen Schalter je Zeitraum. Ein Klick schaltet den Zeitraum sofort ein oder aus, ohne dass die Konfiguration übernommen werden muss. Ein eingeschalteter Zeitraum gilt nur an seinen Tagen, sofern er welche hat; der Tooltip zeigt *Ein, gilt heute*, *Ein, aber nicht heute* oder *Aus*. Dieselben Schalter finden Sie in der Liste.
 
-> Der Modus und die Abwesenheitstaste sind Laufzeitzustand und nicht Teil eines Backups. Sonderzeiträume werden mit ihrem Ein/Aus-Zustand gesichert. Prüfen Sie nach dem Wiederherstellen eines Backups den Modus und die Schalter der Sonderzeiträume.
+> Der Modus und die Abwesenheitstaste sind Laufzeitzustand und nicht Teil eines Backups. Das Wiederherstellen eines Backups (oder der Import einer Konfiguration) setzt alle Geschäftszeiten auf **Automatisch** zurück und beendet jeden Zustand der Abwesenheitstaste; Sonderzeiträume werden so ein- oder ausgeschaltet, wie sie im Backup gesichert wurden.
 
 ## Welche Regel gilt {#precedence}
 

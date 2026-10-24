@@ -83,7 +83,7 @@ Switching the mode also ends a temporary switch made with the [out-of-office key
 
 If special periods are configured, the box also has one switch per period under **Special periods**. A click switches the period on or off immediately, without applying the configuration. A period that is on applies only on its days, if it has any; the tooltip says *On, applies today*, *On, but not today* or *Off*. The same switches are on the list page.
 
-> The mode and the out-of-office key are runtime state and are not part of a backup. Special periods are saved with their on/off state. After restoring a backup, check the mode and the special period switches.
+> The mode and the out-of-office key are runtime state and are not part of a backup. Restoring a backup (or importing a configuration) sets all business hours back to **Automatic** and ends every out-of-office key state; special periods are switched on or off as they were saved in the backup.
 
 ## Which rule applies {#precedence}
 
