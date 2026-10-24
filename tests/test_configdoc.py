@@ -273,3 +273,27 @@ def test_version_4_document_imports(session, initialized):
     for h in doc["business_hours"]:
         h.pop("specials", None)
     _import(doc, initialized.media_dir)
+
+
+def test_import_replaces_specials_and_ignores_document_ids(session, initialized):
+    from phonix.core.models import BusinessHoursSpecial
+    from phonix.services import hours as hours_svc
+
+    doc = _hours_with_specials(session)
+    old = {sp.id: sp.name for sp in session.query(BusinessHoursSpecial)}
+    assert 1 in old
+    session.close()
+    # the document's special with id 1 has another name than the one in the database
+    shop = next(h for h in doc["business_hours"] if h["name"] == "Shop")
+    shop["specials"] = [{**shop["specials"][0], "id": 1, "name": "Renamed", "feature_code": ""}]
+    _import(doc, initialized.media_dir)
+
+    with db.session_scope() as s:
+        rows = s.query(BusinessHoursSpecial).all()
+        # import replaces the configuration: exactly the document's period, none of the old ones
+        assert [r.name for r in rows] == ["Renamed"]
+        assert old[1] == "Inventory"
+        assert {h.name: [sp.name for sp in h.specials] for h in hours_svc.list_hours(s)} == {
+            "Holiday desk": [],
+            "Shop": ["Renamed"],
+        }
