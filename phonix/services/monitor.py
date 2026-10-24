@@ -10,13 +10,14 @@ from __future__ import annotations
 
 import ipaddress
 import logging
+import threading
 import time
 from collections import defaultdict, deque
 
 from phonix import ami
 from phonix.core import settings as st
 from phonix.core.db import session_scope
-from phonix.services import privileged
+from phonix.services import hours_sync, privileged
 
 log = logging.getLogger(__name__)
 
@@ -95,6 +96,7 @@ def _load(previous: Banner | None = None) -> Banner | None:
 
 
 def run_forever() -> None:
+    threading.Thread(target=hours_sync.run_forever, name="hours-sync", daemon=True).start()
     banner: Banner | None = None
     while True:
         banner = _load(banner)
