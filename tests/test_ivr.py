@@ -17,7 +17,7 @@ from phonix.generators import dialplan
 from phonix.generators.base import build_snapshot
 from phonix.services import dialplan as dp
 from phonix.services import hours, ivr, media, phones, users
-from phonix.services.common import ServiceError
+from phonix.services.common import NotFound, ServiceError, clear_dirty, dirty_areas
 
 
 def _menu(**kw) -> ivr.IvrMenuIn:
@@ -745,3 +745,41 @@ def test_deleting_target_hours_falls_back_to_hangup(session, ids):
     session.expire_all()
     period = hours.get_hours(session, a.id).specials[0]
     assert (period.dest_type, period.dest_id) == ("hangup", None)
+
+
+def test_set_mode_clears_override_and_sets_lamp(session, ids, fake_ami):
+    office = ids["office"]
+    fake_ami.astdb[("phonix-hours-tmp", str(office))] = f"open:{dt.date.today()}"
+    hours.set_mode(session, office, "closed", "admin")
+    assert ("phonix-hours-tmp", str(office)) not in fake_ami.astdb
+    assert ("Command", {"Command": f"devstate change Custom:phonix-hours-{office} INUSE"}) in fake_ami.actions
+
+
+def test_set_special_active(session, ids, fake_ami):
+    h = hours.create_hours(
+        session, _hours(specials=[{"name": "Emergency", "dest_type": "hangup", "feature_code": "*70"}])
+    )
+    sid = h.specials[0].id
+    clear_dirty(session)
+    hours.set_special_active(session, h.id, sid, True, "admin")
+    assert fake_ami.astdb[("phonix-special", str(sid))] == "1"
+    assert hours.get_hours(session, h.id).specials[0].enabled is True
+    assert ("Command", {"Command": f"devstate change Custom:phonix-special-{sid} INUSE"}) in fake_ami.actions
+    assert dirty_areas(session) == []
+    with pytest.raises(NotFound):
+        hours.set_special_active(session, ids["office"], sid, False, "admin")
+
+
+def test_set_special_active_without_asterisk(session, ids):
+    h = hours.create_hours(session, _hours(specials=[{"name": "E", "dest_type": "hangup"}]))
+    with pytest.raises(ServiceError, match="Asterisk is not running"):
+        hours.set_special_active(session, h.id, h.specials[0].id, True, "admin")
+
+
+def test_update_hours_pushes_special_state(session, ids, fake_ami):
+    h = hours.create_hours(session, _hours(specials=[{"name": "E", "dest_type": "hangup"}]))
+    data = hours.BusinessHoursIn.model_validate(
+        {**hours.to_dict(h), "specials": [{**hours.to_dict(h)["specials"][0], "enabled": True}]}
+    )
+    hours.update_hours(session, h.id, data, "admin")
+    assert fake_ami.astdb[("phonix-special", str(h.specials[0].id))] == "1"

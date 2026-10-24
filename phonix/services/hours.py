@@ -24,7 +24,7 @@ from phonix import ami
 from phonix.core import settings as st
 from phonix.core import validation as v
 from phonix.core.models import BusinessHours, BusinessHoursHoliday, BusinessHoursRange, BusinessHoursSpecial
-from phonix.generators.dialplan import HOURS_DB, OVERRIDE_DB, SPECIAL_DB
+from phonix.generators.dialplan import HOURS_DB, OVERRIDE_DB, SPECIAL_DB, hours_device, special_device
 from phonix.i18n import N_, _
 from phonix.services import destinations as dst
 from phonix.services.common import NotFound, ServiceError, audit, diff_dicts, ensure_extension_free, mark_dirty
@@ -297,7 +297,20 @@ def update_hours(session: Session, hours_id: int, data: BusinessHoursIn, user: s
     session.flush()
     audit(session, user, "update", "hours", hours.id, hours.name, diff_dicts(before, to_dict(hours)))
     mark_dirty(session, "dialplan")
+    _push_special_state(hours)
     return hours
+
+
+def _push_special_state(hours: BusinessHours) -> None:
+    """Write the switches saved in the form to the Asterisk database (best effort, the monitor reconciles)."""
+    if not hours.specials:
+        return
+    try:
+        with ami.AmiClient(timeout=3.0) as client:
+            for sp in hours.specials:
+                client.command(f"database put {SPECIAL_DB} {sp.id} {int(sp.enabled)}")
+    except (ami.AmiError, OSError):
+        pass
 
 
 def delete_hours(session: Session, hours_id: int, user: str = "") -> None:
@@ -444,6 +457,20 @@ def get_mode(hours_id: int) -> str | None:
     return value if value in ("open", "closed") else "auto"
 
 
+def refresh_lamps(session: Session, client: ami.AmiClient, rt: Runtime, now: dt.datetime) -> None:
+    """Set the phone lamps: ``INUSE`` = closed / switched on, ``NOT_INUSE`` = open / switched off."""
+    all_hours = list_hours(session)
+    others = {h.id: h for h in all_hours}
+    for h in all_hours:
+        if h.feature_code:
+            lamp = "NOT_INUSE" if status(h, rt, now, others)["open"] else "INUSE"
+            client.command(f"devstate change {hours_device(h.id)} {lamp}")
+        for sp in h.specials:
+            if sp.feature_code:
+                lamp = "INUSE" if special_on(sp, rt) else "NOT_INUSE"
+                client.command(f"devstate change {special_device(sp.id)} {lamp}")
+
+
 def set_mode(session: Session, hours_id: int, mode: str, user: str = "") -> str:
     hours = get_hours(session, hours_id)
     if mode not in MODES:
@@ -456,10 +483,30 @@ def set_mode(session: Session, hours_id: int, mode: str, user: str = "") -> str:
     try:
         with ami.AmiClient(timeout=3.0) as client:
             client.command(command)
+            # a permanent mode replaces a temporary override
+            client.command(f"database del {OVERRIDE_DB} {hours.id}")
+            refresh_lamps(session, client, read_runtime(client), dt.datetime.now())
     except (ami.AmiError, OSError) as exc:
         raise ServiceError(_("Asterisk is not running, the mode cannot be changed: %(error)s", error=str(exc))) from exc
     audit(session, user, "mode", "hours", hours.id, f"{hours.name}: {mode}")
     return mode
+
+
+def set_special_active(session: Session, hours_id: int, special_id: int, active: bool, user: str = "") -> bool:
+    """Switch a special period on or off immediately (runtime state, no apply)."""
+    hours = get_hours(session, hours_id)
+    special = next((sp for sp in hours.specials if sp.id == special_id), None)
+    if special is None:
+        raise NotFound(_("Special period not found"))
+    try:
+        with ami.AmiClient(timeout=3.0) as client:
+            client.command(f"database put {SPECIAL_DB} {special.id} {int(active)}")
+            refresh_lamps(session, client, read_runtime(client), dt.datetime.now())
+    except (ami.AmiError, OSError) as exc:
+        raise ServiceError(_("Asterisk is not running, the mode cannot be changed: %(error)s", error=str(exc))) from exc
+    special.enabled = active
+    audit(session, user, "special", "hours", hours.id, f"{hours.name}/{special.name}: {'on' if active else 'off'}")
+    return active
 
 
 def status(hours: BusinessHours, rt: Runtime, now: dt.datetime, others: Mapping[int, BusinessHours]) -> dict[str, Any]:
