@@ -424,3 +424,91 @@ def test_business_hours_mode_and_feature_code(pbx: Path) -> None:
         assert db_value("phonix-special", special.id) == "0"
         wait_until(lambda: hint_state("*32") == "Idle", "the special period lamp to go dark")
         wait_until(lambda: hint_state("*31") == "Idle", "the out-of-office lamp to go dark")
+
+
+def test_special_period_parity(pbx: Path) -> None:
+    """Dated and yearly periods and one leading to other business hours: dialplan and Python agree."""
+    today = dt.date.today()
+    day = dt.timedelta(days=1)
+    with db.session_scope() as session:
+        menu = ivr.list_menus(session)[0]
+        late = hours.create_hours(
+            session,
+            hours.BusinessHoursIn(
+                name="Late shift",
+                open_dest_type="ivr",
+                open_dest_id=menu.id,
+                closed_dest_type="hangup",
+                ranges=[{"weekday": d, "start": "00:00", "end": "24:00"} for d in range(7)],
+            ),
+        )
+        shop = hours.create_hours(
+            session,
+            hours.BusinessHoursIn(
+                name="Shop",
+                open_dest_type="hangup",
+                closed_dest_type="hangup",
+                specials=[
+                    # last year only: never applies
+                    {
+                        "name": "Old",
+                        "start": today - 400 * day,
+                        "end": today - 370 * day,
+                        "dest_type": "hangup",
+                    },
+                    # every year, but not today
+                    {
+                        "name": "Soon",
+                        "start": today + 2 * day,
+                        "end": today + 3 * day,
+                        "yearly": True,
+                        "dest_type": "hangup",
+                    },
+                    # every year across the new year (from today to yesterday), to other business hours
+                    {
+                        "name": "Season",
+                        "start": today,
+                        "end": today - day,
+                        "yearly": True,
+                        "dest_type": "hours",
+                        "dest_id": late.id,
+                    },
+                ],
+            ),
+        )
+        result = apply.apply(session)
+        assert result.ok, result.errors
+        sid, old, soon, season = shop.id, *(sp.id for sp in shop.specials)
+        assert [hours.special_matches(sp, today) for sp in shop.specials] == [False, False, True]
+
+        def routed(expected: str) -> None:
+            since = console_size()
+            cli(f"channel originate Local/s@hours-{sid} application Wait 1")
+            wait_for(f"Business hours Shop: {expected}", since)
+
+        # everything off: closed by the (empty) weekly hours
+        routed("closed-auto-0")
+        status = hours.live_status(session, sid)
+        assert (status["open"], status["reason"]) == (False, "schedule")
+
+        # all on: the old and the future period do not apply, the season leads to the open late shift
+        for key in (old, soon, season):
+            cli(f"database put phonix-special {key} 1")
+        routed(f"open-auto-{season}")
+        status = hours.live_status(session, sid)
+        assert (status["open"], status["reason"], status["special_id"]) == (True, "special", season)
+        since = console_size()
+        cli(f"channel originate Local/s@hours-{sid} application Wait 1")
+        wait_for(f"Goto (hours-{late.id},s,1)", since)
+
+        # the late shift closed for good: the season follows it
+        hours.set_mode(session, late.id, "closed")
+        routed(f"closed-auto-{season}")
+        status = hours.live_status(session, sid)
+        assert (status["open"], status["reason"], status["special_id"]) == (False, "special", season)
+
+        # as after a restore: modes are cleared and the switches written as configured
+        hours.reset_runtime(session)
+        assert db_value("phonix-hours", late.id) is None
+        assert [db_value("phonix-special", key) for key in (old, soon, season)] == ["0", "0", "0"]
+        routed("closed-auto-0")
