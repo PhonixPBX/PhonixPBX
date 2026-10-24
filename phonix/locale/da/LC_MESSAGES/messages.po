@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-24 15:49+0200\n"
+"POT-Creation-Date: 2026-10-24 16:36+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: da\n"
@@ -2838,6 +2838,13 @@ msgstr "Indstillinger gemt."
 msgid "Settings saved. Apply the changes to activate them."
 msgstr "Indstillinger gemt. Anvend ændringerne for at aktivere dem."
 
+msgid ""
+"Shorter opening hours, e.g. over Christmas: create separate business hours with those times and choose them as the "
+"destination of the period. They then decide between open and closed."
+msgstr ""
+"Kortere åbningstider, f.eks. i julen: opret separate åbningstider med disse tider, og vælg dem som destination for "
+"perioden. De afgør så mellem åbent og lukket."
+
 msgid "Show or hide"
 msgstr "Vis eller skjul"
 
@@ -3042,15 +3049,6 @@ msgstr ""
 "Konfigurationen blev oprettet af PhonixPBX %(release)s og er nyere, end dette system understøtter. Opdater dette "
 "system først."
 
-msgid ""
-"The destination may also be other business hours, e.g. shorter opening hours over Christmas; then those decide "
-"between open and closed. The feature code switches the period on or off; a phone key (BLF) on it is lit while the "
-"period is on."
-msgstr ""
-"Destinationen kan også være andre åbningstider, f.eks. kortere åbningstider i julen; så afgør de mellem åbent og "
-"lukket. Funktionskoden slår perioden til eller fra; en telefontast (BLF) med denne kode lyser, mens perioden er slået"
-" til."
-
 msgid "The directory URL must start with https://"
 msgstr "Katalog-URL'en skal starte med https://"
 
@@ -3059,6 +3057,9 @@ msgstr "Slutningen skal ligge efter starten"
 
 msgid "The end port must be greater than the start port."
 msgstr "Slutporten skal være større end startporten."
+
+msgid "The feature code switches the period on or off; a phone key (BLF) on it is lit while the period is on."
+msgstr "Funktionskoden slår perioden til eller fra; en telefontast (BLF) med denne kode lyser, mens perioden er slået til."
 
 msgid "The file is empty"
 msgstr "Filen er tom"

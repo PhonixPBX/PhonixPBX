@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-24 15:49+0200\n"
+"POT-Creation-Date: 2026-10-24 16:36+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: nl\n"
@@ -2842,6 +2842,13 @@ msgstr "Instellingen opgeslagen."
 msgid "Settings saved. Apply the changes to activate them."
 msgstr "Instellingen opgeslagen. Pas de wijzigingen toe om ze te activeren."
 
+msgid ""
+"Shorter opening hours, e.g. over Christmas: create separate business hours with those times and choose them as the "
+"destination of the period. They then decide between open and closed."
+msgstr ""
+"Kortere openingstijden, bijv. rond Kerst: maak aparte openingstijden met die tijden aan en kies ze als bestemming van"
+" de periode. Die bepalen dan of er open of gesloten is."
+
 msgid "Show or hide"
 msgstr "Tonen of verbergen"
 
@@ -3046,15 +3053,6 @@ msgstr ""
 "De configuratie is gemaakt met PhonixPBX %(release)s en is nieuwer dan dit systeem ondersteunt. Werk eerst dit "
 "systeem bij."
 
-msgid ""
-"The destination may also be other business hours, e.g. shorter opening hours over Christmas; then those decide "
-"between open and closed. The feature code switches the period on or off; a phone key (BLF) on it is lit while the "
-"period is on."
-msgstr ""
-"De bestemming kan ook andere openingstijden zijn, bijv. kortere openingstijden rond Kerst; die bepalen dan of er open"
-" of gesloten is. De functiecode schakelt de periode in of uit; een toesteltoets (BLF) met deze code brandt zolang de "
-"periode aan staat."
-
 msgid "The directory URL must start with https://"
 msgstr "De directory-URL moet met https:// beginnen"
 
@@ -3063,6 +3061,9 @@ msgstr "Het einde moet na het begin liggen"
 
 msgid "The end port must be greater than the start port."
 msgstr "De eindpoort moet groter zijn dan de beginpoort."
+
+msgid "The feature code switches the period on or off; a phone key (BLF) on it is lit while the period is on."
+msgstr "De functiecode schakelt de periode in of uit; een toesteltoets (BLF) met deze code brandt zolang de periode aan staat."
 
 msgid "The file is empty"
 msgstr "Het bestand is leeg"

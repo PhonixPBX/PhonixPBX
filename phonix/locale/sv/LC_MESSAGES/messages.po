@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-24 15:49+0200\n"
+"POT-Creation-Date: 2026-10-24 16:36+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: sv\n"
@@ -2841,6 +2841,13 @@ msgstr "Inställningarna har sparats."
 msgid "Settings saved. Apply the changes to activate them."
 msgstr "Inställningarna har sparats. Verkställ ändringarna för att aktivera dem."
 
+msgid ""
+"Shorter opening hours, e.g. over Christmas: create separate business hours with those times and choose them as the "
+"destination of the period. They then decide between open and closed."
+msgstr ""
+"Kortare öppettider, t.ex. över julen: skapa separata öppettider med de tiderna och välj dem som destination för "
+"perioden. De avgör då mellan öppet och stängt."
+
 msgid "Show or hide"
 msgstr "Visa eller dölj"
 
@@ -3045,14 +3052,6 @@ msgstr ""
 "Konfigurationen skapades av PhonixPBX %(release)s och är nyare än vad det här systemet stöder. Uppdatera det här "
 "systemet först."
 
-msgid ""
-"The destination may also be other business hours, e.g. shorter opening hours over Christmas; then those decide "
-"between open and closed. The feature code switches the period on or off; a phone key (BLF) on it is lit while the "
-"period is on."
-msgstr ""
-"Destinationen kan också vara andra öppettider, t.ex. kortare öppettider över julen; då avgör de mellan öppet och "
-"stängt. Funktionskoden slår på eller av perioden; en telefonknapp (BLF) med koden lyser medan perioden är påslagen."
-
 msgid "The directory URL must start with https://"
 msgstr "Katalog-URL:en måste börja med https://"
 
@@ -3061,6 +3060,9 @@ msgstr "Slutet måste ligga efter början"
 
 msgid "The end port must be greater than the start port."
 msgstr "Slutporten måste vara större än startporten."
+
+msgid "The feature code switches the period on or off; a phone key (BLF) on it is lit while the period is on."
+msgstr "Funktionskoden slår på eller av perioden; en telefonknapp (BLF) med koden lyser medan perioden är påslagen."
 
 msgid "The file is empty"
 msgstr "Filen är tom"

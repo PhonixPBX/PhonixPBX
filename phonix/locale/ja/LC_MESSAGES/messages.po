@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-24 15:49+0200\n"
+"POT-Creation-Date: 2026-10-24 16:36+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ja\n"
@@ -2795,6 +2795,11 @@ msgstr "設定を保存しました。"
 msgid "Settings saved. Apply the changes to activate them."
 msgstr "設定を保存しました。有効にするには変更を適用してください。"
 
+msgid ""
+"Shorter opening hours, e.g. over Christmas: create separate business hours with those times and choose them as the "
+"destination of the period. They then decide between open and closed."
+msgstr "短縮営業時間（例: 年末年始）: その時間帯で別の営業時間を作成し、期間の宛先として選択します。その営業時間によって営業中か営業時間外かが決まります。"
+
 msgid "Show or hide"
 msgstr "表示/非表示"
 
@@ -2989,14 +2994,6 @@ msgid ""
 "first."
 msgstr "この設定は PhonixPBX %(release)s で作成されており、このシステムがサポートするより新しいものです。先にこのシステムを更新してください。"
 
-msgid ""
-"The destination may also be other business hours, e.g. shorter opening hours over Christmas; then those decide "
-"between open and closed. The feature code switches the period on or off; a phone key (BLF) on it is lit while the "
-"period is on."
-msgstr ""
-"宛先には別の営業時間も指定できます（例: "
-"年末年始の短縮営業時間）。その場合は、その営業時間によって営業中か営業時間外かが決まります。機能コードで期間のオン／オフを切り替えます。このコードを割り当てた電話機のキー（BLF）は、期間がオンの間点灯します。"
-
 msgid "The directory URL must start with https://"
 msgstr "ディレクトリ URL は https:// で始まる必要があります"
 
@@ -3005,6 +3002,9 @@ msgstr "終了は開始より後にしてください"
 
 msgid "The end port must be greater than the start port."
 msgstr "終了ポートは開始ポートより大きくしてください。"
+
+msgid "The feature code switches the period on or off; a phone key (BLF) on it is lit while the period is on."
+msgstr "機能コードで期間のオン／オフを切り替えます。このコードを割り当てた電話機のキー（BLF）は、期間がオンの間点灯します。"
 
 msgid "The file is empty"
 msgstr "ファイルが空です"

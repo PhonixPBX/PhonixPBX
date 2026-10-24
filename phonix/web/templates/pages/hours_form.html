@@ -110,10 +110,11 @@
         </div>
         <div class="card-body">
           {% if (errors or {}).get("specials") %}<div class="alert alert-danger">{{ errors.get("specials") }}</div>{% endif %}
+          <div class="alert alert-info">{{ icon("bulb", "me-1") }} {{ _("Shorter opening hours, e.g. over Christmas: create separate business hours with those times and choose them as the destination of the period. They then decide between open and closed.") }}</div>
           <div id="specials" class="hours-specials" data-sortable='{"handle": "[data-sortable-handle]", "animation": 150}'>{% for sp in values.specials or [] %}{{ special_row(loop.index0, sp) }}{% endfor %}</div>
           <button type="button" class="btn mt-2" data-add-row="#special-template" data-into="#specials">{{ icon("plus") }}{{ _("Add special period") }}</button>
           <template id="special-template">{{ special_row("__INDEX__", None) }}</template>
-          <div class="form-hint mt-2">{{ _("The destination may also be other business hours, e.g. shorter opening hours over Christmas; then those decide between open and closed. The feature code switches the period on or off; a phone key (BLF) on it is lit while the period is on.") }} {{ _("Saved periods are switched on and off at the top of the page.") }}</div>
+          <div class="form-hint mt-2">{{ _("The feature code switches the period on or off; a phone key (BLF) on it is lit while the period is on.") }} {{ _("Saved periods are switched on and off at the top of the page.") }}</div>
         </div>
       </div>
     </div>

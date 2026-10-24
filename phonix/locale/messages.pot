@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-24 15:49+0200\n"
+"POT-Creation-Date: 2026-10-24 16:36+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2844,6 +2844,12 @@ msgstr ""
 msgid "Settings saved. Apply the changes to activate them."
 msgstr ""
 
+msgid ""
+"Shorter opening hours, e.g. over Christmas: create separate business "
+"hours with those times and choose them as the destination of the period. "
+"They then decide between open and closed."
+msgstr ""
+
 msgid "Show or hide"
 msgstr ""
 
@@ -3041,13 +3047,6 @@ msgid ""
 "this system supports. Update this system first."
 msgstr ""
 
-msgid ""
-"The destination may also be other business hours, e.g. shorter opening "
-"hours over Christmas; then those decide between open and closed. The "
-"feature code switches the period on or off; a phone key (BLF) on it is "
-"lit while the period is on."
-msgstr ""
-
 msgid "The directory URL must start with https://"
 msgstr ""
 
@@ -3055,6 +3054,11 @@ msgid "The end must be after the start"
 msgstr ""
 
 msgid "The end port must be greater than the start port."
+msgstr ""
+
+msgid ""
+"The feature code switches the period on or off; a phone key (BLF) on it "
+"is lit while the period is on."
 msgstr ""
 
 msgid "The file is empty"
