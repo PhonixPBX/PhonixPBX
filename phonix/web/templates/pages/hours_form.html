@@ -46,7 +46,8 @@
   </div>
   <button type="button" class="btn btn-ghost-danger btn-icon btn-sm hours-special-remove" data-remove-row aria-label="{{ _("Remove special period") }}">{{ icon("x") }}</button>
   <div class="hours-special-opts">
-    <label class="form-check form-switch mb-0 text-nowrap"><input class="form-check-input" type="checkbox" name="sp_enabled_{{ idx }}" value="true" {% if sp and sp.enabled %}checked{% endif %}><span class="form-check-label">{{ _("on") }}</span></label>
+    {# saved periods are switched with the live toggles above, so a form opened earlier cannot undo a switch #}
+    {% if not (sp and sp.id) %}<label class="form-check form-switch mb-0 text-nowrap"><input class="form-check-input" type="checkbox" name="sp_enabled_{{ idx }}" value="true" {% if sp and sp.enabled %}checked{% endif %}><span class="form-check-label">{{ _("on") }}</span></label>{% endif %}
     <input type="date" class="form-control hours-special-date" name="sp_start_{{ idx }}" value="{{ sp.start or '' if sp else '' }}" aria-label="{{ _("First day") }}" title="{{ _("First day") }}">
     <span aria-hidden="true">–</span>
     <input type="date" class="form-control hours-special-date" name="sp_end_{{ idx }}" value="{{ sp.end or '' if sp else '' }}" aria-label="{{ _("Last day") }}" title="{{ _("Last day") }}">
@@ -112,7 +113,7 @@
           <div id="specials" class="hours-specials" data-sortable='{"handle": "[data-sortable-handle]", "animation": 150}'>{% for sp in values.specials or [] %}{{ special_row(loop.index0, sp) }}{% endfor %}</div>
           <button type="button" class="btn mt-2" data-add-row="#special-template" data-into="#specials">{{ icon("plus") }}{{ _("Add special period") }}</button>
           <template id="special-template">{{ special_row("__INDEX__", None) }}</template>
-          <div class="form-hint mt-2">{{ _("The destination may also be other business hours, e.g. shorter opening hours over Christmas; then those decide between open and closed. The feature code switches the period on or off; a phone key (BLF) on it is lit while the period is on.") }}</div>
+          <div class="form-hint mt-2">{{ _("The destination may also be other business hours, e.g. shorter opening hours over Christmas; then those decide between open and closed. The feature code switches the period on or off; a phone key (BLF) on it is lit while the period is on.") }} {{ _("Saved periods are switched on and off at the top of the page.") }}</div>
         </div>
       </div>
     </div>

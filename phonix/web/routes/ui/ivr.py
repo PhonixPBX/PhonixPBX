@@ -248,7 +248,8 @@ async def ivr_test(
 # --- business hours ----------------------------------------------------------------------
 
 
-def _hours_form_data(form: FormData) -> dict[str, Any]:
+def _hours_form_data(form: FormData, db: Session, hours_id: int | None) -> dict[str, Any]:
+    """The submitted form; saved special periods keep their switch (it is changed by the live toggles only)."""
     data = form_to_dict(form, hours_svc.BusinessHoursIn)
     _dest(form, "open_dest", data, "open")
     _dest(form, "closed_dest", data, "closed")
@@ -271,6 +272,7 @@ def _hours_form_data(form: FormData) -> dict[str, Any]:
         for idx in _rows(form, "hol_date_")
         if form.get(f"hol_date_{idx}") or form.get(f"hol_name_{idx}")
     ]
+    saved = {sp.id: sp.enabled for sp in hours_svc.get_hours(db, hours_id).specials} if hours_id else {}
     specials = []
     for idx in _rows(form, "sp_id_"):
         name, start, end, code = (str(form.get(f"sp_{k}_{idx}", "")).strip() for k in ("name", "start", "end", "code"))
@@ -278,11 +280,13 @@ def _hours_form_data(form: FormData) -> dict[str, Any]:
         if not (sid or name or start or end or code):
             continue  # an empty new row
         parsed = dst.parse_value(str(form.get(f"sp_dest_{idx}", "")))
+        special_id = int(sid) if sid.isdigit() else None
+        enabled = saved[special_id] if special_id in saved else form.get(f"sp_enabled_{idx}") == "true"
         specials.append(
             {
-                "id": int(sid) if sid.isdigit() else None,
+                "id": special_id,
                 "name": name,
-                "enabled": form.get(f"sp_enabled_{idx}") == "true",
+                "enabled": enabled,
                 "start": start or None,
                 "end": end or None,
                 "yearly": form.get(f"sp_yearly_{idx}") == "true",
@@ -395,7 +399,10 @@ def hours_edit(
 
 async def _save_hours(request: Request, db: Session, user: User, hours_id: int | None) -> Response:
     form = await request.form()
-    data = _hours_form_data(form)
+    try:
+        data = _hours_form_data(form, db, hours_id)
+    except NotFound as exc:
+        return _404(exc)
     try:
         parsed = parse(hours_svc.BusinessHoursIn, data)
         if hours_id is None:

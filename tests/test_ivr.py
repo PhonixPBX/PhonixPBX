@@ -789,6 +789,35 @@ def test_hours_form_special_periods(client, fake_ami):
     assert r.status_code == 422 and "Enter both the first and the last day" in r.text
 
 
+def test_hours_form_keeps_live_switch(client, fake_ami):
+    """A form opened before a period was switched does not switch it back; only new rows have the checkbox."""
+    login(client)
+    with session_scope() as s:
+        h = hours.create_hours(s, _hours(name="Hotline", specials=[{"name": "Emergency", "dest_type": "hangup"}]))
+        s.flush()
+        hid, sid = h.id, h.specials[0].id
+    page = client.get(f"/dialplan/hours/{hid}").text
+    assert 'name="sp_enabled_0"' not in page and 'name="sp_enabled___INDEX__"' in page
+    with session_scope() as s:
+        hours.set_special_active(s, hid, sid, True, "admin")
+    form = [
+        ("csrf_token", csrf(client, "/dialplan/hours")),
+        ("name", "Hotline"),
+        ("open_dest", "hangup"),
+        ("closed_dest", "hangup"),
+        *_special_rows([("0", str(sid), "Emergency", False, "", "", False, "", "hangup")]),
+        *_special_rows([("n", "", "New", True, "", "", False, "", "hangup")]),
+    ]
+    r = _post(client, f"/dialplan/hours/{hid}", form, follow_redirects=False)
+    assert r.status_code == 303, r.text
+    with session_scope() as s:
+        assert [(sp.name, sp.enabled) for sp in s.get(BusinessHours, hid).specials] == [
+            ("Emergency", True),
+            ("New", True),
+        ]
+    assert fake_ami.astdb[("phonix-special", str(sid))] == "1"
+
+
 def test_hours_special_toggle(client, fake_ami):
     login(client)
     with session_scope() as s:

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-24 13:41+0200\n"
+"POT-Creation-Date: 2026-10-24 13:49+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: de\n"
@@ -2774,6 +2774,9 @@ msgstr "Speichern"
 
 msgid "Save and request certificate now"
 msgstr "Speichern und Zertifikat jetzt anfordern"
+
+msgid "Saved periods are switched on and off at the top of the page."
+msgstr ""
 
 msgid "Saving a backup of the configuration ..."
 msgstr "Backup der Konfiguration wird gespeichert ..."
