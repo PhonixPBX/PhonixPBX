@@ -1068,6 +1068,12 @@ def test_mcp_special(client, fake_ami):
     assert call(client, "set_business_hours_special", id=a, special_id=pa, active="yes")["isError"] is True
 
 
+def test_special_yearly_needs_dates():
+    assert hours.SpecialIn.model_validate({"name": "x", "yearly": True, "dest_type": "hangup"}).yearly is False
+    dated = {"name": "x", "yearly": True, "start": "2026-12-24", "end": "2027-01-02", "dest_type": "hangup"}
+    assert hours.SpecialIn.model_validate(dated).yearly is True
+
+
 def test_special_periods_validation(session, ids):
     from phonix.services.common import parse
 

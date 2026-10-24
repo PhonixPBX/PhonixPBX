@@ -109,6 +109,8 @@ class SpecialIn(BaseModel):
     def _period(self) -> SpecialIn:
         if (self.start is None) != (self.end is None):
             raise ValueError(_("Enter both the first and the last day, or neither"))
+        if self.start is None:
+            self.yearly = False  # "every year" only means something with dates
         if self.start and self.end and self.start > self.end and not self.yearly:
             raise ValueError(_("The last day must not be before the first day"))
         return self

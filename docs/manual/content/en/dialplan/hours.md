@@ -48,7 +48,7 @@ Special periods route calls completely differently for a while, without touching
 | Destination | Where calls go while the period applies: any destination of business hours, and also **other business hours**, for example shorter opening hours over Christmas. Then those decide between open and closed. |
 | on | Only for a new period: whether it starts switched on. Saved periods are switched on and off at the top of the page. |
 | First day, Last day | Optional. The period applies only from the first to the last day (whole days, both included). Enter both or neither; without days, a period applies whenever it is on, for example an emergency routing. |
-| every year | Repeats the days every year. The period may cross the new year, for example 24 December to 2 January. |
+| every year | Shown once both days are entered. Repeats the days every year. The period may cross the new year, for example 24 December to 2 January. |
 | Feature code | Optional, for example `*32`. Dialled on an internal phone, it switches the period on or off; a phone key (BLF) on it is lit while the period is on, see [Phone keys](#key). |
 
 A period **applies** when it is switched on and, if it has days, today is one of them. The **first** applying period in the list wins, so overlapping periods are allowed: put the more important one higher. Change the order with the arrows or by dragging the handle at the start of the row. The **x** button removes a period. Up to 50 periods can be listed.

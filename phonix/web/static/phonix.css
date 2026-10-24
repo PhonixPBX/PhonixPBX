@@ -369,7 +369,7 @@
 .hours-special-remove { grid-area: remove; }
 .hours-special-opts { grid-area: opts; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
 .hours-special-date { width: 10rem; }
-.hours-special-code { width: 8rem; font-family: var(--tblr-font-monospace); }
+.hours-special-code { width: 13rem;font-family: var(--tblr-font-monospace); }
 .hours-special-error { grid-area: err; }
 @media (max-width: 767.98px) {
   .hours-special {

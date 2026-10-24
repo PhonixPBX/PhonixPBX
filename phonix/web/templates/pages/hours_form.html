@@ -51,7 +51,7 @@
     <input type="date" class="form-control hours-special-date" name="sp_start_{{ idx }}" value="{{ sp.start or '' if sp else '' }}" aria-label="{{ _("First day") }}" title="{{ _("First day") }}">
     <span aria-hidden="true">–</span>
     <input type="date" class="form-control hours-special-date" name="sp_end_{{ idx }}" value="{{ sp.end or '' if sp else '' }}" aria-label="{{ _("Last day") }}" title="{{ _("Last day") }}">
-    <label class="form-check mb-0 text-nowrap"><input class="form-check-input" type="checkbox" name="sp_yearly_{{ idx }}" value="true" {% if sp and sp.yearly %}checked{% endif %}><span class="form-check-label">{{ _("every year") }}</span></label>
+    <label class="form-check mb-0 text-nowrap" data-show-if-filled=".hours-special-date"{% if not (sp and sp.start and sp.end) %} hidden{% endif %}><input class="form-check-input" type="checkbox" name="sp_yearly_{{ idx }}" value="true" {% if sp and sp.yearly %}checked{% endif %}><span class="form-check-label">{{ _("every year") }}</span></label>
     <input class="form-control hours-special-code" name="sp_code_{{ idx }}" value="{{ sp.feature_code or '' if sp else '' }}" placeholder="{{ _("Code, e.g. *32") }}" aria-label="{{ _("Feature code") }}" inputmode="tel" data-mask="dialcode">
   </div>
   {% if row_errors %}<div class="invalid-feedback d-block hours-special-error">{{ row_errors | join(" ") }}</div>{% endif %}

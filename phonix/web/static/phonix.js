@@ -393,6 +393,14 @@
       const ok = expected.split("|").includes(value);
       el.hidden = !ok;
     });
+    // <label data-show-if-filled="selector">: shown while every matching field of its row has a value;
+    // its checkboxes are cleared while hidden
+    form.querySelectorAll("[data-show-if-filled]").forEach((el) => {
+      const row = el.closest(".dyn-row") || form;
+      const fields = Array.from(row.querySelectorAll(el.dataset.showIfFilled));
+      el.hidden = !fields.every((f) => f.value);
+      if (el.hidden) el.querySelectorAll("input[type=checkbox]").forEach((cb) => (cb.checked = false));
+    });
   }
   document.addEventListener("change", (evt) => {
     const form = evt.target.closest("form");

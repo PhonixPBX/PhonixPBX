@@ -48,7 +48,7 @@ Sonderzeiträume leiten Anrufe für eine Weile ganz anders, ohne den Wochenplan 
 | Ziel | Wohin Anrufe gehen, solange der Zeitraum gilt: jedes Ziel von Geschäftszeiten und zusätzlich **andere Geschäftszeiten**, zum Beispiel kürzere Öffnungszeiten über Weihnachten. Diese entscheiden dann zwischen geöffnet und geschlossen. |
 | ein | Nur bei einem neuen Zeitraum: ob er eingeschaltet beginnt. Gespeicherte Zeiträume werden oben auf der Seite ein- und ausgeschaltet. |
 | Erster Tag, Letzter Tag | Optional. Der Zeitraum gilt nur vom ersten bis zum letzten Tag (ganze Tage, beide eingeschlossen). Geben Sie beide oder keinen an; ohne Tage gilt ein Zeitraum, solange er eingeschaltet ist, zum Beispiel für eine Notfallumleitung. |
-| jedes Jahr | Wiederholt die Tage jedes Jahr. Der Zeitraum darf über den Jahreswechsel gehen, zum Beispiel vom 24. Dezember bis 2. Januar. |
+| jedes Jahr | Erscheint, sobald beide Tage eingetragen sind. Wiederholt die Tage jedes Jahr. Der Zeitraum darf über den Jahreswechsel gehen, zum Beispiel vom 24. Dezember bis 2. Januar. |
 | Funktionscode | Optional, zum Beispiel `*32`. An einem internen Telefon gewählt, schaltet er den Zeitraum ein oder aus; eine Telefontaste (BLF) mit diesem Code leuchtet, solange der Zeitraum eingeschaltet ist, siehe [Telefontasten](#key). |
 
 Ein Zeitraum **gilt**, wenn er eingeschaltet ist und, falls er Tage hat, heute einer davon ist. Der **erste** geltende Zeitraum in der Liste gewinnt; überlappende Zeiträume sind also erlaubt: Setzen Sie den wichtigeren weiter nach oben. Die Reihenfolge ändern Sie mit den Pfeilen oder indem Sie die Zeile am Griff an ihrem Anfang ziehen. Die Schaltfläche **x** entfernt einen Zeitraum. Es können bis zu 50 Zeiträume eingetragen werden.
