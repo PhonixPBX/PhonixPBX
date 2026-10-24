@@ -211,8 +211,182 @@ def test_hours_validation(session, ids):
     ],
 )
 def test_hours_status(session, ids, when, mode, expected):
-    st = hours.status(hours.get_hours(session, ids["office"]), mode, when)
+    office = hours.get_hours(session, ids["office"])
+    rt = hours.Runtime(modes={office.id: mode}) if mode in ("open", "closed") else hours.Runtime()
+    st = hours.status(office, rt, when, {})
     assert (st["open"], st["reason"]) == expected
+
+
+def test_override_expires(session, ids):
+    office = hours.get_hours(session, ids["office"])
+    mon9 = dt.datetime(2026, 10, 19, 9, 0)
+    rt = hours.Runtime(overrides={office.id: ("closed", mon9.date())})
+    assert (hours.status(office, rt, mon9, {})["open"], hours.status(office, rt, mon9, {})["reason"]) == (
+        False,
+        "override",
+    )
+    # automatic reaches the overridden value at 17:30 -> override gone
+    assert hours.status(office, rt, mon9.replace(hour=18), {})["reason"] == "schedule"
+    # set yesterday -> expired at midnight
+    rt = hours.Runtime(overrides={office.id: ("open", dt.date(2026, 10, 18))})
+    assert hours.status(office, rt, dt.datetime(2026, 10, 19, 0, 5), {})["reason"] == "schedule"
+
+
+def test_override_status_fields(session, ids):
+    office = hours.get_hours(session, ids["office"])
+    mon9 = dt.datetime(2026, 10, 19, 9, 0)
+    st = hours.status(office, hours.Runtime(overrides={office.id: ("closed", mon9.date())}), mon9, {})
+    assert (st["override"], st["reverts_to"]) == ("closed", True)
+    st = hours.status(office, hours.Runtime(), mon9, {})
+    assert (st["override"], st["reverts_to"]) == (None, None)
+    # the permanent mode sits above the override
+    rt = hours.Runtime(modes={office.id: "open"}, overrides={office.id: ("closed", mon9.date())})
+    st = hours.status(office, rt, mon9, {})
+    assert (st["open"], st["reason"], st["override"]) == (True, "forced", None)
+
+
+@pytest.mark.parametrize(
+    "value, expected",
+    [
+        ("open:2026-10-24", ("open", dt.date(2026, 10, 24))),
+        ("closed:2026-01-02", ("closed", dt.date(2026, 1, 2))),
+        ("closed", None),
+        ("maybe:2026-10-24", None),
+        ("open:2026-13-01", None),
+        ("", None),
+    ],
+)
+def test_parse_override(value, expected):
+    assert hours.parse_override(value) == expected
+
+
+@pytest.mark.parametrize(
+    "day, applies", [("2026-12-31", True), ("2027-01-01", True), ("2027-01-03", False), ("2026-12-23", False)]
+)
+def test_yearly_special_crosses_new_year(session, ids, day, applies):
+    h = hours.create_hours(
+        session,
+        _hours(
+            specials=[
+                {
+                    "name": "Xmas",
+                    "enabled": True,
+                    "start": "2025-12-24",
+                    "end": "2026-01-02",
+                    "yearly": True,
+                    "dest_type": "hangup",
+                }
+            ]
+        ),
+    )
+    assert hours.special_matches(h.specials[0], dt.date.fromisoformat(day)) is applies
+
+
+@pytest.mark.parametrize(
+    "special, day, applies",
+    [
+        ({"start": "2027-07-05", "end": "2027-08-06"}, "2027-07-05", True),
+        ({"start": "2027-07-05", "end": "2027-08-06"}, "2027-08-06", True),
+        ({"start": "2027-07-05", "end": "2027-08-06"}, "2028-07-10", False),
+        ({"start": "2026-07-05", "end": "2026-08-06", "yearly": True}, "2030-07-10", True),
+        ({"start": "2026-07-05", "end": "2026-08-06", "yearly": True}, "2030-08-07", False),
+        ({}, "2031-02-03", True),
+    ],
+)
+def test_special_matches(session, ids, special, day, applies):
+    h = hours.create_hours(session, _hours(specials=[{"name": "P", "dest_type": "hangup", **special}]))
+    assert hours.special_matches(h.specials[0], dt.date.fromisoformat(day)) is applies
+
+
+def test_precedence_first_applying_special_wins(session, ids):
+    target = hours.create_hours(
+        session, _hours(name="Morning", ranges=[{"weekday": d, "start": "09:00", "end": "12:00"} for d in range(7)])
+    )
+    h = hours.create_hours(
+        session,
+        _hours(
+            specials=[
+                {"name": "Emergency", "enabled": False, "dest_type": "hangup"},
+                {
+                    "name": "Xmas",
+                    "enabled": True,
+                    "start": "2026-12-24",
+                    "end": "2027-01-02",
+                    "dest_type": "hours",
+                    "dest_id": target.id,
+                },
+            ]
+        ),
+    )
+    others = {target.id: target}
+    xmas10 = dt.datetime(2026, 12, 28, 10, 0)
+    st = hours.status(h, hours.Runtime(), xmas10, others)
+    assert (st["open"], st["reason"], st["special"]) == (True, "special", "Xmas")
+    emergency = h.specials[0].id
+    st = hours.status(h, hours.Runtime(active={emergency: True}), xmas10, others)
+    assert (st["open"], st["special"]) == (False, "Emergency")
+    # the key (override) sits above every special period
+    st = hours.status(
+        h, hours.Runtime(active={emergency: True}, overrides={h.id: ("open", xmas10.date())}), xmas10, others
+    )
+    assert (st["open"], st["reason"]) == (True, "override")
+
+
+def test_special_status_details(session, ids):
+    target = hours.create_hours(
+        session, _hours(name="Morning", ranges=[{"weekday": d, "start": "09:00", "end": "12:00"} for d in range(7)])
+    )
+    h = hours.create_hours(
+        session,
+        _hours(
+            specials=[
+                {
+                    "name": "Xmas",
+                    "enabled": True,
+                    "start": "2025-12-24",
+                    "end": "2026-01-02",
+                    "yearly": True,
+                    "dest_type": "hours",
+                    "dest_id": target.id,
+                },
+            ]
+        ),
+    )
+    sp = h.specials[0]
+    st = hours.status(h, hours.Runtime(), dt.datetime(2026, 12, 28, 14, 0), {target.id: target})
+    assert (st["open"], st["special"], st["special_id"], st["until"]) == (False, "Xmas", sp.id, dt.date(2027, 1, 2))
+    st = hours.status(h, hours.Runtime(), dt.datetime(2027, 1, 1, 10, 0), {target.id: target})
+    assert (st["open"], st["until"]) == (True, dt.date(2027, 1, 2))
+    # the target follows its own permanent mode
+    rt = hours.Runtime(modes={target.id: "closed"})
+    assert hours.status(h, rt, dt.datetime(2027, 1, 1, 10, 0), {target.id: target})["open"] is False
+    # unknown target -> closed
+    assert hours.status(h, hours.Runtime(), dt.datetime(2027, 1, 1, 10, 0), {})["open"] is False
+    # switched off at runtime -> the weekly schedule applies
+    st = hours.status(h, hours.Runtime(active={sp.id: False}), dt.datetime(2027, 1, 1, 10, 0), {})
+    assert (st["reason"], st["special"], st["until"]) == ("schedule", None, None)
+
+
+def test_read_runtime(fake_ami):
+    fake_ami.astdb = {
+        ("phonix-hours", "1"): "closed",
+        ("phonix-hours", "3"): "bogus",
+        ("phonix-hours-tmp", "2"): "open:2026-10-24",
+        ("phonix-hours-tmp", "4"): "garbage",
+        ("phonix-special", "5"): "1",
+        ("phonix-special", "6"): "0",
+    }
+    from phonix import ami
+
+    with ami.AmiClient() as c:
+        rt = hours.read_runtime(c)
+    assert rt == hours.Runtime(
+        modes={1: "closed"}, overrides={2: ("open", dt.date(2026, 10, 24))}, active={5: True, 6: False}
+    )
+
+
+def test_load_runtime_without_asterisk():
+    assert hours.load_runtime() is None
 
 
 def test_live_mode(session, ids, fake_ami):
@@ -225,6 +399,26 @@ def test_live_mode(session, ids, fake_ami):
     assert fake_ami.astdb == {}
     with pytest.raises(ServiceError):
         hours.set_mode(session, office, "maybe", "admin")
+
+
+def test_live_status_specials(session, ids, fake_ami):
+    h = hours.create_hours(
+        session,
+        _hours(
+            feature_code="*95",
+            specials=[{"name": "Emergency", "enabled": False, "feature_code": "*96", "dest_type": "hangup"}],
+        ),
+    )
+    sp = h.specials[0]
+    live = hours.live_status(session, h.id)
+    assert live["override"] is None
+    assert live["specials"] == [
+        {"id": sp.id, "name": "Emergency", "active": False, "applies": False, "feature_code": "*96"}
+    ]
+    fake_ami.astdb = {("phonix-special", str(sp.id)): "1"}
+    live = hours.live_status(session, h.id)
+    assert (live["open"], live["reason"], live["special"]) == (False, "special", "Emergency")
+    assert live["specials"][0]["active"] is live["specials"][0]["applies"] is True
 
 
 def test_live_mode_without_asterisk(session, ids):

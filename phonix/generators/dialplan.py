@@ -40,8 +40,22 @@ APP_PATTERN = "_[0-9a-zA-Z*#]!"
 CATCHALL_PATTERN = "_[0-9*#+]!"
 # Asterisk database family of the live business hours mode (key: id, value: open/closed)
 HOURS_DB = "phonix-hours"
+# temporary override from the out-of-office key (key: id, value: "<open|closed>:<YYYY-MM-DD>" of the press)
+OVERRIDE_DB = "phonix-hours-tmp"
+# runtime on/off switch of special periods (key: period id, value: 1/0)
+SPECIAL_DB = "phonix-special"
 ASTERISK_DAYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
 _UNSAFE = re.compile(r"[^\w .@+-]")
+
+
+def hours_device(hours_id: int) -> str:
+    """Custom device state of the out-of-office lamp (``INUSE`` = closed)."""
+    return f"Custom:phonix-hours-{hours_id}"
+
+
+def special_device(special_id: int) -> str:
+    """Custom device state of a special period's key (``INUSE`` = switched on)."""
+    return f"Custom:phonix-special-{special_id}"
 
 
 def safe_text(text: str) -> str:

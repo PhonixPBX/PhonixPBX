@@ -82,6 +82,9 @@ class FakeAmi:
         if words[:2] == ["database", "put"]:
             FakeAmi.astdb[(words[2], words[3])] = words[4]
             return "Updated database successfully\n"
+        if words[:2] == ["database", "show"]:
+            rows = [f"/{f}/{k:<30}: {v}" for (f, k), v in sorted(FakeAmi.astdb.items()) if f == words[2]]
+            return "\n".join([*rows, f"{len(rows)} results found."]) + "\n"
         if words[:2] == ["database", "del"]:
             FakeAmi.astdb.pop((words[2], words[3]), None)
             return "Database entry removed.\n"

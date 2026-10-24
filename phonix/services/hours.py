@@ -12,6 +12,8 @@ from __future__ import annotations
 
 import datetime as dt
 import re
+from collections.abc import Mapping
+from dataclasses import dataclass, field
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -22,7 +24,7 @@ from phonix import ami
 from phonix.core import settings as st
 from phonix.core import validation as v
 from phonix.core.models import BusinessHours, BusinessHoursHoliday, BusinessHoursRange, BusinessHoursSpecial
-from phonix.generators.dialplan import HOURS_DB
+from phonix.generators.dialplan import HOURS_DB, OVERRIDE_DB, SPECIAL_DB
 from phonix.i18n import N_, _
 from phonix.services import destinations as dst
 from phonix.services.common import NotFound, ServiceError, audit, diff_dicts, ensure_extension_free, mark_dirty
@@ -325,6 +327,112 @@ def scheduled_open(hours: BusinessHours, now: dt.datetime) -> bool:
     return any(r.weekday == now.weekday() and _minutes(r.start) <= minute < _minutes(r.end) for r in hours.ranges)
 
 
+@dataclass
+class Runtime:
+    """Runtime state from the Asterisk database: permanent modes, temporary overrides, special switches."""
+
+    modes: dict[int, str] = field(default_factory=dict)
+    overrides: dict[int, tuple[str, dt.date]] = field(default_factory=dict)
+    active: dict[int, bool] = field(default_factory=dict)
+
+
+def parse_override(value: str) -> tuple[str, dt.date] | None:
+    """An override value ``<open|closed>:<YYYY-MM-DD>`` (the state and the day of the press)."""
+    state, _sep, day = value.strip().partition(":")
+    if state not in ("open", "closed"):
+        return None
+    try:
+        return state, dt.date.fromisoformat(day)
+    except ValueError:
+        return None
+
+
+def _astdb_family(client: ami.AmiClient, family: str) -> dict[int, str]:
+    """Numeric keys and values of one Asterisk database family."""
+    out = client.command(f"database show {family}")
+    pattern = re.compile(rf"^/{re.escape(family)}/(\d+)\s*:\s*(.*?)\s*$")
+    return {int(m[1]): m[2] for line in out.splitlines() if (m := pattern.match(line.strip()))}
+
+
+def read_runtime(client: ami.AmiClient) -> Runtime:
+    modes = {k: x for k, x in _astdb_family(client, ASTDB_FAMILY).items() if x in ("open", "closed")}
+    overrides = {k: o for k, x in _astdb_family(client, OVERRIDE_DB).items() if (o := parse_override(x))}
+    active = {k: x == "1" for k, x in _astdb_family(client, SPECIAL_DB).items() if x in ("0", "1")}
+    return Runtime(modes=modes, overrides=overrides, active=active)
+
+
+def load_runtime() -> Runtime | None:
+    """The runtime state, or ``None`` when Asterisk cannot be asked."""
+    try:
+        with ami.AmiClient(timeout=3.0) as client:
+            return read_runtime(client)
+    except (ami.AmiError, OSError):
+        return None
+
+
+def special_on(p: BusinessHoursSpecial, rt: Runtime) -> bool:
+    """The runtime switch of a period; the configured value until Asterisk has one."""
+    return rt.active.get(p.id, p.enabled)
+
+
+def _month_day(day: dt.date) -> tuple[int, int]:
+    return day.month, day.day
+
+
+def special_matches(p: BusinessHoursSpecial, day: dt.date) -> bool:
+    """Whether the period's dates include ``day`` (always without dates; yearly may cross the new year)."""
+    if p.start is None or p.end is None:
+        return True
+    if not p.yearly:
+        return p.start <= day <= p.end
+    start, end, md = _month_day(p.start), _month_day(p.end), _month_day(day)
+    if start <= end:
+        return start <= md <= end
+    return md >= start or md <= end
+
+
+def _occurrence_end(p: BusinessHoursSpecial, day: dt.date) -> dt.date | None:
+    """The last day of the occurrence of a matching period that includes ``day``."""
+    if p.start is None or p.end is None:
+        return None
+    if not p.yearly:
+        return p.end
+    year = day.year
+    if _month_day(p.start) > _month_day(p.end) and _month_day(day) >= _month_day(p.start):
+        year += 1
+    try:
+        return p.end.replace(year=year)
+    except ValueError:  # 29 February in a common year
+        return dt.date(year, 2, 28)
+
+
+def automatic(
+    hours: BusinessHours, rt: Runtime, now: dt.datetime, others: Mapping[int, BusinessHours]
+) -> dict[str, Any]:
+    """The automatic state: the first applying special period, then holidays, then the weekly ranges.
+
+    A period pointing to other business hours takes their effective state (closed when they are
+    unknown); any other destination counts as closed.
+    """
+    out: dict[str, Any] = {"holiday": None, "special": None, "special_id": None, "until": None}
+    day = now.date()
+    for p in hours.specials:
+        if not (special_on(p, rt) and special_matches(p, day)):
+            continue
+        is_open = False
+        if p.dest_type == "hours":
+            target = others.get(p.dest_id) if p.dest_id is not None else None
+            # one level deep: the target's own special periods are not followed
+            if target is not None and target.id != hours.id:
+                is_open = status(target, rt, now, {})["open"]
+        out.update(special=p.name, special_id=p.id, until=_occurrence_end(p, day))
+        return {"open": is_open, "reason": "special", **out}
+    holiday = holiday_on(hours, day)
+    if holiday is not None:
+        return {"open": False, "reason": "holiday", **out, "holiday": holiday.name}
+    return {"open": scheduled_open(hours, now), "reason": "schedule", **out}
+
+
 def get_mode(hours_id: int) -> str | None:
     """The live mode, or ``None`` when Asterisk cannot be asked."""
     try:
@@ -354,21 +462,53 @@ def set_mode(session: Session, hours_id: int, mode: str, user: str = "") -> str:
     return mode
 
 
-def status(hours: BusinessHours, mode: str | None, now: dt.datetime) -> dict[str, Any]:
-    """``open`` now, and why (``schedule``, ``holiday``, ``forced``)."""
+def status(hours: BusinessHours, rt: Runtime, now: dt.datetime, others: Mapping[int, BusinessHours]) -> dict[str, Any]:
+    """The effective state: permanent mode, then a temporary override, then :func:`automatic`.
+
+    ``reason`` is ``forced`` (permanent mode), ``override`` (temporary, ``reverts_to`` is the
+    automatic state it gives way to) or the automatic reason. Expired overrides are ignored.
+    """
+    out: dict[str, Any] = {**automatic(hours, rt, now, others), "override": None, "reverts_to": None}
+    mode = rt.modes.get(hours.id)
     if mode in ("open", "closed"):
-        return {"open": mode == "open", "reason": "forced", "holiday": None}
-    holiday = holiday_on(hours, now.date())
-    if holiday is not None:
-        return {"open": False, "reason": "holiday", "holiday": holiday.name}
-    return {"open": scheduled_open(hours, now), "reason": "schedule", "holiday": None}
+        out.update(open=mode == "open", reason="forced")
+        return out
+    override = rt.overrides.get(hours.id)
+    # ends at midnight, or as soon as the automatic state reaches the overridden value
+    if override is not None and override[1] == now.date() and (override[0] == "open") != out["open"]:
+        out.update(open=override[0] == "open", reason="override", override=override[0], reverts_to=out["open"])
+    return out
 
 
 def live_status(session: Session, hours_id: int, now: dt.datetime | None = None) -> dict[str, Any]:
-    """Mode and open/closed right now; ``mode`` is ``None`` when Asterisk is not reachable."""
+    """Mode and open/closed right now; ``mode`` is ``None`` when Asterisk is not reachable.
+
+    ``specials`` lists the special periods: ``active`` is the on/off switch, ``applies`` whether
+    it is on and its dates match today (the first such period wins, see ``special_id``).
+    """
     hours = get_hours(session, hours_id)
-    mode = get_mode(hours.id)
-    return {"id": hours.id, "name": hours.name, "mode": mode, **status(hours, mode, now or dt.datetime.now())}
+    now = now or dt.datetime.now()
+    loaded = load_runtime()
+    rt = loaded or Runtime()
+    mode = None if loaded is None else rt.modes.get(hours.id, "auto")
+    others = {h.id: h for h in list_hours(session)}
+    specials = [
+        {
+            "id": sp.id,
+            "name": sp.name,
+            "active": special_on(sp, rt),
+            "applies": special_on(sp, rt) and special_matches(sp, now.date()),
+            "feature_code": sp.feature_code or "",
+        }
+        for sp in hours.specials
+    ]
+    return {
+        "id": hours.id,
+        "name": hours.name,
+        "mode": mode,
+        **status(hours, rt, now, others),
+        "specials": specials,
+    }
 
 
 Mode = Literal["auto", "open", "closed"]

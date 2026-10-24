@@ -324,7 +324,14 @@ def _hours_page(
 
 def _status_rows(db: Session) -> list[tuple[Any, dict[str, Any]]]:
     now = dt.datetime.now()
-    return [(h, hours_svc.status(h, hours_svc.get_mode(h.id), now)) for h in hours_svc.list_hours(db)]
+    rt = hours_svc.load_runtime()
+    items = hours_svc.list_hours(db)
+    others = {h.id: h for h in items}
+    rows = []
+    for h in items:
+        st = hours_svc.status(h, rt or hours_svc.Runtime(), now, others)
+        rows.append((h, {**st, "mode": None if rt is None else rt.modes.get(h.id, "auto")}))
+    return rows
 
 
 @router.get("/hours")
