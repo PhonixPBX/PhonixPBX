@@ -95,7 +95,7 @@ Incoming routes, IVR keys and business hours all choose a destination from the s
 | Conference rooms | Joins the [conference room]({{< relref "/services/conferencing.md" >}}), asking for the PIN if it has one. | yes | yes | yes | yes |
 | Applications | Runs the [application]({{< relref "/dialplan/applications.md" >}}). | yes | yes | yes | yes |
 | IVR menus | Plays another menu. | yes | yes | yes | yes |
-| Business hours | Continues by [business hours]({{< relref "/dialplan/hours.md" >}}). | yes | yes | yes | no |
+| Business hours | Continues by [business hours]({{< relref "/dialplan/hours.md" >}}). | yes | yes | yes | only for [special periods]({{< relref "/dialplan/hours.md#specials" >}}) |
 | Voicemail | Takes the caller straight to the voicemail box of a phone, without ringing it. Only phones with voicemail are listed. | no | yes | yes | yes |
 | Repeat the menu | Plays the menu again. | no | yes | no | no |
 | Hang up | Ends the call. | no | yes | yes | yes |

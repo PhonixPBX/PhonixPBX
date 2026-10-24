@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-24 09:57+0200\n"
+"POT-Creation-Date: 2026-10-24 15:49+0200\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: sv\n"
@@ -49,6 +49,10 @@ msgstr "%(name)s är inte ett fullständigt domännamn (FQDN)"
 #, python-format
 msgid "%(name)s log"
 msgstr "Logg: %(name)s"
+
+#, python-format
+msgid "%(name)s until %(date)s"
+msgstr "%(name)s till %(date)s"
 
 #, python-format
 msgid "%(num)d CPU"
@@ -298,6 +302,9 @@ msgstr "Lägg till alternativ"
 
 msgid "Add route"
 msgstr "Lägg till rutt"
+
+msgid "Add special period"
+msgstr "Lägg till specialperiod"
 
 msgid "Add time range"
 msgstr "Lägg till tidsintervall"
@@ -594,6 +601,9 @@ msgstr ""
 "Öppettider skickar samtal till en destination när ni har öppet och till en annan när ni har stängt, t.ex. en meny för"
 " tiden efter stängning."
 
+msgid "Business hours used by a special period cannot have special periods"
+msgstr "Öppettider som används av en specialperiod kan inte ha specialperioder"
+
 msgid "Busy"
 msgstr "Upptagen"
 
@@ -747,6 +757,9 @@ msgstr "Välj en knapp från 0-9, * eller #"
 msgid "Choose a sound"
 msgstr "Välj ett ljud"
 
+msgid "Choose business hours without special periods of their own"
+msgstr "Välj öppettider utan egna specialperioder"
+
 msgid "Choose or upload an announcement"
 msgstr "Välj eller ladda upp ett meddelande"
 
@@ -770,6 +783,9 @@ msgstr "Stängt tills det växlas tillbaka, t.ex. när kontoret stänger tidigt.
 
 msgid "Cloud API token"
 msgstr "Moln-API-token"
+
+msgid "Code, e.g. *32"
+msgstr "Kod, t.ex. *32"
 
 msgid "Codecs"
 msgstr "Codecs"
@@ -1205,6 +1221,9 @@ msgstr "Ange ett antal dagar"
 msgid "Enter a time as HH:MM"
 msgstr "Ange en tid som HH:MM"
 
+msgid "Enter both the first and the last day, or neither"
+msgstr "Ange både första och sista dagen, eller ingen av dem"
+
 msgid "Enter the directory URL of the ACME server"
 msgstr "Ange katalog-URL:en för ACME-servern"
 
@@ -1278,6 +1297,9 @@ msgstr "Brandvägg"
 msgid "Firmware"
 msgstr "Firmware"
 
+msgid "First day"
+msgstr "Första dag"
+
 msgid "First port"
 msgstr "Första port"
 
@@ -1287,8 +1309,8 @@ msgstr "Första plats"
 msgid "Fixed caller ID"
 msgstr "Fast nummerpresentation"
 
-msgid "Follow the opening hours and holidays."
-msgstr "Följ öppettider och helgdagar."
+msgid "Follow the special periods, holidays and opening hours."
+msgstr "Följ specialperioder, helgdagar och öppettider."
 
 #, python-format
 msgid "For %(what)s, press %(key)s."
@@ -1672,6 +1694,9 @@ msgstr "Språk för e-post om röstmeddelanden och missade samtal. Texterna kan 
 msgid "Language of the web interface for %(user)s."
 msgstr "Webbgränssnittets språk för %(user)s."
 
+msgid "Last day"
+msgstr "Sista dag"
+
 msgid "Last login"
 msgstr "Senaste inloggning"
 
@@ -1902,6 +1927,9 @@ msgstr "Namn som visas för den som blir uppringd."
 msgid "Name, e.g. Christmas Day"
 msgstr "Namn, t.ex. Juldagen"
 
+msgid "Name, e.g. Christmas or Emergency"
+msgstr "Namn, t.ex. Jul eller Nödläge"
+
 msgid "Names"
 msgstr "Namn"
 
@@ -2112,6 +2140,12 @@ msgstr "Äldre"
 msgid "On Hold"
 msgstr "Parkerad"
 
+msgid "On, applies today"
+msgstr "På, gäller i dag"
+
+msgid "On, but not today"
+msgstr "På, men inte i dag"
+
 msgid "One CIDR per line, e.g. 192.168.1.0/24."
 msgstr "En CIDR per rad, t.ex. 192.168.1.0/24."
 
@@ -2179,8 +2213,14 @@ msgstr "Valfritt alias som används i den publika kontexten (t.ex. 'sales' för 
 msgid "Optional. Callers must enter it to join."
 msgstr "Valfritt. Uppringare måste ange den för att ansluta."
 
-msgid "Optional. Dialled on an internal phone, it switches between “Automatic” and “Closed”."
-msgstr "Valfritt. När den slås på en intern telefon växlar den mellan ”Automatiskt” och ”Stängt”."
+msgid ""
+"Optional. Dialled on an internal phone, it switches to the opposite state until the next change, at midnight at the "
+"latest; dialled again, it returns to “Automatic”. It also ends a permanent mode set here. A phone key (BLF) on this "
+"code shows the state: lit means closed."
+msgstr ""
+"Valfritt. När den slås på en intern telefon växlar den till motsatt läge till nästa ändring, senast vid midnatt; slås"
+" den igen återgår den till ”Automatiskt”. Den avslutar också ett permanent läge som ställts in här. En telefonknapp "
+"(BLF) med den här koden visar läget: tänd betyder stängt."
 
 msgid "Optional. Joins as moderator."
 msgstr "Valfritt. Ansluter som moderator."
@@ -2553,6 +2593,9 @@ msgstr "Ta bort dag"
 msgid "Remove option"
 msgstr "Ta bort alternativ"
 
+msgid "Remove special period"
+msgstr "Ta bort specialperiod"
+
 msgid "Remove the password (key logins only)"
 msgstr "Ta bort lösenordet (endast nyckelinloggning)"
 
@@ -2726,6 +2769,9 @@ msgstr "Spara"
 msgid "Save and request certificate now"
 msgstr "Spara och begär certifikat nu"
 
+msgid "Saved periods are switched on and off at the top of the page."
+msgstr "Sparade perioder slås på och av högst upp på sidan."
+
 msgid "Saving a backup of the configuration ..."
 msgstr "Sparar en säkerhetskopia av konfigurationen ..."
 
@@ -2831,6 +2877,12 @@ msgstr "Spanien"
 msgid "Spanish"
 msgstr "Spanska"
 
+msgid "Special period not found"
+msgstr "Specialperioden hittades inte"
+
+msgid "Special periods"
+msgstr "Specialperioder"
+
 msgid "State"
 msgstr "Status"
 
@@ -2866,6 +2918,14 @@ msgstr "Sverige"
 
 msgid "Swedish"
 msgstr "Svenska"
+
+#, python-format
+msgid "Switch %(name)s off"
+msgstr "Stäng av %(name)s"
+
+#, python-format
+msgid "Switch %(name)s on"
+msgstr "Slå på %(name)s"
 
 msgid "Switch now"
 msgstr "Växla nu"
@@ -2916,8 +2976,19 @@ msgstr "Taiwan"
 msgid "Take a snapshot of the container first"
 msgstr "Ta först en ögonblicksbild av containern"
 
+msgid ""
+"Take precedence over holidays and the weekly hours: the first period in this list that is on and whose days include "
+"today sends calls to its destination. Without days, a period applies whenever it is on, e.g. emergency routing."
+msgstr ""
+"Har företräde framför helgdagar och veckans öppettider: den första perioden i listan som är påslagen och vars dagar "
+"omfattar i dag skickar samtal till sin destination. Utan dagar gäller en period så länge den är påslagen, t.ex. "
+"nödroutning."
+
 msgid "Takes effect immediately, without applying the configuration."
 msgstr "Gäller omedelbart, utan att konfigurationen verkställs."
+
+msgid "Takes effect immediately. A period that is on applies only on its days, if it has any."
+msgstr "Gäller direkt. En påslagen period gäller bara på sina dagar, om den har några."
 
 msgid "Telephony"
 msgstr "Telefoni"
@@ -2974,6 +3045,14 @@ msgstr ""
 "Konfigurationen skapades av PhonixPBX %(release)s och är nyare än vad det här systemet stöder. Uppdatera det här "
 "systemet först."
 
+msgid ""
+"The destination may also be other business hours, e.g. shorter opening hours over Christmas; then those decide "
+"between open and closed. The feature code switches the period on or off; a phone key (BLF) on it is lit while the "
+"period is on."
+msgstr ""
+"Destinationen kan också vara andra öppettider, t.ex. kortare öppettider över julen; då avgör de mellan öppet och "
+"stängt. Funktionskoden slår på eller av perioden; en telefonknapp (BLF) med koden lyser medan perioden är påslagen."
+
 msgid "The directory URL must start with https://"
 msgstr "Katalog-URL:en måste börja med https://"
 
@@ -3004,6 +3083,9 @@ msgstr "Det initiala lösenordet visas på systemkonsolen. Tappat bort det? Anv�
 
 msgid "The last administrator cannot be deleted"
 msgstr "Den sista administratören kan inte tas bort"
+
+msgid "The last day must not be before the first day"
+msgstr "Sista dagen får inte vara före första dagen"
 
 msgid "The lego ACME client is not installed."
 msgstr "ACME-klienten lego är inte installerad."
@@ -3080,6 +3162,9 @@ msgstr "Ladda sedan upp den nedladdade filen under <em>Installera en uppdatering
 
 msgid "This backup was made by an older PhonixPBX release in a format that can no longer be restored."
 msgstr "Den här säkerhetskopian gjordes av en äldre PhonixPBX-version i ett format som inte längre kan återställas."
+
+msgid "This code is used more than once"
+msgstr "Koden används mer än en gång"
 
 msgid "This day is listed more than once"
 msgstr "Den här dagen anges mer än en gång"
@@ -3742,6 +3827,9 @@ msgstr "av"
 msgid "offer SRTP (SDES), fall back to RTP"
 msgstr "erbjud SRTP (SDES), fall tillbaka på RTP"
 
+msgid "on"
+msgstr "på"
+
 msgid "one after another"
 msgstr "en i taget"
 
@@ -3834,6 +3922,9 @@ msgstr "hoppa över"
 msgid "star"
 msgstr "stjärna"
 
+msgid "switched by key until the next change"
+msgstr "växlat med knapp till nästa ändring"
+
 msgid "switched manually"
 msgstr "växlat manuellt"
 
@@ -3844,6 +3935,10 @@ msgstr "konfigurationen har ändrats (%(areas)s). Verkställ för att aktivera."
 #, python-format
 msgid "the feature code of business hours %(name)s"
 msgstr "funktionskoden för öppettider %(name)s"
+
+#, python-format
+msgid "the feature code of the special period %(name)s"
+msgstr "funktionskoden för specialperioden %(name)s"
 
 msgid "the hash key"
 msgstr "fyrkant"

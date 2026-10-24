@@ -1,6 +1,6 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
-{% from "macros/forms.html" import csrf, input, form_errors, submit, dest_select with context %}
+{% from "macros/forms.html" import csrf, input, form_errors, submit, dest_select, dest_options with context %}
 {% block help_anchor %}edit{% endblock %}
 {% block page_title %}{{ _("New business hours") if is_new else _("Edit business hours %(name)s", name=values.name) }}{% endblock %}
 
@@ -24,6 +24,37 @@
   <label class="form-check mb-0 text-nowrap"><input class="form-check-input" type="checkbox" name="hol_yearly_{{ idx }}" value="true" {% if h and h.yearly %}checked{% endif %}><span class="form-check-label">{{ _("every year") }}</span></label>
   <button type="button" class="btn btn-ghost-danger btn-icon btn-sm" data-remove-row aria-label="{{ _("Remove day") }}">{{ icon("x") }}</button>
   {% if err %}<div class="invalid-feedback d-block w-100">{{ err }}</div>{% endif %}
+</div>
+{% endmacro %}
+
+{% macro special_row(idx, sp) %}
+{% set row_errors = [] %}
+{% for k, e in (errors or {}).items() if k == "specials." ~ idx or k.startswith("specials." ~ idx ~ ".") %}{% set _unused = row_errors.append(e) %}{% endfor %}
+<div class="dyn-row hours-special{% if row_errors %} is-invalid{% endif %}" data-sortable-item>
+  <input type="hidden" name="sp_id_{{ idx }}" value="{{ sp.id if sp and sp.id else '' }}">
+  <span class="ivr-handle hours-special-handle" data-sortable-handle title="{{ _("Drag to change the order") }}" aria-hidden="true">{{ icon("grip-vertical") }}</span>
+  <input class="form-control hours-special-name" name="sp_name_{{ idx }}" value="{{ sp.name if sp else '' }}" placeholder="{{ _("Name, e.g. Christmas or Emergency") }}" aria-label="{{ _("Name") }}" maxlength="80">
+  <div class="hours-special-dest">
+    <select class="form-select" name="sp_dest_{{ idx }}" data-tom aria-label="{{ _("Destination") }}">
+      <option value="">{{ _("Choose a destination…") }}</option>
+      {{ dest_options(special_choices, dest_value(sp.dest_type, sp.dest_id) if sp and sp.dest_type else "") }}
+    </select>
+  </div>
+  <div class="ivr-move hours-special-move">
+    <button type="button" class="btn btn-ghost-secondary btn-icon btn-sm" data-move="up" aria-label="{{ _("Move up") }}">{{ icon("chevron-up") }}</button>
+    <button type="button" class="btn btn-ghost-secondary btn-icon btn-sm" data-move="down" aria-label="{{ _("Move down") }}">{{ icon("chevron-down") }}</button>
+  </div>
+  <button type="button" class="btn btn-ghost-danger btn-icon btn-sm hours-special-remove" data-remove-row aria-label="{{ _("Remove special period") }}">{{ icon("x") }}</button>
+  <div class="hours-special-opts">
+    {# saved periods are switched with the live toggles above, so a form opened earlier cannot undo a switch #}
+    {% if not (sp and sp.id) %}<label class="form-check form-switch mb-0 text-nowrap"><input class="form-check-input" type="checkbox" name="sp_enabled_{{ idx }}" value="true" {% if sp and sp.enabled %}checked{% endif %}><span class="form-check-label">{{ _("on") }}</span></label>{% endif %}
+    <input type="date" class="form-control hours-special-date" name="sp_start_{{ idx }}" value="{{ sp.start or '' if sp else '' }}" aria-label="{{ _("First day") }}" title="{{ _("First day") }}">
+    <span aria-hidden="true">–</span>
+    <input type="date" class="form-control hours-special-date" name="sp_end_{{ idx }}" value="{{ sp.end or '' if sp else '' }}" aria-label="{{ _("Last day") }}" title="{{ _("Last day") }}">
+    <label class="form-check mb-0 text-nowrap"><input class="form-check-input" type="checkbox" name="sp_yearly_{{ idx }}" value="true" {% if sp and sp.yearly %}checked{% endif %}><span class="form-check-label">{{ _("every year") }}</span></label>
+    <input class="form-control hours-special-code" name="sp_code_{{ idx }}" value="{{ sp.feature_code or '' if sp else '' }}" placeholder="{{ _("Code, e.g. *32") }}" aria-label="{{ _("Feature code") }}" inputmode="tel" data-mask="dialcode">
+  </div>
+  {% if row_errors %}<div class="invalid-feedback d-block hours-special-error">{{ row_errors | join(" ") }}</div>{% endif %}
 </div>
 {% endmacro %}
 
@@ -69,6 +100,22 @@
           <template id="holiday-template">{{ holiday_row("__INDEX__", None) }}</template>
         </div>
       </div>
+
+      <div class="card mt-3">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">{{ _("Special periods") }}</h3>
+            <div class="card-subtitle">{{ _("Take precedence over holidays and the weekly hours: the first period in this list that is on and whose days include today sends calls to its destination. Without days, a period applies whenever it is on, e.g. emergency routing.") }}</div>
+          </div>
+        </div>
+        <div class="card-body">
+          {% if (errors or {}).get("specials") %}<div class="alert alert-danger">{{ errors.get("specials") }}</div>{% endif %}
+          <div id="specials" class="hours-specials" data-sortable='{"handle": "[data-sortable-handle]", "animation": 150}'>{% for sp in values.specials or [] %}{{ special_row(loop.index0, sp) }}{% endfor %}</div>
+          <button type="button" class="btn mt-2" data-add-row="#special-template" data-into="#specials">{{ icon("plus") }}{{ _("Add special period") }}</button>
+          <template id="special-template">{{ special_row("__INDEX__", None) }}</template>
+          <div class="form-hint mt-2">{{ _("The destination may also be other business hours, e.g. shorter opening hours over Christmas; then those decide between open and closed. The feature code switches the period on or off; a phone key (BLF) on it is lit while the period is on.") }} {{ _("Saved periods are switched on and off at the top of the page.") }}</div>
+        </div>
+      </div>
     </div>
 
     <div class="col-lg-4">
@@ -79,7 +126,7 @@
           {{ input("description", _("Description"), values, errors) }}
           {{ dest_select("open_dest", _("When open"), dest_value(values.open_dest_type, values.open_dest_id) if values.open_dest_type else "", choices, errors) }}
           {{ dest_select("closed_dest", _("When closed"), dest_value(values.closed_dest_type, values.closed_dest_id) if values.closed_dest_type else "hangup", choices, errors) }}
-          {{ input("feature_code", _("Feature code"), values, errors, placeholder="*31", attrs='inputmode="tel" data-mask="dialcode"', help=_("Optional. Dialled on an internal phone, it switches between “Automatic” and “Closed”.")) }}
+          {{ input("feature_code", _("Feature code"), values, errors, placeholder="*31", attrs='inputmode="tel" data-mask="dialcode"', help=_("Optional. Dialled on an internal phone, it switches to the opposite state until the next change, at midnight at the latest; dialled again, it returns to “Automatic”. It also ends a permanent mode set here. A phone key (BLF) on this code shows the state: lit means closed.")) }}
         </div>
         {{ submit(_("Create") if is_new else _("Save"), cancel="/dialplan/hours") }}
       </div>

@@ -95,7 +95,7 @@ Eingehende Routen, IVR-Tasten und Geschäftszeiten wählen ihr Ziel alle aus der
 | Konferenzräume | Verbindet mit dem [Konferenzraum]({{< relref "/services/conferencing.md" >}}) und fragt nach der PIN, falls er eine hat. | ja | ja | ja | ja |
 | Anwendungen | Führt die [Anwendung]({{< relref "/dialplan/applications.md" >}}) aus. | ja | ja | ja | ja |
 | IVR-Menüs | Spielt ein anderes Menü. | ja | ja | ja | ja |
-| Geschäftszeiten | Geht nach den [Geschäftszeiten]({{< relref "/dialplan/hours.md" >}}) weiter. | ja | ja | ja | nein |
+| Geschäftszeiten | Geht nach den [Geschäftszeiten]({{< relref "/dialplan/hours.md" >}}) weiter. | ja | ja | ja | nur für [Sonderzeiträume]({{< relref "/dialplan/hours.md#specials" >}}) |
 | Mailbox | Führt den Anrufer direkt zur Mailbox eines Telefons, ohne es klingeln zu lassen. Es werden nur Telefone mit Mailbox angeboten. | nein | ja | ja | ja |
 | Menü wiederholen | Spielt das Menü erneut. | nein | ja | nein | nein |
 | Auflegen | Beendet den Anruf. | nein | ja | ja | ja |

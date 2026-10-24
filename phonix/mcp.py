@@ -37,7 +37,7 @@ INSTRUCTIONS = (
     "delete_*, set_*_enabled and update_settings tools are stored but not active until "
     "apply_changes runs; get_pending_changes and preview_apply show what is outstanding. "
     "Secrets are never returned: an empty secret keeps the stored one. "
-    "set_business_hours_mode is the exception: it takes effect immediately. "
+    "set_business_hours_mode and set_business_hours_special are the exceptions: they take effect immediately. "
     "IVR menus and business hours use destinations as dest_type/dest_id pairs (phone, callgroup, "
     "application, conference, ivr, hours, voicemail = the mailbox of a phone; repeat and hangup need no id). "
     'Call group members are an ordered list of "phone:<id>" and "callgroup:<id>" (nested call groups; '
@@ -292,6 +292,11 @@ def set_business_hours_mode(ctx: Context, args: dict[str, Any]) -> Any:
     return hours_svc.live_status(ctx.db, _int(args, "id"))
 
 
+def set_business_hours_special(ctx: Context, args: dict[str, Any]) -> Any:
+    hours_svc.set_special_active(ctx.db, _int(args, "id"), _int(args, "special_id"), _bool(args, "active"), ctx.actor)
+    return hours_svc.live_status(ctx.db, _int(args, "id"))
+
+
 def _hidden(tool: Tool, ctx: Context) -> bool:
     return (tool.write and ctx.read_only) or (tool.calls and not ctx.allow_calls)
 
@@ -350,6 +355,14 @@ def _tools() -> dict[str, Tool]:
             set_business_hours_mode,
             {**ID, "mode": {"type": "string", "enum": list(hours_svc.MODES)}},
             ("id", "mode"),
+            write=True,
+        ),
+        Tool(
+            "set_business_hours_special",
+            "Switch a special period of business hours on or off. Takes effect immediately, without apply_changes.",
+            set_business_hours_special,
+            {**ID, "special_id": {"type": "integer"}, "active": {"type": "boolean"}},
+            ("id", "special_id", "active"),
             write=True,
         ),
         Tool(

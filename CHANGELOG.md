@@ -6,10 +6,35 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- *Dialplan → Business Hours*: an out-of-office key with a lamp. A phone key on the feature code of business hours
+  is lit while they are closed and dark while they are open, whatever the reason (opening hours, holiday, special
+  period, key or manual mode), and pressing it switches to the opposite state. On Snom phones, set up a function key
+  of type **BLF** with the feature code as its number.
+- *Dialplan → Business Hours*: **Special periods**, an ordered list per business hours that takes precedence over
+  holidays and the weekly hours. Each period can be switched on and off, optionally applies only between two dates
+  (also every year, e.g. 24.12.–02.01.), has its own destination, which may also be other business hours (e.g.
+  shorter opening hours over Christmas), and can have its own feature code that switches it on and off, with a lamp
+  that is lit while the period is on (BLF key on Snom phones). The first period in the list that is on and whose
+  dates include today applies. Periods are switched on the list page, on the edit page, through the REST API and
+  through MCP immediately, without applying the configuration. The list page shows why business hours are open or
+  closed right now.
+
 ### Changed
 
 - The card **Numbers with +** (**Replace a leading + with**) moved from *Accounts → Providers* to
   *Dialplan → Transfers & Parking*. The setting itself is unchanged.
+- *Dialplan → Business Hours*: the feature code no longer switches between “Closed” and “Automatic”. It now switches
+  to the opposite of the current state until the next change, at midnight at the latest, so a forgotten press never
+  keeps the office open or closed over a weekend. Pressed again, it returns to “Automatic”; it also ends a permanent
+  mode set on the web interface, REST API or MCP.
+- Restoring a backup (*System → Backup/Restore*, `phonix backup restore`), `phonix config import` and a legacy
+  import that replaces the configuration set all business hours back to **Automatic**: permanent modes and the
+  state of the out-of-office key are cleared, and special periods are switched on or off as saved in the backup.
+  Before, the mode of the replaced configuration could stick to restored business hours with the same number.
+- Configuration backups (`config.json`) are now version 5 and contain the special periods. Older backups still
+  restore; backups of this version cannot be restored on older PhonixPBX versions.
 
 ## [1.9.0rc2] - 2026-10-23
 

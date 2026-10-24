@@ -34,11 +34,14 @@ IvrType = Literal["phone", "callgroup", "application", "conference", "ivr", "hou
 IvrTimeoutType = Literal["phone", "callgroup", "application", "conference", "ivr", "hours", "voicemail", "hangup"]
 # business hours cannot point to business hours (no loops without a caller decision)
 HoursType = Literal["phone", "callgroup", "application", "conference", "ivr", "voicemail", "hangup"]
+# a special period may also point to business hours, one level deep (checked by the hours service)
+SpecialType = Literal["phone", "callgroup", "application", "conference", "ivr", "hours", "voicemail", "hangup"]
 
 ROUTE_TYPES: tuple[str, ...] = RouteType.__args__  # type: ignore[attr-defined]
 IVR_TYPES: tuple[str, ...] = IvrType.__args__  # type: ignore[attr-defined]
 IVR_TIMEOUT_TYPES: tuple[str, ...] = IvrTimeoutType.__args__  # type: ignore[attr-defined]
 HOURS_TYPES: tuple[str, ...] = HoursType.__args__  # type: ignore[attr-defined]
+SPECIAL_TYPES: tuple[str, ...] = SpecialType.__args__  # type: ignore[attr-defined]
 
 ACTIONS = ("repeat", "hangup")
 
@@ -165,7 +168,7 @@ def forget(session: Session, dest_type: str, dest_id: int) -> None:
     """Remove every reference to a destination that is about to be deleted.
 
     Incoming routes and IVR keys that led there are removed; the fixed
-    destinations of IVR menus and business hours fall back to hanging up.
+    destinations of IVR menus, business hours and their special periods fall back to hanging up.
     """
     session.flush()
     session.query(ProviderIncomingRoute).filter(
@@ -182,6 +185,9 @@ def forget(session: Session, dest_type: str, dest_id: int) -> None:
             hours.open_dest_type, hours.open_dest_id = "hangup", None
         if (hours.closed_dest_type, hours.closed_dest_id) == (dest_type, dest_id):
             hours.closed_dest_type, hours.closed_dest_id = "hangup", None
+        for special in hours.specials:
+            if (special.dest_type, special.dest_id) == (dest_type, dest_id):
+                special.dest_type, special.dest_id = "hangup", None
     # the bulk deletes bypass the loaded relationships (provider routes, menu options)
     session.flush()
     session.expire_all()

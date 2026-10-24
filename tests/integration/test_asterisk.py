@@ -10,12 +10,13 @@ Asterisk with it and use SIPp to register phones and place calls.
 
 from __future__ import annotations
 
+import datetime as dt
 import os
 import re
 import shutil
 import subprocess
 import time
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from pathlib import Path
 
 import pytest
@@ -104,6 +105,7 @@ def pbx(tmp_path_factory: pytest.TempPathFactory) -> Iterator[Path]:
                 closed_dest_type="hangup",
                 ranges=[{"weekday": d, "start": "00:00", "end": "24:00"} for d in range(7)],
                 holidays=[{"date": "2026-12-25", "name": "Christmas", "yearly": True}],
+                specials=[{"name": "Emergency", "feature_code": "*32", "dest_type": "hangup"}],
             ),
         )
         result = apply.apply(session, boot=True)
@@ -340,24 +342,173 @@ def test_ivr_keys_and_timeout(pbx: Path) -> None:
     assert "Hangup" in out
 
 
+def db_value(family: str, key: int) -> str | None:
+    out = cli(f"database get {family} {key}")
+    return out.split("Value:", 1)[1].strip() if "Value:" in out else None
+
+
+def hint_state(code: str) -> str:
+    match = re.search(r"State:(\w+)", cli(f"core show hint {code}"))
+    return match[1] if match else ""
+
+
+def wait_until(check: Callable[[], bool], what: str, timeout: float = 10) -> None:
+    end = time.time() + timeout
+    while time.time() < end:
+        if check():
+            return
+        time.sleep(0.2)
+    raise AssertionError(f"timed out waiting for {what}")
+
+
+def press(code: str) -> None:
+    """Dial a feature code like a phone key and wait until the call is gone."""
+    since = console_size()
+    cli(f"channel originate Local/{code}@internal application Wait 1")
+    wait_for(f"{code}@internal", since)
+    wait_until(lambda: "Local/" + code not in cli("core show channels concise"), f"the {code} call to end")
+
+
 def test_business_hours_mode_and_feature_code(pbx: Path) -> None:
+    today = dt.date.today().isoformat()
     with db.session_scope() as session:
         office = hours.list_hours(session)[0]
-        assert hours.get_mode(office.id) == "auto"
+        hid = office.id
+        assert hours.get_mode(hid) == "auto"
         # open around the clock: calls go to the menu
         since = console_size()
-        cli(f"channel originate Local/s@hours-{office.id} application Wait 1")
+        cli(f"channel originate Local/s@hours-{hid} application Wait 1")
         wait_for("Goto (ivr-1,s,1)", since)
-        # the feature code closes, dialling it again switches back to automatic
-        register("101", 5071)
-        result = sipp("call.xml", 5071, "-au", "101", "-ap", PHONES["101"], "-key", "from", "101", "-key", "to", "*31")
-        assert result.returncode == 0, result.stdout + result.stderr
-        assert hours.get_mode(office.id) == "closed"
-        assert hours.live_status(session, office.id)["open"] is False
-        result = sipp("call.xml", 5071, "-au", "101", "-ap", PHONES["101"], "-key", "from", "101", "-key", "to", "*31")
-        assert result.returncode == 0, result.stdout + result.stderr
-        assert hours.get_mode(office.id) == "auto"
-        hours.set_mode(session, office.id, "open")
-        assert "open" in cli(f"database get phonix-hours {office.id}")
-        hours.set_mode(session, office.id, "auto")
-        assert hours.get_mode(office.id) == "auto"
+        # the key sets a temporary override to the opposite of the automatic state, lamp lit
+        press("*31")
+        assert db_value("phonix-hours-tmp", hid) == f"closed:{today}"
+        assert db_value("phonix-hours", hid) is None
+        wait_until(lambda: hint_state("*31") == "InUse", "the out-of-office lamp")
+        status = hours.live_status(session, hid)
+        assert (status["open"], status["reason"]) == (False, "override")
+        since = console_size()
+        cli(f"channel originate Local/s@hours-{hid} application Wait 1")
+        wait_for("closed-override-0", since)
+        # pressing again removes it: back to automatic, lamp dark
+        press("*31")
+        assert db_value("phonix-hours-tmp", hid) is None
+        wait_until(lambda: hint_state("*31") == "Idle", "the lamp to go dark")
+        # a permanent mode equal to the automatic state: removed, and an override inverts the lamp
+        hours.set_mode(session, hid, "open")
+        assert db_value("phonix-hours", hid) == "open"
+        assert hint_state("*31") == "Idle"
+        press("*31")
+        assert db_value("phonix-hours", hid) is None
+        assert db_value("phonix-hours-tmp", hid) == f"closed:{today}"
+        wait_until(lambda: hint_state("*31") == "InUse", "the out-of-office lamp")
+        # a permanent mode replaces the override
+        hours.set_mode(session, hid, "auto")
+        assert hours.get_mode(hid) == "auto"
+        assert db_value("phonix-hours-tmp", hid) is None
+        wait_until(lambda: hint_state("*31") == "Idle", "the lamp to go dark")
+
+        # a special period's key switches it on: its lamp and the out-of-office lamp are lit
+        special = office.specials[0]
+        assert db_value("phonix-special", special.id) is None
+        press("*32")
+        assert db_value("phonix-special", special.id) == "1"
+        wait_until(lambda: hint_state("*32") == "InUse", "the special period lamp")
+        wait_until(lambda: hint_state("*31") == "InUse", "the out-of-office lamp")
+        since = console_size()
+        cli(f"channel originate Local/s@hours-{hid} application Wait 1")
+        wait_for("Special period Emergency", since)
+        status = hours.live_status(session, hid)
+        assert (status["open"], status["reason"], status["special_id"]) == (False, "special", special.id)
+        # and off again
+        press("*32")
+        assert db_value("phonix-special", special.id) == "0"
+        wait_until(lambda: hint_state("*32") == "Idle", "the special period lamp to go dark")
+        wait_until(lambda: hint_state("*31") == "Idle", "the out-of-office lamp to go dark")
+
+
+def test_special_period_parity(pbx: Path) -> None:
+    """Dated and yearly periods and one leading to other business hours: dialplan and Python agree."""
+    today = dt.date.today()
+    day = dt.timedelta(days=1)
+    with db.session_scope() as session:
+        menu = ivr.list_menus(session)[0]
+        late = hours.create_hours(
+            session,
+            hours.BusinessHoursIn(
+                name="Late shift",
+                open_dest_type="ivr",
+                open_dest_id=menu.id,
+                closed_dest_type="hangup",
+                ranges=[{"weekday": d, "start": "00:00", "end": "24:00"} for d in range(7)],
+            ),
+        )
+        shop = hours.create_hours(
+            session,
+            hours.BusinessHoursIn(
+                name="Shop",
+                open_dest_type="hangup",
+                closed_dest_type="hangup",
+                specials=[
+                    # last year only: never applies
+                    {
+                        "name": "Old",
+                        "start": today - 400 * day,
+                        "end": today - 370 * day,
+                        "dest_type": "hangup",
+                    },
+                    # every year, but not today
+                    {
+                        "name": "Soon",
+                        "start": today + 2 * day,
+                        "end": today + 3 * day,
+                        "yearly": True,
+                        "dest_type": "hangup",
+                    },
+                    # every year across the new year (from today to yesterday), to other business hours
+                    {
+                        "name": "Season",
+                        "start": today,
+                        "end": today - day,
+                        "yearly": True,
+                        "dest_type": "hours",
+                        "dest_id": late.id,
+                    },
+                ],
+            ),
+        )
+        result = apply.apply(session)
+        assert result.ok, result.errors
+        sid, old, soon, season = shop.id, *(sp.id for sp in shop.specials)
+        assert [hours.special_matches(sp, today) for sp in shop.specials] == [False, False, True]
+
+        def routed(expected: str) -> None:
+            since = console_size()
+            cli(f"channel originate Local/s@hours-{sid} application Wait 1")
+            wait_for(f"Business hours Shop: {expected}", since)
+
+        # everything off: closed by the (empty) weekly hours
+        routed("closed-auto-0")
+        status = hours.live_status(session, sid)
+        assert (status["open"], status["reason"]) == (False, "schedule")
+
+        # all on: the old and the future period do not apply, the season leads to the open late shift
+        for key in (old, soon, season):
+            cli(f"database put phonix-special {key} 1")
+        routed(f"open-auto-{season}")
+        status = hours.live_status(session, sid)
+        assert (status["open"], status["reason"], status["special_id"]) == (True, "special", season)
+        since = console_size()
+        cli(f"channel originate Local/s@hours-{sid} application Wait 1")
+        wait_for(f"Goto (hours-{late.id},s,1)", since)
+
+        # the late shift closed for good: the season follows it
+        hours.set_mode(session, late.id, "closed")
+        routed(f"closed-auto-{season}")
+        status = hours.live_status(session, sid)
+        assert (status["open"], status["reason"], status["special_id"]) == (False, "special", season)
+
+        # as after a restore: modes are cleared and the switches written as configured
+        hours.reset_runtime(session)
+        assert db_value("phonix-hours", late.id) is None
+        assert [db_value("phonix-special", key) for key in (old, soon, season)] == ["0", "0", "0"]
+        routed("closed-auto-0")

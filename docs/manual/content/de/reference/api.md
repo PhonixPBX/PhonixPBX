@@ -68,8 +68,10 @@ Rufgruppen führen ihre Mitglieder in `members`, in der Klingelreihenfolge: `"ph
 
 ## Geschäftszeiten {#business-hours}
 
-- `GET /api/v1/business-hours/{id}/status` – ob gerade geöffnet ist, und der aktuelle Modus.
+- `GET /api/v1/business-hours/{id}/status` – ob gerade geöffnet ist, warum (`reason`: `forced`, `override`, `special`, `holiday` oder `schedule`), der aktuelle Modus und die Sonderzeiträume mit ihrem Schalter (`active`) und ob sie heute gelten.
 - `PUT /api/v1/business-hours/{id}/mode` mit `{"mode": "auto"}`, `"open"` oder `"closed"` – schaltet den Modus sofort um, ohne Übernehmen.
+- `PUT /api/v1/business-hours/{id}/special/{special_id}` mit `{"active": true}` oder `false` – schaltet einen Sonderzeitraum sofort ein oder aus, ohne Übernehmen.
+- Die Sonderzeiträume selbst sind die Liste `specials` der Geschäftszeiten (anlegen und ändern, dann übernehmen).
 
 ## Click-to-Call {#calls}
 
@@ -137,7 +139,7 @@ Die Werkzeuge:
 
 - `list_*`, `get_*`, `create_*`, `update_*` und `delete_*` für Telefone, Provider, Rufgruppen, Konferenzräume, Anwendungen, IVR-Menüs, Geschäftszeiten und AMI-Benutzer. `update_*` ändert nur die angegebenen Felder.
 - `set_phone_enabled`, `set_provider_enabled`, `set_ivr_menu_enabled`.
-- `get_business_hours_status`, `set_business_hours_mode` (wirkt sofort).
+- `get_business_hours_status`, `set_business_hours_mode` und `set_business_hours_special` (wirken sofort).
 - `list_settings_groups`, `get_settings`, `update_settings`.
 - `get_status`, `get_pending_changes`, `preview_apply` (welche Dateien und Komponenten sich ändern würden), `apply_changes`.
 - `tail_log` – die letzten Zeilen des Logs `asterisk`, `system`, `web` oder `monitor` (bis zu 1000). In einem OCI-Container gibt es keine Logdateien, und das Werkzeug meldet einen Fehler.

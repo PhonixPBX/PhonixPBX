@@ -370,3 +370,50 @@ def test_cli_restore_keep_flags(pbx, monkeypatch):
     assert cli.main(["backup", "restore", str(path)]) == 0
     assert cli.main(["backup", "restore", str(path), "--restore-network", "--keep-users", "--keep-certificate"]) == 0
     assert seen == [["network"], ["users", "certificate"]]
+
+
+def test_restore_resets_business_hours_runtime(pbx, fake_ami):
+    from phonix.services import hours
+
+    with session_scope() as s:
+        data = {
+            "name": "Office",
+            "open_dest_type": "hangup",
+            "feature_code": "*69",
+            "specials": [{"name": "Xmas", "enabled": True, "feature_code": "*70", "dest_type": "hangup"}],
+        }
+        h = hours.create_hours(s, hours.BusinessHoursIn.model_validate(data))
+        hours_id, special_id = h.id, h.specials[0].id
+    path = backup.create()
+    # state of the configuration before the restore, under the ids the restored objects get
+    fake_ami.astdb = {
+        ("phonix-hours", str(hours_id)): "open",
+        ("phonix-hours-tmp", str(hours_id)): "open:2026-10-24",
+        ("phonix-special", str(special_id)): "0",
+        ("phonix-special", "99"): "1",
+    }
+
+    backup.restore(path, user="admin")
+
+    with session_scope() as s:
+        (h,) = hours.list_hours(s)
+        assert h.specials[0].enabled is True
+        restored = h.specials[0].id
+    assert fake_ami.astdb == {("phonix-special", str(restored)): "1"}
+    commands = [a[1].get("Command") for a in fake_ami.actions]
+    assert f"devstate change Custom:phonix-special-{restored} INUSE" in commands
+
+
+def test_cli_config_import_resets_business_hours_runtime(pbx, fake_ami, tmp_path, monkeypatch):
+    from phonix import cli
+    from phonix.services import hours
+
+    calls = []
+    monkeypatch.setattr(hours, "reset_runtime", lambda session: calls.append(session))
+    path = tmp_path / "config.json"
+    with session_scope() as s:
+        path.write_text(json.dumps(configdoc.export(s)))
+    assert cli.main(["config", "import", str(path), "--dry-run"]) == 0
+    assert calls == []
+    assert cli.main(["config", "import", str(path)]) == 0
+    assert len(calls) == 1

@@ -24,7 +24,7 @@ Eine **interne Nummer** erreichen Sie, indem Sie einfach die Nummer des anderen 
 | `000086` | Mailbox: Nachrichten abhören, Ansagen aufnehmen | Telefon frei |
 | `000023` | Rufumleitung ein- oder ausschalten | Telefon frei |
 | `2663` | Standard-Konferenzraum | Telefon frei |
-| vom Administrator festgelegt | Geschäftszeiten zwischen *Automatisch* und *Geschlossen* umschalten | Telefon frei |
+| vom Administrator festgelegt | Abwesenheitstaste: Geschäftszeiten in den anderen Zustand oder zurück auf *Automatisch* schalten; einen Sonderzeitraum ein- oder ausschalten | Telefon frei |
 | `000063` | Eigene Nummer ansagen | Test |
 | `000047` | IP-Adresse der Anlage ansagen | Test |
 | `00003246` | Echotest | Test |
@@ -132,12 +132,15 @@ Tasten während der Konferenz (drücken Sie zuerst `*`, um das Menü zu hören, 
 
 ## Geschäftszeiten {#business-hours}
 
-Ihr Administrator kann Geschäftszeiten festlegen: Während der Öffnungszeiten gehen Anrufe zum Beispiel an den Empfang, außerhalb an eine Ansage oder die Mailbox. Für jede Geschäftszeit kann er zusätzlich einen **Funktionscode** festlegen, mit dem Sie an einem internen Telefon von Hand umschalten:
+Ihr Administrator kann Geschäftszeiten festlegen: Während der Öffnungszeiten gehen Anrufe zum Beispiel an den Empfang, außerhalb an eine Ansage oder die Mailbox. Für jede Geschäftszeit kann er zusätzlich einen **Funktionscode** festlegen, meist als **Abwesenheitstaste** an Ihrem Telefon eingerichtet. Ihr Lämpchen leuchtet, solange das Büro geschlossen ist, und ist dunkel, solange es geöffnet ist.
 
-- Code einmal wählen: Die Geschäftszeit steht auf **Geschlossen** – etwa wenn das Büro früher schließt. Sie hören die Ansage „aktiviert“.
-- Code noch einmal wählen: Sie steht wieder auf **Automatisch** und folgt dem Zeitplan. Sie hören die Ansage „deaktiviert“.
+- Taste drücken (oder Code wählen): Die Geschäftszeit schaltet in den jeweils anderen Zustand – etwa auf geschlossen, wenn Sie früher gehen, oder auf geöffnet, wenn Sie während der Betriebsferien im Büro sind. Sie hören „disabled“ (jetzt geschlossen) oder „enabled“ (jetzt geöffnet).
+- Noch einmal drücken: Sie steht wieder auf **Automatisch** und folgt dem Zeitplan. Sie hören „cancelled“.
+- Vergessen Sie es, endet die Umschaltung von selbst bei der nächsten planmäßigen Änderung, spätestens um Mitternacht.
 
-Die Umschaltung gilt sofort für alle Anrufer. Den Code erfahren Sie von Ihrem Administrator.
+Ihr Administrator kann auch Tasten für **Sonderzeiträume** einrichten, zum Beispiel für eine Notfallumleitung. Eine solche Taste schaltet den Zeitraum ein („activated“) oder aus („de-activated“); ihr Lämpchen leuchtet, solange der Zeitraum eingeschaltet ist.
+
+Die Umschaltung gilt sofort für alle Anrufer und alle Telefone. Die Codes erfahren Sie von Ihrem Administrator.
 
 ## Testnummern {#tests}
 

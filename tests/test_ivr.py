@@ -17,7 +17,7 @@ from phonix.generators import dialplan
 from phonix.generators.base import build_snapshot
 from phonix.services import dialplan as dp
 from phonix.services import hours, ivr, media, phones, users
-from phonix.services.common import ServiceError
+from phonix.services.common import NotFound, ServiceError, clear_dirty, dirty_areas
 
 
 def _menu(**kw) -> ivr.IvrMenuIn:
@@ -211,8 +211,182 @@ def test_hours_validation(session, ids):
     ],
 )
 def test_hours_status(session, ids, when, mode, expected):
-    st = hours.status(hours.get_hours(session, ids["office"]), mode, when)
+    office = hours.get_hours(session, ids["office"])
+    rt = hours.Runtime(modes={office.id: mode}) if mode in ("open", "closed") else hours.Runtime()
+    st = hours.status(office, rt, when, {})
     assert (st["open"], st["reason"]) == expected
+
+
+def test_override_expires(session, ids):
+    office = hours.get_hours(session, ids["office"])
+    mon9 = dt.datetime(2026, 10, 19, 9, 0)
+    rt = hours.Runtime(overrides={office.id: ("closed", mon9.date())})
+    assert (hours.status(office, rt, mon9, {})["open"], hours.status(office, rt, mon9, {})["reason"]) == (
+        False,
+        "override",
+    )
+    # automatic reaches the overridden value at 17:30 -> override gone
+    assert hours.status(office, rt, mon9.replace(hour=18), {})["reason"] == "schedule"
+    # set yesterday -> expired at midnight
+    rt = hours.Runtime(overrides={office.id: ("open", dt.date(2026, 10, 18))})
+    assert hours.status(office, rt, dt.datetime(2026, 10, 19, 0, 5), {})["reason"] == "schedule"
+
+
+def test_override_status_fields(session, ids):
+    office = hours.get_hours(session, ids["office"])
+    mon9 = dt.datetime(2026, 10, 19, 9, 0)
+    st = hours.status(office, hours.Runtime(overrides={office.id: ("closed", mon9.date())}), mon9, {})
+    assert (st["override"], st["reverts_to"]) == ("closed", True)
+    st = hours.status(office, hours.Runtime(), mon9, {})
+    assert (st["override"], st["reverts_to"]) == (None, None)
+    # the permanent mode sits above the override
+    rt = hours.Runtime(modes={office.id: "open"}, overrides={office.id: ("closed", mon9.date())})
+    st = hours.status(office, rt, mon9, {})
+    assert (st["open"], st["reason"], st["override"]) == (True, "forced", None)
+
+
+@pytest.mark.parametrize(
+    "value, expected",
+    [
+        ("open:2026-10-24", ("open", dt.date(2026, 10, 24))),
+        ("closed:2026-01-02", ("closed", dt.date(2026, 1, 2))),
+        ("closed", None),
+        ("maybe:2026-10-24", None),
+        ("open:2026-13-01", None),
+        ("", None),
+    ],
+)
+def test_parse_override(value, expected):
+    assert hours.parse_override(value) == expected
+
+
+@pytest.mark.parametrize(
+    "day, applies", [("2026-12-31", True), ("2027-01-01", True), ("2027-01-03", False), ("2026-12-23", False)]
+)
+def test_yearly_special_crosses_new_year(session, ids, day, applies):
+    h = hours.create_hours(
+        session,
+        _hours(
+            specials=[
+                {
+                    "name": "Xmas",
+                    "enabled": True,
+                    "start": "2025-12-24",
+                    "end": "2026-01-02",
+                    "yearly": True,
+                    "dest_type": "hangup",
+                }
+            ]
+        ),
+    )
+    assert hours.special_matches(h.specials[0], dt.date.fromisoformat(day)) is applies
+
+
+@pytest.mark.parametrize(
+    "special, day, applies",
+    [
+        ({"start": "2027-07-05", "end": "2027-08-06"}, "2027-07-05", True),
+        ({"start": "2027-07-05", "end": "2027-08-06"}, "2027-08-06", True),
+        ({"start": "2027-07-05", "end": "2027-08-06"}, "2028-07-10", False),
+        ({"start": "2026-07-05", "end": "2026-08-06", "yearly": True}, "2030-07-10", True),
+        ({"start": "2026-07-05", "end": "2026-08-06", "yearly": True}, "2030-08-07", False),
+        ({}, "2031-02-03", True),
+    ],
+)
+def test_special_matches(session, ids, special, day, applies):
+    h = hours.create_hours(session, _hours(specials=[{"name": "P", "dest_type": "hangup", **special}]))
+    assert hours.special_matches(h.specials[0], dt.date.fromisoformat(day)) is applies
+
+
+def test_precedence_first_applying_special_wins(session, ids):
+    target = hours.create_hours(
+        session, _hours(name="Morning", ranges=[{"weekday": d, "start": "09:00", "end": "12:00"} for d in range(7)])
+    )
+    h = hours.create_hours(
+        session,
+        _hours(
+            specials=[
+                {"name": "Emergency", "enabled": False, "dest_type": "hangup"},
+                {
+                    "name": "Xmas",
+                    "enabled": True,
+                    "start": "2026-12-24",
+                    "end": "2027-01-02",
+                    "dest_type": "hours",
+                    "dest_id": target.id,
+                },
+            ]
+        ),
+    )
+    others = {target.id: target}
+    xmas10 = dt.datetime(2026, 12, 28, 10, 0)
+    st = hours.status(h, hours.Runtime(), xmas10, others)
+    assert (st["open"], st["reason"], st["special"]) == (True, "special", "Xmas")
+    emergency = h.specials[0].id
+    st = hours.status(h, hours.Runtime(active={emergency: True}), xmas10, others)
+    assert (st["open"], st["special"]) == (False, "Emergency")
+    # the key (override) sits above every special period
+    st = hours.status(
+        h, hours.Runtime(active={emergency: True}, overrides={h.id: ("open", xmas10.date())}), xmas10, others
+    )
+    assert (st["open"], st["reason"]) == (True, "override")
+
+
+def test_special_status_details(session, ids):
+    target = hours.create_hours(
+        session, _hours(name="Morning", ranges=[{"weekday": d, "start": "09:00", "end": "12:00"} for d in range(7)])
+    )
+    h = hours.create_hours(
+        session,
+        _hours(
+            specials=[
+                {
+                    "name": "Xmas",
+                    "enabled": True,
+                    "start": "2025-12-24",
+                    "end": "2026-01-02",
+                    "yearly": True,
+                    "dest_type": "hours",
+                    "dest_id": target.id,
+                },
+            ]
+        ),
+    )
+    sp = h.specials[0]
+    st = hours.status(h, hours.Runtime(), dt.datetime(2026, 12, 28, 14, 0), {target.id: target})
+    assert (st["open"], st["special"], st["special_id"], st["until"]) == (False, "Xmas", sp.id, dt.date(2027, 1, 2))
+    st = hours.status(h, hours.Runtime(), dt.datetime(2027, 1, 1, 10, 0), {target.id: target})
+    assert (st["open"], st["until"]) == (True, dt.date(2027, 1, 2))
+    # the target follows its own permanent mode
+    rt = hours.Runtime(modes={target.id: "closed"})
+    assert hours.status(h, rt, dt.datetime(2027, 1, 1, 10, 0), {target.id: target})["open"] is False
+    # unknown target -> closed
+    assert hours.status(h, hours.Runtime(), dt.datetime(2027, 1, 1, 10, 0), {})["open"] is False
+    # switched off at runtime -> the weekly schedule applies
+    st = hours.status(h, hours.Runtime(active={sp.id: False}), dt.datetime(2027, 1, 1, 10, 0), {})
+    assert (st["reason"], st["special"], st["until"]) == ("schedule", None, None)
+
+
+def test_read_runtime(fake_ami):
+    fake_ami.astdb = {
+        ("phonix-hours", "1"): "closed",
+        ("phonix-hours", "3"): "bogus",
+        ("phonix-hours-tmp", "2"): "open:2026-10-24",
+        ("phonix-hours-tmp", "4"): "garbage",
+        ("phonix-special", "5"): "1",
+        ("phonix-special", "6"): "0",
+    }
+    from phonix import ami
+
+    with ami.AmiClient() as c:
+        rt = hours.read_runtime(c)
+    assert rt == hours.Runtime(
+        modes={1: "closed"}, overrides={2: ("open", dt.date(2026, 10, 24))}, active={5: True, 6: False}
+    )
+
+
+def test_load_runtime_without_asterisk():
+    assert hours.load_runtime() is None
 
 
 def test_live_mode(session, ids, fake_ami):
@@ -225,6 +399,101 @@ def test_live_mode(session, ids, fake_ami):
     assert fake_ami.astdb == {}
     with pytest.raises(ServiceError):
         hours.set_mode(session, office, "maybe", "admin")
+
+
+def test_live_status_specials(session, ids, fake_ami):
+    h = hours.create_hours(
+        session,
+        _hours(
+            feature_code="*95",
+            specials=[{"name": "Emergency", "enabled": False, "feature_code": "*96", "dest_type": "hangup"}],
+        ),
+    )
+    sp = h.specials[0]
+    live = hours.live_status(session, h.id)
+    assert live["override"] is None
+    assert live["specials"] == [
+        {"id": sp.id, "name": "Emergency", "active": False, "applies": False, "feature_code": "*96"}
+    ]
+    fake_ami.astdb = {("phonix-special", str(sp.id)): "1"}
+    live = hours.live_status(session, h.id)
+    assert (live["open"], live["reason"], live["special"]) == (False, "special", "Emergency")
+    assert live["specials"][0]["active"] is live["specials"][0]["applies"] is True
+
+
+def test_reset_runtime(session, ids, fake_ami):
+    h = hours.create_hours(
+        session,
+        _hours(
+            feature_code="*95",
+            specials=[
+                {"name": "Emergency", "enabled": True, "feature_code": "*96", "dest_type": "hangup"},
+                {"name": "Xmas", "enabled": False, "dest_type": "hangup"},
+            ],
+        ),
+    )
+    emergency, xmas = (sp.id for sp in h.specials)
+    office = ids["office"]
+    # left over from before the restore: they must not attach to the restored objects
+    fake_ami.astdb = {
+        ("phonix-hours", str(h.id)): "open",
+        ("phonix-hours", str(office)): "closed",
+        ("phonix-hours-tmp", str(h.id)): "closed:2026-10-24",
+        ("phonix-special", str(emergency)): "0",
+        ("phonix-special", str(xmas)): "1",
+        ("phonix-special", "999"): "1",
+        ("phonix-other", "1"): "kept",
+    }
+    hours.reset_runtime(session)
+    assert fake_ami.astdb == {
+        ("phonix-special", str(emergency)): "1",
+        ("phonix-special", str(xmas)): "0",
+        ("phonix-other", "1"): "kept",
+    }
+    commands = [a[1].get("Command") for a in fake_ami.actions]
+    assert f"devstate change Custom:phonix-special-{emergency} INUSE" in commands
+    assert f"devstate change Custom:phonix-hours-{h.id} INUSE" in commands
+
+
+def test_reset_runtime_without_asterisk(session, ids):
+    hours.reset_runtime(session)  # best effort: never fails
+
+
+def test_delete_forgets_runtime_state(session, ids, fake_ami):
+    h = hours.create_hours(
+        session,
+        _hours(
+            specials=[
+                {"name": "Emergency", "enabled": True, "dest_type": "hangup"},
+                {"name": "Xmas", "enabled": False, "dest_type": "hangup"},
+            ],
+        ),
+    )
+    emergency, xmas = (sp.id for sp in h.specials)
+    office = ids["office"]
+    fake_ami.astdb = {
+        ("phonix-hours", str(h.id)): "open",
+        ("phonix-hours-tmp", str(h.id)): "closed:2026-10-24",
+        ("phonix-special", str(emergency)): "1",
+        ("phonix-special", str(xmas)): "0",
+        ("phonix-hours", str(office)): "closed",
+    }
+    # a period removed in a save loses its switch, the others keep theirs
+    data = hours.to_dict(h)
+    data["specials"] = [sp for sp in data["specials"] if sp["id"] == xmas]
+    hours.update_hours(session, h.id, _hours(**data))
+    assert ("phonix-special", str(emergency)) not in fake_ami.astdb
+    assert fake_ami.astdb[("phonix-special", str(xmas))] == "0"
+    assert fake_ami.astdb[("phonix-hours", str(h.id))] == "open"
+
+    hours.delete_hours(session, h.id)
+    assert fake_ami.astdb == {("phonix-hours", str(office)): "closed"}
+
+
+def test_delete_without_asterisk(session, ids):
+    h = hours.create_hours(session, _hours(specials=[{"name": "Emergency", "dest_type": "hangup"}]))
+    hours.update_hours(session, h.id, _hours(**{**hours.to_dict(h), "specials": []}))
+    hours.delete_hours(session, h.id)
 
 
 def test_live_mode_without_asterisk(session, ids):
@@ -261,6 +530,133 @@ def test_dialplan(session, ids):
     out = dialplan.generate(build_snapshot(session))
     assert f"[ivr-{support}]" not in out and "exten => 610," not in out
     assert f"NoOp(Destination ivr {support} is not available)" in out
+
+
+def _block(out: str, context: str) -> str:
+    """The lines of one generated context."""
+    return out.split(f"[{context}]\n", 1)[1].split("\n\n", 1)[0]
+
+
+def test_dialplan_hours_subroutines(session, ids):
+    office = ids["office"]
+    out = dialplan.generate(build_snapshot(session))
+    for suffix in ("auto", "state", "lamp"):
+        assert f"[hours-{office}-{suffix}]\nexten => s,1," in out
+    assert f"exten => *31,hint,Custom:phonix-hours-{office}" in out
+    for context in (f"hours-{office}", f"hours-{office}-pub"):
+        assert _block(out, context).startswith(f"exten => s,1,Gosub(hours-{office}-state,s,1)")
+    auto = _block(out, f"hours-{office}-auto")
+    assert "GotoIfTime(13:00-17:29,fri,*,*?open)" in auto and '"${TODAY:5}" = "12-25"' in auto
+    assert "Return(open-0)" in auto and "Return(closed-0)" in auto
+    lamp = _block(out, f"hours-{office}-lamp")
+    assert f"Set(DEVICE_STATE(Custom:phonix-hours-{office})=" in lamp and "INUSE:NOT_INUSE" in lamp
+    # the key: permanent mode and override, then the lamp, then the announcement
+    key = out.split("exten => *31,1,", 1)[1].split("\n\n", 1)[0].split("\n; ", 1)[0]
+    assert f"Gosub(hours-{office}-auto,s,1)" in key and f"Gosub(hours-{office}-state,s,1)" in key
+    assert f"DB_DELETE(phonix-hours/{office})" in key and f"DB_DELETE(phonix-hours-tmp/{office})" in key
+    assert f"Set(DB(phonix-hours-tmp/{office})=${{HOURS_OPP}}:${{STRFTIME(${{EPOCH}},,%Y-%m-%d)}})" in key
+    assert key.index(f"Gosub(hours-{office}-lamp,s,1)") < key.index("Playback(") < key.index("Hangup()")
+    # without a feature code: no key, no lamp, no hint
+    plain = hours.create_hours(session, _hours(name="Plain"))
+    out = dialplan.generate(build_snapshot(session))
+    assert f"[hours-{plain.id}-state]" in out and f"[hours-{plain.id}-lamp]" not in out
+    assert f"Custom:phonix-hours-{plain.id}" not in out
+
+
+def test_dialplan_special_periods(session, ids):
+    target = hours.create_hours(
+        session, _hours(name="Morning", ranges=[{"weekday": d, "start": "09:00", "end": "12:00"} for d in range(7)])
+    )
+    h = hours.create_hours(
+        session,
+        _hours(
+            name="Shop",
+            feature_code="*69",
+            closed_dest_type="hangup",
+            specials=[
+                {"name": "Emergency", "enabled": False, "feature_code": "*70", "dest_type": "hangup"},
+                {
+                    "name": "Xmas",
+                    "enabled": True,
+                    "start": "2026-12-24",
+                    "end": "2027-01-02",
+                    "yearly": True,
+                    "dest_type": "hours",
+                    "dest_id": target.id,
+                },
+                {"name": "Summer", "enabled": True, "start": "2027-07-01", "end": "2027-07-31", "dest_type": "hangup"},
+            ],
+        ),
+    )
+    emergency, xmas, summer = (sp.id for sp in h.specials)
+    out = dialplan.generate(build_snapshot(session))
+    auto = _block(out, f"hours-{h.id}-auto")
+    # in list order; an empty switch falls back to the configured value
+    assert auto.index(f"phonix-special/{emergency}") < auto.index(f"phonix-special/{xmas}")
+    assert auto.index(f"phonix-special/{xmas}") < auto.index(f"phonix-special/{summer}")
+    assert 'ExecIf($["${ON}" = ""]?Set(LOCAL(ON)=0))' in auto and 'ExecIf($["${ON}" = ""]?Set(LOCAL(ON)=1))' in auto
+    assert f"Return(closed-{emergency})" in auto
+    # yearly across the new year: 12-24...12-31 or 01-01...01-02
+    assert '"${TODAY:5}" >= "12-24" | "${TODAY:5}" <= "01-02"' in auto
+    assert '"${TODAY}" >= "2027-07-01" & "${TODAY}" <= "2027-07-31"' in auto
+    assert f"Gosub(hours-{target.id}-state,s,1)" in auto and f"-{xmas})" in auto
+    # routing: a period pointing to business hours goes there
+    pub = _block(out, f"hours-{h.id}-pub")
+    assert f"Goto(hours-{target.id}-pub,s,1)" in pub
+    assert f"Goto(hours-{target.id},s,1)" in _block(out, f"hours-{h.id}")
+    # keys: hint, default 0, the period's lamp and the owner's lamp
+    assert f"exten => *70,hint,Custom:phonix-special-{emergency}" in out
+    key = out.split("exten => *70,1,", 1)[1].split("\n\n", 1)[0].split("\n; ", 1)[0]
+    assert 'ExecIf($["${HOURS_ON}" = ""]?Set(HOURS_ON=0))' in key
+    assert f"Set(DB(phonix-special/{emergency})=${{HOURS_ON}})" in key
+    assert f"Set(DEVICE_STATE(Custom:phonix-special-{emergency})=" in key and f"Gosub(hours-{h.id}-lamp,s,1)" in key
+    assert "activated:de-activated" in key
+    # pressing the target's key refreshes the lamps of the business hours pointing to it
+    target_key = hours.update_hours(session, target.id, _hours(**{**hours.to_dict(target), "feature_code": "*68"}))
+    out = dialplan.generate(build_snapshot(session))
+    key = out.split("exten => *68,1,", 1)[1].split("\n\n", 1)[0].split("\n; ", 1)[0]
+    assert f"Gosub(hours-{target_key.id}-lamp,s,1)" in key and f"Gosub(hours-{h.id}-lamp,s,1)" in key
+
+
+def test_dialplan_override_purged_in_dialplan(session, ids):
+    office = ids["office"]
+    out = dialplan.generate(build_snapshot(session))
+    state = _block(out, f"hours-{office}-state")
+    valid = 'GotoIf($["${TMP}" = "${OPP}:${STRFTIME(${EPOCH},,%Y-%m-%d)}"]?override)'
+    purge = f"Set(LOCAL(GONE)=${{DB_DELETE(phonix-hours-tmp/{office})}})"
+    assert valid in state and purge in state
+    # only a valid override skips the purge
+    assert state.index(valid) < state.index(purge) < state.index("(override)")
+    assert f"Set(LOCAL(MODE)=${{DB(phonix-hours/{office})}})" in state
+    assert "Return(${MODE}-forced-0)" in state and "Return(${CUT(TMP,:,1)}-override-0)" in state
+
+
+def test_dialplan_no_gosub_to_deleted_hours(session, ids):
+    target = hours.create_hours(session, _hours(name="Morning"))
+    h = hours.create_hours(
+        session,
+        _hours(name="Shop", specials=[{"name": "Xmas", "enabled": True, "dest_type": "hours", "dest_id": target.id}]),
+    )
+    assert f"hours-{target.id}" in _block(dialplan.generate(build_snapshot(session)), f"hours-{h.id}-auto")
+    hours.delete_hours(session, target.id)
+    session.expire_all()
+    out = dialplan.generate(build_snapshot(session))
+    assert f"hours-{target.id}" not in out
+    assert f"Return(closed-{h.specials[0].id})" in _block(out, f"hours-{h.id}-auto")
+
+
+def test_dialplan_special_never_routes_to_itself(session, ids):
+    h = hours.create_hours(session, _hours(name="Shop", specials=[{"name": "Loop", "dest_type": "hangup"}]))
+    # only possible by editing the database directly
+    sp = h.specials[0]
+    sp.dest_type, sp.dest_id = "hours", h.id
+    session.flush()
+    out = dialplan.generate(build_snapshot(session))
+    for ctx in (f"hours-{h.id}", f"hours-{h.id}-pub"):
+        block = _block(out, ctx)
+        assert f"Goto(hours-{h.id}" not in block
+        period = block.split("Special period Loop", 1)[1]
+        assert "Hangup()" in period.split("\n", 2)[1]
 
 
 def test_dialplan_uploaded_prompt_and_unsafe_names(session, ids, runtime):
@@ -426,6 +822,156 @@ def test_hours_form(client, fake_ami):
     assert fake_ami.astdb == {("phonix-hours", str(ids["office"])): "closed"}
 
 
+def _special_rows(rows):
+    """Form fields of special period rows ``(index, id, name, enabled, start, end, yearly, code, dest)``."""
+    out = []
+    for idx, sid, name, enabled, start, end, yearly, code, dest in rows:
+        out += [(f"sp_id_{idx}", sid), (f"sp_name_{idx}", name)]
+        if enabled:
+            out.append((f"sp_enabled_{idx}", "true"))
+        out += [(f"sp_start_{idx}", start), (f"sp_end_{idx}", end)]
+        if yearly:
+            out.append((f"sp_yearly_{idx}", "true"))
+        out += [(f"sp_code_{idx}", code), (f"sp_dest_{idx}", dest)]
+    return out
+
+
+def test_hours_form_special_periods(client, fake_ami):
+    ids = client.ids
+    login(client)
+    token = csrf(client, "/dialplan/hours/new")
+    base = [("csrf_token", token), ("name", "Hotline"), ("open_dest", "hangup"), ("closed_dest", "hangup")]
+    rows = [
+        ("k", "", "Emergency", False, "", "", False, "*70", f"callgroup:{ids['group']}"),
+        ("a", "", "Xmas", True, "2026-12-24", "2027-01-02", True, "", f"hours:{ids['office']}"),
+    ]
+    r = _post(client, "/dialplan/hours/new", base + _special_rows(rows), follow_redirects=False)
+    assert r.status_code == 303, r.text
+    with session_scope() as s:
+        h = s.query(BusinessHours).filter_by(name="Hotline").one()
+        got = [(sp.name, sp.enabled, sp.yearly, sp.feature_code, sp.dest_type) for sp in h.specials]
+        assert got == [("Emergency", False, False, "*70", "callgroup"), ("Xmas", True, True, None, "hours")]
+        hid, (emergency, xmas) = h.id, [sp.id for sp in h.specials]
+
+    page = client.get(f"/dialplan/hours/{hid}").text
+    assert 'value="Emergency"' in page and 'value="Xmas"' in page and 'value="2026-12-24"' in page
+    assert f'name="sp_id_0" value="{emergency}"' in page and 'data-move="up"' in page
+    # the live toggles of the periods
+    assert f'hx-post="/dialplan/hours/{hid}/special/{xmas}"' in page
+    # the target picker offers neither the object itself nor business hours with periods
+    assert f'value="hours:{hid}"' not in page and f'value="hours:{ids["office"]}"' in page
+
+    # reversed on the second save: order follows the form, ids are kept
+    rows = [
+        ("b", str(xmas), "Xmas", True, "2026-12-24", "2027-01-02", True, "", f"hours:{ids['office']}"),
+        ("c", str(emergency), "Emergency", False, "", "", False, "*70", f"callgroup:{ids['group']}"),
+    ]
+    r = _post(client, f"/dialplan/hours/{hid}", base + _special_rows(rows), follow_redirects=False)
+    assert r.status_code == 303, r.text
+    with session_scope() as s:
+        got = [(sp.id, sp.name) for sp in s.get(BusinessHours, hid).specials]
+        assert got == [(xmas, "Xmas"), (emergency, "Emergency")]
+
+    # errors are shown on the row
+    bad = [("x", "", "Broken", False, "2026-12-24", "", False, "", "hangup")]
+    r = _post(client, f"/dialplan/hours/{hid}", base + _special_rows(bad))
+    assert r.status_code == 422 and "Enter both the first and the last day" in r.text
+
+
+def test_hours_form_keeps_live_switch(client, fake_ami):
+    """A form opened before a period was switched does not switch it back; only new rows have the checkbox."""
+    login(client)
+    with session_scope() as s:
+        h = hours.create_hours(s, _hours(name="Hotline", specials=[{"name": "Emergency", "dest_type": "hangup"}]))
+        s.flush()
+        hid, sid = h.id, h.specials[0].id
+    page = client.get(f"/dialplan/hours/{hid}").text
+    assert 'name="sp_enabled_0"' not in page and 'name="sp_enabled___INDEX__"' in page
+    with session_scope() as s:
+        hours.set_special_active(s, hid, sid, True, "admin")
+    form = [
+        ("csrf_token", csrf(client, "/dialplan/hours")),
+        ("name", "Hotline"),
+        ("open_dest", "hangup"),
+        ("closed_dest", "hangup"),
+        *_special_rows([("0", str(sid), "Emergency", False, "", "", False, "", "hangup")]),
+        *_special_rows([("n", "", "New", True, "", "", False, "", "hangup")]),
+    ]
+    r = _post(client, f"/dialplan/hours/{hid}", form, follow_redirects=False)
+    assert r.status_code == 303, r.text
+    with session_scope() as s:
+        assert [(sp.name, sp.enabled) for sp in s.get(BusinessHours, hid).specials] == [
+            ("Emergency", True),
+            ("New", True),
+        ]
+    assert fake_ami.astdb[("phonix-special", str(sid))] == "1"
+
+
+def test_hours_special_toggle(client, fake_ami):
+    login(client)
+    with session_scope() as s:
+        h = hours.create_hours(s, _hours(name="Hotline", specials=[{"name": "Emergency", "dest_type": "hangup"}]))
+        s.flush()
+        hid, sid = h.id, h.specials[0].id
+    url = f"/dialplan/hours/{hid}/special/{sid}"
+    assert client.post(url, data={"active": "true"}).status_code == 403
+    headers = {"X-CSRF-Token": csrf(client, "/dialplan/hours"), "HX-Request": "true"}
+    r = client.post(url, data={"active": "true"}, headers=headers)
+    assert r.status_code == 200 and 'id="hours-mode"' in r.text and "Emergency" in r.text
+    assert fake_ami.astdb[("phonix-special", str(sid))] == "1"
+    with session_scope() as s:
+        assert s.get(BusinessHours, hid).specials[0].enabled is True
+    # from the list page: the row is returned
+    r = client.post(url, data={"active": "false", "view": "row"}, headers=headers)
+    assert r.status_code == 200 and f'id="hours-row-{hid}"' in r.text
+    assert fake_ami.astdb[("phonix-special", str(sid))] == "0"
+    r = client.post(f"/dialplan/hours/{hid}/special/999999", data={"active": "true"}, headers=headers)
+    assert r.status_code == 404
+
+
+def test_hours_special_toggle_without_asterisk(client):
+    login(client)
+    with session_scope() as s:
+        h = hours.create_hours(s, _hours(name="Hotline", specials=[{"name": "Emergency", "dest_type": "hangup"}]))
+        s.flush()
+        hid, sid = h.id, h.specials[0].id
+    headers = {"X-CSRF-Token": csrf(client, "/dialplan/hours"), "HX-Request": "true"}
+    r = client.post(f"/dialplan/hours/{hid}/special/{sid}", data={"active": "true"}, headers=headers)
+    assert r.status_code == 200 and "Asterisk is not running" in r.text
+
+
+def test_hours_list_shows_special_period(client, fake_ami):
+    login(client)
+    today = dt.date.today()
+    with session_scope() as s:
+        h = hours.create_hours(
+            s,
+            _hours(
+                name="Hotline",
+                specials=[
+                    {"name": "Off", "dest_type": "hangup"},
+                    {
+                        "name": "Xmas",
+                        "enabled": True,
+                        "start": today.isoformat(),
+                        "end": (today + dt.timedelta(days=3)).isoformat(),
+                        "dest_type": "hangup",
+                    },
+                ],
+            ),
+        )
+        s.flush()
+        hid, (off, _xmas) = h.id, [sp.id for sp in h.specials]
+    page = client.get("/dialplan/hours").text
+    row = page.split(f'id="hours-row-{hid}"', 1)[1].split("</tr>", 1)[0]
+    assert "Xmas" in row and f"until {(today + dt.timedelta(days=3)).isoformat()}" in row
+    assert f'hx-post="/dialplan/hours/{hid}/special/{off}"' in row
+    # a key override is explained
+    fake_ami.astdb[("phonix-hours-tmp", str(hid))] = f"open:{today}"
+    page = client.get("/dialplan/hours").text
+    assert "switched by key until the next change" in page
+
+
 # --- REST and MCP -----------------------------------------------------------------------
 
 
@@ -478,3 +1024,171 @@ def test_mcp(client, fake_ami):
     assert result["structuredContent"]["repeats"] == 4
     result = call(client, "set_business_hours_mode", id=ids["office"], mode="later")
     assert result["isError"] is True
+
+
+def _two_hours_with_specials():
+    from phonix.core.db import session_scope as scope
+
+    out = []
+    with scope() as s:
+        for name in ("Sp A", "Sp B"):
+            h = hours.create_hours(s, _hours(name=name, specials=[{"name": "P", "dest_type": "hangup"}]))
+            s.flush()
+            out.append((h.id, h.specials[0].id))
+    return out
+
+
+def test_api_special(client, fake_ami):
+    (a, pa), (_b, pb) = _two_hours_with_specials()
+    url = f"/api/v1/business-hours/{a}/special/{pa}"
+    assert client.put(url, json={"active": True}, headers=bearer(read_only=True)).status_code == 403
+    r = client.put(url, json={"active": True}, headers=bearer())
+    assert r.status_code == 200, r.text
+    assert any("database put" in str(x) and f" {pa} 1" in str(x) for x in fake_ami.actions)
+    assert (
+        client.put(f"/api/v1/business-hours/{a}/special/{pb}", json={"active": True}, headers=bearer()).status_code
+        == 404
+    )
+    assert client.put(url, json={"active": "yes"}, headers=bearer()).status_code == 422
+    paths = client.get("/api/v1/openapi.json").json()["paths"]
+    assert "/api/v1/business-hours/{hours_id}/special/{special_id}" in paths
+
+
+def test_mcp_special(client, fake_ami):
+    from test_mcp import call, rpc
+
+    (a, pa), (_b, pb) = _two_hours_with_specials()
+    names = {t["name"] for t in rpc(client, "tools/list").json()["result"]["tools"]}
+    assert "set_business_hours_special" in names
+    ro = {t["name"] for t in rpc(client, "tools/list", headers=bearer(read_only=True)).json()["result"]["tools"]}
+    assert "set_business_hours_special" not in ro
+    result = call(client, "set_business_hours_special", id=a, special_id=pa, active=True)
+    assert "isError" not in result or not result["isError"]
+    assert call(client, "set_business_hours_special", id=a, special_id=pb, active=True)["isError"] is True
+    assert call(client, "set_business_hours_special", id=a, special_id=pa, active="yes")["isError"] is True
+
+
+def test_special_periods_validation(session, ids):
+    from phonix.services.common import parse
+
+    target = hours.create_hours(session, _hours(name="Christmas"))
+    # start and end both or neither
+    with pytest.raises(ServiceError) as exc:
+        parse(
+            hours.BusinessHoursIn,
+            {
+                "name": "x",
+                "open_dest_type": "hangup",
+                "specials": [{"name": "x", "start": "2026-12-24", "dest_type": "hangup"}],
+            },
+        )
+    assert any(key.startswith("specials.0") for key in exc.value.fields)
+    # one level: a target must not have special periods, and not be itself
+    xmas = {"name": "xmas", "dest_type": "hours", "dest_id": target.id}
+    a = hours.create_hours(session, _hours(name="A", specials=[xmas]))
+    with pytest.raises(ServiceError) as exc:
+        hours.update_hours(
+            session, target.id, _hours(name="Christmas", specials=[{"name": "y", "dest_type": "hangup"}])
+        )
+    assert "specials" in exc.value.fields
+    with pytest.raises(ServiceError):
+        hours.create_hours(session, _hours(name="B", specials=[{"name": "z", "dest_type": "hours", "dest_id": a.id}]))
+    with pytest.raises(ServiceError):
+        hours.update_hours(
+            session, a.id, _hours(name="A", specials=[{"name": "me", "dest_type": "hours", "dest_id": a.id}])
+        )
+    # feature codes are unique across extensions and other feature codes
+    with pytest.raises(ServiceError) as exc:
+        hours.update_hours(
+            session,
+            a.id,
+            _hours(name="A", specials=[{"name": "e", "dest_type": "hangup", "feature_code": "*31"}]),
+        )
+    assert "specials.0.feature_code" in exc.value.fields
+
+
+def test_special_periods_keep_ids_and_order(session, ids):
+    h = hours.create_hours(
+        session,
+        _hours(
+            specials=[
+                {"name": "Emergency", "dest_type": "hangup", "feature_code": "*70"},
+                {
+                    "name": "Xmas",
+                    "start": "2026-12-24",
+                    "end": "2027-01-02",
+                    "yearly": True,
+                    "dest_type": "hangup",
+                },
+            ]
+        ),
+    )
+    first, second = [s.id for s in h.specials]
+    data = hours.to_dict(h)
+    data["specials"].reverse()
+    hours.update_hours(session, h.id, hours.BusinessHoursIn.model_validate(data))
+    session.expire_all()
+    assert [(s.id, s.position) for s in hours.get_hours(session, h.id).specials] == [(second, 0), (first, 1)]
+
+
+def test_deleting_target_hours_falls_back_to_hangup(session, ids):
+    target = hours.create_hours(session, _hours(name="Christmas"))
+    special = {"name": "x", "dest_type": "hours", "dest_id": target.id}
+    a = hours.create_hours(session, _hours(name="A", specials=[special]))
+    hours.delete_hours(session, target.id)
+    session.expire_all()
+    period = hours.get_hours(session, a.id).specials[0]
+    assert (period.dest_type, period.dest_id) == ("hangup", None)
+
+
+def test_set_mode_clears_override_and_sets_lamp(session, ids, fake_ami):
+    office = ids["office"]
+    fake_ami.astdb[("phonix-hours-tmp", str(office))] = f"open:{dt.date.today()}"
+    hours.set_mode(session, office, "closed", "admin")
+    assert ("phonix-hours-tmp", str(office)) not in fake_ami.astdb
+    assert ("Command", {"Command": f"devstate change Custom:phonix-hours-{office} INUSE"}) in fake_ami.actions
+
+
+def test_set_special_active(session, ids, fake_ami):
+    h = hours.create_hours(
+        session, _hours(specials=[{"name": "Emergency", "dest_type": "hangup", "feature_code": "*70"}])
+    )
+    sid = h.specials[0].id
+    clear_dirty(session)
+    hours.set_special_active(session, h.id, sid, True, "admin")
+    assert fake_ami.astdb[("phonix-special", str(sid))] == "1"
+    assert hours.get_hours(session, h.id).specials[0].enabled is True
+    assert ("Command", {"Command": f"devstate change Custom:phonix-special-{sid} INUSE"}) in fake_ami.actions
+    assert dirty_areas(session) == []
+    with pytest.raises(NotFound):
+        hours.set_special_active(session, ids["office"], sid, False, "admin")
+
+
+def test_set_special_active_without_asterisk(session, ids):
+    h = hours.create_hours(session, _hours(specials=[{"name": "E", "dest_type": "hangup"}]))
+    with pytest.raises(ServiceError, match="Asterisk is not running"):
+        hours.set_special_active(session, h.id, h.specials[0].id, True, "admin")
+
+
+def test_update_hours_pushes_special_state(session, ids, fake_ami):
+    h = hours.create_hours(session, _hours(specials=[{"name": "E", "dest_type": "hangup"}]))
+    data = hours.BusinessHoursIn.model_validate(
+        {**hours.to_dict(h), "specials": [{**hours.to_dict(h)["specials"][0], "enabled": True}]}
+    )
+    hours.update_hours(session, h.id, data, "admin")
+    assert fake_ami.astdb[("phonix-special", str(h.specials[0].id))] == "1"
+
+
+def test_update_hours_keeps_switches_made_by_phones(session, ids, fake_ami):
+    h = hours.create_hours(session, _hours(specials=[{"name": "E", "dest_type": "hangup", "feature_code": "*70"}]))
+    sid = h.specials[0].id
+    # a phone switched the period on after the form was opened (not yet copied to SQLite)
+    fake_ami.astdb[("phonix-special", str(sid))] = "1"
+    form = hours.to_dict(h)
+    form["specials"].append({"name": "New", "dest_type": "hangup"})
+    hours.update_hours(session, h.id, hours.BusinessHoursIn.model_validate(form), "admin")
+    new = hours.get_hours(session, h.id).specials[1].id
+    # unchanged switch: the phone's value stays; new period: written
+    assert fake_ami.astdb[("phonix-special", str(sid))] == "1"
+    assert fake_ami.astdb[("phonix-special", str(new))] == "0"
+    assert ("Command", {"Command": f"devstate change Custom:phonix-special-{sid} INUSE"}) in fake_ami.actions

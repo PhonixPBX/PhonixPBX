@@ -23,7 +23,7 @@ Die neuesten Einträge stehen oben, 50 pro Seite. Mit *Älter* und *Neuer* unter
 
 - Anlegen, Ändern, Aktivieren, Deaktivieren und Löschen von Telefonen, Providern, Rufgruppen, Anwendungen, IVR-Menüs, Geschäftszeiten, Konferenzräumen, Mediendateien und Manager-Benutzern.
 - Änderungen auf Einstellungsseiten, über die Weboberfläche, die API oder MCP.
-- Das Umschalten des Modus von Geschäftszeiten.
+- Das Umschalten des Modus von Geschäftszeiten und das Ein- und Ausschalten von Sonderzeiträumen.
 - Übernehmen der Konfiguration, Backups und Wiederherstellungen, Importe, Firmware-Updates, Zertifikate, Zurücksetzen auf Werkseinstellungen.
 - Administratoren und API-Tokens: angelegt, gelöscht, Passwort und Sprache geändert.
 - Über die API oder MCP ausgelöste Anrufe (Click-to-Call).

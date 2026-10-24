@@ -39,7 +39,7 @@ from phonix.legacy import mapping as m
 from phonix.legacy import upgrade
 from phonix.legacy.parse import MAX_BYTES, LegacyConfig, LegacyParseError, Node, parse_bytes
 from phonix.legacy.report import ImportReport
-from phonix.services import configdoc, users
+from phonix.services import configdoc, hours, users
 from phonix.services import dialplan as dp
 from phonix.services import manager as mgr
 from phonix.services import phones as ph
@@ -121,8 +121,13 @@ def import_bytes(data: bytes, mode: str = "replace", dry_run: bool = False, user
         session.rollback()
         log.exception("legacy import failed")
         report.fatal(f"Import aborted, nothing was changed: {exc}", section="database")
+        return report
     finally:
         session.close()
+    if mode == "replace" and not dry_run:
+        # the replaced objects' runtime state must not attach to the new ones
+        with db.session_scope() as session:
+            hours.reset_runtime(session)
     return report
 
 

@@ -68,8 +68,10 @@ Changes over the API become pending changes, just like in the web interface:
 
 ## Business hours {#business-hours}
 
-- `GET /api/v1/business-hours/{id}/status` – whether the business hours are open right now, and the live mode.
+- `GET /api/v1/business-hours/{id}/status` – whether the business hours are open right now, why (`reason`: `forced`, `override`, `special`, `holiday` or `schedule`), the live mode and the special periods with their switch (`active`) and whether they apply today.
 - `PUT /api/v1/business-hours/{id}/mode` with `{"mode": "auto"}`, `"open"` or `"closed"` – switches the mode immediately, without apply.
+- `PUT /api/v1/business-hours/{id}/special/{special_id}` with `{"active": true}` or `false` – switches a special period on or off immediately, without apply.
+- The special periods themselves are the `specials` list of the business hours (create and update, then apply).
 
 ## Click-to-call {#calls}
 
@@ -137,7 +139,7 @@ The tools:
 
 - `list_*`, `get_*`, `create_*`, `update_*` and `delete_*` for phones, providers, call groups, conferences, applications, IVR menus, business hours and AMI users. `update_*` changes only the fields that are given.
 - `set_phone_enabled`, `set_provider_enabled`, `set_ivr_menu_enabled`.
-- `get_business_hours_status`, `set_business_hours_mode` (takes effect immediately).
+- `get_business_hours_status`, `set_business_hours_mode` and `set_business_hours_special` (take effect immediately).
 - `list_settings_groups`, `get_settings`, `update_settings`.
 - `get_status`, `get_pending_changes`, `preview_apply` (which files and components would change), `apply_changes`.
 - `tail_log` – the last lines of the `asterisk`, `system`, `web` or `monitor` log (up to 1000). In an OCI container there are no log files, and the tool returns an error.

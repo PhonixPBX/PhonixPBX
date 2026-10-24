@@ -347,6 +347,36 @@
   gap: 0.5rem;
   align-items: center;
 }
+/* special periods: handle, name, destination, move, remove; switch, days, yearly and code below */
+.hours-specials { display: flex; flex-direction: column; gap: 0.5rem; }
+.hours-special {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr) minmax(0, 1.4fr) auto auto;
+  grid-template-areas: "handle name dest move remove" ". opts opts opts opts" ". err err err err";
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem;
+  border: 1px solid var(--tblr-border-color);
+  border-radius: var(--tblr-border-radius);
+  background: var(--tblr-bg-surface-secondary);
+}
+.hours-special.is-invalid { border-color: var(--tblr-danger); }
+.hours-special.sortable-ghost { opacity: 0.4; box-shadow: 0 0 0 2px var(--tblr-primary); }
+.hours-special-handle { grid-area: handle; }
+.hours-special-name { grid-area: name; }
+.hours-special-dest { grid-area: dest; min-width: 0; }
+.hours-special-move { grid-area: move; }
+.hours-special-remove { grid-area: remove; }
+.hours-special-opts { grid-area: opts; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.hours-special-date { width: 10rem; }
+.hours-special-code { width: 8rem; font-family: var(--tblr-font-monospace); }
+.hours-special-error { grid-area: err; }
+@media (max-width: 767.98px) {
+  .hours-special {
+    grid-template-columns: 1.5rem minmax(0, 1fr) auto;
+    grid-template-areas: "handle name remove" ". dest move" ". opts opts" ". err err";
+  }
+}
 .hours-week-row {
   display: grid;
   grid-template-columns: 2.5rem minmax(0, 1fr);

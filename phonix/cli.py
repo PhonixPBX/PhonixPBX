@@ -165,7 +165,7 @@ def cmd_backup(args: argparse.Namespace) -> int:
 
 
 def cmd_config(args: argparse.Namespace) -> int:
-    from phonix.services import configdoc
+    from phonix.services import configdoc, hours
     from phonix.services.common import ServiceError
 
     if args.action == "schema":
@@ -191,6 +191,9 @@ def cmd_config(args: argparse.Namespace) -> int:
             counts = configdoc.import_document(session, doc, config.get().media_dir, user="cli")
             if args.dry_run:
                 session.rollback()
+        if not args.dry_run:
+            with _session() as session:
+                hours.reset_runtime(session)
     except ValueError as exc:
         print(f"error: not a JSON file: {exc}", file=sys.stderr)
         return 1

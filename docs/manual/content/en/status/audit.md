@@ -23,7 +23,7 @@ The newest entries are at the top, 50 per page. Use *Older* and *Newer* at the b
 
 - Creating, changing, enabling, disabling and deleting phones, providers, call groups, applications, IVR menus, business hours, conference rooms, media files and manager users.
 - Changes to settings pages, via the web interface, the API or MCP.
-- Switching the mode of business hours.
+- Switching the mode of business hours and switching special periods on and off.
 - Applying the configuration, backups and restores, imports, firmware updates, certificates, factory reset.
 - Administrators and API tokens: created, deleted, passwords and language changed.
 - Calls placed through the API or MCP (click-to-call).

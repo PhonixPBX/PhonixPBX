@@ -203,3 +203,97 @@ def test_callgroup_loop_in_document(session, initialized):
     doc["callgroups"][0]["members"] = ["callgroup:9999"]
     with pytest.raises(ServiceError, match="unknown callgroup 9999"):
         _import(doc, initialized.media_dir)
+
+
+_DESTS = {"open_dest_type": "hangup", "closed_dest_type": "hangup"}
+
+
+def _hours_with_specials(session) -> dict:
+    from phonix.services import hours as hours_svc
+
+    users.create_user(session, "admin", "adminadmin")
+    holiday = hours_svc.create_hours(session, hours_svc.BusinessHoursIn(name="Holiday desk", **_DESTS))
+    hours_svc.create_hours(
+        session,
+        hours_svc.BusinessHoursIn(
+            name="Shop",
+            **_DESTS,
+            specials=[
+                hours_svc.SpecialIn(
+                    name="Inventory",
+                    enabled=True,
+                    start="2026-12-27",
+                    end="2026-12-28",
+                    feature_code="*71",
+                    dest_type="hangup",
+                ),
+                hours_svc.SpecialIn(name="Christmas", yearly=True, dest_type="hours", dest_id=holiday.id),
+            ],
+        ),
+    )
+    session.commit()
+    return configdoc.export(session)
+
+
+def test_roundtrip_special_periods(session, initialized):
+    doc = _hours_with_specials(session)
+    session.close()
+    assert doc["version"] == 5
+    shop = next(h for h in doc["business_hours"] if h["name"] == "Shop")
+    holiday_id = next(h["id"] for h in doc["business_hours"] if h["name"] == "Holiday desk")
+    assert [sp["dest_id"] for sp in shop["specials"]] == [None, holiday_id]
+
+    # the ids of the document are not the ones of the database
+    for h in doc["business_hours"]:
+        h["id"] += 100
+    for sp in shop["specials"]:
+        sp["id"] += 50
+        if sp["dest_type"] == "hours":
+            sp["dest_id"] += 100
+    _import(json.loads(json.dumps(doc)), initialized.media_dir)
+
+    with db.session_scope() as s:
+        from phonix.services import hours as hours_svc
+
+        by_name = {h.name: h for h in hours_svc.list_hours(s)}
+        specials = by_name["Shop"].specials
+        assert [(sp.name, sp.enabled, sp.yearly, sp.feature_code) for sp in specials] == [
+            ("Inventory", True, False, "*71"),
+            ("Christmas", False, True, None),
+        ]
+        assert [sp.position for sp in specials] == [0, 1]
+        assert specials[1].dest_type == "hours" and specials[1].dest_id == by_name["Holiday desk"].id
+        assert str(specials[0].start) == "2026-12-27"
+
+
+def test_version_4_document_imports(session, initialized):
+    doc = _populated(session)
+    session.close()
+    doc["version"] = 4
+    for h in doc["business_hours"]:
+        h.pop("specials", None)
+    _import(doc, initialized.media_dir)
+
+
+def test_import_replaces_specials_and_ignores_document_ids(session, initialized):
+    from phonix.core.models import BusinessHoursSpecial
+    from phonix.services import hours as hours_svc
+
+    doc = _hours_with_specials(session)
+    old = {sp.id: sp.name for sp in session.query(BusinessHoursSpecial)}
+    assert 1 in old
+    session.close()
+    # the document's special with id 1 has another name than the one in the database
+    shop = next(h for h in doc["business_hours"] if h["name"] == "Shop")
+    shop["specials"] = [{**shop["specials"][0], "id": 1, "name": "Renamed", "feature_code": ""}]
+    _import(doc, initialized.media_dir)
+
+    with db.session_scope() as s:
+        rows = s.query(BusinessHoursSpecial).all()
+        # import replaces the configuration: exactly the document's period, none of the old ones
+        assert [r.name for r in rows] == ["Renamed"]
+        assert old[1] == "Inventory"
+        assert {h.name: [sp.name for sp in h.specials] for h in hours_svc.list_hours(s)} == {
+            "Holiday desk": [],
+            "Shop": ["Renamed"],
+        }

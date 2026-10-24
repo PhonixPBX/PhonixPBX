@@ -3,5 +3,21 @@
 {% macro hours_status(st) %}
 {% if st.open %}<span class="badge bg-green-lt">{{ _("open now") }}</span>{% else %}<span class="badge bg-orange-lt">{{ _("closed now") }}</span>{% endif %}
 {% if st.reason == "forced" %}<span class="small text-secondary">{{ _("switched manually") }}</span>
+{% elif st.reason == "override" %}<span class="small text-secondary">{{ _("switched by key until the next change") }}</span>
+{% elif st.reason == "special" %}<span class="small text-secondary">{% if st.until %}{{ _("%(name)s until %(date)s", name=st.special, date=st.until.strftime("%Y-%m-%d")) }}{% else %}{{ st.special }}{% endif %}</span>
 {% elif st.reason == "holiday" %}<span class="small text-secondary">{{ st.holiday or _("holiday") }}</span>{% endif %}
+{% endmacro %}
+
+{# on/off switch of a special period (`sp`: an entry of services.hours.special_states()); posts to
+   /dialplan/hours/<id>/special/<sid> and swaps `target` with the answer (`view` "row" = list page row) #}
+{% macro special_toggle(hours_id, sp, target, view="", disabled=False) %}
+<form class="d-inline-block" hx-post="/dialplan/hours/{{ hours_id }}/special/{{ sp.id }}" hx-target="{{ target }}" hx-swap="outerHTML" hx-disable="find button">
+  <input type="hidden" name="active" value="{{ 'false' if sp.active else 'true' }}">
+  {% if view %}<input type="hidden" name="view" value="{{ view }}">{% endif %}
+  <button type="submit" class="btn btn-sm{% if sp.active %} btn-primary{% endif %}" aria-pressed="{{ 'true' if sp.active else 'false' }}"
+          title="{{ (_('On, applies today') if sp.applies else _('On, but not today')) if sp.active else _('Off') }}"
+          aria-label="{{ _('Switch %(name)s off', name=sp.name) if sp.active else _('Switch %(name)s on', name=sp.name) }}"{% if disabled %} disabled{% endif %}>
+    {{ icon("toggle-right" if sp.active else "toggle-left") }}{{ sp.name }}
+  </button>
+</form>
 {% endmacro %}

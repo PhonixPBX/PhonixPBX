@@ -71,7 +71,7 @@ from phonix.services import users as users_svc
 from phonix.services.common import AREAS, ServiceError, errors_from_validation, mark_dirty, parse
 
 FORMAT = "phonix-config"
-CONFIG_VERSION = 4
+CONFIG_VERSION = 5
 
 
 def _upgrade_1(data: dict[str, Any]) -> dict[str, Any]:
@@ -101,8 +101,18 @@ def _upgrade_3(data: dict[str, Any]) -> dict[str, Any]:
     return data
 
 
+def _upgrade_4(data: dict[str, Any]) -> dict[str, Any]:
+    """4 -> 5: business hours got special periods (optional, nothing to change)."""
+    return data
+
+
 # version n -> n + 1, applied to the plain dict before validation
-UPGRADES: dict[int, Callable[[dict[str, Any]], dict[str, Any]]] = {1: _upgrade_1, 2: _upgrade_2, 3: _upgrade_3}
+UPGRADES: dict[int, Callable[[dict[str, Any]], dict[str, Any]]] = {
+    1: _upgrade_1,
+    2: _upgrade_2,
+    3: _upgrade_3,
+    4: _upgrade_4,
+}
 
 _FORBID = ConfigDict(extra="forbid")
 
@@ -608,12 +618,16 @@ class _Importer:
         """Menus and business hours may point to each other: create them without
         destinations first, then set the destinations with the new ids."""
         session, doc, user = self.session, self.doc, self.user
+        created_specials: dict[int, list[int]] = {}
         for h in doc.business_hours:
             data = h.model_dump(exclude={"id", "legacy_uniqid"})
             data.update(open_dest_type="hangup", open_dest_id=None, closed_dest_type="hangup", closed_dest_id=None)
+            # new rows (never the ids of the document), destinations follow in the second pass
+            data["specials"] = [{**sp, "id": None, "dest_type": "hangup", "dest_id": None} for sp in data["specials"]]
             with self.step(f"business_hours/{h.name}"):
                 obj = hours_svc.create_hours(session, parse(hours_svc.BusinessHoursIn, data), user)
             self.remember("hours", h.id, obj, h.legacy_uniqid)
+            created_specials[h.id] = [sp.id for sp in obj.specials]
         menus = {}
         for m in doc.ivr_menus:
             where = f"ivr_menus/{m.name}"
@@ -647,6 +661,13 @@ class _Importer:
             data = h.model_dump(exclude={"id", "legacy_uniqid"})
             self.dest(data, "open", where)
             self.dest(data, "closed", where)
+            specials = []
+            for sp_id, sp in zip(created_specials[h.id], data["specials"], strict=True):
+                special = {**sp, "id": sp_id}
+                if special["dest_type"] not in dst.ACTIONS and special["dest_id"] is not None:
+                    special["dest_id"] = self.ref(special["dest_type"], special["dest_id"], where)
+                specials.append(special)
+            data["specials"] = specials
             with self.step(where):
                 hours_svc.update_hours(session, self.ids["hours"][h.id], parse(hours_svc.BusinessHoursIn, data), user)
 
