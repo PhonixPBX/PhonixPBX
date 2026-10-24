@@ -18,7 +18,13 @@ Context layout
 ``conf-<id>``           conference room PIN handling
 ``ivr-<id>[-pub]``      IVR menu (``-pub``: for callers from outside: public direct
                         dial, no transfer feature)
-``hours-<id>[-pub]``    business hours: open/closed destination
+``hours-<id>[-pub]``    business hours: open/closed destination (or that of the applying special period)
+``hours-<id>-auto``     Gosub: automatic state (special periods, holidays, weekly ranges),
+                        returns ``<open|closed>-<special period id or 0>``
+``hours-<id>-state``    Gosub: effective state (permanent mode, temporary override, automatic),
+                        returns ``<open|closed>-<forced|override|auto>-<special period id or 0>``;
+                        removes an expired temporary override
+``hours-<id>-lamp``     Gosub: sets the out-of-office lamp (``Custom:phonix-hours-<id>``)
 ``sub-*``               shared subroutines (Gosub; Macro() is gone in Asterisk 21+)
 """
 
@@ -30,7 +36,16 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import Any
 
-from phonix.core.models import Application, BusinessHours, CallGroup, ConferenceRoom, IvrMenu, Phone, Provider
+from phonix.core.models import (
+    Application,
+    BusinessHours,
+    BusinessHoursSpecial,
+    CallGroup,
+    ConferenceRoom,
+    IvrMenu,
+    Phone,
+    Provider,
+)
 from phonix.core.validation import parse_dialpattern
 from phonix.generators.base import HEADER, Snapshot
 
@@ -45,6 +60,9 @@ OVERRIDE_DB = "phonix-hours-tmp"
 # runtime on/off switch of special periods (key: period id, value: 1/0)
 SPECIAL_DB = "phonix-special"
 ASTERISK_DAYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
+# announcements of the out-of-office key (Asterisk core sounds; there are none saying "open" / "closed")
+HOURS_SOUNDS = {"open": "enabled", "closed": "disabled", "auto": "cancelled"}
+TODAY = "${STRFTIME(${EPOCH},,%Y-%m-%d)}"
 _UNSAFE = re.compile(r"[^\w .@+-]")
 
 
@@ -508,22 +526,18 @@ class DialplanBuilder:
 
         for hours in snap.business_hours:
             if hours.feature_code:
-                key = f"{HOURS_DB}/{hours.id}"
                 internal.ext(
                     hours.feature_code,
-                    [
-                        f"NoOp(Switch business hours {safe_text(hours.name)})",
-                        "Answer()",
-                        f'GotoIf($["${{DB({key})}}" = ""]?close)',
-                        f"Set(HOURS_OLD=${{DB_DELETE({key})}})",
-                        "Playback(de-activated)",
-                        "Hangup()",
-                        f"@close Set(DB({key})=closed)",
-                        "Playback(activated)",
-                        "Hangup()",
-                    ],
-                    f"business hours {safe_text(hours.name)}: closed / automatic",
+                    self.hours_key_steps(hours),
+                    f"business hours {safe_text(hours.name)}: out-of-office key",
                 )
+            for sp in hours.specials:
+                if sp.feature_code:
+                    internal.ext(
+                        sp.feature_code,
+                        self.special_key_steps(hours, sp),
+                        f"business hours {safe_text(hours.name)}: special period {safe_text(sp.name)} on/off",
+                    )
 
         f = snap.features
         internal.raw("; call parking")
@@ -536,6 +550,12 @@ class DialplanBuilder:
                 internal.raw(f"exten => {phone.extension},hint,PJSIP/{phone.extension}")
             elif phone.tech == "iax":
                 internal.raw(f"exten => {phone.extension},hint,IAX2/{phone.extension}")
+        for hours in snap.business_hours:
+            if hours.feature_code:
+                internal.raw(f"exten => {hours.feature_code},hint,{hours_device(hours.id)}")
+            for sp in hours.specials:
+                if sp.feature_code:
+                    internal.raw(f"exten => {sp.feature_code},hint,{special_device(sp.id)}")
 
     def applications(self) -> None:
         for app in self.snap.applications:
@@ -631,32 +651,171 @@ class DialplanBuilder:
                     ],
                 )
 
+    def special_target(self, hours: BusinessHours, sp: BusinessHoursSpecial) -> BusinessHours | None:
+        """The business hours a special period points to (one level deep, never the object itself)."""
+        if sp.dest_type != "hours":
+            return None
+        target = next((h for h in self.snap.business_hours if h.id == sp.dest_id), None)
+        return target if target is not None and target.id != hours.id else None
+
+    def referrers(self, hours: BusinessHours) -> list[BusinessHours]:
+        """Business hours with a special period pointing to ``hours``."""
+        return [
+            h
+            for h in self.snap.business_hours
+            if h.id != hours.id and any(self.special_target(h, sp) is hours for sp in h.specials)
+        ]
+
+    def lamp_steps(self, hours: BusinessHours) -> list[str]:
+        """Refresh the out-of-office lamps of ``hours`` and of every object depending on it."""
+        return [f"Gosub(hours-{h.id}-lamp,s,1)" for h in (hours, *self.referrers(hours)) if h.feature_code]
+
+    def hours_key_steps(self, hours: BusinessHours) -> list[str]:
+        """The out-of-office key: always inverts the effective state (the lamp)."""
+        perm, tmp = f"{HOURS_DB}/{hours.id}", f"{OVERRIDE_DB}/{hours.id}"
+        sound = HOURS_SOUNDS
+        return [
+            f"NoOp(Switch business hours {safe_text(hours.name)})",
+            "Answer()",
+            f"Gosub(hours-{hours.id}-auto,s,1)",
+            "Set(HOURS_AUTO=${CUT(GOSUB_RETVAL,-,1)})",
+            'Set(HOURS_OPP=${IF($["${HOURS_AUTO}" = "open"]?closed:open)})',
+            # removes an expired override first
+            f"Gosub(hours-{hours.id}-state,s,1)",
+            f"Set(HOURS_PERM=${{DB({perm})}})",
+            f"Set(HOURS_TMP=${{DB({tmp})}})",
+            'GotoIf($["${HOURS_PERM}" = ""]?noperm)',
+            f"Set(HOURS_OLD=${{DB_DELETE({perm})}})",
+            # a permanent mode equal to the automatic state: removing it alone would not change the lamp
+            # (an override next to a permanent mode goes too; the new one replaces it)
+            'GotoIf($["${HOURS_PERM}" = "${HOURS_AUTO}"]?invert:purge)',
+            '@noperm GotoIf($["${HOURS_TMP}" = ""]?invert)',
+            f"@purge Set(HOURS_OLD=${{DB_DELETE({tmp})}})",
+            f"Set(HOURS_SOUND={sound['auto']})",
+            "Goto(lamps)",
+            f"@invert Set(DB({tmp})=${{HOURS_OPP}}:{TODAY})",
+            f'Set(HOURS_SOUND=${{IF($["${{HOURS_OPP}}" = "open"]?{sound["open"]}:{sound["closed"]})}})',
+            # the lamps before the announcement: a caller hanging up early must not stop them
+            *(f"@lamps {step}" if i == 0 else step for i, step in enumerate(self.lamp_steps(hours))),
+            "Playback(${HOURS_SOUND})",
+            "Hangup()",
+        ]
+
+    def special_key_steps(self, hours: BusinessHours, sp: BusinessHoursSpecial) -> list[str]:
+        """A special period's key: switches the period on or off."""
+        return [
+            f"NoOp(Switch special period {safe_text(sp.name)} of business hours {safe_text(hours.name)})",
+            "Answer()",
+            f"Set(HOURS_ON=${{DB({SPECIAL_DB}/{sp.id})}})",
+            f'ExecIf($["${{HOURS_ON}}" = ""]?Set(HOURS_ON={int(sp.enabled)}))',
+            'Set(HOURS_ON=${IF($["${HOURS_ON}" = "1"]?0:1)})',
+            f"Set(DB({SPECIAL_DB}/{sp.id})=${{HOURS_ON}})",
+            f'Set(DEVICE_STATE({special_device(sp.id)})=${{IF($["${{HOURS_ON}}" = "1"]?INUSE:NOT_INUSE)}})',
+            *self.lamp_steps(hours),
+            'Playback(${IF($["${HOURS_ON}" = "1"]?activated:de-activated)})',
+            "Hangup()",
+        ]
+
+    def hours_auto(self, hours: BusinessHours) -> None:
+        """``hours-<id>-auto``: the first applying special period, then holidays, then the weekly ranges."""
+        name = safe_text(hours.name)
+        steps = [f"NoOp(Business hours {name}: automatic state)", f"Set(LOCAL(TODAY)={TODAY})"]
+        for idx, sp in enumerate(hours.specials):
+            skip = f"p{idx + 1}" if idx + 1 < len(hours.specials) else "schedule"
+            steps += [
+                f"@p{idx} Set(LOCAL(ON)=${{DB({SPECIAL_DB}/{sp.id})}})",
+                f'ExecIf($["${{ON}}" = ""]?Set(LOCAL(ON)={int(sp.enabled)}))',
+                f'GotoIf($["${{ON}}" != "1"]?{skip})',
+            ]
+            if sp.start is not None and sp.end is not None:
+                if not sp.yearly:
+                    match = f'"${{TODAY}}" >= "{sp.start.isoformat()}" & "${{TODAY}}" <= "{sp.end.isoformat()}"'
+                else:
+                    first, last = f"{sp.start:%m-%d}", f"{sp.end:%m-%d}"
+                    # across the new year when the first day comes after the last
+                    op = "|" if first > last else "&"
+                    match = f'"${{TODAY:5}}" >= "{first}" {op} "${{TODAY:5}}" <= "{last}"'
+                steps.append(f"GotoIf($[{match}]?:{skip})")
+            target = self.special_target(hours, sp)
+            if target is not None:
+                steps += [
+                    f"Gosub(hours-{target.id}-state,s,1)",
+                    f"Return(${{CUT(GOSUB_RETVAL,-,1)}}-{sp.id})",
+                ]
+            else:
+                steps.append(f"Return(closed-{sp.id})")
+        steps.append("@schedule NoOp(Holidays and weekly ranges)")
+        for h in hours.holidays:
+            if h.yearly:
+                steps.append(f'GotoIf($["${{TODAY:5}}" = "{h.date:%m-%d}"]?closed)')
+            else:
+                steps.append(f'GotoIf($["${{TODAY}}" = "{h.date.isoformat()}"]?closed)')
+        for r in hours.ranges:
+            steps.append(f"GotoIfTime({r.start}-{last_minute(r.end)},{ASTERISK_DAYS[r.weekday]},*,*?open)")
+        steps += ["@closed Return(closed-0)", "@open Return(open-0)"]
+        self.ctx(f"hours-{hours.id}-auto", f"business hours {name}: automatic state").ext("s", steps)
+
+    def hours_state(self, hours: BusinessHours) -> None:
+        """``hours-<id>-state``: permanent mode, then a temporary override, then the automatic state."""
+        name = safe_text(hours.name)
+        tmp = f"{OVERRIDE_DB}/{hours.id}"
+        steps = [
+            f"NoOp(Business hours {name}: state)",
+            f"Set(LOCAL(MODE)=${{DB({HOURS_DB}/{hours.id})}})",
+            'GotoIf($["${MODE}" = "open" | "${MODE}" = "closed"]?forced)',
+            f"Gosub(hours-{hours.id}-auto,s,1)",
+            "Set(LOCAL(AUTO)=${GOSUB_RETVAL})",
+            f"Set(LOCAL(TMP)=${{DB({tmp})}})",
+            'GotoIf($["${TMP}" = ""]?auto)',
+            # valid only on the day of the press and while the automatic state differs from it
+            'Set(LOCAL(OPP)=${IF($["${CUT(AUTO,-,1)}" = "open"]?closed:open)})',
+            f'GotoIf($["${{TMP}}" = "${{OPP}}:{TODAY}"]?override)',
+            f"Set(LOCAL(GONE)=${{DB_DELETE({tmp})}})",
+            "@auto Return(${CUT(AUTO,-,1)}-auto-${CUT(AUTO,-,2)})",
+            "@override Return(${CUT(TMP,:,1)}-override-0)",
+            "@forced Return(${MODE}-forced-0)",
+        ]
+        self.ctx(f"hours-{hours.id}-state", f"business hours {name}: effective state").ext("s", steps)
+
+    def hours_lamp(self, hours: BusinessHours) -> None:
+        """``hours-<id>-lamp``: ``INUSE`` = closed, ``NOT_INUSE`` = open."""
+        name = safe_text(hours.name)
+        steps = [
+            f"Gosub(hours-{hours.id}-state,s,1)",
+            f"Set(DEVICE_STATE({hours_device(hours.id)})="
+            '${IF($["${CUT(GOSUB_RETVAL,-,1)}" = "closed"]?INUSE:NOT_INUSE)})',
+            "Return()",
+        ]
+        self.ctx(f"hours-{hours.id}-lamp", f"business hours {name}: out-of-office lamp").ext("s", steps)
+
     def business_hours(self) -> None:
+        for hours in self.snap.business_hours:
+            self.hours_auto(hours)
+            self.hours_state(hours)
+            if hours.feature_code:
+                self.hours_lamp(hours)
         for hours in self.snap.business_hours:
             name = safe_text(hours.name)
             for public in (False, True):
                 comment = f"business hours {name}" + (" (callers from outside)" if public else "")
                 ctx = self.ctx(hours_context(hours, public), comment)
                 steps = [
-                    f"NoOp(Business hours {name})",
-                    f"Set(HOURS_MODE=${{DB({HOURS_DB}/{hours.id})}})",
-                    'GotoIf($["${HOURS_MODE}" = "open"]?open)',
-                    'GotoIf($["${HOURS_MODE}" = "closed"]?closed)',
+                    f"Gosub(hours-{hours.id}-state,s,1)",
+                    "Set(HOURS_STATE=${GOSUB_RETVAL})",
+                    f"NoOp(Business hours {name}: ${{HOURS_STATE}})",
                 ]
-                if hours.holidays:
-                    steps.append("Set(HOURS_TODAY=${STRFTIME(${EPOCH},,%Y-%m-%d)})")
-                    for h in hours.holidays:
-                        if h.yearly:
-                            steps.append(f'GotoIf($["${{HOURS_TODAY:5}}" = "{h.date:%m-%d}"]?closed)')
-                        else:
-                            steps.append(f'GotoIf($["${{HOURS_TODAY}}" = "{h.date.isoformat()}"]?closed)')
-                for r in hours.ranges:
-                    steps.append(f"GotoIfTime({r.start}-{last_minute(r.end)},{ASTERISK_DAYS[r.weekday]},*,*?open)")
-                steps.append("Goto(closed)")
+                if hours.specials:
+                    # the applying special period's destination, unless the key or a permanent mode decides
+                    steps.append('GotoIf($["${CUT(HOURS_STATE,-,2)}" != "auto"]?plain)')
+                    steps += [f'GotoIf($["${{CUT(HOURS_STATE,-,3)}}" = "{sp.id}"]?p{sp.id})' for sp in hours.specials]
+                steps.append('@plain GotoIf($["${CUT(HOURS_STATE,-,1)}" = "open"]?open:closed)')
                 steps.append("@open NoOp(open)")
                 steps += self.dest_steps(hours.open_dest_type, hours.open_dest_id, public)
                 steps.append("@closed NoOp(closed)")
                 steps += self.dest_steps(hours.closed_dest_type, hours.closed_dest_id, public)
+                for sp in hours.specials:
+                    steps.append(f"@p{sp.id} NoOp(Special period {safe_text(sp.name)})")
+                    steps += self.dest_steps(sp.dest_type, sp.dest_id, public)
                 ctx.ext("s", steps)
 
     # -- providers --------------------------------------------------------------

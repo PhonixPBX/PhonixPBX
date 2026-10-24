@@ -457,6 +457,119 @@ def test_dialplan(session, ids):
     assert f"NoOp(Destination ivr {support} is not available)" in out
 
 
+def _block(out: str, context: str) -> str:
+    """The lines of one generated context."""
+    return out.split(f"[{context}]\n", 1)[1].split("\n\n", 1)[0]
+
+
+def test_dialplan_hours_subroutines(session, ids):
+    office = ids["office"]
+    out = dialplan.generate(build_snapshot(session))
+    for suffix in ("auto", "state", "lamp"):
+        assert f"[hours-{office}-{suffix}]\nexten => s,1," in out
+    assert f"exten => *31,hint,Custom:phonix-hours-{office}" in out
+    for context in (f"hours-{office}", f"hours-{office}-pub"):
+        assert _block(out, context).startswith(f"exten => s,1,Gosub(hours-{office}-state,s,1)")
+    auto = _block(out, f"hours-{office}-auto")
+    assert "GotoIfTime(13:00-17:29,fri,*,*?open)" in auto and '"${TODAY:5}" = "12-25"' in auto
+    assert "Return(open-0)" in auto and "Return(closed-0)" in auto
+    lamp = _block(out, f"hours-{office}-lamp")
+    assert f"Set(DEVICE_STATE(Custom:phonix-hours-{office})=" in lamp and "INUSE:NOT_INUSE" in lamp
+    # the key: permanent mode and override, then the lamp, then the announcement
+    key = out.split("exten => *31,1,", 1)[1].split("\n\n", 1)[0].split("\n; ", 1)[0]
+    assert f"Gosub(hours-{office}-auto,s,1)" in key and f"Gosub(hours-{office}-state,s,1)" in key
+    assert f"DB_DELETE(phonix-hours/{office})" in key and f"DB_DELETE(phonix-hours-tmp/{office})" in key
+    assert f"Set(DB(phonix-hours-tmp/{office})=${{HOURS_OPP}}:${{STRFTIME(${{EPOCH}},,%Y-%m-%d)}})" in key
+    assert key.index(f"Gosub(hours-{office}-lamp,s,1)") < key.index("Playback(") < key.index("Hangup()")
+    # without a feature code: no key, no lamp, no hint
+    plain = hours.create_hours(session, _hours(name="Plain"))
+    out = dialplan.generate(build_snapshot(session))
+    assert f"[hours-{plain.id}-state]" in out and f"[hours-{plain.id}-lamp]" not in out
+    assert f"Custom:phonix-hours-{plain.id}" not in out
+
+
+def test_dialplan_special_periods(session, ids):
+    target = hours.create_hours(
+        session, _hours(name="Morning", ranges=[{"weekday": d, "start": "09:00", "end": "12:00"} for d in range(7)])
+    )
+    h = hours.create_hours(
+        session,
+        _hours(
+            name="Shop",
+            feature_code="*69",
+            closed_dest_type="hangup",
+            specials=[
+                {"name": "Emergency", "enabled": False, "feature_code": "*70", "dest_type": "hangup"},
+                {
+                    "name": "Xmas",
+                    "enabled": True,
+                    "start": "2026-12-24",
+                    "end": "2027-01-02",
+                    "yearly": True,
+                    "dest_type": "hours",
+                    "dest_id": target.id,
+                },
+                {"name": "Summer", "enabled": True, "start": "2027-07-01", "end": "2027-07-31", "dest_type": "hangup"},
+            ],
+        ),
+    )
+    emergency, xmas, summer = (sp.id for sp in h.specials)
+    out = dialplan.generate(build_snapshot(session))
+    auto = _block(out, f"hours-{h.id}-auto")
+    # in list order; an empty switch falls back to the configured value
+    assert auto.index(f"phonix-special/{emergency}") < auto.index(f"phonix-special/{xmas}")
+    assert auto.index(f"phonix-special/{xmas}") < auto.index(f"phonix-special/{summer}")
+    assert 'ExecIf($["${ON}" = ""]?Set(LOCAL(ON)=0))' in auto and 'ExecIf($["${ON}" = ""]?Set(LOCAL(ON)=1))' in auto
+    assert f"Return(closed-{emergency})" in auto
+    # yearly across the new year: 12-24...12-31 or 01-01...01-02
+    assert '"${TODAY:5}" >= "12-24" | "${TODAY:5}" <= "01-02"' in auto
+    assert '"${TODAY}" >= "2027-07-01" & "${TODAY}" <= "2027-07-31"' in auto
+    assert f"Gosub(hours-{target.id}-state,s,1)" in auto and f"-{xmas})" in auto
+    # routing: a period pointing to business hours goes there
+    pub = _block(out, f"hours-{h.id}-pub")
+    assert f"Goto(hours-{target.id}-pub,s,1)" in pub
+    assert f"Goto(hours-{target.id},s,1)" in _block(out, f"hours-{h.id}")
+    # keys: hint, default 0, the period's lamp and the owner's lamp
+    assert f"exten => *70,hint,Custom:phonix-special-{emergency}" in out
+    key = out.split("exten => *70,1,", 1)[1].split("\n\n", 1)[0].split("\n; ", 1)[0]
+    assert 'ExecIf($["${HOURS_ON}" = ""]?Set(HOURS_ON=0))' in key
+    assert f"Set(DB(phonix-special/{emergency})=${{HOURS_ON}})" in key
+    assert f"Set(DEVICE_STATE(Custom:phonix-special-{emergency})=" in key and f"Gosub(hours-{h.id}-lamp,s,1)" in key
+    assert "activated:de-activated" in key
+    # pressing the target's key refreshes the lamps of the business hours pointing to it
+    target_key = hours.update_hours(session, target.id, _hours(**{**hours.to_dict(target), "feature_code": "*68"}))
+    out = dialplan.generate(build_snapshot(session))
+    key = out.split("exten => *68,1,", 1)[1].split("\n\n", 1)[0].split("\n; ", 1)[0]
+    assert f"Gosub(hours-{target_key.id}-lamp,s,1)" in key and f"Gosub(hours-{h.id}-lamp,s,1)" in key
+
+
+def test_dialplan_override_purged_in_dialplan(session, ids):
+    office = ids["office"]
+    out = dialplan.generate(build_snapshot(session))
+    state = _block(out, f"hours-{office}-state")
+    valid = 'GotoIf($["${TMP}" = "${OPP}:${STRFTIME(${EPOCH},,%Y-%m-%d)}"]?override)'
+    purge = f"Set(LOCAL(GONE)=${{DB_DELETE(phonix-hours-tmp/{office})}})"
+    assert valid in state and purge in state
+    # only a valid override skips the purge
+    assert state.index(valid) < state.index(purge) < state.index("(override)")
+    assert f"Set(LOCAL(MODE)=${{DB(phonix-hours/{office})}})" in state
+    assert "Return(${MODE}-forced-0)" in state and "Return(${CUT(TMP,:,1)}-override-0)" in state
+
+
+def test_dialplan_no_gosub_to_deleted_hours(session, ids):
+    target = hours.create_hours(session, _hours(name="Morning"))
+    h = hours.create_hours(
+        session,
+        _hours(name="Shop", specials=[{"name": "Xmas", "enabled": True, "dest_type": "hours", "dest_id": target.id}]),
+    )
+    assert f"hours-{target.id}" in _block(dialplan.generate(build_snapshot(session)), f"hours-{h.id}-auto")
+    hours.delete_hours(session, target.id)
+    session.expire_all()
+    out = dialplan.generate(build_snapshot(session))
+    assert f"hours-{target.id}" not in out
+    assert f"Return(closed-{h.specials[0].id})" in _block(out, f"hours-{h.id}-auto")
+
+
 def test_dialplan_uploaded_prompt_and_unsafe_names(session, ids, runtime):
     prompt = media.add_media(session, "ivr_prompt", "Welcome.wav", _wav())
     menu = ivr.create_menu(
