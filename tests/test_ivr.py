@@ -787,6 +787,48 @@ def test_mcp(client, fake_ami):
     assert result["isError"] is True
 
 
+def _two_hours_with_specials():
+    from phonix.core.db import session_scope as scope
+
+    out = []
+    with scope() as s:
+        for name in ("Sp A", "Sp B"):
+            h = hours.create_hours(s, _hours(name=name, specials=[{"name": "P", "dest_type": "hangup"}]))
+            s.flush()
+            out.append((h.id, h.specials[0].id))
+    return out
+
+
+def test_api_special(client, fake_ami):
+    (a, pa), (_b, pb) = _two_hours_with_specials()
+    url = f"/api/v1/business-hours/{a}/special/{pa}"
+    assert client.put(url, json={"active": True}, headers=bearer(read_only=True)).status_code == 403
+    r = client.put(url, json={"active": True}, headers=bearer())
+    assert r.status_code == 200, r.text
+    assert any("database put" in str(x) and f" {pa} 1" in str(x) for x in fake_ami.actions)
+    assert (
+        client.put(f"/api/v1/business-hours/{a}/special/{pb}", json={"active": True}, headers=bearer()).status_code
+        == 404
+    )
+    assert client.put(url, json={"active": "yes"}, headers=bearer()).status_code == 422
+    paths = client.get("/api/v1/openapi.json").json()["paths"]
+    assert "/api/v1/business-hours/{hours_id}/special/{special_id}" in paths
+
+
+def test_mcp_special(client, fake_ami):
+    from test_mcp import call, rpc
+
+    (a, pa), (_b, pb) = _two_hours_with_specials()
+    names = {t["name"] for t in rpc(client, "tools/list").json()["result"]["tools"]}
+    assert "set_business_hours_special" in names
+    ro = {t["name"] for t in rpc(client, "tools/list", headers=bearer(read_only=True)).json()["result"]["tools"]}
+    assert "set_business_hours_special" not in ro
+    result = call(client, "set_business_hours_special", id=a, special_id=pa, active=True)
+    assert "isError" not in result or not result["isError"]
+    assert call(client, "set_business_hours_special", id=a, special_id=pb, active=True)["isError"] is True
+    assert call(client, "set_business_hours_special", id=a, special_id=pa, active="yes")["isError"] is True
+
+
 def test_special_periods_validation(session, ids):
     from phonix.services.common import parse
 

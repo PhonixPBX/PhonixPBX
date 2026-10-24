@@ -13,7 +13,7 @@ from typing import Any, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse, PlainTextResponse, Response
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, StrictBool
 from sqlalchemy.orm import Session
 
 from phonix.core.models import User
@@ -103,6 +103,10 @@ class HoursMode(BaseModel):
     mode: hours_svc.Mode = Field(description="auto: follow the schedule; open or closed: until switched back")
 
 
+class SpecialSwitch(BaseModel):
+    active: StrictBool = Field(description="true: the special period applies now; false: it does not")
+
+
 @router.get("/business-hours/{hours_id}/status", tags=["business hours"], summary="Open right now, and the live mode")
 def business_hours_status(hours_id: int, user: User = Depends(api_user), db: Session = Depends(get_db)) -> Any:
     try:
@@ -121,6 +125,22 @@ def business_hours_mode(
 ) -> Any:
     try:
         hours_svc.set_mode(db, hours_id, body.mode, user.username)
+        return hours_svc.live_status(db, hours_id)
+    except ServiceError as exc:
+        db.rollback()
+        raise _error(exc) from None
+
+
+@router.put(
+    "/business-hours/{hours_id}/special/{special_id}",
+    tags=["business hours"],
+    summary="Switch a special period on or off (takes effect immediately, no apply needed)",
+)
+def business_hours_special(
+    hours_id: int, special_id: int, body: SpecialSwitch, user: User = Depends(api_user), db: Session = Depends(get_db)
+) -> Any:
+    try:
+        hours_svc.set_special_active(db, hours_id, special_id, body.active, user.username)
         return hours_svc.live_status(db, hours_id)
     except ServiceError as exc:
         db.rollback()
