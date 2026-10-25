@@ -1,5 +1,5 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
-{% from "macros/ui.html" import status_dot with context %}
+{% from "macros/ui.html" import provider_state, status_dot with context %}
 {% if not ast.running %}
 <div class="alert alert-danger mb-0">{{ icon("alert-circle", "me-1") }} {{ _("Asterisk is not reachable: %(error)s", error=ast.error) }}</div>
 {% else %}
@@ -20,9 +20,7 @@
     <td>{{ p.name }}</td><td>{{ "SIP" if p.tech == "pjsip" else "IAX" }}</td>
     <td>
       {% if not p.enabled %}<span class="badge bg-secondary-lt">{{ _("disabled") }}</span>
-      {% elif p.tech == "pjsip" %}
-        {% if p.registration %}{% if ("prov-" ~ p.id ~ "-reg") in ast.registrations %}{{ status_dot(ast.registrations["prov-" ~ p.id ~ "-reg"]) }}{% else %}{{ status_dot("not loaded", _("not loaded")) }}{% endif %}{% else %}{{ status_dot(ast.endpoints.get("prov-" ~ p.id, {}).get("state", "")) }}{% endif %}
-      {% else %}{{ status_dot(ast.iax_peers.get("prov-" ~ p.id, "unknown")) }}{% endif %}
+      {% else %}{{ provider_state(p, ast) }}{% endif %}
     </td>
   </tr>
   {% endfor %}

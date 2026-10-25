@@ -15,6 +15,7 @@ Click **SIP provider** or **IAX provider** above the list to add a provider. The
 |---|---|
 | Name | Your name for the provider. Click it to edit. A *disabled* badge marks disabled providers. |
 | Type | SIP or IAX. |
+| Status | Whether the provider is registered right now, for example *Registered* or *Rejected*. For a provider without registration it shows whether it can be reached, for an IAX provider the state of the trunk. *not loaded* means the configuration with this provider is not applied yet, *Asterisk down* that Asterisk is not running. The column is updated every 15 seconds; disabled providers show a dash. |
 | Host | Host name or address, with the port if one is set. |
 | Username | The account user name. |
 | Dial patterns | The outgoing patterns, or *none* (then the provider is not used for outgoing calls). |
@@ -22,7 +23,7 @@ Click **SIP provider** or **IAX provider** above the list to add a provider. The
 
 The buttons at the end of each row edit, disable/enable and delete the provider. A disabled provider does not register and is not used for calls. Deleting a provider also disables the [external phones]({{< relref "/accounts/phones.md#types" >}}) that dialled through it.
 
-Whether a provider is registered right now is shown under [*Status → Calls & Registrations*]({{< relref "/status/calls.md" >}}).
+The same states, together with the phones and the active calls, are shown under [*Status → Calls & Registrations*]({{< relref "/status/calls.md" >}}).
 
 ## Add or edit a provider {#edit}
 

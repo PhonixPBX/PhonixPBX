@@ -209,6 +209,36 @@ def test_outgoing_settings_form(client):
         assert "dialplan" in dirty_areas(s)
 
 
+def test_provider_list_status(client, monkeypatch):
+    from phonix.core.models import Provider
+    from phonix.services import status
+
+    login(client)
+    with session_scope() as s:
+        ids = {p.name: p.id for p in s.query(Provider)}
+    page = client.get("/accounts/providers").text
+    assert 'hx-get="/accounts/providers/status"' in page
+    assert all(f'id="provider-status-{i}"' in page for i in ids.values())
+
+    r = client.get("/accounts/providers/status")
+    assert r.status_code == 200 and r.text.count("Asterisk down") == 3
+
+    trunk, second, iax = ids["Example Trunk"], ids["Second Account"], ids["IAX Trunk"]
+    fake = {
+        "running": True,
+        "endpoints": {},
+        "registrations": {f"prov-{trunk}-reg": "Registered", f"prov-{second}-reg": "Rejected"},
+        "iax_peers": {f"prov-{iax}": "UNREACHABLE"},
+    }
+    monkeypatch.setattr(status, "asterisk_status", lambda: fake)
+    cells = dict(
+        re.findall(r'hx-target="#provider-status-(\d+)"[^>]*>(.*?)</hx-partial>', client.get(r.url).text, re.S)
+    )
+    assert "status-green" in cells[str(trunk)] and "Registered" in cells[str(trunk)]
+    assert "status-red" in cells[str(second)] and "Rejected" in cells[str(second)]
+    assert "status-red" in cells[str(iax)]
+
+
 def test_ssh_root_password(client):
     from phonix.core import settings as st
 

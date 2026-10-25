@@ -25,6 +25,13 @@
 {% endif %}
 {% endmacro %}
 
+{# registration or trunk state of an enabled provider, from status.asterisk_status() #}
+{% macro provider_state(p, ast) %}
+{% if p.tech == "pjsip" %}
+  {% if p.registration %}{% if ("prov-" ~ p.id ~ "-reg") in ast.registrations %}{{ status_dot(ast.registrations["prov-" ~ p.id ~ "-reg"]) }}{% else %}{{ status_dot("not loaded", _("not loaded")) }}{% endif %}{% else %}{{ status_dot(ast.endpoints.get("prov-" ~ p.id, {}).get("state", "")) }}{% endif %}
+{% else %}{{ status_dot(ast.iax_peers.get("prov-" ~ p.id, "unknown")) }}{% endif %}
+{% endmacro %}
+
 {% macro delete_button(url, what, target="closest tr") %}
 <button type="button" class="btn btn-ghost-danger btn-icon btn-sm" title="{{ _('Delete') }}" aria-label="{{ _('Delete %(what)s', what=what) }}"
         hx-delete="{{ url }}" hx-confirm="{{ _('Delete %(what)s?', what=what) }}" hx-target="{{ target }}" hx-swap="outerHTML">{{ icon("trash") }}</button>

@@ -3,6 +3,10 @@
 <tr id="provider-{{ p.id }}"{% if not p.enabled %} class="text-secondary"{% endif %}>
   <td><a href="/accounts/providers/{{ p.id }}" class="fw-bold">{{ p.name }}</a>{% if not p.enabled %} <span class="badge bg-secondary-lt">{{ _("disabled") }}</span>{% endif %}</td>
   <td><span class="badge bg-primary-lt">{{ _(techs[p.tech]) }}</span></td>
+  <td id="provider-status-{{ p.id }}">
+    {% if not p.enabled %}<span class="text-secondary">&ndash;</span>
+    {% else %}<span class="text-secondary small">&hellip;</span>{% endif %}
+  </td>
   <td>{{ p.host }}{% if p.port %}:{{ p.port }}{% endif %}</td>
   <td>{{ p.username }}</td>
   <td>{% for d in p.dialpatterns %}<code>{{ d.pattern }}</code> {% else %}<span class="text-secondary">{{ _("none") }}</span>{% endfor %}</td>

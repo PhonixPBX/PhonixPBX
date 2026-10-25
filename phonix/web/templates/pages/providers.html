@@ -12,8 +12,10 @@
   {% if providers %}
   <div class="table-responsive">
     <table class="table table-vcenter card-table table-hover">
-      <thead><tr><th>{{ _("Name") }}</th><th>{{ _("Type") }}</th><th>{{ _("Host") }}</th><th>{{ _("Username") }}</th><th>{{ _("Dial patterns") }}</th><th>{{ _("Incoming") }}</th><th></th></tr></thead>
-      <tbody>{% for p in providers %}{% include "partials/provider_row.html" %}{% endfor %}</tbody>
+      <thead><tr><th>{{ _("Name") }}</th><th>{{ _("Type") }}</th><th>{{ _("Status") }}</th><th>{{ _("Host") }}</th><th>{{ _("Username") }}</th><th>{{ _("Dial patterns") }}</th><th>{{ _("Incoming") }}</th><th></th></tr></thead>
+      <tbody hx-get="/accounts/providers/status" hx-trigger="load, every 15s" hx-swap="none">
+        {% for p in providers %}{% include "partials/provider_row.html" %}{% endfor %}
+      </tbody>
     </table>
   </div>
   {% else %}

@@ -179,6 +179,16 @@ def provider_list(request: Request, user: User = Depends(ui_user), db: Session =
     return page(request, "pages/providers.html", providers=provider_svc.list_providers(db), techs=TECH_LABELS)
 
 
+@router.get("/providers/status")
+def provider_status(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
+    """htmx 4 partials: one <hx-partial> per provider status cell."""
+    return render(
+        request,
+        "partials/provider_status.html",
+        {"providers": provider_svc.list_providers(db), "ast": status_svc.asterisk_status()},
+    )
+
+
 def _provider_form(
     request: Request,
     db: Session,

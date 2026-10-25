@@ -1,0 +1,8 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+{% from "macros/ui.html" import provider_state with context %}
+{% for p in providers if p.enabled %}
+<hx-partial hx-target="#provider-status-{{ p.id }}" hx-swap="innerHTML">
+  {% if not ast.running %}<span class="badge bg-secondary-lt">{{ _("Asterisk down") }}</span>
+  {% else %}{{ provider_state(p, ast) }}{% endif %}
+</hx-partial>
+{% endfor %}

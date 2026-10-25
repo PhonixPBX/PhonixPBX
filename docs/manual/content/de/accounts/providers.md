@@ -15,6 +15,7 @@ Klicken Sie über der Liste auf **SIP-Provider** oder **IAX-Provider**, um einen
 |---|---|
 | Name | Ihr Name für den Provider. Ein Klick darauf öffnet ihn zum Bearbeiten. Deaktivierte Provider sind mit *deaktiviert* gekennzeichnet. |
 | Typ | SIP oder IAX. |
+| Status | Ob der Provider gerade registriert ist, zum Beispiel *Registriert* oder *Abgelehnt*. Bei einem Provider ohne Registrierung zeigt die Spalte, ob er erreichbar ist, bei einem IAX-Provider den Zustand des Trunks. *nicht geladen* bedeutet, dass die Konfiguration mit diesem Provider noch nicht übernommen ist, *Asterisk nicht aktiv*, dass Asterisk nicht läuft. Die Spalte wird alle 15 Sekunden aktualisiert; deaktivierte Provider zeigen einen Strich. |
 | Host | Hostname oder Adresse, mit Port, falls einer gesetzt ist. |
 | Benutzername | Der Benutzername des Kontos. |
 | Wählmuster | Die Muster für ausgehende Anrufe, oder *keine* (dann wird der Provider für ausgehende Anrufe nicht verwendet). |
@@ -22,7 +23,7 @@ Klicken Sie über der Liste auf **SIP-Provider** oder **IAX-Provider**, um einen
 
 Mit den Schaltflächen am Ende jeder Zeile bearbeiten, deaktivieren/aktivieren und löschen Sie den Provider. Ein deaktivierter Provider registriert sich nicht und wird für keine Gespräche verwendet. Beim Löschen eines Providers werden auch die [externen Telefone]({{< relref "/accounts/phones.md#types" >}}) deaktiviert, die über ihn gewählt haben.
 
-Ob ein Provider gerade registriert ist, sehen Sie unter [*Status → Gespräche & Registrierungen*]({{< relref "/status/calls.md" >}}).
+Dieselben Zustände sehen Sie zusammen mit den Telefonen und den aktiven Gesprächen unter [*Status → Gespräche & Registrierungen*]({{< relref "/status/calls.md" >}}).
 
 ## Provider anlegen oder bearbeiten {#edit}
 
