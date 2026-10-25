@@ -8,9 +8,20 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ### Added
 
-- Every list (phones, providers, applications, call groups, IVR menus, business hours, conference rooms, media, manager users, administrators, API tokens, backups) can be searched as you type and is paged (25/50/100/all per page); the address keeps the view. *Status → Audit Log*: search over user, action and object; page links (25/50/100 per page) instead of Newer/Older.
-- REST API: list endpoints accept `q` (search), `limit` and `offset`; the `X-Total-Count` header carries the number of matches.
-- MCP: the `list_*` tools accept `q` (search), `limit` and `offset`, and their result carries `total`, the number of matches.
+- Every list (phones, providers, applications, call groups, IVR menus, business hours, conference rooms, media,
+  manager users, administrators, API tokens, backups) can be searched as you type and is paged (25/50/100/all per
+  page); the address keeps the view. *Status → Audit Log*: search over user, action and object; page links
+  (25/50/100 per page) instead of Newer/Older.
+- REST API: list endpoints accept `q` (search), `limit` and `offset`; the `X-Total-Count` header carries the number
+  of matches.
+- MCP: the `list_*` tools accept `q` (search), `limit` and `offset`, and their result carries `total`, the number of
+  matches.
+- *Dialplan → Call Groups*: a call group can now contain other call groups as members, next to phones. With
+  *Ring all at once* all their phones ring together; with *One after another* a contained group is one step in which
+  all its phones ring at once. A phone that is in several of the groups rings only once, and a group cannot contain
+  itself, directly or through another group.
+- *Dialplan → Call Groups*: drag the **Members** into a new order instead of removing and adding them again. With
+  *One after another* this is the order in which they ring.
 - *Dialplan → Business Hours*: an out-of-office key with a lamp. A phone key on the feature code of business hours
   is lit while they are closed and dark while they are open, whatever the reason (opening hours, holiday, special
   period, key or manual mode), and pressing it switches to the opposite state. On Snom phones, set up a function key
@@ -29,14 +40,20 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 - *Accounts → Providers*: the list has a **Status** column with the registration state of each provider
   (e.g. *Registered*, *Rejected*), or for providers without registration and IAX providers whether they can be
   reached. It updates every 15 seconds.
+- Phones can dial numbers in the international form with a leading `+` (for example `+41 44 123 45 67` from an
+  address book or call list), also through click-to-call. The `+` is replaced with `00` before the dial patterns of
+  the providers are matched; set **Replace a leading + with** in the card **Numbers with +** on
+  *Dialplan → Transfers & Parking* to `000` with an outside line prefix `0`, to `011` in North America, or leave it
+  empty to switch it off.
 
 ### Changed
 
+- REST API and MCP: call groups have a new `members` field, the ordered list of `phone:<id>` and `callgroup:<id>`.
+  `member_ids` still works for phones.
+- The export to the legacy `config.xml` writes a contained call group as its phones.
 - *Dialplan → Business Hours*: the edit page is organised in tabs (General, Weekly hours, Holidays, Special periods,
   Year at a glance). A tab with a wrong entry opens and is marked after saving, and `#tab-…` links open a tab directly.
   **Save and stay** saves without leaving the page and returns to the open tab.
-- The card **Numbers with +** (**Replace a leading + with**) moved from *Accounts → Providers* to
-  *Dialplan → Transfers & Parking*. The setting itself is unchanged.
 - *Dialplan → Business Hours*: the feature code no longer switches between “Closed” and “Automatic”. It now switches
   to the opposite of the current state until the next change, at midnight at the latest, so a forgotten press never
   keeps the office open or closed over a weekend. Pressed again, it returns to “Automatic”; it also ends a permanent
@@ -53,45 +70,15 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 - Links in the sidebar load only the page content instead of the whole page, so switching pages is quicker.
 - The web interface is built on Tabler 1.7.1: buttons, switches, small selects and some dark mode surfaces look
   slightly different, and dark mode has better contrast.
-- Configuration backups (`config.json`) are now version 5 and contain the special periods. Older backups still
-  restore; backups of this version cannot be restored on older PhonixPBX versions.
-
-### Fixed
-
-- *Services → Voicemail*: the text of the mail previews was light grey on grey and could hardly be read.
-
-## [1.9.0rc2] - 2026-10-23
-
-### Added
-
-- *Accounts → Providers*: phones can dial numbers in the international form with a leading `+` (for example
-  `+41 44 123 45 67` from an address book or call list), also through click-to-call. The `+` is replaced with `00`
-  before the dial patterns are matched; set **Replace a leading + with** in the new card **Numbers with +** to `000`
-  with an outside line prefix `0`, to `011` in North America, or leave it empty to switch it off.
-
-## [1.9.0rc1] - 2026-10-23
-
-### Added
-
-- *Dialplan → Call Groups*: a call group can now contain other call groups as members, next to phones. With
-  *Ring all at once* all their phones ring together; with *One after another* a contained group is one step in which
-  all its phones ring at once. A phone that is in several of the groups rings only once, and a group cannot contain
-  itself, directly or through another group.
-- *Dialplan → Call Groups*: drag the **Members** into a new order instead of removing and adding them again. With
-  *One after another* this is the order in which they ring.
-
-### Changed
-
-- REST API and MCP: call groups have a new `members` field, the ordered list of `phone:<id>` and `callgroup:<id>`.
-  `member_ids` still works for phones.
-- Configuration backups (`config.json`) are now version 4. Older backups are upgraded on restore; backups of this
-  version cannot be restored on PhonixPBX 1.8 or older.
-- The export to the legacy `config.xml` writes a contained call group as its phones.
+- Configuration backups (`config.json`) are now version 5 and contain the call groups in call groups and the special
+  periods. Older backups are upgraded on restore; backups of this version cannot be restored on PhonixPBX 1.8 or
+  older.
 
 ### Fixed
 
 - *Accounts → Phones* and *Accounts → Providers*: the **Codecs** can now be dragged into order of preference, as
   the manual describes.
+- *Services → Voicemail*: the text of the mail previews was light grey on grey and could hardly be read.
 
 ## [1.8.0] - 2026-10-21
 
@@ -379,8 +366,6 @@ The pre-release database migrations were squashed into a single initial revision
 Nightly installs at the latest pre-release schema are upgraded automatically; older
 nightly databases must be recreated (factory reset).
 
-[1.9.0rc2]: https://github.com/PhonixPBX/PhonixPBX/compare/v1.9.0rc1...v1.9.0rc2
-[1.9.0rc1]: https://github.com/PhonixPBX/PhonixPBX/compare/v1.8.0...v1.9.0rc1
 [1.8.0]: https://github.com/PhonixPBX/PhonixPBX/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/PhonixPBX/PhonixPBX/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/PhonixPBX/PhonixPBX/compare/v1.5.0...v1.6.0
