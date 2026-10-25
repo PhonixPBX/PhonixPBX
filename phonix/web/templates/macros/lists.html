@@ -15,13 +15,13 @@
     <div class="input-icon list-search">
       <span class="input-icon-addon">{{ icon("search") }}</span>
       <input type="search" name="q" class="form-control" value="{{ lv.q }}" placeholder="{{ placeholder }}" aria-label="{{ _('Search') }}" autocomplete="off"
-             hx-get="{{ url }}" hx-trigger="input changed delay:300ms, search" hx-include="closest form" {{ _swap(list_id) }} hx-replace-url="true">
+             hx-get="{{ url }}" hx-trigger="input changed delay:300ms, search" hx-include="closest form" hx-sync="closest form:replace" {{ _swap(list_id) }} hx-replace-url="true">
     </div>
     <span id="{{ list_id }}-count" class="text-secondary">{{ count_text }}</span>
     <div class="list-per-page">
       <label class="text-secondary text-nowrap" for="{{ list_id }}-per-page">{{ _("Per page") }}</label>
       <select id="{{ list_id }}-per-page" name="per_page" class="form-select form-select-sm"
-              hx-get="{{ url }}" hx-trigger="change" hx-include="closest form" {{ _swap(list_id) }} hx-push-url="true">
+              hx-get="{{ url }}" hx-trigger="change" hx-include="closest form" hx-sync="closest form:replace" {{ _swap(list_id) }} hx-push-url="true">
         {% for n in lv.choices %}
         <option value="{{ 'all' if n is none else n }}"{% if n == lv.per_page %} selected{% endif %}>{{ _("All") if n is none else n }}</option>
         {% endfor %}

@@ -491,6 +491,17 @@
     detail.history.path = url.pathname + url.search;
   });
 
+  // Enter searches in place (no page load, the field keeps focus); without JavaScript the
+  // form is a plain GET
+  document.addEventListener("submit", (evt) => {
+    const form = evt.target;
+    if (!form || !form.matches || !form.matches("form[data-list-search]")) return;
+    const input = form.querySelector('input[name="q"]');
+    if (!input) return;
+    evt.preventDefault();
+    input.dispatchEvent(new Event("search", { bubbles: true }));
+  });
+
   // ---- sidebar links (hx-boost) ----------------------------------------------------
   // they swap #page only (not <body>, whose scripts would run again); a response without
   // #page (an error page, a redirect to the login) is loaded as a normal page instead

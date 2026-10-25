@@ -1073,6 +1073,18 @@ def test_list_has_search_and_region(client, url, region):
     assert r.status_code == 200 and "Clear search" in r.text
 
 
+def test_list_search_and_per_page_sync_on_form(client):
+    """Search field and per-page select share one request slot on the form; the latest wins."""
+    login(client)
+    _bulk_phones(60)
+    page = client.get("/accounts/phones").text
+    assert page.count('hx-sync="closest form:replace"') == 2
+    search = re.search(r'<input type="search"[^>]*>', page)
+    select = re.search(r'<select id="list-phones-per-page"[^>]*>', page)
+    assert search and select
+    assert 'hx-sync="closest form:replace"' in search.group(0) and 'hx-sync="closest form:replace"' in select.group(0)
+
+
 def test_provider_search_highlight(client):
     login(client)
     r = client.get("/accounts/providers", params={"q": "iax tr"})
