@@ -195,6 +195,10 @@ def defaults() -> dict[str, Any]:
     return {"tech": "pjsip", "codecs": list(DEFAULT_CODECS), "registration": True, "qualify": 60}
 
 
+def search_fields(p: Provider) -> tuple[object, ...]:
+    return (p.name, p.host, p.username)
+
+
 def to_dict(p: Provider, with_secret: bool = False) -> dict[str, Any]:
     data = {
         "id": p.id,

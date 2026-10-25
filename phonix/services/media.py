@@ -106,6 +106,10 @@ def convert(src: Path, dst: Path) -> None:
         _convert_wav(src, dst)
 
 
+def search_fields(f: MediaFile) -> tuple[object, ...]:
+    return (f.name, f.kind, _(KINDS[f.kind]) if f.kind in KINDS else "")
+
+
 def list_media(session: Session, kind: str | None = None) -> list[MediaFile]:
     stmt = select(MediaFile).order_by(MediaFile.kind, MediaFile.name)
     if kind:

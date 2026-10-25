@@ -23,7 +23,7 @@ from phonix.core.models import User
 from phonix.services import apply as apply_svc
 from phonix.services import calls as calls_svc
 from phonix.services import hours as hours_svc
-from phonix.services import platform, settings_api
+from phonix.services import listing, platform, settings_api
 from phonix.services import status as status_svc
 from phonix.services.common import ServiceError, dirty_areas
 from phonix.services.resources import RESOURCES, Resource
@@ -140,12 +140,28 @@ def _schema(res: Resource) -> tuple[dict[str, Any], tuple[str, ...], dict[str, A
 # --- entity tools -----------------------------------------------------------------------------
 
 
+LIST_PARAMS = {
+    "q": {"type": "string", "description": "Search text; keeps the items that contain it (case-insensitive)"},
+    "limit": {"type": "integer", "minimum": 1, "description": "Maximum number of items; default: all"},
+    "offset": {"type": "integer", "minimum": 0, "description": "Number of matches to skip"},
+}
+
+
 def _resource_tools(res: Resource) -> list[Tool]:
     props, required, defs = _schema(res)
     name, tag = res.name, res.tag
 
     def list_items(ctx: Context, args: dict[str, Any]) -> Any:
-        return [res.public(o, ctx.read_only) for o in res.list_fn(ctx.db)]
+        q = _str(args, "q") if args.get("q") is not None else ""
+        limit = _int(args, "limit") if args.get("limit") is not None else None
+        offset = _int(args, "offset") if args.get("offset") is not None else 0
+        if limit is not None and limit < 1:
+            raise ToolInputError("'limit' must be at least 1")
+        if offset < 0:
+            raise ToolInputError("'offset' must be at least 0")
+        found = listing.search(res.list_fn(ctx.db), q, res.search_fields)
+        items = [res.public(o, ctx.read_only) for o in listing.slice_api(found, offset, limit)]
+        return {"items": items, "total": len(found)}
 
     def get_item(ctx: Context, args: dict[str, Any]) -> Any:
         return res.public(res.get_fn(ctx.db, _int(args, "id")), ctx.read_only)
@@ -164,7 +180,7 @@ def _resource_tools(res: Resource) -> list[Tool]:
         return {"deleted": True}
 
     tools = [
-        Tool(f"list_{res.plural_name}", f"List all {tag}.", list_items),
+        Tool(f"list_{res.plural_name}", f"List the {tag}, optionally filtered and paged.", list_items, LIST_PARAMS),
         Tool(f"get_{name}", f"Get one of the {tag} by id.", get_item, ID, ("id",)),
         Tool(
             f"create_{name}",

@@ -63,6 +63,10 @@ def count(session: Session) -> int:
     return session.scalar(select(func.count()).select_from(User)) or 0
 
 
+def search_fields(u: User) -> tuple[object, ...]:
+    return (u.username,)
+
+
 def list_users(session: Session) -> list[User]:
     return list(session.scalars(select(User).order_by(User.username)))
 

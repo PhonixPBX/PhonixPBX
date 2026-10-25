@@ -173,6 +173,10 @@ def get_hours(session: Session, hours_id: int) -> BusinessHours:
     return hours
 
 
+def search_fields(h: BusinessHours) -> tuple[object, ...]:
+    return (h.name, h.description, h.feature_code)
+
+
 def to_dict(h: BusinessHours) -> dict[str, Any]:
     return {
         "id": h.id,

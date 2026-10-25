@@ -113,6 +113,10 @@ def list_prompts(session: Session) -> list[MediaFile]:
     return list(session.scalars(select(MediaFile).where(MediaFile.kind == PROMPT_KIND).order_by(MediaFile.name)))
 
 
+def search_fields(m: IvrMenu) -> tuple[object, ...]:
+    return (m.extension, m.name, m.description)
+
+
 def to_dict(m: IvrMenu) -> dict[str, Any]:
     return {
         "id": m.id,

@@ -221,3 +221,18 @@ def test_originate_call(client, fake_ami):
 
     for args in ({"extension": "101", "number": "abc"}, {"extension": "999", "number": "1"}, {"extension": "101"}):
         assert call(client, "originate_call", auth, **args)["isError"] is True
+
+
+def test_list_tool_search_and_paging(client):
+    auth = bearer(read_only=True)
+    every = call(client, "list_phones", auth)["structuredContent"]
+    assert set(every) == {"items", "total"} and every["total"] == len(every["items"])
+    page = call(client, "list_phones", auth, limit=1, offset=1)["structuredContent"]
+    assert page["items"] == every["items"][1:2] and page["total"] == every["total"]
+    found = call(client, "list_phones", auth, q=every["items"][0]["extension"])["structuredContent"]
+    assert every["items"][0] in found["items"]
+    blank = call(client, "list_phones", auth, q="   ")["structuredContent"]
+    assert blank == every
+    bad = call(client, "list_phones", auth, limit=0)
+    assert bad["isError"]
+    assert call(client, "list_phones", auth, q=5)["isError"]

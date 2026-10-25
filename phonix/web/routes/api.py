@@ -11,7 +11,7 @@ cookie plus the ``X-CSRF-Token`` header.
 
 from typing import Any, Literal
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import JSONResponse, PlainTextResponse, Response
 from pydantic import BaseModel, Field, StrictBool
 from sqlalchemy.orm import Session
@@ -20,7 +20,7 @@ from phonix.core.models import User
 from phonix.services import apply as apply_svc
 from phonix.services import calls as calls_svc
 from phonix.services import hours as hours_svc
-from phonix.services import settings_api
+from phonix.services import listing, settings_api
 from phonix.services import status as status_svc
 from phonix.services.common import NotFound, ServiceError, dirty_areas
 from phonix.services.resources import RESOURCES, Resource
@@ -45,9 +45,17 @@ def crud(res: Resource) -> None:
 
     @router.get(path, tags=[tag], summary=f"List {tag}")
     def list_items(
-        request: Request, user: User = Depends(api_user), db: Session = Depends(get_db)
+        request: Request,
+        response: Response,
+        q: str = Query("", description="Search text; keeps the items that contain it (case-insensitive)"),
+        limit: int | None = Query(None, ge=1, description="Maximum number of items; default: all"),
+        offset: int = Query(0, ge=0, description="Number of matches to skip"),
+        user: User = Depends(api_user),
+        db: Session = Depends(get_db),
     ) -> list[dict[str, Any]]:
-        return [res.public(o, _read_only(request)) for o in res.list_fn(db)]
+        found = listing.search(res.list_fn(db), q, res.search_fields)
+        response.headers["X-Total-Count"] = str(len(found))
+        return [res.public(o, _read_only(request)) for o in listing.slice_api(found, offset, limit)]
 
     @router.get(path + "/{item_id}", tags=[tag], summary=f"Get one of {tag}")
     def get_item(

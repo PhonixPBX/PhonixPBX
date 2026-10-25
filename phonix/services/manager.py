@@ -97,6 +97,10 @@ def get_ami_user(session: Session, user_id: int) -> AmiUser:
     return user
 
 
+def search_fields(u: AmiUser) -> tuple[object, ...]:
+    return (u.username,)
+
+
 def to_dict(u: AmiUser) -> dict[str, Any]:
     return {
         "id": u.id,

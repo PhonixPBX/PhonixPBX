@@ -174,6 +174,10 @@ def defaults(session: Session, tech: str = "pjsip") -> dict[str, Any]:
     }
 
 
+def search_fields(p: Phone) -> tuple[object, ...]:
+    return (p.extension, p.callerid, p.description)
+
+
 def to_dict(phone: Phone, with_secret: bool = False) -> dict[str, Any]:
     data = {
         "id": phone.id,

@@ -110,6 +110,10 @@ def delete(session: Session, token_id: int, actor: str = "") -> None:
     session.delete(token)
 
 
+def search_fields(t: ApiToken) -> tuple[object, ...]:
+    return (t.name, t.prefix, t.user.username if t.user else "")
+
+
 def to_dict(token: ApiToken) -> dict[str, Any]:
     return {
         "id": token.id,

@@ -936,3 +936,29 @@ def test_callgroup_form_nested(client):
     page = client.get(f"/dialplan/callgroups/{floor_id}").text
     assert 'name="members" multiple data-tom data-tom-sortable' in page
     assert page.index('value="phone:1" selected') < page.index(f'value="callgroup:{groups["Hunt"]}" selected')
+
+
+def test_api_list_unchanged_without_params(client):
+    auth = bearer(read_only=True)
+    r = client.get("/api/v1/phones", headers=auth)
+    assert r.status_code == 200 and isinstance(r.json(), list)
+    assert int(r.headers["X-Total-Count"]) == len(r.json())
+    assert [p["extension"] for p in r.json()] == sorted((p["extension"] for p in r.json()), key=lambda e: (len(e), e))
+
+
+def test_api_list_search_and_paging(client):
+    auth = bearer(read_only=True)
+    every = client.get("/api/v1/phones", headers=auth).json()
+    name = every[0]["callerid"]
+    r = client.get("/api/v1/phones", params={"q": name.upper()}, headers=auth)
+    assert any(p["id"] == every[0]["id"] for p in r.json())
+    r = client.get("/api/v1/phones", params={"limit": 1, "offset": 1}, headers=auth)
+    assert [p["id"] for p in r.json()] == [every[1]["id"]] and r.headers["X-Total-Count"] == str(len(every))
+    assert client.get("/api/v1/phones", params={"limit": 0}, headers=auth).status_code == 422
+    assert "q" in str(client.get("/api/v1/openapi.json").json()["paths"]["/api/v1/phones"]["get"]["parameters"])
+
+
+def test_every_resource_has_search_fields():
+    from phonix.services.resources import RESOURCES
+
+    assert all(callable(r.search_fields) for r in RESOURCES)

@@ -138,6 +138,10 @@ def _prune(directory: Path) -> None:
         old.unlink()
 
 
+def search_fields(p: Path) -> tuple[object, ...]:
+    return (p.name,)
+
+
 def list_backups() -> list[Path]:
     return sorted(config.get().backup_dir.glob("phonix-backup-*.tar.zst"), key=_age_key, reverse=True)
 

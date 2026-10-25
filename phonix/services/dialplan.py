@@ -110,6 +110,10 @@ def _required_name(value: str) -> str:
     return value
 
 
+def callgroup_search_fields(g: CallGroup) -> tuple[object, ...]:
+    return (g.extension, g.name)
+
+
 def list_callgroups(session: Session) -> list[CallGroup]:
     return list(session.scalars(select(CallGroup).order_by(CallGroup.name)))
 
@@ -254,6 +258,10 @@ class ConferenceRoomIn(BaseModel):
     _pub = field_validator("public_name")(lambda cls, x: public_name(x))
 
 
+def room_search_fields(r: ConferenceRoom) -> tuple[object, ...]:
+    return (r.number, r.name)
+
+
 def list_rooms(session: Session) -> list[ConferenceRoom]:
     rooms = list(session.scalars(select(ConferenceRoom)))
     rooms.sort(key=lambda r: (len(r.number), r.number))
@@ -335,6 +343,10 @@ class ApplicationIn(BaseModel):
     _desc = field_validator("description")(lambda cls, x: v.no_control(x.strip(), N_("Description")))
     _logic = field_validator("logic")(lambda cls, x: v.application_logic(x))
     _pub = field_validator("public_name")(lambda cls, x: public_name(x))
+
+
+def application_search_fields(a: Application) -> tuple[object, ...]:
+    return (a.extension, a.name, a.description)
 
 
 def list_applications(session: Session) -> list[Application]:

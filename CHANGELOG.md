@@ -8,6 +8,7 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ### Added
 
+- REST API: list endpoints accept `q` (search), `limit` and `offset`; the `X-Total-Count` header carries the number of matches.
 - *Dialplan → Business Hours*: an out-of-office key with a lamp. A phone key on the feature code of business hours
   is lit while they are closed and dark while they are open, whatever the reason (opening hours, holiday, special
   period, key or manual mode), and pressing it switches to the opposite state. On Snom phones, set up a function key
@@ -29,6 +30,7 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ### Changed
 
+- MCP: the `list_*` tools return `{"items": [...], "total": N}` instead of a bare list and accept `q`, `limit` and `offset`. Clients that read the result as a list need to read `items`.
 - *Dialplan → Business Hours*: the edit page is organised in tabs (General, Weekly hours, Holidays, Special periods,
   Year at a glance). A tab with a wrong entry opens and is marked after saving, and `#tab-…` links open a tab directly.
   **Save and stay** saves without leaving the page and returns to the open tab.

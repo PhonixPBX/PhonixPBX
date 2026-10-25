@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from typing import Any
 
@@ -31,6 +31,7 @@ class Resource:
     update_fn: Callable[..., Any]
     delete_fn: Callable[..., Any]
     to_dict: Callable[..., dict[str, Any]]
+    search_fields: Callable[[Any], Iterable[object]]
     parse_fn: Callable[[dict[str, Any]], Any] | None = None
     enable_fn: Callable[..., Any] | None = None
     # PINs: left out for read-only tokens (a token that may write could change them anyway)
@@ -65,6 +66,7 @@ RESOURCES = (
         phone_svc.update_phone,
         phone_svc.delete_phone,
         phone_svc.to_dict,
+        phone_svc.search_fields,
         phone_svc.parse_phone,
         phone_svc.set_enabled,
         pins=("vm_pin",),
@@ -80,6 +82,7 @@ RESOURCES = (
         provider_svc.update_provider,
         provider_svc.delete_provider,
         provider_svc.to_dict,
+        provider_svc.search_fields,
         provider_svc.parse_provider,
         provider_svc.set_enabled,
     ),
@@ -94,6 +97,7 @@ RESOURCES = (
         dp.update_callgroup,
         dp.delete_callgroup,
         dp.callgroup_to_dict,
+        dp.callgroup_search_fields,
     ),
     Resource(
         "/conferences",
@@ -106,6 +110,7 @@ RESOURCES = (
         dp.update_room,
         dp.delete_room,
         dp.room_to_dict,
+        dp.room_search_fields,
         pins=("pin", "admin_pin"),
     ),
     Resource(
@@ -119,6 +124,7 @@ RESOURCES = (
         dp.update_application,
         dp.delete_application,
         dp.application_to_dict,
+        dp.application_search_fields,
     ),
     Resource(
         "/ivr-menus",
@@ -131,6 +137,7 @@ RESOURCES = (
         ivr_svc.update_menu,
         ivr_svc.delete_menu,
         ivr_svc.to_dict,
+        ivr_svc.search_fields,
         enable_fn=ivr_svc.set_enabled,
     ),
     Resource(
@@ -144,6 +151,7 @@ RESOURCES = (
         hours_svc.update_hours,
         hours_svc.delete_hours,
         hours_svc.to_dict,
+        hours_svc.search_fields,
         plural="business_hours",
     ),
     Resource(
@@ -157,5 +165,6 @@ RESOURCES = (
         ami_svc.update_ami_user,
         ami_svc.delete_ami_user,
         ami_svc.to_dict,
+        ami_svc.search_fields,
     ),
 )
