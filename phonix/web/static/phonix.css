@@ -216,8 +216,8 @@
   --tblr-btn-variant-darken: oklch(50% 0.14 68);
 }
 
-/* content links use the legacy link blue; navigation, buttons and cards keep theirs */
-.page-body a:not(.btn):not(.nav-link):not(.dropdown-item):not(.card-btn):not(.list-group-item) {
+/* content links use the legacy link blue; navigation, buttons, cards and page links keep theirs */
+.page-body a:not(.btn):not(.nav-link):not(.dropdown-item):not(.card-btn):not(.list-group-item):not(.page-link) {
   color: var(--tblr-link-color);
 }
 
