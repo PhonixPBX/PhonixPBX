@@ -257,6 +257,7 @@
   font-family: inherit;
   font-size: 0.875rem;
   white-space: pre-wrap;
+  color: var(--tblr-body-color);
   background: var(--tblr-bg-surface-secondary);
   padding: 0.75rem;
   border-radius: var(--tblr-border-radius);

@@ -43,6 +43,10 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 - Configuration backups (`config.json`) are now version 5 and contain the special periods. Older backups still
   restore; backups of this version cannot be restored on older PhonixPBX versions.
 
+### Fixed
+
+- *Services → Voicemail*: the text of the mail previews was light grey on grey and could hardly be read.
+
 ## [1.9.0rc2] - 2026-10-23
 
 ### Added
