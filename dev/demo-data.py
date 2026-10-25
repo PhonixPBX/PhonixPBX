@@ -40,6 +40,20 @@ PHONES = [
     ("202", "David Novak", "Management", "david.novak@example.com"),
 ]
 
+# more staff on 301-420, so the phone list has several pages (50 per page)
+FIRST = ("Nina", "Luca", "Emma", "Noah", "Mia", "Elias", "Lina", "Leon", "Sara", "Jan", "Laura", "Fabian")
+LAST = ("Meier", "Müller", "Schmid", "Huber", "Brunner", "Gerber", "Frei", "Baumann", "Fischer", "Graf")
+DEPARTMENTS = ("Sales", "Support", "Accounting", "Warehouse", "Production", "Marketing", "IT", "Logistics")
+
+
+def staff() -> list[tuple[str, str, str, str]]:
+    out = []
+    for i in range(120):
+        first, last = FIRST[i % len(FIRST)], LAST[(i // len(FIRST)) % len(LAST)]
+        email = f"{first}.{last}@example.com".lower().replace("ü", "ue") if i % 3 == 0 else ""
+        out.append((str(301 + i), f"{first} {last}", DEPARTMENTS[i % len(DEPARTMENTS)], email))
+    return out
+
 
 def main() -> int:
     setup.initialize()
@@ -81,7 +95,7 @@ def main() -> int:
         trunk_settings["failover_provider_id"] = backup.id
 
         phones = {}
-        for ext, name, desc, email in PHONES:
+        for ext, name, desc, email in PHONES + staff():
             data = {
                 "extension": ext,
                 "callerid": name,
