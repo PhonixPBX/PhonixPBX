@@ -15,7 +15,7 @@ We are reviving the product on current technology:
 - Alpine Linux as the base system
 - Python 3.10 or newer with FastAPI
 - SQLite as the only configuration store; there is no XML
-- Tabler 1.6.1 for the UI, keeping the original AskoziaPBX colors (new PhonixPBX logo)
+- Tabler 1.7.1 for the UI, keeping the original AskoziaPBX colors (new PhonixPBX logo)
 - Asterisk 22 LTS with PJSIP
 - Bootable images for Raspberry Pi (arm64), amd64 and, as best effort, x86
 
@@ -31,7 +31,7 @@ We are reviving the product on current technology:
 ## 1. Architecture
 
 ```
-┌─ Browser (Tabler 1.6.1 + htmx 4 + ApexCharts/Tom Select, server-rendered) ─┐
+┌─ Browser (Tabler 1.7.1 + htmx 4 + ApexCharts/Tom Select, server-rendered) ─┐
                  │ HTTPS
            nginx (TLS, static files, rate limits)  ──unix socket──▶ uvicorn: phonix.web (FastAPI)
                                                                      │
@@ -343,11 +343,11 @@ Everything hardware-specific listed in the confirmed decisions, plus Humbug anal
 - LXC upgrades the packages in place, so the files on disk change while the old version keeps running until the container restarts. The web app therefore reads all Jinja templates into memory at start (`DictLoader`; `PHONIX_DEV=1` keeps reading from disk), and the old routes never render templates of the new version.
 - After *Reboot into the new firmware* the waiting page polls `/system/ping` until the system went down and answered twice, then opens *System → Firmware*, which compares the running version with the installed one once: success, or (after a reboot, `boot_id` changed) a rolled-back trial boot.
 
-## 5. UI: Tabler 1.6.1 with PhonixPBX branding
+## 5. UI: Tabler 1.7.1 with PhonixPBX branding
 **Rendering and assets**
 - Pages are server-rendered with Jinja2 and use **htmx 4.x** for partial updates: list tables, the apply banner, status polling, and the SSE log tail.
 - Code is written against htmx 4 semantics only: fetch-based requests, explicit attribute inheritance, and the htmx 4 event names and extension API. No htmx 1/2-era extensions or patterns.
-- **Use the libraries Tabler 1.6.1 itself ships and supports**, at the versions Tabler pins in its `libs.json`/`package.json`, rather than adding third-party alternatives:
+- **Use the libraries Tabler 1.7.1 itself ships and supports**, at the versions Tabler pins in its `libs.json`/`package.json`, rather than adding third-party alternatives:
   - **ApexCharts**: all charts. This covers dashboard sparklines, the CPU/memory and network traffic graphs, and call volume. Live updates come from an htmx 4 SSE/poll that returns JSON series.
   - **Tom Select**: every non-trivial select. Examples: codec multi-select with ordering, call group member picker, provider/phone pickers, timezone search, incoming-DID target picker.
   - **Dropzone**: uploads for firmware/update bundles, MOH, greetings, IVR announcements and the backup restore. A `<div data-dropzone data-url>` works inside another form (the IVR editor), where a nested `<form>` is not allowed.
@@ -355,7 +355,7 @@ Everything hardware-specific listed in the confirmed decisions, plus Humbug anal
   - **Litepicker**: date ranges for log and CDR filters, if needed.
   - **Tabler Icons** (webfont/SVG sprite): all icons.
 - Library glue lives in a single `phonix/web/static/phonix.js`. It initializes the Tabler libs on `htmx:after:swap` (the htmx 4 event), so swapped-in fragments get Tom Select, ApexCharts and similar applied. It also tears them down before swap to avoid leaks. Drag and drop uses SortableJS, vendored from Tabler's libs. Rows (IVR key options) sit in a container with Tabler's `data-sortable` plugin (JSON options in the attribute, auto-initialised by `tabler.min.js`, so `Sortable.min.js` loads before it), dragged only by their `[data-sortable-handle]` so the inputs stay usable, plus `data-move` up/down buttons on `[data-sortable-item]` rows for keyboards; the rows are submitted in page order. A multi Tom Select with `data-tom-sortable` (call group members via `ordered_select`, codecs) gets a Sortable on its chips in `phonix.js` (`forceFallback`, because Tom Select cancels mousedown on items); on drop it reorders `ts.items` and calls `updateOriginalInput()`, which re-appends the selected options in that order, so the form posts the new order.
-- There is no Node build at runtime. Tabler 1.6.1, its libraries above, and the htmx 4 dist files are vendored into `phonix/web/static/vendor/`. The pinned version and SHA256 checksum of each are recorded in `vendor/VERSIONS`, and a `scripts/vendor-update.sh` script refreshes them.
+- There is no Node build at runtime. Tabler 1.7.1, its libraries above, and the htmx 4 dist files are vendored into `phonix/web/static/vendor/`. The pinned version and SHA256 checksum of each are recorded in `vendor/VERSIONS`, and a `scripts/vendor-update.sh` script refreshes them.
 
 **Layout**
 - Tabler's vertical sidebar layout is used, with the menu tree from section 3.

@@ -5,7 +5,7 @@
 # Only the files the UI uses are copied; versions + SHA256 go to vendor/VERSIONS.
 set -eu
 
-TABLER_VERSION=1.6.1
+TABLER_VERSION=1.7.1
 ICONS_VERSION=3.49.0
 HTMX_VERSION=4.0.0
 
