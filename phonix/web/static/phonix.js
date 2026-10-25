@@ -209,10 +209,18 @@
     if (window.bootstrap && bootstrap.Tooltip) {
       scope('[data-bs-toggle="tooltip"]').forEach((el) => bootstrap.Tooltip.getOrCreateInstance(el));
     }
+
+    // drag and drop rows; Tabler sets these up only on page load
+    if (window.tabler && tabler.Sortable) {
+      scope("[data-sortable]").forEach((el) => tabler.Sortable.getOrCreateInstance(el));
+    }
   }
 
   function teardown(root) {
     if (!root || !root.querySelectorAll) return;
+    if (window.tabler && tabler.Sortable) {
+      root.querySelectorAll("[data-sortable]").forEach((el) => tabler.Sortable.getInstance(el)?.dispose());
+    }
     root.querySelectorAll("select[data-tom]").forEach((el) => {
       if (el._sortable) {
         el._sortable.destroy();
@@ -461,20 +469,38 @@
   document.addEventListener("shown.bs.tab", (evt) => {
     const href = evt.target.getAttribute("href");
     if (!href || !href.startsWith("#tab-")) return;
-    history.replaceState(null, "", href);
+    history.replaceState(history.state, "", href); // keep htmx's state, the back button needs it
     document.getElementById(href.slice(1))?.querySelectorAll('[hx-trigger*="phonix:tab-shown"]')
       .forEach((el) => el.dispatchEvent(new CustomEvent("phonix:tab-shown")));
   });
 
-  function ready() {
+  // ---- sidebar links (hx-boost) ----------------------------------------------------
+  // they swap #page only (not <body>, whose scripts would run again); a response without
+  // #page (an error page, a redirect to the login) is loaded as a normal page instead
+  document.addEventListener("htmx:after:request", (evt) => {
+    const ctx = evt.detail && evt.detail.ctx;
+    if (!ctx || !ctx.request || ctx.request.headers["HX-Boosted"] !== "true") return;
+    if (!/<div class="page" id="page"/.test(ctx.text || "")) {
+      evt.preventDefault();
+      window.location.href = ctx.request.action;
+    }
+  });
+
+  // what a full page load does once: on load and for a page swapped in by a sidebar link
+  function pageReady(root) {
     openTabFromHash();
-    document.querySelectorAll("[data-reload-when-up]").forEach(watchReboot);
+    root.querySelectorAll("[data-reload-when-up]").forEach(watchReboot);
+    root.querySelectorAll("form").forEach(updateConditional);
+    root.querySelectorAll("[data-autoscroll]").forEach((el) => (el.scrollTop = el.scrollHeight));
+  }
+
+  function ready() {
     init(document);
-    document.querySelectorAll("form").forEach(updateConditional);
-    document.querySelectorAll("[data-autoscroll]").forEach((el) => (el.scrollTop = el.scrollHeight));
+    pageReady(document);
     if (window.htmx && htmx.onLoad) {
       htmx.onLoad((elt) => {
         init(elt);
+        if (elt.id === "page") pageReady(elt);
         const form = elt.closest ? elt.closest("form") : null;
         if (form) updateConditional(form);
       });

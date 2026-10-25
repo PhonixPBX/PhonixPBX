@@ -5,7 +5,8 @@
 {% block help_page %}{% endblock %}
 {% block help_anchor %}{% endblock %}
 {% block body %}
-<div class="page">
+{# hx-history-elt: the back button restores #page, like a sidebar link swaps it #}
+<div class="page" id="page" hx-history-elt>
   <aside class="navbar navbar-vertical navbar-expand-lg phonix-sidebar" data-bs-theme="dark">
     <div class="container-fluid">
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu"
@@ -16,7 +17,8 @@
         <a href="/" aria-label="{{ _('PhonixPBX home') }}"><img src="{{ asset('img/logo-sidebar.svg') }}" width="170" height="46" alt="PhonixPBX"></a>
       </div>
       <div class="collapse navbar-collapse" id="sidebar-menu">
-        <ul class="navbar-nav pt-lg-3">
+        {# the menu links load only #page (not <body>, whose scripts would run again) #}
+        <ul class="navbar-nav pt-lg-3" hx-boost:inherited="target:#page select:#page swap:outerHTML">
           {% for section in MENU %}
           {% set open = active_section and active_section.key == section.key %}
           <li class="nav-item dropdown{% if open %} active{% endif %}">

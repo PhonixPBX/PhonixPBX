@@ -239,6 +239,18 @@ def test_provider_list_status(client, monkeypatch):
     assert "status-red" in cells[str(iax)]
 
 
+def test_sidebar_boost(client):
+    """Sidebar links swap #page only; the scripts after it in <body> are not loaded again."""
+    login(client)
+    page = client.get("/accounts/phones").text
+    assert '<div class="page" id="page" hx-history-elt>' in page
+    assert '<ul class="navbar-nav pt-lg-3" hx-boost:inherited="target:#page select:#page swap:outerHTML">' in page
+    body = page.split('<div class="page" id="page"', 1)[1]
+    assert "<script" not in body.split("</aside>", 1)[0]
+    # phonix.js falls back to a normal page load for responses without #page
+    assert '<div class="page" id="page"' not in client.get("/login").text
+
+
 def test_ssh_root_password(client):
     from phonix.core import settings as st
 
