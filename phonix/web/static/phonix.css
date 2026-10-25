@@ -209,6 +209,12 @@
 .phonix-apply .btn .htmx-indicator { display: none; }
 .phonix-apply .htmx-request .htmx-indicator,
 .phonix-apply.htmx-request .htmx-indicator { display: inline-block; }
+/* "Apply changes" (btn-warning): a darker amber than the banner, white text at 5:1 contrast */
+.btn-apply {
+  --tblr-btn-variant: oklch(55% 0.15 68);
+  --tblr-btn-variant-fg: #fff;
+  --tblr-btn-variant-darken: oklch(50% 0.14 68);
+}
 
 /* content links use the legacy link blue; navigation, buttons and cards keep theirs */
 .page-body a:not(.btn):not(.nav-link):not(.dropdown-item):not(.card-btn):not(.list-group-item) {
