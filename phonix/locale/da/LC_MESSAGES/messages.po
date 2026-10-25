@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-25 13:09+0100\n"
+"POT-Creation-Date: 2026-10-25 13:18+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: da\n"
@@ -115,6 +115,12 @@ msgid "%(num)d conference room"
 msgid_plural "%(num)d conference rooms"
 msgstr[0] "%(num)d konferencerum"
 msgstr[1] "%(num)d konferencerum"
+
+#, python-format
+msgid "%(num)d entry"
+msgid_plural "%(num)d entries"
+msgstr[0] "%(num)d post"
+msgstr[1] "%(num)d poster"
 
 #, python-format
 msgid "%(num)d manager user"
@@ -2148,9 +2154,6 @@ msgstr "Ny talebesked"
 msgid "New voicemail from ${VM_CALLERID}"
 msgstr "Ny talebesked fra ${VM_CALLERID}"
 
-msgid "Newer"
-msgstr "Nyere"
-
 msgid "Next page"
 msgstr "Næste side"
 
@@ -2210,6 +2213,9 @@ msgstr "Ingen konferencerum"
 
 msgid "No conference rooms found"
 msgstr "Ingen konferencerum fundet"
+
+msgid "No entries found"
+msgstr "Ingen poster fundet"
 
 msgid "No entries."
 msgstr "Ingen poster."
@@ -2334,9 +2340,6 @@ msgstr "Fra"
 
 msgid "Off hook"
 msgstr "Røret løftet"
-
-msgid "Older"
-msgstr "Ældre"
 
 msgid "On Hold"
 msgstr "På hold"
@@ -3698,6 +3701,9 @@ msgstr "Brugernavn"
 
 msgid "User not found"
 msgstr "Bruger ikke fundet"
+
+msgid "User, action or object"
+msgstr "Bruger, handling eller objekt"
 
 msgid "Username"
 msgstr "Brugernavn"

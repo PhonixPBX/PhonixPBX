@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-25 13:09+0100\n"
+"POT-Creation-Date: 2026-10-25 13:18+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: nl\n"
@@ -115,6 +115,12 @@ msgid "%(num)d conference room"
 msgid_plural "%(num)d conference rooms"
 msgstr[0] "%(num)d vergaderruimte"
 msgstr[1] "%(num)d vergaderruimtes"
+
+#, python-format
+msgid "%(num)d entry"
+msgid_plural "%(num)d entries"
+msgstr[0] "%(num)d item"
+msgstr[1] "%(num)d items"
 
 #, python-format
 msgid "%(num)d manager user"
@@ -2152,9 +2158,6 @@ msgstr "Nieuwe voicemail"
 msgid "New voicemail from ${VM_CALLERID}"
 msgstr "Nieuwe voicemail van ${VM_CALLERID}"
 
-msgid "Newer"
-msgstr "Nieuwer"
-
 msgid "Next page"
 msgstr "Volgende pagina"
 
@@ -2214,6 +2217,9 @@ msgstr "Geen vergaderruimtes"
 
 msgid "No conference rooms found"
 msgstr "Geen vergaderruimtes gevonden"
+
+msgid "No entries found"
+msgstr "Geen items gevonden"
 
 msgid "No entries."
 msgstr "Geen items."
@@ -2338,9 +2344,6 @@ msgstr "Uit"
 
 msgid "Off hook"
 msgstr "Hoorn van de haak"
-
-msgid "Older"
-msgstr "Ouder"
 
 msgid "On Hold"
 msgstr "In de wacht"
@@ -3713,6 +3716,9 @@ msgstr "Gebruikersnaam"
 
 msgid "User not found"
 msgstr "Gebruiker niet gevonden"
+
+msgid "User, action or object"
+msgstr "Gebruiker, actie of object"
 
 msgid "Username"
 msgstr "Gebruikersnaam"

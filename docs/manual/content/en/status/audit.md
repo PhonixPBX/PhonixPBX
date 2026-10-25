@@ -17,7 +17,9 @@ description: "Who changed what and when: every configuration change and administ
 
 ## Browsing {#paging}
 
-The newest entries are at the top, 50 per page. Use *Older* and *Newer* at the bottom of the list to page through the history.
+The newest entries are at the top, 50 per page by default; *Per page* offers 25, 50 or 100 (not *All*, as the log can grow large). Use the page links at the bottom of the list to page through the history.
+
+The search field above the list finds entries by user, action or object, ignoring case; the list is filtered as you type and the count shows how many entries match. How searching and paging work is described in [Lists]({{< relref "/getting-started/_index.md#lists" >}}).
 
 ## What is recorded {#recorded}
 

@@ -9,7 +9,7 @@ import string
 from typing import Any
 
 from pydantic import BaseModel, ValidationError
-from sqlalchemy import select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
 from phonix.core.models import (
@@ -27,6 +27,7 @@ from phonix.core.models import (
 from phonix.core.settings import FeatureSettings
 from phonix.core.settings import load as load_settings
 from phonix.i18n import N_, _
+from phonix.services import listing
 
 
 class ServiceError(Exception):
@@ -148,6 +149,25 @@ def audit(
             diff=diff,
         )
     )
+
+
+def audit_page(session: Session, q: str, page: int, per_page: int) -> listing.ListPage[AuditLog]:
+    """One page of the audit log, newest first, filtered and counted in SQL (the log is unbounded)."""
+    q = q.strip()
+    base = select(AuditLog)
+    count = select(func.count()).select_from(AuditLog)
+    if q:
+        needle = q.casefold()
+        cols = (AuditLog.username, AuditLog.action, AuditLog.object_type, AuditLog.summary)
+        cond = or_(*(func.casefold(col).contains(needle, autoescape=True) for col in cols))
+        base = base.where(cond)
+        count = count.where(cond)
+    total = session.scalar(select(func.count()).select_from(AuditLog)) or 0
+    matched = (session.scalar(count) or 0) if q else total
+    pages = max(1, -(-matched // per_page))
+    page = min(max(page, 1), pages)
+    rows = list(session.scalars(base.order_by(AuditLog.id.desc()).offset((page - 1) * per_page).limit(per_page)))
+    return listing.ListPage(rows, matched, total, page, per_page, q, listing.PER_PAGE_NO_ALL)
 
 
 def diff_dicts(

@@ -17,7 +17,9 @@ description: "Wer hat was wann geändert: jede Konfigurationsänderung und jede 
 
 ## Blättern {#paging}
 
-Die neuesten Einträge stehen oben, 50 pro Seite. Mit *Älter* und *Neuer* unter der Liste blättern Sie durch die Historie.
+Die neuesten Einträge stehen oben, standardmäßig 50 pro Seite; *Pro Seite* bietet 25, 50 oder 100 an (nicht *Alle*, da das Log sehr groß werden kann). Mit den Seitenlinks unter der Liste blättern Sie durch die Historie.
+
+Das Suchfeld über der Liste findet Einträge nach Benutzer, Aktion oder Objekt, ohne Beachtung der Groß- und Kleinschreibung; die Liste wird beim Tippen gefiltert und die Zahl zeigt, wie viele Einträge passen. Wie Suchen und Blättern funktionieren, steht unter [Listen]({{< relref "/getting-started/_index.md#lists" >}}).
 
 ## Was aufgezeichnet wird {#recorded}
 

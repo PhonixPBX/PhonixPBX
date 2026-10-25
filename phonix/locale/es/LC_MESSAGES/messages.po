@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-25 13:09+0100\n"
+"POT-Creation-Date: 2026-10-25 13:18+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: es\n"
@@ -115,6 +115,12 @@ msgid "%(num)d conference room"
 msgid_plural "%(num)d conference rooms"
 msgstr[0] "%(num)d sala de conferencias"
 msgstr[1] "%(num)d salas de conferencias"
+
+#, python-format
+msgid "%(num)d entry"
+msgid_plural "%(num)d entries"
+msgstr[0] "%(num)d entrada"
+msgstr[1] "%(num)d entradas"
 
 #, python-format
 msgid "%(num)d manager user"
@@ -2161,9 +2167,6 @@ msgstr "Nuevo mensaje de voz"
 msgid "New voicemail from ${VM_CALLERID}"
 msgstr "Nuevo mensaje de voz de ${VM_CALLERID}"
 
-msgid "Newer"
-msgstr "Más recientes"
-
 msgid "Next page"
 msgstr "Página siguiente"
 
@@ -2225,6 +2228,9 @@ msgstr "No hay salas de conferencias"
 
 msgid "No conference rooms found"
 msgstr "No se encontraron salas de conferencias"
+
+msgid "No entries found"
+msgstr "No se encontraron entradas"
 
 msgid "No entries."
 msgstr "No hay entradas."
@@ -2349,9 +2355,6 @@ msgstr "Desactivado"
 
 msgid "Off hook"
 msgstr "Descolgado"
-
-msgid "Older"
-msgstr "Más antiguas"
 
 msgid "On Hold"
 msgstr "En espera"
@@ -3722,6 +3725,9 @@ msgstr "Nombre de usuario"
 
 msgid "User not found"
 msgstr "Usuario no encontrado"
+
+msgid "User, action or object"
+msgstr "Usuario, acción u objeto"
 
 msgid "Username"
 msgstr "Nombre de usuario"

@@ -1103,3 +1103,32 @@ def test_hours_search_by_name(client):
     assert 'id="list-hours"' in first
     r = client.get("/dialplan/hours", params={"q": "zzz-nothing-matches"})
     assert "No business hours found" in r.text
+
+
+def test_audit_search_and_paging(client):
+    from phonix.services.common import audit
+
+    login(client)
+    with session_scope() as s:
+        for i in range(70):
+            audit(s, "admin", "update", "phone", i, f"Müller {i}")
+    r = client.get("/status/audit", params={"q": "müller 6"})
+    assert "Müller 6" in r.text and "Müller 5" not in r.text  # matches 6 and 60-69
+    r = client.get("/status/audit", params={"q": "MÜLLER"})
+    assert "of" in r.text  # casefold, not ASCII-only
+    page = client.get("/status/audit").text
+    assert 'id="list-audit"' in page and "?page=2" in page and 'value="all"' not in page
+    assert client.get("/status/audit", params={"per_page": "all", "page": "99"}).status_code == 200
+
+
+def test_audit_search_like_wildcards(client):
+    from phonix.services.common import audit
+
+    login(client)
+    with session_scope() as s:
+        audit(s, "admin", "update", "phone", 1, "100% done")
+        audit(s, "admin", "update", "phone", 2, "plain")
+    r = client.get("/status/audit", params={"q": "%"})
+    assert "100<mark>%</mark> done" in r.text and "plain" not in r.text  # the match is highlighted
+    r = client.get("/status/audit", params={"q": "_"})
+    assert "plain" not in r.text

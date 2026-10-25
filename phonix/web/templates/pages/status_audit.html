@@ -1,28 +1,35 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
+{% from "macros/lists.html" import list_header, list_footer, no_matches with context %}
 {% block content %}
 <div class="card">
+  {% if lv.searching %}{% set count = _("%(matched)d of %(total)d", matched=lv.matched, total=lv.total) %}
+  {% else %}{% set count = ngettext("%(num)d entry", "%(num)d entries", lv.total) %}{% endif %}
+  {% if lv.total %}{{ list_header(lv, "list-audit", "/status/audit", count, _("User, action or object")) }}{% endif %}
+  <div id="list-audit">
+  {% if lv.items %}
   <div class="table-responsive">
     <table class="table table-vcenter card-table table-sm">
       <thead><tr><th>{{ _("Time (UTC)") }}</th><th>{{ _("User") }}</th><th>{{ _("Action") }}</th><th>{{ _("Object") }}</th><th>{{ _("Details") }}</th></tr></thead>
       <tbody>
-      {% for r in rows %}
+      {% for r in lv.items %}
       <tr>
         <td class="text-nowrap">{{ r.ts.strftime("%Y-%m-%d %H:%M:%S") }}</td>
-        <td>{{ r.username }}</td>
-        <td><span class="badge bg-primary-lt">{{ r.action }}</span></td>
-        <td>{{ r.object_type }} {{ r.summary }}</td>
+        <td>{{ r.username | highlight(lv.q) }}</td>
+        <td><span class="badge bg-primary-lt">{{ r.action | highlight(lv.q) }}</span></td>
+        <td>{{ r.object_type | highlight(lv.q) }} {{ r.summary | highlight(lv.q) }}</td>
         <td class="small text-secondary">{% if r.diff %}{% for k, d in r.diff.items() %}{{ k }}{% if d.changed %} ({{ _("changed") }}){% else %}: {{ d.get("from") }} &rarr; {{ d.get("to") }}{% endif %}{% if not loop.last %}; {% endif %}{% endfor %}{% endif %}</td>
       </tr>
-      {% else %}
-      <tr><td colspan="5" class="text-secondary">{{ _("No entries.") }}</td></tr>
       {% endfor %}
       </tbody>
     </table>
   </div>
-  <div class="card-footer d-flex">
-    {% if page_no > 1 %}<a class="btn" href="?page_no={{ page_no - 1 }}">{{ icon("chevron-left") }}{{ _("Newer") }}</a>{% endif %}
-    {% if has_more %}<a class="btn ms-auto" href="?page_no={{ page_no + 1 }}">{{ _("Older") }}{{ icon("chevron-right", "icon-end") }}</a>{% endif %}
+  {{ list_footer(lv, "list-audit", "/status/audit") }}
+  {% elif lv.total %}
+  {{ no_matches(_("No entries found"), "/status/audit") }}
+  {% else %}
+  <div class="card-body text-secondary">{{ _("No entries.") }}</div>
+  {% endif %}
   </div>
 </div>
 {% endblock %}

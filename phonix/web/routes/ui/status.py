@@ -11,14 +11,14 @@ from collections.abc import AsyncIterator
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import JSONResponse, RedirectResponse, Response, StreamingResponse
 from markupsafe import escape
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from phonix import config
 from phonix.core import settings as st
-from phonix.core.models import AuditLog, User
+from phonix.core.models import User
 from phonix.i18n import N_
-from phonix.services import firstboot, phones, platform, providers, status, tls, update
+from phonix.services import firstboot, listing, phones, platform, providers, status, tls, update
+from phonix.services.common import audit_page
 from phonix.web.deps import get_db, ui_user
 from phonix.web.routes.ui.common import page
 from phonix.web.templating import render
@@ -131,19 +131,10 @@ async def log_stream(request: Request, log: str = "asterisk", user: User = Depen
 
 
 @router.get("/status/audit")
-def audit_log(
-    request: Request, page_no: int = 1, user: User = Depends(ui_user), db: Session = Depends(get_db)
-) -> Response:
-    per_page = 50
-    page_no = max(page_no, 1)
-    rows = list(
-        db.scalars(select(AuditLog).order_by(AuditLog.id.desc()).offset((page_no - 1) * per_page).limit(per_page + 1))
+def audit_log(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
+    params = request.query_params
+    per_page = listing.parse_per_page(params.get("per_page", ""), listing.PER_PAGE_NO_ALL)
+    lv = audit_page(
+        db, params.get("q", ""), listing.parse_page(params.get("page", "")), per_page or listing.PER_PAGE_DEFAULT
     )
-    return page(
-        request,
-        "pages/status_audit.html",
-        rows=rows[:per_page],
-        page_no=page_no,
-        has_more=len(rows) > per_page,
-        json=json,
-    )
+    return page(request, "pages/status_audit.html", lv=lv, json=json)
