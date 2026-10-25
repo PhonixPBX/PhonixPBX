@@ -77,7 +77,7 @@
           <div class="col-auto ms-auto d-print-none">{% block actions %}{% endblock %}</div>
           <div class="col-auto d-print-none">
             {% block help %}
-            <a href="{{ help_url(self.help_page() | trim or (active_item.url if active_item else None), self.help_anchor() | trim) }}" class="btn btn-icon btn-ghost-secondary"
+            <a href="{{ help_url(self.help_page() | trim or (active_item.url if active_item else None), self.help_anchor() | trim) }}" class="btn btn-icon btn-ghost-secondary page-help"
                target="_blank" rel="noopener" title="{{ _('Help') }}" aria-label="{{ _('Help') }}" data-bs-toggle="tooltip">{{ icon("help") }}</a>
             {% endblock %}
           </div>

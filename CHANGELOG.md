@@ -38,6 +38,7 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   import that replaces the configuration set all business hours back to **Automatic**: permanent modes and the
   state of the out-of-office key are cleared, and special periods are switched on or off as saved in the backup.
   Before, the mode of the replaced configuration could stick to restored business hours with the same number.
+- The help button at the top right of each page is bigger.
 - Configuration backups (`config.json`) are now version 5 and contain the special periods. Older backups still
   restore; backups of this version cannot be restored on older PhonixPBX versions.
 

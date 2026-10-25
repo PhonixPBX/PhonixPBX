@@ -118,6 +118,10 @@
 .btn-icon .ti {
   margin: 0;
 }
+/* help button in the page header */
+.page-help .ti {
+  font-size: 1.75rem;
+}
 .nav-link-icon {
   width: 1.5rem;
   height: 1.5rem;
