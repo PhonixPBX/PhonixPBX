@@ -60,7 +60,7 @@ phonix = [
 [tool.ruff]
 target-version = "py310"
 line-length = 120
-extend-exclude = ["legacy/**"]
+extend-exclude = ["legacy/**", "docs/**"]  # docs: prose, code blocks are illustrations
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "S", "SIM", "RUF", "ANN"]
