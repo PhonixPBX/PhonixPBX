@@ -11,6 +11,8 @@ Eine Anwendung ist ein kurzes Stück Asterisk-Wählplan, das ausgeführt wird, w
 
 Klicken Sie über der Liste auf **Anwendung**, um eine hinzuzufügen. Die Liste zeigt **Nummer**, **Name**, **Beschreibung** und **Status** (aktiviert oder deaktiviert, und *öffentlich*, wenn die Anwendung von außen erreichbar ist). Mit den Schaltflächen am Ende jeder Zeile bearbeiten und löschen Sie die Anwendung. Beim Löschen werden auch die eingehenden Routen und IVR-Tasten entfernt, die zu ihr führten.
 
+Das Suchfeld über der Liste findet Anwendungen nach Nummer, Name oder Beschreibung; wie Suchen und Blättern funktionieren, steht unter [Listen]({{< relref "/getting-started/_index.md#lists" >}}).
+
 Neue Installationen enthalten diese Anwendungen:
 
 | Nummer | Name | Funktion |

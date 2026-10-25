@@ -29,6 +29,8 @@ Die Ansagen von IVR-Menüs laden Sie im Menü-Editor unter [Wählplan → IVR-Me
 
 Die Tabelle listet alle hochgeladenen Dateien mit Typ, Name, Größe und Zeitpunkt des Hochladens. Mit dem Download-Symbol hören Sie die konvertierte Datei (WAV) an, mit dem Papierkorbsymbol löschen Sie sie.
 
+Das Suchfeld über der Liste findet Dateien nach Name oder Typ; wie Suchen und Blättern funktionieren, steht unter [Listen]({{< relref "/getting-started/_index.md#lists" >}}).
+
 ## Dateiformate {#formats}
 
 - Für Wartemusik werden WAV-, MP3-, OGG- und FLAC-Dateien bis je 64 MB angenommen, für die Mailbox-Ansage WAV, MP3 und OGG bis 16 MB.

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from typing import Any
 
@@ -23,6 +23,7 @@ from phonix.services.common import NotFound, ServiceError, parse
 from phonix.web.deps import form_to_dict, get_db, ui_user
 from phonix.web.routes.ui.common import (
     dirty_trigger,
+    list_page,
     model_values,
     page,
     redirect,
@@ -57,6 +58,7 @@ class Kind:
     base: str
     list_tpl: str
     form_tpl: str
+    search_fields: Callable[[Any], Iterable[object]]
 
 
 APPS = Kind(
@@ -72,6 +74,7 @@ APPS = Kind(
     "/dialplan/applications",
     "pages/applications.html",
     "pages/application_form.html",
+    dp.application_search_fields,
 )
 GROUPS = Kind(
     "callgroup",
@@ -86,6 +89,7 @@ GROUPS = Kind(
     "/dialplan/callgroups",
     "pages/callgroups.html",
     "pages/callgroup_form.html",
+    dp.callgroup_search_fields,
 )
 
 
@@ -130,7 +134,7 @@ def register(kind: Kind, target: APIRouter = router, prefix: str = "/dialplan") 
         return page(
             request,
             kind.list_tpl,
-            items=kind.list_fn(db),
+            lv=list_page(request, kind.list_fn(db), kind.search_fields),
             kind=kind,
             phones={p.id: p for p in phone_svc.list_phones(db)},
         )

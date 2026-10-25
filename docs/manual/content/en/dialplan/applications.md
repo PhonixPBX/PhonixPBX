@@ -11,6 +11,8 @@ Changes take effect after you apply them, see [Applying changes]({{< relref "/ge
 
 Click **Application** above the list to add one. The list shows the **Number**, **Name**, **Description** and **Status** (enabled or disabled, and *public* when it is reachable from outside). The buttons at the end of each row edit and delete the application. Deleting an application also removes the incoming routes and IVR keys that led to it.
 
+The search field above the list finds applications by number, name or description; how searching and paging work is described in [Lists]({{< relref "/getting-started/_index.md#lists" >}}).
+
 New installations come with these applications:
 
 | Number | Name | What it does |

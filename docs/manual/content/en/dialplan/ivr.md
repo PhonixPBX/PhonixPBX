@@ -19,6 +19,8 @@ Click **IVR menu** above the list to add one. The list shows:
 | No key pressed | Where the call goes when the caller presses nothing. |
 | Status | Enabled or disabled. |
 
+The search field above the list finds IVR menus by number, name or description; how searching and paging work is described in [Lists]({{< relref "/getting-started/_index.md#lists" >}}).
+
 The buttons at the end of each row edit, disable/enable and delete the menu. A disabled menu is left out of the configuration; calls that would reach it end. Deleting a menu removes the incoming routes and IVR keys that led to it; other menus and business hours that used it for *no key* or *closed* fall back to *Hang up*.
 
 ## Create or edit an IVR menu {#edit}

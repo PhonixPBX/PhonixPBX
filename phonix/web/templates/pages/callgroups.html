@@ -1,18 +1,23 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
 {% from "macros/ui.html" import delete_button, empty with context %}
+{% from "macros/lists.html" import list_header, list_footer, no_matches with context %}
 {% block actions %}<a href="/dialplan/callgroups/new" class="btn btn-primary">{{ icon("plus") }}{{ _("Call group") }}</a>{% endblock %}
 {% block content %}
 <div class="card">
-  {% if items %}
+  {% if lv.searching %}{% set count = _("%(matched)d of %(total)d", matched=lv.matched, total=lv.total) %}
+  {% else %}{% set count = ngettext("%(num)d call group", "%(num)d call groups", lv.total) %}{% endif %}
+  {% if lv.total %}{{ list_header(lv, "list-callgroups", "/dialplan/callgroups", count, _("Number or name")) }}{% endif %}
+  <div id="list-callgroups">
+  {% if lv.items %}
   <div class="table-responsive">
   <table class="table table-vcenter card-table table-hover">
     <thead><tr><th>{{ _("Number") }}</th><th>{{ _("Name") }}</th><th>{{ _("Members") }}</th><th>{{ _("Strategy") }}</th><th></th></tr></thead>
     <tbody>
-    {% for g in items %}
+    {% for g in lv.items %}
     <tr>
-      <td><a href="/dialplan/callgroups/{{ g.id }}" class="fw-bold">{{ g.extension or "–" }}</a></td>
-      <td>{{ g.name }}{% if g.public_access %} <span class="badge bg-azure-lt">{{ _("public") }}</span>{% endif %}</td>
+      <td><a href="/dialplan/callgroups/{{ g.id }}" class="fw-bold">{{ (g.extension | highlight(lv.q)) if g.extension else "–" }}</a></td>
+      <td>{{ g.name | highlight(lv.q) }}{% if g.public_access %} <span class="badge bg-azure-lt">{{ _("public") }}</span>{% endif %}</td>
       <td>{% for m in g.members %}{% if m.member_group %}<span class="badge bg-purple-lt me-1">{{ icon("users-group") }}{{ m.member_group.name }}</span>{% elif m.phone %}<span class="badge bg-primary-lt me-1">{{ m.phone.extension }} {{ m.phone.callerid }}</span>{% endif %}{% endfor %}</td>
       <td>{{ _("ring all") if g.strategy == "ringall" else _("one after another") }}</td>
       <td class="table-actions">
@@ -24,6 +29,10 @@
     </tbody>
   </table>
   </div>
+  {{ list_footer(lv, "list-callgroups", "/dialplan/callgroups") }}
+  {% elif lv.total %}
+  {{ no_matches(_("No call groups found"), "/dialplan/callgroups") }}
   {% else %}{{ empty(_("No call groups"), _("Call groups ring several phones at once or one after another."), "/dialplan/callgroups/new", _("Add a call group")) }}{% endif %}
+  </div>
 </div>
 {% endblock %}

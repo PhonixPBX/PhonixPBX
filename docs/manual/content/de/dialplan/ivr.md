@@ -19,6 +19,8 @@ Klicken Sie über der Liste auf **IVR-Menü**, um eines hinzuzufügen. Die Liste
 | Keine Taste gedrückt | Wohin der Anruf geht, wenn der Anrufer nichts drückt. |
 | Status | Aktiviert oder deaktiviert. |
 
+Das Suchfeld über der Liste findet IVR-Menüs nach Nummer, Name oder Beschreibung; wie Suchen und Blättern funktionieren, steht unter [Listen]({{< relref "/getting-started/_index.md#lists" >}}).
+
 Mit den Schaltflächen am Ende jeder Zeile bearbeiten, deaktivieren/aktivieren und löschen Sie das Menü. Ein deaktiviertes Menü wird nicht in die Konfiguration übernommen; Anrufe, die es erreichen würden, enden. Beim Löschen eines Menüs werden die eingehenden Routen und IVR-Tasten entfernt, die zu ihm führten; andere Menüs und Geschäftszeiten, die es für *keine Taste* oder *geschlossen* verwendeten, fallen auf *Auflegen* zurück.
 
 ## IVR-Menü anlegen oder bearbeiten {#edit}

@@ -1021,3 +1021,85 @@ def test_phone_status_follows_view(client):
     part = client.get("/accounts/phones/status", params={"q": "bulk 1"}).text
     shown = re.findall(r'hx-target="#phone-status-(\d+)"', part)
     assert 0 < len(shown) <= 11
+
+
+LISTS = [
+    ("/accounts/providers", "list-providers"),
+    ("/dialplan/applications", "list-applications"),
+    ("/dialplan/callgroups", "list-callgroups"),
+    ("/services/conferencing", "list-conferences"),
+    ("/advanced/manager", "list-ami-users"),
+    ("/dialplan/ivr", "list-ivr"),
+    ("/dialplan/hours", "list-hours"),
+    ("/services/media", "list-media"),
+    ("/advanced/users", "list-users"),
+    ("/advanced/tokens", "list-tokens"),
+    ("/system/backup", "list-backups"),
+]
+
+
+def _wav_bytes():
+    import io
+    import wave
+
+    buf = io.BytesIO()
+    with wave.open(buf, "wb") as wf:
+        wf.setnchannels(1)
+        wf.setsampwidth(2)
+        wf.setframerate(8000)
+        wf.writeframes(b"\x10\x00" * 800)
+    return buf.getvalue()
+
+
+def _fill_lists():
+    """Entries for the lists the sample data leaves empty."""
+    from phonix.services import backup, manager, media
+
+    bearer()
+    with session_scope() as s:
+        manager.create_ami_user(s, manager.AmiUserIn(username="ctiuser", secret="s3cret-s3cret"))
+        media.add_media(s, "moh", "song.wav", _wav_bytes())
+    backup.create()
+
+
+@pytest.mark.parametrize("url,region", LISTS)
+def test_list_has_search_and_region(client, url, region):
+    login(client)
+    _fill_lists()
+    page = client.get(url).text
+    assert page.count(f'id="{region}"') == 1 and page.count(f'id="{region}-count"') == 1
+    assert f'hx-select="#{region}"' in page and 'name="q"' in page
+    r = client.get(url, params={"q": "zzz-nothing-matches"})
+    assert r.status_code == 200 and "Clear search" in r.text
+
+
+def test_provider_search_highlight(client):
+    login(client)
+    r = client.get("/accounts/providers", params={"q": "iax tr"})
+    assert "<mark>IAX Tr</mark>unk" in r.text and "Example Trunk" not in r.text
+
+
+def test_provider_status_follows_view(client):
+    login(client)
+    page = client.get("/accounts/providers", params={"q": "iax"}).text
+    assert 'hx-get="/accounts/providers/status?q=iax"' in page
+
+
+def test_media_upload_returns_list_region(client):
+    login(client)
+    token = csrf(client, "/services/media")
+    r = client.post(
+        "/services/media/moh",
+        files={"file": ("song.wav", _wav_bytes(), "audio/wav")},
+        headers={"X-CSRF-Token": token},
+    )
+    assert r.status_code == 200, r.text
+    assert 'id="list-media"' in r.text and 'id="list-media-count"' in r.text
+
+
+def test_hours_search_by_name(client):
+    login(client)
+    first = client.get("/dialplan/hours").text
+    assert 'id="list-hours"' in first
+    r = client.get("/dialplan/hours", params={"q": "zzz-nothing-matches"})
+    assert "No business hours found" in r.text

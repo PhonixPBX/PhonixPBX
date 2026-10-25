@@ -21,7 +21,7 @@ from phonix.services import media as media_svc
 from phonix.services import notifications
 from phonix.services.common import NotFound, ServiceError
 from phonix.web.deps import get_db, ui_user
-from phonix.web.routes.ui.common import dirty_trigger, page, redirect, save_settings_form, service_errors
+from phonix.web.routes.ui.common import dirty_trigger, list_page, page, redirect, save_settings_form, service_errors
 from phonix.web.routes.ui.dialplan import Kind, register
 from phonix.web.templating import render
 
@@ -174,6 +174,7 @@ ROOMS = Kind(
     "/services/conferencing",
     "pages/conferences.html",
     "pages/conference_form.html",
+    dp.room_search_fields,
 )
 register(ROOMS, router, "/services")
 
@@ -186,7 +187,7 @@ def media(request: Request, user: User = Depends(ui_user), db: Session = Depends
     return page(
         request,
         "pages/media.html",
-        files=media_svc.list_media(db),
+        lv=list_page(request, media_svc.list_media(db), media_svc.search_fields),
         kinds=media_svc.KINDS,
         system=st.load(db, st.SystemSettings),
     )
@@ -205,7 +206,11 @@ async def media_upload(
         return HTMLResponse(
             render(request, "partials/alert.html", {"level": "danger", "message": msg}).body, status_code=422
         )
-    resp = render(request, "partials/media_table.html", {"files": media_svc.list_media(db), "kinds": media_svc.KINDS})
+    resp = render(
+        request,
+        "partials/media_table.html",
+        {"lv": list_page(request, media_svc.list_media(db), media_svc.search_fields), "kinds": media_svc.KINDS},
+    )
     return dirty_trigger(resp)
 
 

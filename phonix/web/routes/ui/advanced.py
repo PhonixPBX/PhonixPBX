@@ -18,7 +18,7 @@ from phonix.services import acme_providers, tls, tokens, users
 from phonix.services import manager as ami_svc
 from phonix.services.common import AREAS, ServiceError, audit, diff_dicts, errors_from_validation
 from phonix.web.deps import form_to_dict, get_db, ui_user
-from phonix.web.routes.ui.common import page, redirect, save_settings_form, service_errors
+from phonix.web.routes.ui.common import list_page, page, redirect, save_settings_form, service_errors
 from phonix.web.routes.ui.dialplan import Kind, register
 from phonix.web.templating import flash
 
@@ -79,6 +79,7 @@ AMI = Kind(
     "/advanced/manager",
     "pages/ami_users.html",
     "pages/ami_user_form.html",
+    ami_svc.search_fields,
 )
 register(AMI, router, "/advanced")
 
@@ -287,7 +288,7 @@ def certificate_acme_status(request: Request, was: str = "", user: User = Depend
 
 @router.get("/users")
 def admin_users(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
-    return page(request, "pages/advanced_users.html", admins=users.list_users(db))
+    return page(request, "pages/advanced_users.html", lv=list_page(request, users.list_users(db), users.search_fields))
 
 
 @router.post("/users")
@@ -307,7 +308,7 @@ async def admin_add(request: Request, user: User = Depends(ui_user), db: Session
             request,
             "pages/advanced_users.html",
             status_code=422,
-            admins=users.list_users(db),
+            lv=list_page(request, users.list_users(db), users.search_fields),
             errors=service_errors(exc),
             values=dict(form),
         )
@@ -337,7 +338,7 @@ def _tokens_page(request: Request, db: Session, status_code: int = 200, **ctx: A
         request,
         "pages/advanced_tokens.html",
         status_code=status_code,
-        tokens=tokens.list_tokens(db),
+        lv=list_page(request, tokens.list_tokens(db), tokens.search_fields),
         token_status=tokens.status,
         max_days=tokens.MAX_DAYS,
         **ctx,

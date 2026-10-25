@@ -1,6 +1,7 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
 {% from "macros/ui.html" import delete_button with context %}
+{% from "macros/lists.html" import list_header, list_footer, no_matches with context %}
 {% block content %}
 <div class="row row-cards">
   <div class="col-lg-6">
@@ -11,11 +12,16 @@
             <button class="btn btn-primary" type="submit">{{ icon("database-export") }}{{ _("Create backup") }}</button></form>
         </div>
       </div>
-      {% if backups %}
+      {% if lv.searching %}{% set count = _("%(matched)d of %(total)d", matched=lv.matched, total=lv.total) %}
+      {% else %}{% set count = ngettext("%(num)d backup", "%(num)d backups", lv.total) %}{% endif %}
+      {% if lv.total %}{{ list_header(lv, "list-backups", "/system/backup", count, _("Backup file name")) }}{% endif %}
+      <div id="list-backups">
+      {% if lv.items %}
+      <div class="table-responsive">
       <table class="table table-vcenter card-table">
         <tbody>
-        {% for b in backups %}
-        <tr><td>{{ b.name }}</td><td class="text-secondary">{{ b.stat().st_size | filesize }}</td>
+        {% for b in lv.items %}
+        <tr><td>{{ b.name | highlight(lv.q) }}</td><td class="text-secondary">{{ b.stat().st_size | filesize }}</td>
           <td class="table-actions">
             <button class="btn btn-ghost-primary btn-icon btn-sm" type="button" hx-post="/system/backup/preview/{{ b.name }}" hx-target="#restore-result" aria-label="{{ _("Restore %(name)s", name=b.name) }}">{{ icon("restore") }}</button>
             <a class="btn btn-ghost-primary btn-icon btn-sm" href="/system/backup/download/{{ b.name }}" aria-label="{{ _("Download %(name)s", name=b.name) }}">{{ icon("download") }}</a>
@@ -24,7 +30,12 @@
         {% endfor %}
         </tbody>
       </table>
+      </div>
+      {{ list_footer(lv, "list-backups", "/system/backup") }}
+      {% elif lv.total %}
+      {{ no_matches(_("No backups found"), "/system/backup") }}
       {% else %}<div class="card-body text-secondary">{{ _("No backups yet. Backups contain the configuration with all passwords, the media files and the TLS certificate.") }}</div>{% endif %}
+      </div>
     </div>
     <div class="card mt-3">
       <div class="card-header"><h3 class="card-title">{{ _("Restore") }}</h3></div>

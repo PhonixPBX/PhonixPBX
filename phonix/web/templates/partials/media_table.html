@@ -1,14 +1,20 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% from "macros/ui.html" import delete_button with context %}
+{% from "macros/lists.html" import list_header, list_footer, no_matches with context %}
 <div class="card-header"><h3 class="card-title">{{ _("Uploaded files") }}</h3></div>
-{% if files %}
+{% if lv.searching %}{% set count = _("%(matched)d of %(total)d", matched=lv.matched, total=lv.total) %}
+{% else %}{% set count = ngettext("%(num)d uploaded file", "%(num)d uploaded files", lv.total) %}{% endif %}
+{% if lv.total %}{{ list_header(lv, "list-media", "/services/media", count, _("Name or type")) }}{% endif %}
+<div id="list-media">
+{% if lv.items %}
+<div class="table-responsive">
 <table class="table table-vcenter card-table">
   <thead><tr><th>{{ _("Type") }}</th><th>{{ _("Name") }}</th><th>{{ _("Size") }}</th><th>{{ _("Uploaded") }}</th><th></th></tr></thead>
   <tbody>
-  {% for f in files %}
+  {% for f in lv.items %}
   <tr>
-    <td><span class="badge bg-primary-lt">{{ _(kinds[f.kind]) }}</span></td>
-    <td>{{ f.name }}</td><td>{{ f.size | filesize }}</td><td>{{ f.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
+    <td><span class="badge bg-primary-lt">{{ _(kinds[f.kind]) | highlight(lv.q) }}</span></td>
+    <td>{{ f.name | highlight(lv.q) }}</td><td>{{ f.size | filesize }}</td><td>{{ f.created_at.strftime("%Y-%m-%d %H:%M") }}</td>
     <td class="table-actions">
       <a class="btn btn-ghost-primary btn-icon btn-sm" href="/services/media/file/{{ f.id }}" aria-label="{{ _('Download %(name)s', name=f.name) }}">{{ icon("download") }}</a>
       {{ delete_button("/services/media/file/" ~ f.id, f.name) }}
@@ -17,4 +23,9 @@
   {% endfor %}
   </tbody>
 </table>
+</div>
+{{ list_footer(lv, "list-media", "/services/media") }}
+{% elif lv.total %}
+{{ no_matches(_("No files found"), "/services/media") }}
 {% else %}<div class="card-body text-secondary">{{ _("No files uploaded.") }}</div>{% endif %}
+</div>

@@ -2,6 +2,7 @@
 {% extends "base.html" %}
 {% from "macros/forms.html" import csrf, input, radios, checkbox, form_errors with context %}
 {% from "macros/ui.html" import empty with context %}
+{% from "macros/lists.html" import list_header, list_footer, no_matches with context %}
 {% block content %}
 {% if new_token %}
 <div class="alert alert-success" role="alert">
@@ -17,18 +18,26 @@
 {% endif %}
 <div class="row row-cards">
   <div class="col-xl-8"><div class="card">
-    {% if tokens %}
+    {% if lv.searching %}{% set count = _("%(matched)d of %(total)d", matched=lv.matched, total=lv.total) %}
+    {% else %}{% set count = ngettext("%(num)d API token", "%(num)d API tokens", lv.total) %}{% endif %}
+    {% if lv.total %}{{ list_header(lv, "list-tokens", "/advanced/tokens", count, _("Name, prefix or owner")) }}{% endif %}
+    <div id="list-tokens">
+    {% if lv.items %}
     <div class="table-responsive">
     <table class="table table-vcenter card-table">
       <thead><tr><th>{{ _("Name") }}</th><th>{{ _("Access") }}</th><th>{{ _("Status") }}</th><th>{{ _("Owner") }}</th><th>{{ _("Created") }}</th><th>{{ _("Last used") }}</th><th>{{ _("Valid until") }}</th><th></th></tr></thead>
       <tbody>
-      {% for t in tokens %}{% include "partials/token_row.html" %}{% endfor %}
+      {% for t in lv.items %}{% include "partials/token_row.html" %}{% endfor %}
       </tbody>
     </table>
     </div>
+    {{ list_footer(lv, "list-tokens", "/advanced/tokens") }}
+    {% elif lv.total %}
+    {{ no_matches(_("No API tokens found"), "/advanced/tokens") }}
     {% else %}
     {{ empty(_("No API tokens"), _("Create a token to use the REST API (/api/v1) from scripts.")) }}
     {% endif %}
+    </div>
   </div></div>
   <div class="col-xl-4">
     <form method="post" action="/advanced/tokens" class="card">

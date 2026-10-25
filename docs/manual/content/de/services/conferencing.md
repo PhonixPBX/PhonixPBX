@@ -16,6 +16,8 @@ Die Liste zeigt jeden Raum mit **Nummer**, **Name** und **Schutz**:
 - **offen**: Jeder, der die Nummer wählt, tritt direkt bei.
 - Die Markierung **öffentlich** neben dem Namen bedeutet, dass der Raum von außen erreichbar ist.
 
+Das Suchfeld über der Liste findet Konferenzräume nach Nummer oder Name; wie Suchen und Blättern funktionieren, steht unter [Listen]({{< relref "/getting-started/_index.md#lists" >}}).
+
 Klicken Sie über der Liste auf **Konferenzraum**, um einen Raum anzulegen, auf die Nummer oder das Stiftsymbol, um einen Raum zu bearbeiten, und auf das Papierkorbsymbol, um ihn zu löschen. Beim Löschen eines Raums werden auch eingehende Routen und IVR-Tasten entfernt, die zu ihm führten.
 
 ## Raumeinstellungen {#edit}

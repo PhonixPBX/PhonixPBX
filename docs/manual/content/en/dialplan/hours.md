@@ -19,6 +19,8 @@ Click **Business hours** above the list to add a schedule. The list shows:
 | When closed | The destination while closed. |
 | Feature code | The code of the [out-of-office key](#key), or `–`. |
 
+The search field above the list finds business hours by name, description or feature code; how searching and paging work is described in [Lists]({{< relref "/getting-started/_index.md#lists" >}}).
+
 The buttons at the end of each row edit and delete the schedule. Deleting it removes the incoming routes and IVR keys that led to it.
 
 ## Create or edit business hours {#edit}

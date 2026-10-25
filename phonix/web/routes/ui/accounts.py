@@ -179,7 +179,12 @@ def phone_toggle(
 
 @router.get("/providers")
 def provider_list(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
-    return page(request, "pages/providers.html", providers=provider_svc.list_providers(db), techs=TECH_LABELS)
+    return page(
+        request,
+        "pages/providers.html",
+        lv=list_page(request, provider_svc.list_providers(db), provider_svc.search_fields),
+        techs=TECH_LABELS,
+    )
 
 
 @router.get("/providers/status")
@@ -188,7 +193,10 @@ def provider_status(request: Request, user: User = Depends(ui_user), db: Session
     return render(
         request,
         "partials/provider_status.html",
-        {"providers": provider_svc.list_providers(db), "ast": status_svc.asterisk_status()},
+        {
+            "lv": list_page(request, provider_svc.list_providers(db), provider_svc.search_fields),
+            "ast": status_svc.asterisk_status(),
+        },
     )
 
 

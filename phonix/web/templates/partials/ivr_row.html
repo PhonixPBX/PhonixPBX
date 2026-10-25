@@ -1,8 +1,10 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% from "macros/ui.html" import delete_button, toggle_button, badge with context %}
+{# also rendered alone by the toggle route, without a list view #}
+{% set hl = lv.q if lv is defined else "" %}
 <tr id="ivr-{{ m.id }}"{% if not m.enabled %} class="text-secondary"{% endif %}>
-  <td><a href="/dialplan/ivr/{{ m.id }}" class="fw-bold">{{ m.extension or "–" }}</a></td>
-  <td>{{ m.name }}{% if m.public_access %} <span class="badge bg-azure-lt">{{ _("public") }}</span>{% endif %}{% if m.description %}<div class="small text-secondary">{{ m.description }}</div>{% endif %}</td>
+  <td><a href="/dialplan/ivr/{{ m.id }}" class="fw-bold">{{ (m.extension | highlight(hl)) if m.extension else "–" }}</a></td>
+  <td>{{ m.name | highlight(hl) }}{% if m.public_access %} <span class="badge bg-azure-lt">{{ _("public") }}</span>{% endif %}{% if m.description %}<div class="small text-secondary">{{ m.description | highlight(hl) }}</div>{% endif %}</td>
   <td>{% for o in m.options %}<span class="kbd-key" title="{{ o.label or dest_label(o.dest_type, o.dest_id) }}">{{ o.key }}</span>{% else %}<span class="text-secondary">{{ _("none") }}</span>{% endfor %}</td>
   <td class="small">{{ dest_label(m.timeout_dest_type, m.timeout_dest_id) }}</td>
   <td>{{ badge(m.enabled) }}</td>

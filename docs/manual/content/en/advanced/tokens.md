@@ -32,6 +32,8 @@ The table lists every token:
 | Owner | The administrator who created the token. When the administrator is deleted, the token is deleted too. |
 | Created, Last used, Valid until | When the token was created, last used, and until when it is valid (*unlimited* without expiry). |
 
+The search field above the list finds tokens by name, prefix or owner; how searching and paging work is described in [Lists]({{< relref "/getting-started/_index.md#lists" >}}).
+
 Use the toggle to disable a token temporarily and to enable it again. Use the trash icon to delete it for good. Delete tokens that are no longer used, and check *Last used* to find them.
 
 Good practice:

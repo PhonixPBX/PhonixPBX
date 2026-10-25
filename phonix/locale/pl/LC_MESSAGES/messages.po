@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-25 12:58+0100\n"
+"POT-Creation-Date: 2026-10-25 13:09+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: pl\n"
@@ -63,11 +63,74 @@ msgid "%(name)s until %(date)s"
 msgstr "%(name)s do %(date)s"
 
 #, python-format
+msgid "%(num)d API token"
+msgid_plural "%(num)d API tokens"
+msgstr[0] "%(num)d token API"
+msgstr[1] "%(num)d tokeny API"
+msgstr[2] "%(num)d tokenów API"
+
+#, python-format
 msgid "%(num)d CPU"
 msgid_plural "%(num)d CPUs"
 msgstr[0] "%(num)d procesor"
 msgstr[1] "%(num)d procesory"
 msgstr[2] "%(num)d procesorów"
+
+#, python-format
+msgid "%(num)d IVR menu"
+msgid_plural "%(num)d IVR menus"
+msgstr[0] "%(num)d menu IVR"
+msgstr[1] "%(num)d menu IVR"
+msgstr[2] "%(num)d menu IVR"
+
+#, python-format
+msgid "%(num)d administrator"
+msgid_plural "%(num)d administrators"
+msgstr[0] "%(num)d administrator"
+msgstr[1] "%(num)d administratorzy"
+msgstr[2] "%(num)d administratorów"
+
+#, python-format
+msgid "%(num)d application"
+msgid_plural "%(num)d applications"
+msgstr[0] "%(num)d aplikacja"
+msgstr[1] "%(num)d aplikacje"
+msgstr[2] "%(num)d aplikacji"
+
+#, python-format
+msgid "%(num)d backup"
+msgid_plural "%(num)d backups"
+msgstr[0] "%(num)d kopia zapasowa"
+msgstr[1] "%(num)d kopie zapasowe"
+msgstr[2] "%(num)d kopii zapasowych"
+
+#, python-format
+msgid "%(num)d business hours"
+msgid_plural "%(num)d business hours"
+msgstr[0] "%(num)d zestaw godzin pracy"
+msgstr[1] "%(num)d zestawy godzin pracy"
+msgstr[2] "%(num)d zestawów godzin pracy"
+
+#, python-format
+msgid "%(num)d call group"
+msgid_plural "%(num)d call groups"
+msgstr[0] "%(num)d grupa telefoniczna"
+msgstr[1] "%(num)d grupy telefoniczne"
+msgstr[2] "%(num)d grup telefonicznych"
+
+#, python-format
+msgid "%(num)d conference room"
+msgid_plural "%(num)d conference rooms"
+msgstr[0] "%(num)d sala konferencyjna"
+msgstr[1] "%(num)d sale konferencyjne"
+msgstr[2] "%(num)d sal konferencyjnych"
+
+#, python-format
+msgid "%(num)d manager user"
+msgid_plural "%(num)d manager users"
+msgstr[0] "%(num)d użytkownik AMI"
+msgstr[1] "%(num)d użytkownicy AMI"
+msgstr[2] "%(num)d użytkowników AMI"
 
 #, python-format
 msgid "%(num)d month"
@@ -84,11 +147,25 @@ msgstr[1] "%(num)d telefony"
 msgstr[2] "%(num)d telefonów"
 
 #, python-format
+msgid "%(num)d provider"
+msgid_plural "%(num)d providers"
+msgstr[0] "%(num)d dostawca"
+msgstr[1] "%(num)d dostawcy"
+msgstr[2] "%(num)d dostawców"
+
+#, python-format
 msgid "%(num)d route"
 msgid_plural "%(num)d routes"
 msgstr[0] "%(num)d trasa"
 msgstr[1] "%(num)d trasy"
 msgstr[2] "%(num)d tras"
+
+#, python-format
+msgid "%(num)d uploaded file"
+msgid_plural "%(num)d uploaded files"
+msgstr[0] "%(num)d przesłany plik"
+msgstr[1] "%(num)d przesłane pliki"
+msgstr[2] "%(num)d przesłanych plików"
 
 #, python-format
 msgid "%(number)s via %(provider)s"
@@ -551,6 +628,9 @@ msgstr "Utworzono kopię zapasową %(name)s."
 #, python-format
 msgid "Backup before the update failed: %(error)s"
 msgstr "Kopia zapasowa przed aktualizacją nie powiodła się: %(error)s"
+
+msgid "Backup file name"
+msgstr "Nazwa pliku kopii zapasowej"
 
 #, python-format
 msgid "Backup from %(created)s"
@@ -1996,17 +2076,29 @@ msgstr "Nazwa"
 msgid "Name is required"
 msgstr "Nazwa jest wymagana"
 
+msgid "Name or type"
+msgstr "Nazwa lub typ"
+
 msgid "Name server (host or host:port)"
 msgstr "Serwer nazw (host lub host:port)"
 
 msgid "Name shown to called parties."
 msgstr "Nazwa wyświetlana rozmówcom."
 
+msgid "Name, description or feature code"
+msgstr "Nazwa, opis lub kod funkcji"
+
 msgid "Name, e.g. Christmas Day"
 msgstr "Nazwa, np. Boże Narodzenie"
 
 msgid "Name, e.g. Christmas or Emergency"
 msgstr "Nazwa, np. Boże Narodzenie lub Awaria"
+
+msgid "Name, host or username"
+msgstr "Nazwa, host lub nazwa użytkownika"
+
+msgid "Name, prefix or owner"
+msgstr "Nazwa, prefiks lub właściciel"
 
 msgid "Names"
 msgstr "Nazwy"
@@ -2083,17 +2175,32 @@ msgstr "Następna strona"
 msgid "No API tokens"
 msgstr "Brak tokenów API"
 
+msgid "No API tokens found"
+msgstr "Nie znaleziono tokenów API"
+
 msgid "No IVR menus"
 msgstr "Brak menu IVR"
 
+msgid "No IVR menus found"
+msgstr "Nie znaleziono menu IVR"
+
 msgid "No active calls."
 msgstr "Brak aktywnych połączeń."
+
+msgid "No administrators found"
+msgstr "Nie znaleziono administratorów"
 
 msgid "No answer"
 msgstr "Brak odpowiedzi"
 
 msgid "No applications"
 msgstr "Brak aplikacji"
+
+msgid "No applications found"
+msgstr "Nie znaleziono aplikacji"
+
+msgid "No backups found"
+msgstr "Nie znaleziono kopii zapasowych"
 
 msgid "No backups yet. Backups contain the configuration with all passwords, the media files and the TLS certificate."
 msgstr ""
@@ -2103,8 +2210,14 @@ msgstr ""
 msgid "No business hours"
 msgstr "Brak godzin pracy"
 
+msgid "No business hours found"
+msgstr "Nie znaleziono godzin pracy"
+
 msgid "No call groups"
 msgstr "Brak grup telefonicznych"
+
+msgid "No call groups found"
+msgstr "Nie znaleziono grup telefonicznych"
 
 msgid "No certificate found"
 msgstr "Nie znaleziono certyfikatu"
@@ -2115,8 +2228,14 @@ msgstr "Nie znaleziono certyfikatu."
 msgid "No conference rooms"
 msgstr "Brak sal konferencyjnych"
 
+msgid "No conference rooms found"
+msgstr "Nie znaleziono sal konferencyjnych"
+
 msgid "No entries."
 msgstr "Brak wpisów."
+
+msgid "No files found"
+msgstr "Nie znaleziono plików"
 
 msgid "No files uploaded."
 msgstr "Brak przesłanych plików."
@@ -2129,6 +2248,9 @@ msgstr "Brak wyboru klawisza"
 
 msgid "No manager users"
 msgstr "Brak użytkowników AMI"
+
+msgid "No manager users found"
+msgstr "Nie znaleziono użytkowników AMI"
 
 msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
 msgstr "Hasło nie jest ustawione: działa tylko logowanie kluczem (/data/ssh/authorized_keys). Co najmniej 8 znaków."
@@ -2144,6 +2266,9 @@ msgstr "Nie skonfigurowano jeszcze żadnych dostawców."
 
 msgid "No providers configured."
 msgstr "Brak skonfigurowanych dostawców."
+
+msgid "No providers found"
+msgstr "Nie znaleziono dostawców"
 
 msgid "No providers yet"
 msgstr "Brak dostawców"
@@ -2202,6 +2327,12 @@ msgstr "Numer jest już używany przez %(owner)s"
 
 msgid "Number is reserved for call parking"
 msgstr "Numer jest zarezerwowany dla parkowania połączeń"
+
+msgid "Number or name"
+msgstr "Numer lub nazwa"
+
+msgid "Number, name or description"
+msgstr "Numer, nazwa lub opis"
 
 msgid "Numbers with +"
 msgstr "Numery z +"
@@ -3585,6 +3716,9 @@ msgstr "User agent"
 
 msgid "User already exists"
 msgstr "Użytkownik już istnieje"
+
+msgid "User name"
+msgstr "Nazwa użytkownika"
 
 msgid "User not found"
 msgstr "Nie znaleziono użytkownika"

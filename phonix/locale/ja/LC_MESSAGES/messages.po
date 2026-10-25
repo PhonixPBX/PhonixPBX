@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-25 12:58+0100\n"
+"POT-Creation-Date: 2026-10-25 13:09+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ja\n"
@@ -63,9 +63,54 @@ msgid "%(name)s until %(date)s"
 msgstr "%(name)s（%(date)s まで）"
 
 #, python-format
+msgid "%(num)d API token"
+msgid_plural "%(num)d API tokens"
+msgstr[0] "%(num)d 件の API トークン"
+
+#, python-format
 msgid "%(num)d CPU"
 msgid_plural "%(num)d CPUs"
 msgstr[0] "%(num)d CPU"
+
+#, python-format
+msgid "%(num)d IVR menu"
+msgid_plural "%(num)d IVR menus"
+msgstr[0] "%(num)d 件の IVR メニュー"
+
+#, python-format
+msgid "%(num)d administrator"
+msgid_plural "%(num)d administrators"
+msgstr[0] "%(num)d 件の管理者"
+
+#, python-format
+msgid "%(num)d application"
+msgid_plural "%(num)d applications"
+msgstr[0] "%(num)d 件のアプリケーション"
+
+#, python-format
+msgid "%(num)d backup"
+msgid_plural "%(num)d backups"
+msgstr[0] "%(num)d 件のバックアップ"
+
+#, python-format
+msgid "%(num)d business hours"
+msgid_plural "%(num)d business hours"
+msgstr[0] "%(num)d 件の営業時間"
+
+#, python-format
+msgid "%(num)d call group"
+msgid_plural "%(num)d call groups"
+msgstr[0] "%(num)d 件のコールグループ"
+
+#, python-format
+msgid "%(num)d conference room"
+msgid_plural "%(num)d conference rooms"
+msgstr[0] "%(num)d 件の会議室"
+
+#, python-format
+msgid "%(num)d manager user"
+msgid_plural "%(num)d manager users"
+msgstr[0] "%(num)d 件のマネージャーユーザー"
 
 #, python-format
 msgid "%(num)d month"
@@ -78,9 +123,19 @@ msgid_plural "%(num)d phones"
 msgstr[0] "%(num)d 台の電話機"
 
 #, python-format
+msgid "%(num)d provider"
+msgid_plural "%(num)d providers"
+msgstr[0] "%(num)d 件のプロバイダー"
+
+#, python-format
 msgid "%(num)d route"
 msgid_plural "%(num)d routes"
 msgstr[0] "%(num)d 件のルート"
+
+#, python-format
+msgid "%(num)d uploaded file"
+msgid_plural "%(num)d uploaded files"
+msgstr[0] "%(num)d 件のアップロード済みファイル"
 
 #, python-format
 msgid "%(number)s via %(provider)s"
@@ -534,6 +589,9 @@ msgstr "バックアップ %(name)s を作成しました。"
 #, python-format
 msgid "Backup before the update failed: %(error)s"
 msgstr "アップデート前のバックアップに失敗しました: %(error)s"
+
+msgid "Backup file name"
+msgstr "バックアップのファイル名"
 
 #, python-format
 msgid "Backup from %(created)s"
@@ -1969,17 +2027,29 @@ msgstr "名前"
 msgid "Name is required"
 msgstr "名前は必須です"
 
+msgid "Name or type"
+msgstr "名前または種類"
+
 msgid "Name server (host or host:port)"
 msgstr "ネームサーバー（host または host:port）"
 
 msgid "Name shown to called parties."
 msgstr "着信側に表示される名前です。"
 
+msgid "Name, description or feature code"
+msgstr "名前、説明または機能コード"
+
 msgid "Name, e.g. Christmas Day"
 msgstr "名前（例: 元日）"
 
 msgid "Name, e.g. Christmas or Emergency"
 msgstr "名前（例: 年末年始、緊急）"
+
+msgid "Name, host or username"
+msgstr "名前、ホストまたはユーザー名"
+
+msgid "Name, prefix or owner"
+msgstr "名前、プレフィックスまたは所有者"
 
 msgid "Names"
 msgstr "名前"
@@ -2056,11 +2126,20 @@ msgstr "次のページ"
 msgid "No API tokens"
 msgstr "API トークンはありません"
 
+msgid "No API tokens found"
+msgstr "API トークンが見つかりません"
+
 msgid "No IVR menus"
 msgstr "IVR メニューはありません"
 
+msgid "No IVR menus found"
+msgstr "IVR メニューが見つかりません"
+
 msgid "No active calls."
 msgstr "アクティブな通話はありません。"
+
+msgid "No administrators found"
+msgstr "管理者が見つかりません"
 
 msgid "No answer"
 msgstr "応答なし"
@@ -2068,14 +2147,26 @@ msgstr "応答なし"
 msgid "No applications"
 msgstr "アプリケーションはありません"
 
+msgid "No applications found"
+msgstr "アプリケーションが見つかりません"
+
+msgid "No backups found"
+msgstr "バックアップが見つかりません"
+
 msgid "No backups yet. Backups contain the configuration with all passwords, the media files and the TLS certificate."
 msgstr "バックアップはまだありません。バックアップには、すべてのパスワードを含む設定、メディアファイル、TLS 証明書が含まれます。"
 
 msgid "No business hours"
 msgstr "営業時間はありません"
 
+msgid "No business hours found"
+msgstr "営業時間が見つかりません"
+
 msgid "No call groups"
 msgstr "コールグループはありません"
+
+msgid "No call groups found"
+msgstr "コールグループが見つかりません"
 
 msgid "No certificate found"
 msgstr "証明書が見つかりません"
@@ -2086,8 +2177,14 @@ msgstr "証明書が見つかりません。"
 msgid "No conference rooms"
 msgstr "会議室はありません"
 
+msgid "No conference rooms found"
+msgstr "会議室が見つかりません"
+
 msgid "No entries."
 msgstr "エントリはありません。"
+
+msgid "No files found"
+msgstr "ファイルが見つかりません"
 
 msgid "No files uploaded."
 msgstr "アップロードされたファイルはありません。"
@@ -2100,6 +2197,9 @@ msgstr "キー入力なし"
 
 msgid "No manager users"
 msgstr "マネージャーユーザーはいません"
+
+msgid "No manager users found"
+msgstr "マネージャーユーザーが見つかりません"
 
 msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
 msgstr "パスワードは未設定です。鍵によるログイン（/data/ssh/authorized_keys）のみ使用できます。8 文字以上。"
@@ -2115,6 +2215,9 @@ msgstr "プロバイダーはまだ設定されていません。"
 
 msgid "No providers configured."
 msgstr "プロバイダーが設定されていません。"
+
+msgid "No providers found"
+msgstr "プロバイダーが見つかりません"
 
 msgid "No providers yet"
 msgstr "プロバイダーはまだありません"
@@ -2173,6 +2276,12 @@ msgstr "この番号は %(owner)s で使用されています"
 
 msgid "Number is reserved for call parking"
 msgstr "この番号はコールパーク用に予約されています"
+
+msgid "Number or name"
+msgstr "番号または名前"
+
+msgid "Number, name or description"
+msgstr "番号、名前または説明"
 
 msgid "Numbers with +"
 msgstr "+ 付きの番号"
@@ -3503,6 +3612,9 @@ msgstr "ユーザーエージェント"
 
 msgid "User already exists"
 msgstr "ユーザーはすでに存在します"
+
+msgid "User name"
+msgstr "ユーザー名"
 
 msgid "User not found"
 msgstr "ユーザーが見つかりません"

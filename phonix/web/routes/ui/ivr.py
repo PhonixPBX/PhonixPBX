@@ -24,7 +24,7 @@ from phonix.services import media as media_svc
 from phonix.services import phones as phone_svc
 from phonix.services.common import NotFound, ServiceError, parse
 from phonix.web.deps import form_to_dict, get_db, ui_user
-from phonix.web.routes.ui.common import dirty_trigger, model_values, page, redirect, service_errors
+from phonix.web.routes.ui.common import dirty_trigger, list_page, model_values, page, redirect, service_errors
 from phonix.web.templating import flash, render
 
 router = APIRouter(prefix="/dialplan")
@@ -115,7 +115,10 @@ def _menu_page(
 @router.get("/ivr")
 def ivr_list(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
     return page(
-        request, "pages/ivr_menus.html", items=ivr_svc.list_menus(db), dest_label=lambda t, i: dst.label(db, t, i)
+        request,
+        "pages/ivr_menus.html",
+        lv=list_page(request, ivr_svc.list_menus(db), ivr_svc.search_fields),
+        dest_label=lambda t, i: dst.label(db, t, i),
     )
 
 
@@ -434,7 +437,12 @@ def _status_rows(db: Session, only: int | None = None) -> list[tuple[Any, dict[s
 
 @router.get("/hours")
 def hours_list(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
-    return page(request, "pages/hours.html", items=_status_rows(db), dest_label=lambda t, i: dst.label(db, t, i))
+    return page(
+        request,
+        "pages/hours.html",
+        lv=list_page(request, _status_rows(db), lambda row: hours_svc.search_fields(row[0])),
+        dest_label=lambda t, i: dst.label(db, t, i),
+    )
 
 
 @router.get("/hours/new")

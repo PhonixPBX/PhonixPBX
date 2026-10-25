@@ -1,6 +1,7 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
 {% from "macros/ui.html" import empty with context %}
+{% from "macros/lists.html" import list_header, list_footer, no_matches with context %}
 {% block actions %}
 <div class="btn-list">
   <a href="/accounts/providers/new?tech=pjsip" class="btn btn-primary">{{ icon("plus") }}{{ _("SIP provider") }}</a>
@@ -9,17 +10,25 @@
 {% endblock %}
 {% block content %}
 <div class="card">
-  {% if providers %}
+  {% if lv.searching %}{% set count = _("%(matched)d of %(total)d", matched=lv.matched, total=lv.total) %}
+  {% else %}{% set count = ngettext("%(num)d provider", "%(num)d providers", lv.total) %}{% endif %}
+  {% if lv.total %}{{ list_header(lv, "list-providers", "/accounts/providers", count, _("Name, host or username")) }}{% endif %}
+  <div id="list-providers">
+  {% if lv.items %}
   <div class="table-responsive">
     <table class="table table-vcenter card-table table-hover">
       <thead><tr><th>{{ _("Name") }}</th><th>{{ _("Type") }}</th><th>{{ _("Status") }}</th><th>{{ _("Host") }}</th><th>{{ _("Username") }}</th><th>{{ _("Dial patterns") }}</th><th>{{ _("Incoming") }}</th><th></th></tr></thead>
-      <tbody hx-get="/accounts/providers/status" hx-trigger="load, every 15s" hx-swap="none">
-        {% for p in providers %}{% include "partials/provider_row.html" %}{% endfor %}
+      <tbody hx-get="/accounts/providers/status{{ '?' ~ lv.query() if lv.query() }}" hx-trigger="load, every 15s" hx-swap="none">
+        {% for p in lv.items %}{% include "partials/provider_row.html" %}{% endfor %}
       </tbody>
     </table>
   </div>
+  {{ list_footer(lv, "list-providers", "/accounts/providers") }}
+  {% elif lv.total %}
+  {{ no_matches(_("No providers found"), "/accounts/providers") }}
   {% else %}
   {{ empty(_("No providers yet"), _("Add your SIP trunk or VoIP provider account to make and receive external calls."), "/accounts/providers/new", _("Add a provider")) }}
   {% endif %}
+  </div>
 </div>
 {% endblock %}

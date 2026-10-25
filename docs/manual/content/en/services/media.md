@@ -29,6 +29,8 @@ The announcements of IVR menus are uploaded in the menu editor under [Dialplan â
 
 The table lists all uploaded files with type, name, size and upload time. Use the download icon to listen to the converted file (WAV) and the trash icon to delete it.
 
+The search field above the list finds files by name or type; how searching and paging work is described in [Lists]({{< relref "/getting-started/_index.md#lists" >}}).
+
 ## File formats {#formats}
 
 - Music on hold accepts WAV, MP3, OGG and FLAC files up to 64 MB each; the voicemail greeting WAV, MP3 and OGG up to 16 MB.

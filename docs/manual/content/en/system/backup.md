@@ -31,6 +31,8 @@ The configuration is stored as a versioned document, not as a copy of the databa
 
 The *Backups* card lists the backups stored on the system, newest first, with their size.
 
+The search field above the list finds backups by file name; how searching and paging work is described in [Lists]({{< relref "/getting-started/_index.md#lists" >}}).
+
 - **Create backup** saves a backup of the current state right away.
 - The restore icon opens the [restore preview](#restore) for that backup.
 - The download icon downloads the file to your computer.

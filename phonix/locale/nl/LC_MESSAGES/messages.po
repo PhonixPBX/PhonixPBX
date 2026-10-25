@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-25 12:58+0100\n"
+"POT-Creation-Date: 2026-10-25 13:09+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: nl\n"
@@ -63,10 +63,64 @@ msgid "%(name)s until %(date)s"
 msgstr "%(name)s tot %(date)s"
 
 #, python-format
+msgid "%(num)d API token"
+msgid_plural "%(num)d API tokens"
+msgstr[0] "%(num)d API-token"
+msgstr[1] "%(num)d API-tokens"
+
+#, python-format
 msgid "%(num)d CPU"
 msgid_plural "%(num)d CPUs"
 msgstr[0] "%(num)d CPU"
 msgstr[1] "%(num)d CPU's"
+
+#, python-format
+msgid "%(num)d IVR menu"
+msgid_plural "%(num)d IVR menus"
+msgstr[0] "%(num)d IVR-menu"
+msgstr[1] "%(num)d IVR-menu’s"
+
+#, python-format
+msgid "%(num)d administrator"
+msgid_plural "%(num)d administrators"
+msgstr[0] "%(num)d beheerder"
+msgstr[1] "%(num)d beheerders"
+
+#, python-format
+msgid "%(num)d application"
+msgid_plural "%(num)d applications"
+msgstr[0] "%(num)d applicatie"
+msgstr[1] "%(num)d applicaties"
+
+#, python-format
+msgid "%(num)d backup"
+msgid_plural "%(num)d backups"
+msgstr[0] "%(num)d back-up"
+msgstr[1] "%(num)d back-ups"
+
+#, python-format
+msgid "%(num)d business hours"
+msgid_plural "%(num)d business hours"
+msgstr[0] "%(num)d openingstijden"
+msgstr[1] "%(num)d openingstijden"
+
+#, python-format
+msgid "%(num)d call group"
+msgid_plural "%(num)d call groups"
+msgstr[0] "%(num)d belgroep"
+msgstr[1] "%(num)d belgroepen"
+
+#, python-format
+msgid "%(num)d conference room"
+msgid_plural "%(num)d conference rooms"
+msgstr[0] "%(num)d vergaderruimte"
+msgstr[1] "%(num)d vergaderruimtes"
+
+#, python-format
+msgid "%(num)d manager user"
+msgid_plural "%(num)d manager users"
+msgstr[0] "%(num)d managergebruiker"
+msgstr[1] "%(num)d managergebruikers"
 
 #, python-format
 msgid "%(num)d month"
@@ -81,10 +135,22 @@ msgstr[0] "%(num)d telefoon"
 msgstr[1] "%(num)d telefoons"
 
 #, python-format
+msgid "%(num)d provider"
+msgid_plural "%(num)d providers"
+msgstr[0] "%(num)d provider"
+msgstr[1] "%(num)d providers"
+
+#, python-format
 msgid "%(num)d route"
 msgid_plural "%(num)d routes"
 msgstr[0] "%(num)d route"
 msgstr[1] "%(num)d routes"
+
+#, python-format
+msgid "%(num)d uploaded file"
+msgid_plural "%(num)d uploaded files"
+msgstr[0] "%(num)d geüpload bestand"
+msgstr[1] "%(num)d geüploade bestanden"
 
 #, python-format
 msgid "%(number)s via %(provider)s"
@@ -550,6 +616,9 @@ msgstr "Back-up %(name)s aangemaakt."
 #, python-format
 msgid "Backup before the update failed: %(error)s"
 msgstr "Back-up vóór de update mislukt: %(error)s"
+
+msgid "Backup file name"
+msgstr "Bestandsnaam van de back-up"
 
 #, python-format
 msgid "Backup from %(created)s"
@@ -1993,17 +2062,29 @@ msgstr "Naam"
 msgid "Name is required"
 msgstr "Naam is vereist"
 
+msgid "Name or type"
+msgstr "Naam of type"
+
 msgid "Name server (host or host:port)"
 msgstr "Naamserver (host of host:poort)"
 
 msgid "Name shown to called parties."
 msgstr "Naam die aan gebelde partijen wordt getoond."
 
+msgid "Name, description or feature code"
+msgstr "Naam, omschrijving of functiecode"
+
 msgid "Name, e.g. Christmas Day"
 msgstr "Naam, bijv. Eerste Kerstdag"
 
 msgid "Name, e.g. Christmas or Emergency"
 msgstr "Naam, bijv. Kerst of Noodgeval"
+
+msgid "Name, host or username"
+msgstr "Naam, host of gebruikersnaam"
+
+msgid "Name, prefix or owner"
+msgstr "Naam, voorvoegsel of eigenaar"
 
 msgid "Names"
 msgstr "Namen"
@@ -2080,11 +2161,20 @@ msgstr "Volgende pagina"
 msgid "No API tokens"
 msgstr "Geen API-tokens"
 
+msgid "No API tokens found"
+msgstr "Geen API-tokens gevonden"
+
 msgid "No IVR menus"
 msgstr "Geen IVR-menu’s"
 
+msgid "No IVR menus found"
+msgstr "Geen IVR-menu’s gevonden"
+
 msgid "No active calls."
 msgstr "Geen actieve gesprekken."
+
+msgid "No administrators found"
+msgstr "Geen beheerders gevonden"
 
 msgid "No answer"
 msgstr "Geen antwoord"
@@ -2092,14 +2182,26 @@ msgstr "Geen antwoord"
 msgid "No applications"
 msgstr "Geen applicaties"
 
+msgid "No applications found"
+msgstr "Geen applicaties gevonden"
+
+msgid "No backups found"
+msgstr "Geen back-ups gevonden"
+
 msgid "No backups yet. Backups contain the configuration with all passwords, the media files and the TLS certificate."
 msgstr "Nog geen back-ups. Back-ups bevatten de configuratie met alle wachtwoorden, de mediabestanden en het TLS-certificaat."
 
 msgid "No business hours"
 msgstr "Geen openingstijden"
 
+msgid "No business hours found"
+msgstr "Geen openingstijden gevonden"
+
 msgid "No call groups"
 msgstr "Geen belgroepen"
+
+msgid "No call groups found"
+msgstr "Geen belgroepen gevonden"
 
 msgid "No certificate found"
 msgstr "Geen certificaat gevonden"
@@ -2110,8 +2212,14 @@ msgstr "Geen certificaat gevonden."
 msgid "No conference rooms"
 msgstr "Geen vergaderruimtes"
 
+msgid "No conference rooms found"
+msgstr "Geen vergaderruimtes gevonden"
+
 msgid "No entries."
 msgstr "Geen items."
+
+msgid "No files found"
+msgstr "Geen bestanden gevonden"
 
 msgid "No files uploaded."
 msgstr "Geen bestanden geüpload."
@@ -2124,6 +2232,9 @@ msgstr "Geen toets ingedrukt"
 
 msgid "No manager users"
 msgstr "Geen managergebruikers"
+
+msgid "No manager users found"
+msgstr "Geen managergebruikers gevonden"
 
 msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
 msgstr "Geen wachtwoord ingesteld: alleen aanmelden met sleutel (/data/ssh/authorized_keys) werkt. Minstens 8 tekens."
@@ -2139,6 +2250,9 @@ msgstr "Er zijn nog geen providers geconfigureerd."
 
 msgid "No providers configured."
 msgstr "Geen providers geconfigureerd."
+
+msgid "No providers found"
+msgstr "Geen providers gevonden"
 
 msgid "No providers yet"
 msgstr "Nog geen providers"
@@ -2197,6 +2311,12 @@ msgstr "Nummer wordt al gebruikt door %(owner)s"
 
 msgid "Number is reserved for call parking"
 msgstr "Nummer is gereserveerd voor gesprek parkeren"
+
+msgid "Number or name"
+msgstr "Nummer of naam"
+
+msgid "Number, name or description"
+msgstr "Nummer, naam of omschrijving"
 
 msgid "Numbers with +"
 msgstr "Nummers met +"
@@ -3587,6 +3707,9 @@ msgstr "User-agent"
 
 msgid "User already exists"
 msgstr "Gebruiker bestaat al"
+
+msgid "User name"
+msgstr "Gebruikersnaam"
 
 msgid "User not found"
 msgstr "Gebruiker niet gevonden"

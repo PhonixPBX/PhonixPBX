@@ -15,6 +15,8 @@ Changes become active after you apply them, see [Applying changes]({{< relref "/
 
 The list shows each manager user with its **Permitted networks** and its **Read** and **Write** permissions. Without users, AMI is only used internally.
 
+The search field above the list finds manager users by user name; how searching and paging work is described in [Lists]({{< relref "/getting-started/_index.md#lists" >}}).
+
 Click **Manager user** above the list to add a user, the user name to edit one, and the trash icon to delete it.
 
 ## User settings {#edit}

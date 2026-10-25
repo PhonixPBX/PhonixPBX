@@ -1,19 +1,28 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
 {% from "macros/ui.html" import empty with context %}
+{% from "macros/lists.html" import list_header, list_footer, no_matches with context %}
 {% block actions %}<a href="/dialplan/hours/new" class="btn btn-primary">{{ icon("plus") }}{{ _("Business hours") }}</a>{% endblock %}
 {% block content %}
 <div class="card">
-  {% if items %}
+  {% if lv.searching %}{% set count = _("%(matched)d of %(total)d", matched=lv.matched, total=lv.total) %}
+  {% else %}{% set count = ngettext("%(num)d business hours", "%(num)d business hours", lv.total) %}{% endif %}
+  {% if lv.total %}{{ list_header(lv, "list-hours", "/dialplan/hours", count, _("Name, description or feature code")) }}{% endif %}
+  <div id="list-hours">
+  {% if lv.items %}
   <div class="table-responsive">
   <table class="table table-vcenter card-table table-hover">
     <thead><tr><th>{{ _("Name") }}</th><th>{{ _("Now") }}</th><th>{{ _("When open") }}</th><th>{{ _("When closed") }}</th><th>{{ _("Feature code") }}</th><th></th></tr></thead>
     <tbody>
-    {% for h, st in items %}{% include "partials/hours_row.html" %}{% endfor %}
+    {% for h, st in lv.items %}{% include "partials/hours_row.html" %}{% endfor %}
     </tbody>
   </table>
   </div>
+  {{ list_footer(lv, "list-hours", "/dialplan/hours") }}
+  {% elif lv.total %}
+  {{ no_matches(_("No business hours found"), "/dialplan/hours") }}
   {% else %}{{ empty(_("No business hours"), _("Business hours send calls to one destination while you are open and to another one while you are closed, e.g. an after-hours menu."), "/dialplan/hours/new", _("Add business hours")) }}{% endif %}
+  </div>
 </div>
 <p class="text-secondary small mt-3">{{ _("Use business hours as the destination of a provider’s incoming route or of an IVR key.") }}</p>
 {% endblock %}

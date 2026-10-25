@@ -31,6 +31,8 @@ Die Konfiguration wird als versioniertes Dokument gespeichert, nicht als Kopie d
 
 Die Karte *Backups* listet die auf dem System gespeicherten Backups mit ihrer Größe auf, das neueste zuerst.
 
+Das Suchfeld über der Liste findet Backups nach Dateiname; wie Suchen und Blättern funktionieren, steht unter [Listen]({{< relref "/getting-started/_index.md#lists" >}}).
+
 - **Backup erstellen** sichert sofort den aktuellen Stand.
 - Das Wiederherstellen-Symbol öffnet die [Vorschau der Wiederherstellung](#restore) für dieses Backup.
 - Das Download-Symbol lädt die Datei auf Ihren Computer herunter.

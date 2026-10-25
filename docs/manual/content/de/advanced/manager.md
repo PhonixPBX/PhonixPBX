@@ -15,6 +15,8 @@ Für eigene Skripte ist die [REST-API]({{< relref "/reference/api.md" >}}) mit e
 
 Die Liste zeigt jeden Manager-Benutzer mit seinen **Erlaubten Netzwerken** und seinen Rechten zum **Lesen** und **Schreiben**. Ohne Benutzer wird AMI nur intern verwendet.
 
+Das Suchfeld über der Liste findet Manager-Benutzer nach Benutzername; wie Suchen und Blättern funktionieren, steht unter [Listen]({{< relref "/getting-started/_index.md#lists" >}}).
+
 Klicken Sie über der Liste auf **Manager-Benutzer**, um einen Benutzer anzulegen, auf den Benutzernamen, um ihn zu bearbeiten, und auf das Papierkorbsymbol, um ihn zu löschen.
 
 ## Benutzereinstellungen {#edit}

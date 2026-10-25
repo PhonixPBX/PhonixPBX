@@ -11,6 +11,8 @@ Unter *Erweitert → Administratoren* verwalten Sie die Konten, die sich an der 
 
 Die Tabelle zeigt jeden Administrator mit dem Zeitpunkt der **Letzten Anmeldung**. Die Markierung *muss Passwort ändern* kennzeichnet Konten, die bei der nächsten Anmeldung ein neues Passwort festlegen müssen.
 
+Das Suchfeld über der Liste findet Administratoren nach Benutzername; wie Suchen und Blättern funktionieren, steht unter [Listen]({{< relref "/getting-started/_index.md#lists" >}}).
+
 Mit dem Papierkorbsymbol löschen Sie einen Administrator. Ihr eigenes Konto können Sie nicht löschen, und der letzte Administrator kann nicht gelöscht werden. API-Tokens gehören dem Administrator, der sie erstellt hat, und werden mit seinem Konto gelöscht.
 
 ## Administrator hinzufügen {#add}

@@ -28,7 +28,7 @@ from phonix.services import backup as backup_svc
 from phonix.services import configdoc, privileged, status, update
 from phonix.services.common import ServiceError, audit
 from phonix.web.deps import form_to_dict, get_db, ui_user
-from phonix.web.routes.ui.common import page, redirect, save_settings_form
+from phonix.web.routes.ui.common import list_page, page, redirect, save_settings_form
 from phonix.web.templating import flash, render
 
 router = APIRouter(prefix="/system")
@@ -238,7 +238,11 @@ def firmware_job(request: Request, user: User = Depends(ui_user)) -> Response:
 
 @router.get("/backup")
 def backup(request: Request, user: User = Depends(ui_user)) -> Response:
-    return page(request, "pages/system_backup.html", backups=backup_svc.list_backups())
+    return page(
+        request,
+        "pages/system_backup.html",
+        lv=list_page(request, backup_svc.list_backups(), backup_svc.search_fields),
+    )
 
 
 @router.post("/backup/create")

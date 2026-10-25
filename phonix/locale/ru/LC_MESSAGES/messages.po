@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-25 12:58+0100\n"
+"POT-Creation-Date: 2026-10-25 13:09+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ru\n"
@@ -63,11 +63,74 @@ msgid "%(name)s until %(date)s"
 msgstr "%(name)s до %(date)s"
 
 #, python-format
+msgid "%(num)d API token"
+msgid_plural "%(num)d API tokens"
+msgstr[0] "%(num)d токен API"
+msgstr[1] "%(num)d токена API"
+msgstr[2] "%(num)d токенов API"
+
+#, python-format
 msgid "%(num)d CPU"
 msgid_plural "%(num)d CPUs"
 msgstr[0] "%(num)d процессор"
 msgstr[1] "%(num)d процессора"
 msgstr[2] "%(num)d процессоров"
+
+#, python-format
+msgid "%(num)d IVR menu"
+msgid_plural "%(num)d IVR menus"
+msgstr[0] "%(num)d IVR-меню"
+msgstr[1] "%(num)d IVR-меню"
+msgstr[2] "%(num)d IVR-меню"
+
+#, python-format
+msgid "%(num)d administrator"
+msgid_plural "%(num)d administrators"
+msgstr[0] "%(num)d администратор"
+msgstr[1] "%(num)d администратора"
+msgstr[2] "%(num)d администраторов"
+
+#, python-format
+msgid "%(num)d application"
+msgid_plural "%(num)d applications"
+msgstr[0] "%(num)d приложение"
+msgstr[1] "%(num)d приложения"
+msgstr[2] "%(num)d приложений"
+
+#, python-format
+msgid "%(num)d backup"
+msgid_plural "%(num)d backups"
+msgstr[0] "%(num)d резервная копия"
+msgstr[1] "%(num)d резервные копии"
+msgstr[2] "%(num)d резервных копий"
+
+#, python-format
+msgid "%(num)d business hours"
+msgid_plural "%(num)d business hours"
+msgstr[0] "%(num)d расписание рабочего времени"
+msgstr[1] "%(num)d расписания рабочего времени"
+msgstr[2] "%(num)d расписаний рабочего времени"
+
+#, python-format
+msgid "%(num)d call group"
+msgid_plural "%(num)d call groups"
+msgstr[0] "%(num)d группа вызова"
+msgstr[1] "%(num)d группы вызова"
+msgstr[2] "%(num)d групп вызова"
+
+#, python-format
+msgid "%(num)d conference room"
+msgid_plural "%(num)d conference rooms"
+msgstr[0] "%(num)d конференц-комната"
+msgstr[1] "%(num)d конференц-комнаты"
+msgstr[2] "%(num)d конференц-комнат"
+
+#, python-format
+msgid "%(num)d manager user"
+msgid_plural "%(num)d manager users"
+msgstr[0] "%(num)d пользователь AMI"
+msgstr[1] "%(num)d пользователя AMI"
+msgstr[2] "%(num)d пользователей AMI"
 
 #, python-format
 msgid "%(num)d month"
@@ -84,11 +147,25 @@ msgstr[1] "%(num)d телефона"
 msgstr[2] "%(num)d телефонов"
 
 #, python-format
+msgid "%(num)d provider"
+msgid_plural "%(num)d providers"
+msgstr[0] "%(num)d провайдер"
+msgstr[1] "%(num)d провайдера"
+msgstr[2] "%(num)d провайдеров"
+
+#, python-format
 msgid "%(num)d route"
 msgid_plural "%(num)d routes"
 msgstr[0] "%(num)d маршрут"
 msgstr[1] "%(num)d маршрута"
 msgstr[2] "%(num)d маршрутов"
+
+#, python-format
+msgid "%(num)d uploaded file"
+msgid_plural "%(num)d uploaded files"
+msgstr[0] "%(num)d загруженный файл"
+msgstr[1] "%(num)d загруженных файла"
+msgstr[2] "%(num)d загруженных файлов"
 
 #, python-format
 msgid "%(number)s via %(provider)s"
@@ -553,6 +630,9 @@ msgstr "Резервная копия %(name)s создана."
 #, python-format
 msgid "Backup before the update failed: %(error)s"
 msgstr "Не удалось создать резервную копию перед обновлением: %(error)s"
+
+msgid "Backup file name"
+msgstr "Имя файла резервной копии"
 
 #, python-format
 msgid "Backup from %(created)s"
@@ -1998,17 +2078,29 @@ msgstr "Имя"
 msgid "Name is required"
 msgstr "Требуется имя"
 
+msgid "Name or type"
+msgstr "Имя или тип"
+
 msgid "Name server (host or host:port)"
 msgstr "Сервер имен (host или host:port)"
 
 msgid "Name shown to called parties."
 msgstr "Имя, отображаемое вызываемым абонентам."
 
+msgid "Name, description or feature code"
+msgstr "Имя, описание или сервисный код"
+
 msgid "Name, e.g. Christmas Day"
 msgstr "Название, например Рождество"
 
 msgid "Name, e.g. Christmas or Emergency"
 msgstr "Название, например Рождество или Авария"
+
+msgid "Name, host or username"
+msgstr "Имя, хост или имя пользователя"
+
+msgid "Name, prefix or owner"
+msgstr "Имя, префикс или владелец"
 
 msgid "Names"
 msgstr "Имена"
@@ -2085,11 +2177,20 @@ msgstr "Следующая страница"
 msgid "No API tokens"
 msgstr "Нет токенов API"
 
+msgid "No API tokens found"
+msgstr "Токены API не найдены"
+
 msgid "No IVR menus"
 msgstr "Нет IVR-меню"
 
+msgid "No IVR menus found"
+msgstr "IVR-меню не найдены"
+
 msgid "No active calls."
 msgstr "Нет активных вызовов."
+
+msgid "No administrators found"
+msgstr "Администраторы не найдены"
 
 msgid "No answer"
 msgstr "Нет ответа"
@@ -2097,14 +2198,26 @@ msgstr "Нет ответа"
 msgid "No applications"
 msgstr "Нет приложений"
 
+msgid "No applications found"
+msgstr "Приложения не найдены"
+
+msgid "No backups found"
+msgstr "Резервные копии не найдены"
+
 msgid "No backups yet. Backups contain the configuration with all passwords, the media files and the TLS certificate."
 msgstr "Резервных копий пока нет. Резервные копии содержат конфигурацию со всеми паролями, медиафайлы и TLS-сертификат."
 
 msgid "No business hours"
 msgstr "Рабочее время не задано"
 
+msgid "No business hours found"
+msgstr "Рабочее время не найдено"
+
 msgid "No call groups"
 msgstr "Нет групп вызова"
+
+msgid "No call groups found"
+msgstr "Группы вызова не найдены"
 
 msgid "No certificate found"
 msgstr "Сертификат не найден"
@@ -2115,8 +2228,14 @@ msgstr "Сертификат не найден."
 msgid "No conference rooms"
 msgstr "Нет конференц-комнат"
 
+msgid "No conference rooms found"
+msgstr "Конференц-комнаты не найдены"
+
 msgid "No entries."
 msgstr "Нет записей."
+
+msgid "No files found"
+msgstr "Файлы не найдены"
 
 msgid "No files uploaded."
 msgstr "Файлы не загружены."
@@ -2129,6 +2248,9 @@ msgstr "Клавиша не нажата"
 
 msgid "No manager users"
 msgstr "Нет пользователей AMI"
+
+msgid "No manager users found"
+msgstr "Пользователи AMI не найдены"
 
 msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
 msgstr "Пароль не задан: возможен только вход по ключу (/data/ssh/authorized_keys). Не менее 8 символов."
@@ -2144,6 +2266,9 @@ msgstr "Провайдеры еще не настроены."
 
 msgid "No providers configured."
 msgstr "Провайдеры не настроены."
+
+msgid "No providers found"
+msgstr "Провайдеры не найдены"
 
 msgid "No providers yet"
 msgstr "Провайдеров пока нет"
@@ -2202,6 +2327,12 @@ msgstr "Номер уже назначен на %(owner)s"
 
 msgid "Number is reserved for call parking"
 msgstr "Номер зарезервирован для парковки вызовов"
+
+msgid "Number or name"
+msgstr "Номер или имя"
+
+msgid "Number, name or description"
+msgstr "Номер, имя или описание"
 
 msgid "Numbers with +"
 msgstr "Номера с +"
@@ -3584,6 +3715,9 @@ msgstr "User agent"
 
 msgid "User already exists"
 msgstr "Пользователь уже существует"
+
+msgid "User name"
+msgstr "Имя пользователя"
 
 msgid "User not found"
 msgstr "Пользователь не найден"

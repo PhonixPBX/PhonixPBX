@@ -32,6 +32,8 @@ Die Tabelle listet alle Tokens:
 | Besitzer | Der Administrator, der das Token erstellt hat. Wird der Administrator gelöscht, wird auch das Token gelöscht. |
 | Erstellt, Zuletzt verwendet, Gültig bis | Wann das Token erstellt und zuletzt verwendet wurde und bis wann es gültig ist (*unbegrenzt* ohne Ablauf). |
 
+Das Suchfeld über der Liste findet Tokens nach Name, Präfix oder Besitzer; wie Suchen und Blättern funktionieren, steht unter [Listen]({{< relref "/getting-started/_index.md#lists" >}}).
+
 Mit dem Schalter deaktivieren Sie ein Token vorübergehend und aktivieren es wieder. Mit dem Papierkorbsymbol löschen Sie es endgültig. Löschen Sie nicht mehr verwendete Tokens; die Spalte *Zuletzt verwendet* hilft, sie zu finden.
 
 Bewährte Praxis:

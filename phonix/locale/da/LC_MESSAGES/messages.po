@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-25 12:58+0100\n"
+"POT-Creation-Date: 2026-10-25 13:09+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: da\n"
@@ -63,10 +63,64 @@ msgid "%(name)s until %(date)s"
 msgstr "%(name)s indtil %(date)s"
 
 #, python-format
+msgid "%(num)d API token"
+msgid_plural "%(num)d API tokens"
+msgstr[0] "%(num)d API-token"
+msgstr[1] "%(num)d API-tokens"
+
+#, python-format
 msgid "%(num)d CPU"
 msgid_plural "%(num)d CPUs"
 msgstr[0] "%(num)d CPU"
 msgstr[1] "%(num)d CPU'er"
+
+#, python-format
+msgid "%(num)d IVR menu"
+msgid_plural "%(num)d IVR menus"
+msgstr[0] "%(num)d IVR-menu"
+msgstr[1] "%(num)d IVR-menuer"
+
+#, python-format
+msgid "%(num)d administrator"
+msgid_plural "%(num)d administrators"
+msgstr[0] "%(num)d administrator"
+msgstr[1] "%(num)d administratorer"
+
+#, python-format
+msgid "%(num)d application"
+msgid_plural "%(num)d applications"
+msgstr[0] "%(num)d applikation"
+msgstr[1] "%(num)d applikationer"
+
+#, python-format
+msgid "%(num)d backup"
+msgid_plural "%(num)d backups"
+msgstr[0] "%(num)d backup"
+msgstr[1] "%(num)d backups"
+
+#, python-format
+msgid "%(num)d business hours"
+msgid_plural "%(num)d business hours"
+msgstr[0] "%(num)d åbningstider"
+msgstr[1] "%(num)d åbningstider"
+
+#, python-format
+msgid "%(num)d call group"
+msgid_plural "%(num)d call groups"
+msgstr[0] "%(num)d opkaldsgruppe"
+msgstr[1] "%(num)d opkaldsgrupper"
+
+#, python-format
+msgid "%(num)d conference room"
+msgid_plural "%(num)d conference rooms"
+msgstr[0] "%(num)d konferencerum"
+msgstr[1] "%(num)d konferencerum"
+
+#, python-format
+msgid "%(num)d manager user"
+msgid_plural "%(num)d manager users"
+msgstr[0] "%(num)d manager-bruger"
+msgstr[1] "%(num)d manager-brugere"
 
 #, python-format
 msgid "%(num)d month"
@@ -81,10 +135,22 @@ msgstr[0] "%(num)d telefon"
 msgstr[1] "%(num)d telefoner"
 
 #, python-format
+msgid "%(num)d provider"
+msgid_plural "%(num)d providers"
+msgstr[0] "%(num)d udbyder"
+msgstr[1] "%(num)d udbydere"
+
+#, python-format
 msgid "%(num)d route"
 msgid_plural "%(num)d routes"
 msgstr[0] "%(num)d rute"
 msgstr[1] "%(num)d ruter"
+
+#, python-format
+msgid "%(num)d uploaded file"
+msgid_plural "%(num)d uploaded files"
+msgstr[0] "%(num)d uploadet fil"
+msgstr[1] "%(num)d uploadede filer"
 
 #, python-format
 msgid "%(number)s via %(provider)s"
@@ -547,6 +613,9 @@ msgstr "Backup %(name)s oprettet."
 #, python-format
 msgid "Backup before the update failed: %(error)s"
 msgstr "Backup før opdateringen mislykkedes: %(error)s"
+
+msgid "Backup file name"
+msgstr "Backupfilnavn"
 
 #, python-format
 msgid "Backup from %(created)s"
@@ -1989,17 +2058,29 @@ msgstr "Navn"
 msgid "Name is required"
 msgstr "Navn er påkrævet"
 
+msgid "Name or type"
+msgstr "Navn eller type"
+
 msgid "Name server (host or host:port)"
 msgstr "Navneserver (host eller host:port)"
 
 msgid "Name shown to called parties."
 msgstr "Navn, der vises for den opkaldte part."
 
+msgid "Name, description or feature code"
+msgstr "Navn, beskrivelse eller funktionskode"
+
 msgid "Name, e.g. Christmas Day"
 msgstr "Navn, f.eks. juledag"
 
 msgid "Name, e.g. Christmas or Emergency"
 msgstr "Navn, f.eks. jul eller nødsituation"
+
+msgid "Name, host or username"
+msgstr "Navn, vært eller brugernavn"
+
+msgid "Name, prefix or owner"
+msgstr "Navn, præfiks eller ejer"
 
 msgid "Names"
 msgstr "Navne"
@@ -2076,11 +2157,20 @@ msgstr "Næste side"
 msgid "No API tokens"
 msgstr "Ingen API-tokens"
 
+msgid "No API tokens found"
+msgstr "Ingen API-tokens fundet"
+
 msgid "No IVR menus"
 msgstr "Ingen IVR-menuer"
 
+msgid "No IVR menus found"
+msgstr "Ingen IVR-menuer fundet"
+
 msgid "No active calls."
 msgstr "Ingen aktive opkald."
+
+msgid "No administrators found"
+msgstr "Ingen administratorer fundet"
 
 msgid "No answer"
 msgstr "Intet svar"
@@ -2088,14 +2178,26 @@ msgstr "Intet svar"
 msgid "No applications"
 msgstr "Ingen applikationer"
 
+msgid "No applications found"
+msgstr "Ingen applikationer fundet"
+
+msgid "No backups found"
+msgstr "Ingen backups fundet"
+
 msgid "No backups yet. Backups contain the configuration with all passwords, the media files and the TLS certificate."
 msgstr "Ingen backups endnu. Backups indeholder konfigurationen med alle adgangskoder, mediefilerne og TLS-certifikatet."
 
 msgid "No business hours"
 msgstr "Ingen åbningstider"
 
+msgid "No business hours found"
+msgstr "Ingen åbningstider fundet"
+
 msgid "No call groups"
 msgstr "Ingen opkaldsgrupper"
+
+msgid "No call groups found"
+msgstr "Ingen opkaldsgrupper fundet"
 
 msgid "No certificate found"
 msgstr "Intet certifikat fundet"
@@ -2106,8 +2208,14 @@ msgstr "Intet certifikat fundet."
 msgid "No conference rooms"
 msgstr "Ingen konferencerum"
 
+msgid "No conference rooms found"
+msgstr "Ingen konferencerum fundet"
+
 msgid "No entries."
 msgstr "Ingen poster."
+
+msgid "No files found"
+msgstr "Ingen filer fundet"
 
 msgid "No files uploaded."
 msgstr "Ingen filer uploadet."
@@ -2120,6 +2228,9 @@ msgstr "Ingen tast trykket"
 
 msgid "No manager users"
 msgstr "Ingen manager-brugere"
+
+msgid "No manager users found"
+msgstr "Ingen manager-brugere fundet"
 
 msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
 msgstr "Ingen adgangskode angivet: kun login med nøgle (/data/ssh/authorized_keys) virker. Mindst 8 tegn."
@@ -2135,6 +2246,9 @@ msgstr "Der er endnu ikke konfigureret nogen udbydere."
 
 msgid "No providers configured."
 msgstr "Ingen udbydere konfigureret."
+
+msgid "No providers found"
+msgstr "Ingen udbydere fundet"
 
 msgid "No providers yet"
 msgstr "Ingen udbydere endnu"
@@ -2193,6 +2307,12 @@ msgstr "Nummeret bruges allerede af %(owner)s"
 
 msgid "Number is reserved for call parking"
 msgstr "Nummeret er reserveret til parkering af opkald"
+
+msgid "Number or name"
+msgstr "Nummer eller navn"
+
+msgid "Number, name or description"
+msgstr "Nummer, navn eller beskrivelse"
 
 msgid "Numbers with +"
 msgstr "Numre med +"
@@ -3572,6 +3692,9 @@ msgstr "User agent"
 
 msgid "User already exists"
 msgstr "Brugeren findes allerede"
+
+msgid "User name"
+msgstr "Brugernavn"
 
 msgid "User not found"
 msgstr "Bruger ikke fundet"

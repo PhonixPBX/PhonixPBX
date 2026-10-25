@@ -1,19 +1,30 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
 {% from "macros/ui.html" import delete_button, empty with context %}
+{% from "macros/lists.html" import list_header, list_footer, no_matches with context %}
 {% block actions %}<a href="/advanced/manager/new" class="btn btn-primary">{{ icon("plus") }}{{ _("Manager user") }}</a>{% endblock %}
 {% block content %}
 <div class="alert alert-info">{{ _("The Asterisk Manager Interface (TCP port 5038) lets external software (CTI, dashboards) control the PBX. Only add users you need and restrict their networks.") }}</div>
 <div class="card">
-  {% if items %}
+  {% if lv.searching %}{% set count = _("%(matched)d of %(total)d", matched=lv.matched, total=lv.total) %}
+  {% else %}{% set count = ngettext("%(num)d manager user", "%(num)d manager users", lv.total) %}{% endif %}
+  {% if lv.total %}{{ list_header(lv, "list-ami-users", "/advanced/manager", count, _("User name")) }}{% endif %}
+  <div id="list-ami-users">
+  {% if lv.items %}
+  <div class="table-responsive">
   <table class="table table-vcenter card-table">
     <thead><tr><th>{{ _("User") }}</th><th>{{ _("Permitted networks") }}</th><th>{{ _("Read") }}</th><th>{{ _("Write") }}</th><th></th></tr></thead>
-    <tbody>{% for u in items %}
-    <tr><td><a href="/advanced/manager/{{ u.id }}" class="fw-bold">{{ u.username }}</a></td><td>{{ u.permit | join(", ") }}</td>
+    <tbody>{% for u in lv.items %}
+    <tr><td><a href="/advanced/manager/{{ u.id }}" class="fw-bold">{{ u.username | highlight(lv.q) }}</a></td><td>{{ u.permit | join(", ") }}</td>
       <td class="small">{{ u.read_perms | join(", ") }}</td><td class="small">{{ u.write_perms | join(", ") }}</td>
       <td class="table-actions">{{ delete_button("/advanced/manager/" ~ u.id, _("manager user %(name)s", name=u.username)) }}</td></tr>
     {% endfor %}</tbody>
   </table>
+  </div>
+  {{ list_footer(lv, "list-ami-users", "/advanced/manager") }}
+  {% elif lv.total %}
+  {{ no_matches(_("No manager users found"), "/advanced/manager") }}
   {% else %}{{ empty(_("No manager users"), _("AMI is only used internally.")) }}{% endif %}
+  </div>
 </div>
 {% endblock %}

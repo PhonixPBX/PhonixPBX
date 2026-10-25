@@ -21,6 +21,8 @@ Click **SIP provider** or **IAX provider** above the list to add a provider. The
 | Dial patterns | The outgoing patterns, or *none* (then the provider is not used for outgoing calls). |
 | Incoming | The number of incoming routes. |
 
+The search field above the list finds providers by name, host or user name; how searching and paging work is described in [Lists]({{< relref "/getting-started/_index.md#lists" >}}).
+
 The buttons at the end of each row edit, disable/enable and delete the provider. A disabled provider does not register and is not used for calls. Deleting a provider also disables the [external phones]({{< relref "/accounts/phones.md#types" >}}) that dialled through it.
 
 The same states, together with the phones and the active calls, are shown under [*Status → Calls & Registrations*]({{< relref "/status/calls.md" >}}).

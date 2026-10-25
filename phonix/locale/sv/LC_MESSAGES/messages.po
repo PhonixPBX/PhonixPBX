@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-25 12:58+0100\n"
+"POT-Creation-Date: 2026-10-25 13:09+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: sv\n"
@@ -63,10 +63,64 @@ msgid "%(name)s until %(date)s"
 msgstr "%(name)s till %(date)s"
 
 #, python-format
+msgid "%(num)d API token"
+msgid_plural "%(num)d API tokens"
+msgstr[0] "%(num)d API-token"
+msgstr[1] "%(num)d API-token"
+
+#, python-format
 msgid "%(num)d CPU"
 msgid_plural "%(num)d CPUs"
 msgstr[0] "%(num)d processor"
 msgstr[1] "%(num)d processorer"
+
+#, python-format
+msgid "%(num)d IVR menu"
+msgid_plural "%(num)d IVR menus"
+msgstr[0] "%(num)d IVR-meny"
+msgstr[1] "%(num)d IVR-menyer"
+
+#, python-format
+msgid "%(num)d administrator"
+msgid_plural "%(num)d administrators"
+msgstr[0] "%(num)d administratör"
+msgstr[1] "%(num)d administratörer"
+
+#, python-format
+msgid "%(num)d application"
+msgid_plural "%(num)d applications"
+msgstr[0] "%(num)d applikation"
+msgstr[1] "%(num)d applikationer"
+
+#, python-format
+msgid "%(num)d backup"
+msgid_plural "%(num)d backups"
+msgstr[0] "%(num)d säkerhetskopia"
+msgstr[1] "%(num)d säkerhetskopior"
+
+#, python-format
+msgid "%(num)d business hours"
+msgid_plural "%(num)d business hours"
+msgstr[0] "%(num)d öppettider"
+msgstr[1] "%(num)d öppettider"
+
+#, python-format
+msgid "%(num)d call group"
+msgid_plural "%(num)d call groups"
+msgstr[0] "%(num)d samtalsgrupp"
+msgstr[1] "%(num)d samtalsgrupper"
+
+#, python-format
+msgid "%(num)d conference room"
+msgid_plural "%(num)d conference rooms"
+msgstr[0] "%(num)d konferensrum"
+msgstr[1] "%(num)d konferensrum"
+
+#, python-format
+msgid "%(num)d manager user"
+msgid_plural "%(num)d manager users"
+msgstr[0] "%(num)d manager-användare"
+msgstr[1] "%(num)d manager-användare"
 
 #, python-format
 msgid "%(num)d month"
@@ -81,10 +135,22 @@ msgstr[0] "%(num)d telefon"
 msgstr[1] "%(num)d telefoner"
 
 #, python-format
+msgid "%(num)d provider"
+msgid_plural "%(num)d providers"
+msgstr[0] "%(num)d leverantör"
+msgstr[1] "%(num)d leverantörer"
+
+#, python-format
 msgid "%(num)d route"
 msgid_plural "%(num)d routes"
 msgstr[0] "%(num)d rutt"
 msgstr[1] "%(num)d rutter"
+
+#, python-format
+msgid "%(num)d uploaded file"
+msgid_plural "%(num)d uploaded files"
+msgstr[0] "%(num)d uppladdad fil"
+msgstr[1] "%(num)d uppladdade filer"
 
 #, python-format
 msgid "%(number)s via %(provider)s"
@@ -549,6 +615,9 @@ msgstr "Säkerhetskopian %(name)s har skapats."
 #, python-format
 msgid "Backup before the update failed: %(error)s"
 msgstr "Säkerhetskopieringen före uppdateringen misslyckades: %(error)s"
+
+msgid "Backup file name"
+msgstr "Säkerhetskopians filnamn"
 
 #, python-format
 msgid "Backup from %(created)s"
@@ -1990,17 +2059,29 @@ msgstr "Namn"
 msgid "Name is required"
 msgstr "Namn krävs"
 
+msgid "Name or type"
+msgstr "Namn eller typ"
+
 msgid "Name server (host or host:port)"
 msgstr "Namnserver (host eller host:port)"
 
 msgid "Name shown to called parties."
 msgstr "Namn som visas för den som blir uppringd."
 
+msgid "Name, description or feature code"
+msgstr "Namn, beskrivning eller funktionskod"
+
 msgid "Name, e.g. Christmas Day"
 msgstr "Namn, t.ex. Juldagen"
 
 msgid "Name, e.g. Christmas or Emergency"
 msgstr "Namn, t.ex. Jul eller Nödläge"
+
+msgid "Name, host or username"
+msgstr "Namn, värd eller användarnamn"
+
+msgid "Name, prefix or owner"
+msgstr "Namn, prefix eller ägare"
 
 msgid "Names"
 msgstr "Namn"
@@ -2077,17 +2158,32 @@ msgstr "Nästa sida"
 msgid "No API tokens"
 msgstr "Inga API-token"
 
+msgid "No API tokens found"
+msgstr "Inga API-token hittades"
+
 msgid "No IVR menus"
 msgstr "Inga IVR-menyer"
 
+msgid "No IVR menus found"
+msgstr "Inga IVR-menyer hittades"
+
 msgid "No active calls."
 msgstr "Inga aktiva samtal."
+
+msgid "No administrators found"
+msgstr "Inga administratörer hittades"
 
 msgid "No answer"
 msgstr "Inget svar"
 
 msgid "No applications"
 msgstr "Inga applikationer"
+
+msgid "No applications found"
+msgstr "Inga applikationer hittades"
+
+msgid "No backups found"
+msgstr "Inga säkerhetskopior hittades"
 
 msgid "No backups yet. Backups contain the configuration with all passwords, the media files and the TLS certificate."
 msgstr ""
@@ -2097,8 +2193,14 @@ msgstr ""
 msgid "No business hours"
 msgstr "Inga öppettider"
 
+msgid "No business hours found"
+msgstr "Inga öppettider hittades"
+
 msgid "No call groups"
 msgstr "Inga samtalsgrupper"
+
+msgid "No call groups found"
+msgstr "Inga samtalsgrupper hittades"
 
 msgid "No certificate found"
 msgstr "Inget certifikat hittades"
@@ -2109,8 +2211,14 @@ msgstr "Inget certifikat hittades."
 msgid "No conference rooms"
 msgstr "Inga konferensrum"
 
+msgid "No conference rooms found"
+msgstr "Inga konferensrum hittades"
+
 msgid "No entries."
 msgstr "Inga poster."
+
+msgid "No files found"
+msgstr "Inga filer hittades"
 
 msgid "No files uploaded."
 msgstr "Inga uppladdade filer."
@@ -2123,6 +2231,9 @@ msgstr "Ingen knapp tryckt"
 
 msgid "No manager users"
 msgstr "Inga manager-användare"
+
+msgid "No manager users found"
+msgstr "Inga manager-användare hittades"
 
 msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
 msgstr "Inget lösenord angivet: endast nyckelinloggning (/data/ssh/authorized_keys) fungerar. Minst 8 tecken."
@@ -2138,6 +2249,9 @@ msgstr "Inga leverantörer har konfigurerats än."
 
 msgid "No providers configured."
 msgstr "Inga leverantörer konfigurerade."
+
+msgid "No providers found"
+msgstr "Inga leverantörer hittades"
 
 msgid "No providers yet"
 msgstr "Inga leverantörer än"
@@ -2196,6 +2310,12 @@ msgstr "Numret används redan av %(owner)s"
 
 msgid "Number is reserved for call parking"
 msgstr "Numret är reserverat för samtalsparkering"
+
+msgid "Number or name"
+msgstr "Nummer eller namn"
+
+msgid "Number, name or description"
+msgstr "Nummer, namn eller beskrivning"
 
 msgid "Numbers with +"
 msgstr "Nummer med +"
@@ -3575,6 +3695,9 @@ msgstr "Användaragent"
 
 msgid "User already exists"
 msgstr "Användaren finns redan"
+
+msgid "User name"
+msgstr "Användarnamn"
 
 msgid "User not found"
 msgstr "Användaren hittades inte"

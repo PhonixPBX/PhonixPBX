@@ -11,6 +11,8 @@ Eine Rufgruppe lässt bei einem Anruf mehrere Telefone klingeln, entweder alle g
 
 Klicken Sie über der Liste auf **Rufgruppe**, um eine hinzuzufügen. Die Liste zeigt die **Nummer** (oder `–` bei Gruppen ohne Nummer), den **Namen** (mit *öffentlich*, wenn die Gruppe von außen erreichbar ist), die **Mitglieder** und die **Strategie** (*alle klingeln* oder *nacheinander*). Mit den Schaltflächen am Ende jeder Zeile bearbeiten und löschen Sie die Gruppe. Beim Löschen werden auch die eingehenden Routen und IVR-Tasten entfernt, die zu ihr führten.
 
+Das Suchfeld über der Liste findet Rufgruppen nach Nummer oder Name; wie Suchen und Blättern funktionieren, steht unter [Listen]({{< relref "/getting-started/_index.md#lists" >}}).
+
 ## Rufgruppe anlegen oder bearbeiten {#edit}
 
 | Feld | Bedeutung | Standard |

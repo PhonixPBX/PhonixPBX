@@ -16,6 +16,8 @@ The list shows every room with its **Number**, **Name** and **Protection**:
 - **open**: anyone who dials the number joins directly.
 - The badge **public** next to the name means the room is reachable from outside.
 
+The search field above the list finds rooms by number or name; how searching and paging work is described in [Lists]({{< relref "/getting-started/_index.md#lists" >}}).
+
 Click **Conference room** above the list to add a room, the number or the pencil icon to edit one, and the trash icon to delete it. Deleting a room also removes incoming routes and IVR keys that led to it.
 
 ## Room settings {#edit}

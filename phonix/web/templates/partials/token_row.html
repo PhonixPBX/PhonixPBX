@@ -1,11 +1,13 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% from "macros/ui.html" import delete_button, toggle_button with context %}
+{# also rendered alone by the toggle route, without a list view #}
+{% set hl = lv.q if lv is defined else "" %}
 {% set state = token_status(t) %}
 <tr id="token-{{ t.id }}"{% if state != "active" %} class="text-secondary"{% endif %}>
-  <td><div class="fw-bold">{{ t.name }}</div><div class="small text-secondary font-monospace">{{ t.prefix }}&hellip;</div></td>
+  <td><div class="fw-bold">{{ t.name | highlight(hl) }}</div><div class="small text-secondary font-monospace">{{ t.prefix | highlight(hl) }}&hellip;</div></td>
   <td>{% if t.read_only %}<span class="badge bg-blue-lt">{{ _("read-only") }}</span>{% else %}<span class="badge bg-orange-lt">{{ _("read-write") }}</span>{% endif %}{% if t.allow_calls %} <span class="badge bg-purple-lt">{{ _("calls") }}</span>{% endif %}</td>
   <td>{% if state == "active" %}<span class="badge bg-green-lt">{{ _("active") }}</span>{% elif state == "expired" %}<span class="badge bg-red-lt">{{ _("expired") }}</span>{% else %}<span class="badge bg-secondary-lt">{{ _("disabled") }}</span>{% endif %}</td>
-  <td>{{ t.user.username }}</td>
+  <td>{{ t.user.username | highlight(hl) }}</td>
   <td class="text-secondary">{{ t.created_at.strftime("%Y-%m-%d") }}</td>
   <td class="text-secondary">{{ t.last_used_at.strftime("%Y-%m-%d %H:%M") if t.last_used_at else _("never") }}</td>
   <td class="text-secondary">{{ t.expires_at.strftime("%Y-%m-%d") if t.expires_at else _("unlimited") }}</td>

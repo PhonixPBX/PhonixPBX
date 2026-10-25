@@ -2,19 +2,32 @@
 {% extends "base.html" %}
 {% from "macros/forms.html" import csrf, input, checkbox, form_errors with context %}
 {% from "macros/ui.html" import delete_button with context %}
+{% from "macros/lists.html" import list_header, list_footer, no_matches with context %}
 {% block content %}
 <div class="row row-cards">
   <div class="col-lg-7"><div class="card">
+    {% if lv.searching %}{% set count = _("%(matched)d of %(total)d", matched=lv.matched, total=lv.total) %}
+    {% else %}{% set count = ngettext("%(num)d administrator", "%(num)d administrators", lv.total) %}{% endif %}
+    {% if lv.total %}{{ list_header(lv, "list-users", "/advanced/users", count, _("User name")) }}{% endif %}
+    <div id="list-users">
+    {% if lv.items %}
+    <div class="table-responsive">
     <table class="table table-vcenter card-table">
       <thead><tr><th>{{ _("User") }}</th><th>{{ _("Last login") }}</th><th></th></tr></thead>
       <tbody>
-      {% for a in admins %}
-      <tr><td>{{ a.username }}{% if a.must_change_pw %} <span class="badge bg-yellow-lt">{{ _("must change password") }}</span>{% endif %}</td>
+      {% for a in lv.items %}
+      <tr><td>{{ a.username | highlight(lv.q) }}{% if a.must_change_pw %} <span class="badge bg-yellow-lt">{{ _("must change password") }}</span>{% endif %}</td>
         <td class="text-secondary">{{ a.last_login.strftime("%Y-%m-%d %H:%M") if a.last_login else _("never") }}</td>
         <td class="table-actions">{% if a.username != user.username %}{{ delete_button("/advanced/users/" ~ a.username, _("administrator %(name)s", name=a.username)) }}{% endif %}</td></tr>
       {% endfor %}
       </tbody>
     </table>
+    </div>
+    {{ list_footer(lv, "list-users", "/advanced/users") }}
+    {% elif lv.total %}
+    {{ no_matches(_("No administrators found"), "/advanced/users") }}
+    {% endif %}
+    </div>
   </div></div>
   <div class="col-lg-5">
     <form method="post" action="/advanced/users" class="card">

@@ -1,17 +1,23 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
 {% from "macros/ui.html" import delete_button, empty with context %}
+{% from "macros/lists.html" import list_header, list_footer, no_matches with context %}
 {% block actions %}<a href="/services/conferencing/new" class="btn btn-primary">{{ icon("plus") }}{{ _("Conference room") }}</a>{% endblock %}
 {% block content %}
 <div class="card">
-  {% if items %}
+  {% if lv.searching %}{% set count = _("%(matched)d of %(total)d", matched=lv.matched, total=lv.total) %}
+  {% else %}{% set count = ngettext("%(num)d conference room", "%(num)d conference rooms", lv.total) %}{% endif %}
+  {% if lv.total %}{{ list_header(lv, "list-conferences", "/services/conferencing", count, _("Number or name")) }}{% endif %}
+  <div id="list-conferences">
+  {% if lv.items %}
+  <div class="table-responsive">
   <table class="table table-vcenter card-table table-hover">
     <thead><tr><th>{{ _("Number") }}</th><th>{{ _("Name") }}</th><th>{{ _("Protection") }}</th><th></th></tr></thead>
     <tbody>
-    {% for r in items %}
+    {% for r in lv.items %}
     <tr>
-      <td><a href="/services/conferencing/{{ r.id }}" class="fw-bold">{{ r.number }}</a></td>
-      <td>{{ r.name }}{% if r.public_access %} <span class="badge bg-azure-lt">{{ _("public") }}</span>{% endif %}</td>
+      <td><a href="/services/conferencing/{{ r.id }}" class="fw-bold">{{ r.number | highlight(lv.q) }}</a></td>
+      <td>{{ r.name | highlight(lv.q) }}{% if r.public_access %} <span class="badge bg-azure-lt">{{ _("public") }}</span>{% endif %}</td>
       <td>{% if r.pin %}<span class="badge bg-yellow-lt">{{ _("PIN") }}</span>{% endif %}{% if r.admin_pin %} <span class="badge bg-orange-lt">{{ _("admin PIN") }}</span>{% endif %}{% if not r.pin and not r.admin_pin %}<span class="text-secondary">{{ _("open") }}</span>{% endif %}</td>
       <td class="table-actions">
         <a href="/services/conferencing/{{ r.id }}" class="btn btn-ghost-primary btn-icon btn-sm" aria-label="{{ _("Edit %(name)s", name=r.name) }}">{{ icon("edit") }}</a>
@@ -21,7 +27,12 @@
     {% endfor %}
     </tbody>
   </table>
+  </div>
+  {{ list_footer(lv, "list-conferences", "/services/conferencing") }}
+  {% elif lv.total %}
+  {{ no_matches(_("No conference rooms found"), "/services/conferencing") }}
   {% else %}{{ empty(_("No conference rooms"), _("Conference rooms let several callers talk together."), "/services/conferencing/new", _("Add a room")) }}{% endif %}
+  </div>
 </div>
 <p class="text-secondary small mt-2">{{ _("In a conference press <kbd>*</kbd> for the menu, <kbd>1</kbd> to mute, <kbd>8</kbd> to leave. Admins (admin PIN) can lock the room (<kbd>2</kbd>) and kick the last caller (<kbd>3</kbd>).") }}</p>
 {% endblock %}

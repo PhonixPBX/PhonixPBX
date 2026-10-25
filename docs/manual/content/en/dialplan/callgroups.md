@@ -11,6 +11,8 @@ Changes take effect after you apply them, see [Applying changes]({{< relref "/ge
 
 Click **Call group** above the list to add one. The list shows the **Number** (or `–` for groups without a number), the **Name** (with a *public* badge when the group is reachable from outside), the **Members** and the **Strategy** (*ring all* or *one after another*). The buttons at the end of each row edit and delete the group. Deleting a group also removes the incoming routes and IVR keys that led to it.
 
+The search field above the list finds call groups by number or name; how searching and paging work is described in [Lists]({{< relref "/getting-started/_index.md#lists" >}}).
+
 ## Add or edit a call group {#edit}
 
 | Field | Meaning | Default |

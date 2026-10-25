@@ -19,6 +19,8 @@ Klicken Sie über der Liste auf **Geschäftszeiten**, um einen Zeitplan hinzuzuf
 | Wenn geschlossen | Das Ziel außerhalb der Öffnungszeiten. |
 | Funktionscode | Der Code der [Abwesenheitstaste](#key) oder `–`. |
 
+Das Suchfeld über der Liste findet Geschäftszeiten nach Name, Beschreibung oder Funktionscode; wie Suchen und Blättern funktionieren, steht unter [Listen]({{< relref "/getting-started/_index.md#lists" >}}).
+
 Mit den Schaltflächen am Ende jeder Zeile bearbeiten und löschen Sie den Zeitplan. Beim Löschen werden die eingehenden Routen und IVR-Tasten entfernt, die zu ihm führten.
 
 ## Geschäftszeiten anlegen oder bearbeiten {#edit}

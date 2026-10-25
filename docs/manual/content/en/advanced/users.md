@@ -11,6 +11,8 @@ Changes on this page take effect immediately, without applying. They are recorde
 
 The table shows every administrator with the time of the **Last login**. The badge *must change password* marks accounts that have to set a new password at their next login.
 
+The search field above the list finds administrators by user name; how searching and paging work is described in [Lists]({{< relref "/getting-started/_index.md#lists" >}}).
+
 Use the trash icon to delete an administrator. You cannot delete your own account, and the last administrator cannot be deleted. API tokens belong to the administrator who created them and are deleted together with the account.
 
 ## Add an administrator {#add}

@@ -21,6 +21,8 @@ Klicken Sie über der Liste auf **SIP-Provider** oder **IAX-Provider**, um einen
 | Wählmuster | Die Muster für ausgehende Anrufe, oder *keine* (dann wird der Provider für ausgehende Anrufe nicht verwendet). |
 | Eingehend | Die Anzahl der eingehenden Routen. |
 
+Das Suchfeld über der Liste findet Providern nach Name, Host oder Benutzername; wie Suchen und Blättern funktionieren, steht unter [Listen]({{< relref "/getting-started/_index.md#lists" >}}).
+
 Mit den Schaltflächen am Ende jeder Zeile bearbeiten, deaktivieren/aktivieren und löschen Sie den Provider. Ein deaktivierter Provider registriert sich nicht und wird für keine Gespräche verwendet. Beim Löschen eines Providers werden auch die [externen Telefone]({{< relref "/accounts/phones.md#types" >}}) deaktiviert, die über ihn gewählt haben.
 
 Dieselben Zustände sehen Sie zusammen mit den Telefonen und den aktiven Gesprächen unter [*Status → Gespräche & Registrierungen*]({{< relref "/status/calls.md" >}}).
