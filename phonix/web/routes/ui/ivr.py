@@ -14,7 +14,7 @@ from starlette.datastructures import FormData
 
 from phonix import i18n
 from phonix.core import settings as st
-from phonix.core.models import User
+from phonix.core.models import BusinessHours, User
 from phonix.i18n import _
 from phonix.services import calls as calls_svc
 from phonix.services import destinations as dst
@@ -334,11 +334,33 @@ def _year_months(request: Request) -> int:
     return months if 1 <= months <= YEAR_MONTHS_MAX else YEAR_MONTHS
 
 
-def _year(db: Session, hours_id: int, months: int) -> dict[str, Any]:
-    """Template values of the year at a glance (``partials/hours_year.html``)."""
+def _preview(data: dict[str, Any]) -> BusinessHours | None:
+    """Unsaved business hours from the submitted form for the year at a glance, ``None`` when the dates or
+    times are invalid; names, destinations and feature codes do not change the calendar and are not checked."""
+    calendar = {
+        **data,
+        "name": "-",
+        "description": "",
+        "feature_code": "",
+        "open_dest_type": "hangup",
+        "closed_dest_type": "hangup",
+        "specials": [
+            {**sp, "name": sp.get("name") or "-", "feature_code": "", "dest_type": "hangup"}
+            for sp in data.get("specials") or []
+        ],
+    }
+    try:
+        return hours_svc.preview(parse(hours_svc.BusinessHoursIn, calendar))
+    except ServiceError:
+        return None
+
+
+def _year(hours: BusinessHours | None, hours_id: int | None, months: int) -> dict[str, Any]:
+    """Template values of the year at a glance (``partials/hours_year.html``); no calendars without ``hours``."""
     rt = hours_svc.load_runtime() or hours_svc.Runtime()
-    year = hours_svc.year_plan(hours_svc.get_hours(db, hours_id), rt, dt.date.today(), months)
-    legend = {(d["special"], d["name"]) for m in year for w in m["weeks"] for d in w if d and d["special"] is not None}
+    year = hours_svc.year_plan(hours, rt, dt.date.today(), months) if hours is not None else None
+    days = [d for m in year or [] for w in m["weeks"] for d in w if d]
+    legend = {(d["special"], d["name"]) for d in days if d["special"] is not None}
     return {
         "hours_id": hours_id,
         "year": year,
@@ -357,6 +379,7 @@ def _hours_page(
     values: dict[str, Any],
     errors: dict[str, str],
     hours_id: int | None,
+    year: BusinessHours | None,
     status_code: int = 200,
     months: int = YEAR_MONTHS,
 ) -> Response:
@@ -381,11 +404,7 @@ def _hours_page(
         special_choices=[(title, options) for title, options in special_choices if options],
         dest_value=dst.value,
         live=live,
-        **(
-            _year(db, hours_id, months)
-            if hours_id
-            else {"hours_id": None, "year": None, "weekdays": hours_svc.WEEKDAYS}
-        ),
+        **_year(year, hours_id, months),
     )
 
 
@@ -417,8 +436,9 @@ def hours_list(request: Request, user: User = Depends(ui_user), db: Session = De
 
 @router.get("/hours/new")
 def hours_new(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
-    values = model_values(hours_svc.BusinessHoursIn, hours_svc.defaults())
-    return _hours_page(request, db, values, {}, None)
+    defaults = hours_svc.defaults()
+    values = model_values(hours_svc.BusinessHoursIn, defaults)
+    return _hours_page(request, db, values, {}, None, _preview(defaults), months=_year_months(request))
 
 
 @router.get("/hours/{hours_id}")
@@ -429,20 +449,43 @@ def hours_edit(
         hours = hours_svc.get_hours(db, hours_id)
     except NotFound as exc:
         return _404(exc)
-    return _hours_page(request, db, hours_svc.to_dict(hours), {}, hours_id, months=_year_months(request))
+    return _hours_page(
+        request,
+        db,
+        hours_svc.to_dict(hours),
+        {},
+        hours_id,
+        hours,
+        months=_year_months(request),
+    )
 
 
-@router.get("/hours/{hours_id}/year")
-def hours_year(
-    request: Request, hours_id: int, user: User = Depends(ui_user), db: Session = Depends(get_db)
-) -> Response:
-    """The year at a glance alone, so switching the number of months leaves the form as it is."""
+async def _hours_year(request: Request, db: Session, hours_id: int | None) -> Response:
+    form = await request.form()
     try:
-        hours_svc.get_hours(db, hours_id)
+        data = _hours_form_data(form, db, hours_id)
     except NotFound as exc:
         return _404(exc)
-    resp = render(request, "partials/hours_year.html", _year(db, hours_id, _year_months(request)))
+    resp = render(
+        request,
+        "partials/hours_year.html",
+        _year(_preview(data), hours_id, _year_months(request)),
+    )
     return HTMLResponse(resp.body)
+
+
+@router.post("/hours/new/year")
+async def hours_new_year(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
+    """The year at a glance of the unsaved form alone, so it can be checked before saving."""
+    return await _hours_year(request, db, None)
+
+
+@router.post("/hours/{hours_id}/year")
+async def hours_year(
+    request: Request, hours_id: int, user: User = Depends(ui_user), db: Session = Depends(get_db)
+) -> Response:
+    """The year at a glance of the unsaved form alone, so it can be checked before saving."""
+    return await _hours_year(request, db, hours_id)
 
 
 async def _save_hours(request: Request, db: Session, user: User, hours_id: int | None) -> Response:
@@ -462,7 +505,7 @@ async def _save_hours(request: Request, db: Session, user: User, hours_id: int |
     except ServiceError as exc:
         db.rollback()
         values = model_values(hours_svc.BusinessHoursIn, data)
-        return _hours_page(request, db, values, service_errors(exc), hours_id, status_code=422)
+        return _hours_page(request, db, values, service_errors(exc), hours_id, _preview(data), status_code=422)
     flash(request, _("Business hours %(name)s saved.", name=hours.name))
     return redirect(request, "/dialplan/hours")
 
@@ -529,4 +572,6 @@ async def hours_special(
     else:
         live = hours_svc.live_status(db, hours_id)
         resp = render(request, "partials/hours_mode.html", {"live": live, "hours_id": hours_id, "special_error": error})
+        # the edit page redraws its year at a glance with the new switch
+        return HTMLResponse(resp.body, headers={"HX-Trigger": "phonix:special-switched"})
     return HTMLResponse(resp.body)

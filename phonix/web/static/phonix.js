@@ -451,9 +451,13 @@
     const link = document.querySelector(`[data-bs-toggle="tab"][href="${CSS.escape(location.hash)}"]`);
     if (link && !link.classList.contains("active")) link.click();
   }
+  // and elements in the tab whose hx-trigger has phonix:tab-shown reload, e.g. a preview of the form
   document.addEventListener("shown.bs.tab", (evt) => {
     const href = evt.target.getAttribute("href");
-    if (href && href.startsWith("#tab-")) history.replaceState(null, "", href);
+    if (!href || !href.startsWith("#tab-")) return;
+    history.replaceState(null, "", href);
+    document.getElementById(href.slice(1))?.querySelectorAll('[hx-trigger*="phonix:tab-shown"]')
+      .forEach((el) => el.dispatchEvent(new CustomEvent("phonix:tab-shown")));
   });
 
   function ready() {

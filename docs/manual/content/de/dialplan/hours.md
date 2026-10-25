@@ -23,7 +23,7 @@ Mit den Schaltflächen am Ende jeder Zeile bearbeiten und löschen Sie den Zeitp
 
 ## Geschäftszeiten anlegen oder bearbeiten {#edit}
 
-Das Formular hat fünf Reiter: **Allgemein**, **Wochenzeiten**, **Feiertage**, **Sonderzeiträume** und, bei gespeicherten Geschäftszeiten, **Jahresübersicht**. **Speichern** unten speichert alle Reiter zusammen. Ist eine Eingabe falsch, öffnet sich der Reiter mit dem Fehler und ist mit einem roten Zeichen markiert. Ein Link auf die Seite mit `#tab-specials` (oder einem anderen Reiternamen) öffnet diesen Reiter direkt.
+Das Formular hat fünf Reiter: **Allgemein**, **Wochenzeiten**, **Feiertage**, **Sonderzeiträume** und **Jahresübersicht**. **Speichern** unten speichert alle Reiter zusammen. Ist eine Eingabe falsch, öffnet sich der Reiter mit dem Fehler und ist mit einem roten Zeichen markiert. Ein Link auf die Seite mit `#tab-specials` (oder einem anderen Reiternamen) öffnet diesen Reiter direkt.
 
 ### Allgemein {#routing}
 
@@ -71,7 +71,7 @@ Geschäftszeiten, die Ziel eines Sonderzeitraums sind, dürfen selbst keine Sond
 
 ### Jahresübersicht {#year}
 
-Der Reiter **Jahresübersicht** gespeicherter Geschäftszeiten zeigt die nächsten zwölf Monate, einen Kalender pro Monat; die Schaltflächen über den Kalendern zeigen stattdessen 24 oder 36 Monate, ein Link mit `?months=48#tab-year` bis zu 60 Monate. Jeder Tag ist danach eingefärbt, was laut Plan gilt: die Wochenzeiten (grün), ganztägig geschlossen, weil der Wochentag keine Öffnungszeiten hat (grau), ein Feiertag (orange) oder ein Sonderzeitraum (eigene Farbe, in der Legende benannt). Sonderzeiträume zählen, wenn sie eingeschaltet sind, in der Reihenfolge der Liste, wie bei Anrufen. Fahren Sie mit der Maus über einen Tag, um Datum und geltende Regel zu sehen. Der Kalender zeigt den gespeicherten Stand: Speichern Sie das Formular, um Änderungen zu sehen; manuelle Modi und die [Abwesenheitstaste](#key) werden nicht angezeigt.
+Der Reiter **Jahresübersicht** zeigt die nächsten zwölf Monate, einen Kalender pro Monat; die Schaltflächen über den Kalendern zeigen stattdessen 24 oder 36 Monate, ein Link mit `?months=48#tab-year` bis zu 60 Monate. Jeder Tag ist danach eingefärbt, was laut Plan gilt: die Wochenzeiten (grün), ganztägig geschlossen, weil der Wochentag keine Öffnungszeiten hat (grau), ein Feiertag (orange) oder ein Sonderzeitraum (eigene Farbe, in der Legende benannt). Sonderzeiträume zählen, wenn sie eingeschaltet sind, in der Reihenfolge der Liste, wie bei Anrufen. Fahren Sie mit der Maus über einen Tag, um Datum und geltende Regel zu sehen. Der Kalender zeigt die Eingaben im Formular, auch bevor Sie sie speichern: Ändern Sie einen Feiertag oder die Tage eines Sonderzeitraums, öffnen Sie den Reiter und prüfen Sie das Ergebnis. Gespeichert wird erst mit **Speichern**. Gespeicherte Sonderzeiträume zählen so, wie sie gerade geschaltet sind; schalten Sie einen oben auf der Seite um, wird der Kalender sofort neu gezeichnet. Ist ein Datum oder eine Uhrzeit in einem anderen Reiter noch nicht gültig, zeigt der Reiter statt der Kalender einen Hinweis. Manuelle Modi und die [Abwesenheitstaste](#key) werden nicht angezeigt.
 
 ## Zwischen geöffnet und geschlossen umschalten {#mode}
 

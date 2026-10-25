@@ -793,19 +793,24 @@ def test_hours_form(client, fake_ami):
     # year at a glance: twelve months, the yearly holiday marked
     assert "Year at a glance" in page and page.count('<table class="hours-cal">') == 12
     assert re.search(r'class="hours-cal-holiday[^"]*" title="\d{4}-12-25: Christmas Day"', page)
-    assert "Year at a glance" not in client.get("/dialplan/hours/new").text
+    # new business hours show their year before the first save
+    assert client.get("/dialplan/hours/new").text.count('<table class="hours-cal">') == 12
     # ?months=N shows more or fewer months; out of range falls back to twelve
     for query, count in (("?months=24", 24), ("?months=3", 3), ("?months=61", 12), ("?months=x", 12)):
         page = client.get(f"/dialplan/hours/{ids['office']}{query}").text
         assert page.count('<table class="hours-cal">') == count, query
     page = client.get(f"/dialplan/hours/{ids['office']}?months=24").text
-    assert f'hx-get="/dialplan/hours/{ids["office"]}/year?months=24" hx-target="#hours-year"' in page
+    url = f"/dialplan/hours/{ids['office']}/year"
+    assert f'hx-post="{url}?months=24" hx-include="closest form" hx-target="#hours-year"' in page
+    trigger = "phonix:tab-shown, phonix:special-switched from:body"
+    assert f'<div id="hours-year" hx-post="{url}?months=24" hx-trigger="{trigger}"' in page
     assert re.search(r'href="\?months=24#tab-year"[^>]* class="btn active"', page)
-    # the buttons reload only the calendars (htmx), so unsaved entries in the form stay
-    part = client.get(f"/dialplan/hours/{ids['office']}/year?months=36").text
-    assert part.startswith('<div id="hours-year">') and part.count('<table class="hours-cal">') == 36
+    # the buttons reload only the calendars (htmx) with the form, so unsaved entries in the form stay
+    headers = {"X-CSRF-Token": csrf(client, "/dialplan/hours"), "HX-Request": "true"}
+    part = client.post(f"{url}?months=36", data={"name": "Office"}, headers=headers).text
+    assert part.startswith("<div") and 'id="hours-year"' in part and part.count('<table class="hours-cal">') == 36
     assert "<form" not in part and "<html" not in part
-    assert client.get("/dialplan/hours/999/year").status_code == 404
+    assert client.post("/dialplan/hours/999/year", headers=headers).status_code == 404
     form = [
         ("csrf_token", csrf(client, "/dialplan/hours/new")),
         ("name", "Support line"),
@@ -937,9 +942,14 @@ def test_hours_special_toggle(client, fake_ami):
     assert fake_ami.astdb[("phonix-special", str(sid))] == "1"
     with session_scope() as s:
         assert s.get(BusinessHours, hid).specials[0].enabled is True
+    # the edit page redraws its year at a glance, which now has the period (without dates: every day)
+    assert r.headers["HX-Trigger"] == "phonix:special-switched"
+    form = {"sp_id_0": str(sid), "sp_name_0": "Emergency", "sp_dest_0": "hangup"}
+    year = client.post(f"/dialplan/hours/{hid}/year?months=1", data=form, headers=headers).text
+    assert '<td class="hours-cal-special' in year and '<td class="hours-cal-open' not in year
     # from the list page: the row is returned
     r = client.post(url, data={"active": "false", "view": "row"}, headers=headers)
-    assert r.status_code == 200 and f'id="hours-row-{hid}"' in r.text
+    assert r.status_code == 200 and f'id="hours-row-{hid}"' in r.text and "HX-Trigger" not in r.headers
     assert fake_ami.astdb[("phonix-special", str(sid))] == "0"
     r = client.post(f"/dialplan/hours/{hid}/special/999999", data={"active": "true"}, headers=headers)
     assert r.status_code == 404
@@ -1087,7 +1097,7 @@ def test_mcp_special(client, fake_ami):
 def test_hours_form_opens_tab_with_error(client):
     login(client)
     page = client.get("/dialplan/hours/new").text
-    assert 'href="#tab-general" class="nav-link active"' in page and "#tab-year" not in page
+    assert 'href="#tab-general" class="nav-link active"' in page
     form = {
         "csrf_token": csrf(client, "/dialplan/hours/new"),
         "name": "Support",
@@ -1101,6 +1111,39 @@ def test_hours_form_opens_tab_with_error(client):
     assert 'href="#tab-holidays" class="nav-link active"' in r.text
     assert 'id="tab-holidays" role="tabpanel"' in r.text and 'tab-pane active show" id="tab-holidays"' in r.text
     assert 'href="#tab-general" class="nav-link active"' not in r.text
+
+
+def test_hours_year_preview(client, fake_ami):
+    """The year at a glance shows the entries of the form before they are saved, without saving them."""
+    ids = client.ids
+    login(client)
+    with session_scope() as s:
+        before = hours.to_dict(hours.get_hours(s, ids["office"]))
+    year = dt.date.today().year + 1
+    # names, destinations and feature codes do not matter for the calendar: a new row may still be incomplete
+    form = [
+        ("csrf_token", csrf(client, "/dialplan/hours")),
+        ("name", ""),
+        ("range_day_0", "0"),
+        ("range_start_0", "08:00"),
+        ("range_end_0", "17:00"),
+        ("hol_date_0", f"{year}-08-01"),
+        ("hol_name_0", "National Day"),
+        *_special_rows([("n", "", "", True, f"{year}-03-02", f"{year}-03-03", False, "1", "")]),
+    ]
+    for url in (f"/dialplan/hours/{ids['office']}/year?months=24", "/dialplan/hours/new/year?months=24"):
+        r = _post(client, url, form)
+        assert r.status_code == 200, r.text
+        assert f'title="{year}-08-01: National Day"' in r.text
+        assert re.search(rf'class="hours-cal-special hours-cal-sp0[^"]*" title="{year}-03-02: -"', r.text)
+        assert "Christmas Day" not in r.text  # the saved holiday was removed in the form
+    with session_scope() as s:
+        assert hours.to_dict(hours.get_hours(s, ids["office"])) == before
+        assert not hours.get_hours(s, ids["office"]).specials
+    # invalid dates or times: a hint instead of the calendars
+    form[4] = ("range_end_0", "07:00")
+    r = _post(client, f"/dialplan/hours/{ids['office']}/year", form)
+    assert r.status_code == 200 and "cannot be shown" in r.text and "hours-cal" not in r.text
 
 
 def test_year_plan(session, ids):

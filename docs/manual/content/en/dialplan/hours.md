@@ -23,7 +23,7 @@ The buttons at the end of each row edit and delete the schedule. Deleting it rem
 
 ## Create or edit business hours {#edit}
 
-The form has five tabs: **General**, **Weekly hours**, **Holidays**, **Special periods** and, for saved business hours, **Year at a glance**. **Save** at the bottom saves all tabs together. If an entry is wrong, the tab with the error opens and is marked with a red sign. A link to the page with `#tab-specials` (or another tab name) opens that tab directly.
+The form has five tabs: **General**, **Weekly hours**, **Holidays**, **Special periods** and **Year at a glance**. **Save** at the bottom saves all tabs together. If an entry is wrong, the tab with the error opens and is marked with a red sign. A link to the page with `#tab-specials` (or another tab name) opens that tab directly.
 
 ### General {#routing}
 
@@ -71,7 +71,7 @@ Business hours used as the destination of a special period must not have special
 
 ### Year at a glance {#year}
 
-The **Year at a glance** tab of saved business hours shows the next twelve months, one calendar per month; the buttons above the calendars show 24 or 36 months instead, and a link with `?months=48#tab-year` up to 60 months. Each day is coloured by what applies on it according to the plan: the weekly hours (green), closed all day because the weekday has no opening hours (grey), a holiday (orange) or a special period (its own colour, named in the legend). Special periods count when they are switched on, in the order of the list, as for calls. Hover over a day to see its date and what applies. The calendar shows what is saved: save the form to see changes, and manual modes and the [out-of-office key](#key) are not shown.
+The **Year at a glance** tab shows the next twelve months, one calendar per month; the buttons above the calendars show 24 or 36 months instead, and a link with `?months=48#tab-year` up to 60 months. Each day is coloured by what applies on it according to the plan: the weekly hours (green), closed all day because the weekday has no opening hours (grey), a holiday (orange) or a special period (its own colour, named in the legend). Special periods count when they are switched on, in the order of the list, as for calls. Hover over a day to see its date and what applies. The calendar shows the entries in the form, also before you save them: change a holiday or the days of a special period, open the tab, and check the result. Nothing is saved until you click **Save**. Saved special periods count as they are switched right now; switching one at the top of the page redraws the calendar at once. If a date or time in another tab is not valid yet, the tab shows a hint instead of the calendars. Manual modes and the [out-of-office key](#key) are not shown.
 
 ## Switch between open and closed {#mode}
 

@@ -1,12 +1,18 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
-{# the year at a glance of business hours, also returned alone by GET /dialplan/hours/{id}/year?months=N #}
-<div id="hours-year">
+{# the year at a glance of the entries in the form, also before saving: returned alone by
+   POST /dialplan/hours/{id|new}/year?months=N with the form, each time the tab is shown (phonix:tab-shown)
+   and a special period is switched at the top of the page (phonix:special-switched) #}
+{% set year_url = "/dialplan/hours/" ~ (hours_id or "new") ~ "/year" %}
+<div id="hours-year" hx-post="{{ year_url }}?months={{ year_months }}" hx-trigger="phonix:tab-shown, phonix:special-switched from:body" hx-include="closest form" hx-swap="outerHTML">
   <div class="d-flex flex-wrap align-items-start gap-2 mb-3">
-    <p class="text-secondary mb-0 me-auto">{{ _("What applies on each day of the coming months, as saved. Manual modes and the out-of-office key are not shown.") }}</p>
+    <p class="text-secondary mb-0 me-auto">{{ _("What applies on each day of the coming months with the entries in this form, also before you save them. Manual modes and the out-of-office key are not shown.") }}</p>
     <div class="btn-group btn-group-sm" role="group" aria-label="{{ _("Months shown") }}">
-      {% for n in year_choices %}<a href="?months={{ n }}#tab-year" hx-get="/dialplan/hours/{{ hours_id }}/year?months={{ n }}" hx-target="#hours-year" hx-swap="outerHTML" class="btn{% if n == year_months %} active{% endif %}"{% if n == year_months %} aria-current="true"{% endif %}>{{ ngettext("%(num)d month", "%(num)d months", n) }}</a>{% endfor %}
+      {% for n in year_choices %}<a href="?months={{ n }}#tab-year" hx-post="{{ year_url }}?months={{ n }}" hx-include="closest form" hx-target="#hours-year" hx-swap="outerHTML" class="btn{% if n == year_months %} active{% endif %}"{% if n == year_months %} aria-current="true"{% endif %}>{{ ngettext("%(num)d month", "%(num)d months", n) }}</a>{% endfor %}
     </div>
   </div>
+  {% if year is none %}
+  <div class="alert alert-warning mb-0">{{ icon("alert-triangle", "me-1") }} {{ _("Some dates or times in the other tabs are not valid yet, so the year cannot be shown. Check the entries marked there.") }}</div>
+  {% else %}
   <div class="hours-cal-legend">
     <span><span class="hours-cal-swatch hours-cal-open"></span>{{ _("Weekly hours") }}</span>
     <span><span class="hours-cal-swatch hours-cal-closed"></span>{{ _("Closed all day") }}</span>
@@ -33,4 +39,5 @@
     </table>
     {% endfor %}
   </div>
+  {% endif %}
 </div>

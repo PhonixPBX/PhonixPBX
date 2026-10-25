@@ -22,7 +22,7 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   closed right now.
 - *Dialplan → Business Hours*: **Year at a glance** on the edit page shows the next twelve months (or 24, 36, up to 60)
   as calendars, with each day coloured by what applies: the weekly hours, closed all day, a holiday or a special
-  period.
+  period. It shows the entries in the form, also before they are saved, and is available for new business hours too.
 - *Accounts → Providers*: the list has a **Status** column with the registration state of each provider
   (e.g. *Registered*, *Rejected*), or for providers without registration and IAX providers whether they can be
   reached. It updates every 15 seconds.

@@ -80,7 +80,7 @@
       {{ tab("hours", _("Weekly hours"), err.hours) }}
       {{ tab("holidays", _("Holidays"), err.holidays, (values.holidays or []) | length) }}
       {{ tab("specials", _("Special periods"), err.specials, (values.specials or []) | length) }}
-      {% if year %}{{ tab("year", _("Year at a glance"), false) }}{% endif %}
+      {{ tab("year", _("Year at a glance"), false) }}
     </ul>
   </div>
   <div class="card-body">
@@ -146,11 +146,9 @@
         <div class="form-hint mt-2">{{ _("The feature code switches the period on or off; a phone key (BLF) on it is lit while the period is on.") }} {{ _("Saved periods are switched on and off at the top of the page.") }}</div>
       </div>
 
-      {% if year %}
       <div class="tab-pane" id="tab-year" role="tabpanel">
         {% include "partials/hours_year.html" %}
       </div>
-      {% endif %}
     </div>
   </div>
   {{ submit(_("Create") if is_new else _("Save"), cancel="/dialplan/hours") }}

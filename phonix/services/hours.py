@@ -298,6 +298,16 @@ def _apply(hours: BusinessHours, data: BusinessHoursIn) -> None:
     hours.specials = specials
 
 
+def preview(data: BusinessHoursIn) -> BusinessHours:
+    """Unsaved business hours from ``data``, e.g. for the year at a glance of a form; never added to a session."""
+    hours = BusinessHours()
+    _apply(hours, data)
+    for sp, item in zip(hours.specials, data.specials, strict=True):
+        if item.id is not None:
+            sp.id = item.id  # saved periods keep their runtime switch
+    return hours
+
+
 def create_hours(session: Session, data: BusinessHoursIn, user: str = "") -> BusinessHours:
     _check(session, data, None)
     hours = BusinessHours()
