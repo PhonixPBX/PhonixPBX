@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-25 09:50+0100\n"
+"POT-Creation-Date: 2026-10-25 09:53+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: sv\n"
@@ -894,6 +894,9 @@ msgstr "Skapa en SIP-telefon och registrera din bordstelefon eller softphone mot
 
 msgid "Create a token to use the REST API (/api/v1) from scripts."
 msgstr "Skapa en token för att använda REST-API:t (/api/v1) från skript."
+
+msgid "Create and stay"
+msgstr "Skapa och fortsätt redigera"
 
 msgid "Create backup"
 msgstr "Skapa säkerhetskopia"
@@ -2817,6 +2820,9 @@ msgstr "Spara"
 
 msgid "Save and request certificate now"
 msgstr "Spara och begär certifikat nu"
+
+msgid "Save and stay"
+msgstr "Spara och fortsätt redigera"
 
 msgid "Saved periods are switched on and off at the top of the page."
 msgstr "Sparade perioder slås på och av högst upp på sidan."

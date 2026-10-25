@@ -1113,6 +1113,35 @@ def test_hours_form_opens_tab_with_error(client):
     assert 'href="#tab-general" class="nav-link active"' not in r.text
 
 
+def test_hours_save_and_stay(client, fake_ami):
+    """Save and stay returns to the edit page, on the open tab and with the months shown."""
+    ids = client.ids
+    login(client)
+    page = client.get(f"/dialplan/hours/{ids['office']}").text
+    assert 'name="stay" value="1"' in page and "Save and stay" in page and "data-active-tab" in page
+    assert "Create and stay" in client.get("/dialplan/hours/new").text
+    base = [
+        ("csrf_token", csrf(client, "/dialplan/hours")),
+        ("name", "Stay"),
+        ("open_dest", "hangup"),
+        ("closed_dest", "hangup"),
+        ("stay", "1"),
+        ("year_months", "24"),
+    ]
+    r = _post(client, "/dialplan/hours/new", [*base, ("tab", "year")], follow_redirects=False)
+    assert r.status_code == 303, r.text
+    with session_scope() as s:
+        hid = s.query(BusinessHours).filter_by(name="Stay").one().id
+    assert r.headers["location"] == f"/dialplan/hours/{hid}?months=24#tab-year"
+    # an unknown tab or number of months is dropped
+    r = _post(client, f"/dialplan/hours/{hid}", [*base[:5], ("tab", "x<y"), ("year_months", "99")])
+    assert r.status_code == 200 and r.url.path == f"/dialplan/hours/{hid}" and r.url.fragment == ""
+    assert "Business hours Stay saved." in r.text and r.text.count('<table class="hours-cal">') == 12
+    # without "stay": back to the list
+    r = _post(client, f"/dialplan/hours/{hid}", base[:4], follow_redirects=False)
+    assert r.headers["location"] == "/dialplan/hours"
+
+
 def test_hours_year_preview(client, fake_ami):
     """The year at a glance shows the entries of the form before they are saved, without saving them."""
     ids = client.ids

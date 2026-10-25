@@ -324,11 +324,14 @@ def _week(values: dict[str, Any]) -> list[dict[str, Any]]:
 YEAR_MONTHS = 12
 YEAR_MONTHS_MAX = 60
 YEAR_CHOICES = (12, 24, 36)
+# the tabs of the edit page
+HOURS_TABS = ("general", "hours", "holidays", "specials", "year")
 
 
-def _year_months(request: Request) -> int:
+def _year_months(value: object) -> int:
+    """``?months=N`` or the ``year_months`` form field; missing, out of range or not a number: twelve."""
     try:
-        months = int(request.query_params.get("months", YEAR_MONTHS))
+        months = int(str(value))
     except ValueError:
         return YEAR_MONTHS
     return months if 1 <= months <= YEAR_MONTHS_MAX else YEAR_MONTHS
@@ -438,7 +441,9 @@ def hours_list(request: Request, user: User = Depends(ui_user), db: Session = De
 def hours_new(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
     defaults = hours_svc.defaults()
     values = model_values(hours_svc.BusinessHoursIn, defaults)
-    return _hours_page(request, db, values, {}, None, _preview(defaults), months=_year_months(request))
+    return _hours_page(
+        request, db, values, {}, None, _preview(defaults), months=_year_months(request.query_params.get("months"))
+    )
 
 
 @router.get("/hours/{hours_id}")
@@ -456,7 +461,7 @@ def hours_edit(
         {},
         hours_id,
         hours,
-        months=_year_months(request),
+        months=_year_months(request.query_params.get("months")),
     )
 
 
@@ -469,7 +474,7 @@ async def _hours_year(request: Request, db: Session, hours_id: int | None) -> Re
     resp = render(
         request,
         "partials/hours_year.html",
-        _year(_preview(data), hours_id, _year_months(request)),
+        _year(_preview(data), hours_id, _year_months(request.query_params.get("months"))),
     )
     return HTMLResponse(resp.body)
 
@@ -505,9 +510,18 @@ async def _save_hours(request: Request, db: Session, user: User, hours_id: int |
     except ServiceError as exc:
         db.rollback()
         values = model_values(hours_svc.BusinessHoursIn, data)
-        return _hours_page(request, db, values, service_errors(exc), hours_id, _preview(data), status_code=422)
+        months = _year_months(form.get("year_months"))
+        return _hours_page(
+            request, db, values, service_errors(exc), hours_id, _preview(data), status_code=422, months=months
+        )
     flash(request, _("Business hours %(name)s saved.", name=hours.name))
-    return redirect(request, "/dialplan/hours")
+    if not form.get("stay"):
+        return redirect(request, "/dialplan/hours")
+    # "Save and stay": back to the edit page, on the open tab and with the months shown
+    tab = str(form.get("tab", ""))
+    fragment = f"#tab-{tab}" if tab in HOURS_TABS else ""
+    months = _year_months(form.get("year_months"))
+    return redirect(request, f"/dialplan/hours/{hours.id}?months={months}{fragment}")
 
 
 @router.post("/hours/new")

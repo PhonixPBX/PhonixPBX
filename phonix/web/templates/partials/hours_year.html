@@ -4,6 +4,7 @@
    and a special period is switched at the top of the page (phonix:special-switched) #}
 {% set year_url = "/dialplan/hours/" ~ (hours_id or "new") ~ "/year" %}
 <div id="hours-year" hx-post="{{ year_url }}?months={{ year_months }}" hx-trigger="phonix:tab-shown, phonix:special-switched from:body" hx-include="closest form" hx-swap="outerHTML">
+  <input type="hidden" name="year_months" value="{{ year_months }}">
   <div class="d-flex flex-wrap align-items-start gap-2 mb-3">
     <p class="text-secondary mb-0 me-auto">{{ _("What applies on each day of the coming months with the entries in this form, also before you save them. Manual modes and the out-of-office key are not shown.") }}</p>
     <div class="btn-group btn-group-sm" role="group" aria-label="{{ _("Months shown") }}">

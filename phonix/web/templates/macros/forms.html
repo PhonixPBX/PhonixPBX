@@ -116,11 +116,13 @@
 {% endif %}
 {% endmacro %}
 
-{% macro submit(label=None, cancel=None) %}
+{# `stay`: label of a second button that saves and returns to the form (the route checks the `stay` field) #}
+{% macro submit(label=None, cancel=None, stay=None) %}
 <div class="card-footer text-end">
   <div class="d-flex">
     {% if cancel %}<a href="{{ cancel }}" class="btn btn-link">{{ _("Cancel") }}</a>{% endif %}
-    <button type="submit" class="btn btn-primary ms-auto">{{ icon("device-floppy") }}{{ label if label is not none else _("Save") }}</button>
+    {% if stay %}<button type="submit" name="stay" value="1" class="btn ms-auto">{{ icon("device-floppy") }}{{ stay }}</button>{% endif %}
+    <button type="submit" class="btn btn-primary {{ 'ms-2' if stay else 'ms-auto' }}">{{ icon("device-floppy") }}{{ label if label is not none else _("Save") }}</button>
   </div>
 </div>
 {% endmacro %}

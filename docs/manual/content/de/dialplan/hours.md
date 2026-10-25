@@ -23,7 +23,7 @@ Mit den Schaltflächen am Ende jeder Zeile bearbeiten und löschen Sie den Zeitp
 
 ## Geschäftszeiten anlegen oder bearbeiten {#edit}
 
-Das Formular hat fünf Reiter: **Allgemein**, **Wochenzeiten**, **Feiertage**, **Sonderzeiträume** und **Jahresübersicht**. **Speichern** unten speichert alle Reiter zusammen. Ist eine Eingabe falsch, öffnet sich der Reiter mit dem Fehler und ist mit einem roten Zeichen markiert. Ein Link auf die Seite mit `#tab-specials` (oder einem anderen Reiternamen) öffnet diesen Reiter direkt.
+Das Formular hat fünf Reiter: **Allgemein**, **Wochenzeiten**, **Feiertage**, **Sonderzeiträume** und **Jahresübersicht**. **Speichern** unten speichert alle Reiter zusammen und kehrt zur Liste zurück; **Speichern und weiter bearbeiten** (**Erstellen und weiter bearbeiten** bei neuen Geschäftszeiten) speichert ebenfalls, lässt die Seite aber offen, auf demselben Reiter und mit derselben Anzahl Monate in der Jahresübersicht. Ist eine Eingabe falsch, öffnet sich der Reiter mit dem Fehler und ist mit einem roten Zeichen markiert. Ein Link auf die Seite mit `#tab-specials` (oder einem anderen Reiternamen) öffnet diesen Reiter direkt.
 
 ### Allgemein {#routing}
 

@@ -452,6 +452,12 @@
     if (link && !link.classList.contains("active")) link.click();
   }
   // and elements in the tab whose hx-trigger has phonix:tab-shown reload, e.g. a preview of the form
+  // <input data-active-tab> gets the name of the open tab on submit ("general" for #tab-general)
+  document.addEventListener("submit", (evt) => {
+    const field = evt.target.querySelector("input[data-active-tab]");
+    const link = evt.target.querySelector('[data-bs-toggle="tab"].active');
+    if (field && link) field.value = (link.getAttribute("href") || "").replace(/^#tab-/, "");
+  });
   document.addEventListener("shown.bs.tab", (evt) => {
     const href = evt.target.getAttribute("href");
     if (!href || !href.startsWith("#tab-")) return;

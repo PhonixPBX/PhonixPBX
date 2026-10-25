@@ -23,7 +23,7 @@ The buttons at the end of each row edit and delete the schedule. Deleting it rem
 
 ## Create or edit business hours {#edit}
 
-The form has five tabs: **General**, **Weekly hours**, **Holidays**, **Special periods** and **Year at a glance**. **Save** at the bottom saves all tabs together. If an entry is wrong, the tab with the error opens and is marked with a red sign. A link to the page with `#tab-specials` (or another tab name) opens that tab directly.
+The form has five tabs: **General**, **Weekly hours**, **Holidays**, **Special periods** and **Year at a glance**. **Save** at the bottom saves all tabs together and returns to the list; **Save and stay** (**Create and stay** for new business hours) saves as well but keeps the page open, on the same tab and with the same number of months in the year at a glance. If an entry is wrong, the tab with the error opens and is marked with a red sign. A link to the page with `#tab-specials` (or another tab name) opens that tab directly.
 
 ### General {#routing}
 

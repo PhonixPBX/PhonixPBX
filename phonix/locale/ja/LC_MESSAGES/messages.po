@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-25 09:50+0100\n"
+"POT-Creation-Date: 2026-10-25 09:53+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ja\n"
@@ -878,6 +878,9 @@ msgstr "SIP 電話機を作成し、デスクフォンまたはソフトフォ�
 
 msgid "Create a token to use the REST API (/api/v1) from scripts."
 msgstr "スクリプトから REST API（/api/v1）を使用するには、トークンを作成してください。"
+
+msgid "Create and stay"
+msgstr "作成して編集を続ける"
 
 msgid "Create backup"
 msgstr "バックアップを作成"
@@ -2772,6 +2775,9 @@ msgstr "保存"
 
 msgid "Save and request certificate now"
 msgstr "保存して今すぐ証明書をリクエスト"
+
+msgid "Save and stay"
+msgstr "保存して編集を続ける"
 
 msgid "Saved periods are switched on and off at the top of the page."
 msgstr "保存済みの期間は、ページ上部でオン／オフを切り替えます。"

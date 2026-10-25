@@ -151,6 +151,8 @@
       </div>
     </div>
   </div>
-  {{ submit(_("Create") if is_new else _("Save"), cancel="/dialplan/hours") }}
+  {# filled with the open tab on submit, so "Save and stay" returns to it #}
+  <input type="hidden" name="tab" data-active-tab>
+  {{ submit(_("Create") if is_new else _("Save"), cancel="/dialplan/hours", stay=_("Create and stay") if is_new else _("Save and stay")) }}
 </form>
 {% endblock %}

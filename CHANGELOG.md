@@ -31,6 +31,7 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 - *Dialplan → Business Hours*: the edit page is organised in tabs (General, Weekly hours, Holidays, Special periods,
   Year at a glance). A tab with a wrong entry opens and is marked after saving, and `#tab-…` links open a tab directly.
+  **Save and stay** saves without leaving the page and returns to the open tab.
 - The card **Numbers with +** (**Replace a leading + with**) moved from *Accounts → Providers* to
   *Dialplan → Transfers & Parking*. The setting itself is unchanged.
 - *Dialplan → Business Hours*: the feature code no longer switches between “Closed” and “Automatic”. It now switches
