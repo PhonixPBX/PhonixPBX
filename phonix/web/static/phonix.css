@@ -446,7 +446,7 @@
 .dropzone[data-uploading] .dz-preview { display: none; }
 
 @media print {
-  .phonix-sidebar, .phonix-topbar, .footer, #apply-banner { display: none !important; }
+  .phonix-sidebar, .phonix-sticky, .footer { display: none !important; }
   .page-wrapper { margin: 0 !important; }
 }
 
