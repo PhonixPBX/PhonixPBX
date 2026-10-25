@@ -74,6 +74,18 @@ The language of the voice prompts that callers hear is a different setting, see 
 
 After a period of inactivity you are logged out automatically; the time is set under [Advanced → GUI Options]({{< relref "/advanced/gui.md" >}}).
 
+## Lists {#lists}
+
+Lists such as *Accounts → Phones* can be searched and are shown in pages. The search field and the page size sit above the table, the page links below it.
+
+- **Search**: type into the field *Search* (its placeholder names the columns that are searched, for phones *Extension, name or description*). The list follows as you type, shortly after you stop; Enter searches at once and the × in the field clears it. The search finds the text anywhere in those columns, and upper and lower case do not matter, also for umlauts and other accents: "mei" finds "Meier", "müller" finds "Müller". The matches are highlighted in the rows. Next to the field the number of phones is shown, with a search the matches out of all, for example *11 of 64*. When nothing matches, the list says so, for example *No phones found*, with a button *Clear search*.
+- **Per page**: choose how many rows a page shows: 25, 50 (the default), 100 or *All*.
+- **Page links**: when the list does not fit on one page, the bottom line shows which rows you see (for example *51–100 of 500*) and links to the first and last page, the pages around the current one, and ‹ and › for the previous and next page.
+
+The search, the page and the page size are part of the address in the browser (for example `/accounts/phones?q=meier&page=2`). Reloading the page, the back button, a bookmark or a link you send to a colleague show the same view. A new visit from the menu starts without a search, on the first page with 50 rows.
+
+After you delete a row, the counts and page links are updated with the next search or page change.
+
 ## Saving and applying changes {#apply}
 
 PhonixPBX separates **saving** from **activating**. When you save a form, the change is stored in the database right away, but the telephone system still runs with the old configuration. A yellow banner appears at the top of every page:

@@ -19,7 +19,7 @@ from phonix.services import providers as provider_svc
 from phonix.services import status as status_svc
 from phonix.services.common import NotFound, ServiceError
 from phonix.web.deps import form_to_dict, get_db, ui_user
-from phonix.web.routes.ui.common import dirty_trigger, model_values, page, redirect, service_errors
+from phonix.web.routes.ui.common import dirty_trigger, list_page, model_values, page, redirect, service_errors
 from phonix.web.templating import flash, render
 
 router = APIRouter(prefix="/accounts")
@@ -41,7 +41,7 @@ def phone_list(request: Request, user: User = Depends(ui_user), db: Session = De
     return page(
         request,
         "pages/phones.html",
-        phones=phone_svc.list_phones(db),
+        lv=list_page(request, phone_svc.list_phones(db), phone_svc.search_fields),
         providers={p.id: p for p in provider_svc.list_providers(db)},
         techs=TECH_LABELS,
     )
@@ -53,7 +53,10 @@ def phone_status(request: Request, user: User = Depends(ui_user), db: Session = 
     return render(
         request,
         "partials/phone_status.html",
-        {"phones": phone_svc.list_phones(db), "ast": status_svc.asterisk_status()},
+        {
+            "lv": list_page(request, phone_svc.list_phones(db), phone_svc.search_fields),
+            "ast": status_svc.asterisk_status(),
+        },
     )
 
 

@@ -19,7 +19,7 @@ The type is chosen with the buttons **SIP phone**, **IAX phone** and **External 
 
 ## Phone list {#list}
 
-The list shows every phone, sorted by number:
+The list shows the phones sorted by number, 50 to a page. The search field above it finds phones by extension, name or description; how searching and paging work is described in [Lists]({{< relref "/getting-started/_index.md#lists" >}}). The table has these columns:
 
 | Column | Meaning |
 |---|---|

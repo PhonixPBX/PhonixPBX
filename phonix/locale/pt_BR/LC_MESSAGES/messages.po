@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-25 09:53+0100\n"
+"POT-Creation-Date: 2026-10-25 12:58+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: pt_BR\n"
@@ -43,6 +43,10 @@ msgid "%(language)s (default)"
 msgstr "%(language)s (padrão)"
 
 #, python-format
+msgid "%(matched)d of %(total)d"
+msgstr "%(matched)d de %(total)d"
+
+#, python-format
 msgid "%(month)s %(year)s"
 msgstr "%(month)s %(year)s"
 
@@ -71,6 +75,12 @@ msgstr[0] "%(num)d mês"
 msgstr[1] "%(num)d meses"
 
 #, python-format
+msgid "%(num)d phone"
+msgid_plural "%(num)d phones"
+msgstr[0] "%(num)d telefone"
+msgstr[1] "%(num)d telefones"
+
+#, python-format
 msgid "%(num)d route"
 msgid_plural "%(num)d routes"
 msgstr[0] "%(num)d rota"
@@ -91,6 +101,10 @@ msgstr "%(object)s: referência a %(type)s %(id)s desconhecido"
 #, python-format
 msgid "%(object)s: unknown media file %(path)s"
 msgstr "%(object)s: arquivo de mídia desconhecido %(path)s"
+
+#, python-format
+msgid "%(start)d–%(end)d of %(matched)d"
+msgstr "%(start)d–%(end)d de %(matched)d"
 
 #, python-format
 msgid "%(used)s of %(total)s"
@@ -363,6 +377,9 @@ msgstr "Avançado: uma linha chave=valor por linha, acrescentada ao endpoint/pee
 
 msgid "Advanced: one key=value per line, appended to the generated section."
 msgstr "Avançado: uma linha chave=valor por linha, acrescentada à seção gerada."
+
+msgid "All"
+msgstr "Todos"
 
 msgid "An Asterisk sound in the prompt language of the system, e.g. welcome. You can also type the name of another sound."
 msgstr ""
@@ -783,6 +800,9 @@ msgstr "Escolha um horário comercial sem períodos especiais próprios"
 
 msgid "Choose or upload an announcement"
 msgstr "Escolha ou envie um anúncio"
+
+msgid "Clear search"
+msgstr "Limpar pesquisa"
 
 msgid "Client ID"
 msgstr "ID do cliente"
@@ -1289,6 +1309,9 @@ msgstr "O ramal deve conter dígitos ou um padrão do Asterisk (X, N, Z, [], ., 
 
 msgid "Extension must consist of 1-20 digits"
 msgstr "O ramal deve ter de 1 a 20 dígitos"
+
+msgid "Extension, name or description"
+msgstr "Ramal, nome ou descrição"
 
 msgid "External"
 msgstr "Externo"
@@ -2054,6 +2077,9 @@ msgstr "Nova mensagem de voz de ${VM_CALLERID}"
 msgid "Newer"
 msgstr "Mais recentes"
 
+msgid "Next page"
+msgstr "Próxima página"
+
 msgid "No API tokens"
 msgstr "Nenhum token de API"
 
@@ -2104,6 +2130,9 @@ msgstr "Nenhum usuário do manager"
 
 msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
 msgstr "Nenhuma senha definida: apenas logins por chave (/data/ssh/authorized_keys) funcionam. Pelo menos 8 caracteres."
+
+msgid "No phones found"
+msgstr "Nenhum telefone encontrado"
 
 msgid "No phones yet"
 msgstr "Ainda não há telefones"
@@ -2365,6 +2394,9 @@ msgstr "O padrão %(pattern)s já é usado por %(name)s"
 msgid "Pending changes"
 msgstr "Alterações pendentes"
 
+msgid "Per page"
+msgstr "Por página"
+
 msgid "Permitted networks"
 msgstr "Redes permitidas"
 
@@ -2492,6 +2524,9 @@ msgstr "Prefixos a adicionar só podem conter dígitos, '*' e '#'"
 
 msgid "Preview"
 msgstr "Prévia"
+
+msgid "Previous page"
+msgstr "Página anterior"
 
 msgid "Print"
 msgstr "Imprimir"
@@ -2832,6 +2867,9 @@ msgstr "Os períodos salvos são ativados e desativados no topo da página."
 
 msgid "Saving a backup of the configuration ..."
 msgstr "Salvando um backup da configuração ..."
+
+msgid "Search"
+msgstr "Pesquisar"
 
 msgid "Secret"
 msgstr "Segredo"

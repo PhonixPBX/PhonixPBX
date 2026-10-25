@@ -1,6 +1,6 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% from "macros/ui.html" import status_dot with context %}
-{% for p in phones if p.enabled and p.tech != "external" %}
+{% for p in lv.items if p.enabled and p.tech != "external" %}
 <hx-partial hx-target="#phone-status-{{ p.id }}" hx-swap="innerHTML">
   {% if not ast.running %}<span class="badge bg-secondary-lt">{{ _("Asterisk down") }}</span>
   {% elif p.tech == "iax" %}{{ status_dot(ast.iax_peers.get(p.extension, "unknown")) }}

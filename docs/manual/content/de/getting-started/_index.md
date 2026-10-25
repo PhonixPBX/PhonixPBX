@@ -74,6 +74,18 @@ Die Sprache der Ansagen, die Anrufer hören, ist eine eigene Einstellung, siehe 
 
 Nach einer Zeit ohne Aktivität werden Sie automatisch abgemeldet; die Dauer stellen Sie unter [Erweitert → Weboberflächenoptionen]({{< relref "/advanced/gui.md" >}}) ein.
 
+## Listen {#lists}
+
+Listen wie *Konten → Telefone* lassen sich durchsuchen und werden in Seiten angezeigt. Suchfeld und Seitengröße stehen über der Tabelle, die Seitenlinks darunter.
+
+- **Suchen**: Tippen Sie in das Feld *Suchen* (sein Platzhaltertext nennt die durchsuchten Spalten, bei Telefonen *Nummer, Name oder Beschreibung*). Die Liste folgt beim Tippen, kurz nachdem Sie innehalten; die Eingabetaste sucht sofort, und das × im Feld leert es. Die Suche findet den Text an beliebiger Stelle in diesen Spalten, Groß- und Kleinschreibung spielen keine Rolle, auch nicht bei Umlauten und anderen Akzenten: „mei“ findet „Meier“, „müller“ findet „Müller“. Die Treffer werden in den Zeilen hervorgehoben. Neben dem Feld steht die Anzahl der Telefone, bei einer Suche die Treffer von allen, zum Beispiel *11 von 64*. Passt nichts, sagt die Liste das, zum Beispiel *Keine Telefone gefunden*, mit einer Schaltfläche *Suche zurücksetzen*.
+- **Pro Seite**: Wählen Sie, wie viele Zeilen eine Seite zeigt: 25, 50 (Standard), 100 oder *Alle*.
+- **Seitenlinks**: Passt die Liste nicht auf eine Seite, zeigt die untere Zeile, welche Zeilen Sie sehen (zum Beispiel *51–100 von 500*), und Links zur ersten und letzten Seite, zu den Seiten um die aktuelle herum sowie ‹ und › für die vorherige und nächste Seite.
+
+Suche, Seite und Seitengröße sind Teil der Adresse im Browser (zum Beispiel `/accounts/phones?q=meier&page=2`). Neu laden, die Zurück-Taste, ein Lesezeichen oder ein Link, den Sie einer Kollegin schicken, zeigen dieselbe Ansicht. Ein neuer Aufruf über das Menü beginnt ohne Suche auf der ersten Seite mit 50 Zeilen.
+
+Nachdem Sie eine Zeile gelöscht haben, werden die Anzahl und die Seitenlinks bei der nächsten Suche oder dem nächsten Seitenwechsel aktualisiert.
+
 ## Änderungen speichern und übernehmen {#apply}
 
 PhonixPBX trennt das **Speichern** vom **Aktivieren**. Wenn Sie ein Formular speichern, steht die Änderung sofort in der Datenbank, die Telefonanlage läuft aber noch mit der alten Konfiguration. Oben auf jeder Seite erscheint ein gelber Hinweis:

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-25 09:53+0100\n"
+"POT-Creation-Date: 2026-10-25 12:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,6 +44,10 @@ msgid "%(language)s (default)"
 msgstr ""
 
 #, python-format
+msgid "%(matched)d of %(total)d"
+msgstr ""
+
+#, python-format
 msgid "%(month)s %(year)s"
 msgstr ""
 
@@ -72,6 +76,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 #, python-format
+msgid "%(num)d phone"
+msgid_plural "%(num)d phones"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
 msgid "%(num)d route"
 msgid_plural "%(num)d routes"
 msgstr[0] ""
@@ -91,6 +101,10 @@ msgstr ""
 
 #, python-format
 msgid "%(object)s: unknown media file %(path)s"
+msgstr ""
+
+#, python-format
+msgid "%(start)d–%(end)d of %(matched)d"
 msgstr ""
 
 #, python-format
@@ -361,6 +375,9 @@ msgid "Advanced: one key=value per line, appended to the generated endpoint/peer
 msgstr ""
 
 msgid "Advanced: one key=value per line, appended to the generated section."
+msgstr ""
+
+msgid "All"
 msgstr ""
 
 msgid ""
@@ -783,6 +800,9 @@ msgid "Choose business hours without special periods of their own"
 msgstr ""
 
 msgid "Choose or upload an announcement"
+msgstr ""
+
+msgid "Clear search"
 msgstr ""
 
 msgid "Client ID"
@@ -1295,6 +1315,9 @@ msgid "Extension must be digits or an Asterisk pattern (X, N, Z, [], ., !)"
 msgstr ""
 
 msgid "Extension must consist of 1-20 digits"
+msgstr ""
+
+msgid "Extension, name or description"
 msgstr ""
 
 msgid "External"
@@ -2053,6 +2076,9 @@ msgstr ""
 msgid "Newer"
 msgstr ""
 
+msgid "Next page"
+msgstr ""
+
 msgid "No API tokens"
 msgstr ""
 
@@ -2106,6 +2132,9 @@ msgstr ""
 msgid ""
 "No password set: only key logins (/data/ssh/authorized_keys) work. At "
 "least 8 characters."
+msgstr ""
+
+msgid "No phones found"
 msgstr ""
 
 msgid "No phones yet"
@@ -2368,6 +2397,9 @@ msgstr ""
 msgid "Pending changes"
 msgstr ""
 
+msgid "Per page"
+msgstr ""
+
 msgid "Permitted networks"
 msgstr ""
 
@@ -2498,6 +2530,9 @@ msgid "Prefixes to add may only contain digits, '*' and '#'"
 msgstr ""
 
 msgid "Preview"
+msgstr ""
+
+msgid "Previous page"
 msgstr ""
 
 msgid "Print"
@@ -2829,6 +2864,9 @@ msgid "Saved periods are switched on and off at the top of the page."
 msgstr ""
 
 msgid "Saving a backup of the configuration ..."
+msgstr ""
+
+msgid "Search"
 msgstr ""
 
 msgid "Secret"

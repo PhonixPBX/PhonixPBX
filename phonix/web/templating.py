@@ -18,7 +18,7 @@ from markupsafe import Markup, escape
 from phonix import __version__, i18n
 from phonix.core import validation as v
 from phonix.i18n import N_
-from phonix.services import platform, update
+from phonix.services import listing, platform, update
 from phonix.services.common import AREAS
 from phonix.web.security import csrf_token
 
@@ -252,6 +252,7 @@ templates.env.install_gettext_callables(  # type: ignore[attr-defined]
     ngettext=lambda s, p, n: i18n.translations(i18n.get_language()).ngettext(s, p, n),
     newstyle=True,
 )
+templates.env.globals["PER_PAGE_DEFAULT"] = listing.PER_PAGE_DEFAULT
 templates.env.globals["UI_LANGUAGES"] = i18n.LANGUAGE_NAMES
 templates.env.globals["ui_language"] = i18n.get_language
 templates.env.filters["filesize"] = _filesize

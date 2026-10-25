@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-25 09:53+0100\n"
+"POT-Creation-Date: 2026-10-25 12:58+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: sv\n"
@@ -43,6 +43,10 @@ msgid "%(language)s (default)"
 msgstr "%(language)s (standard)"
 
 #, python-format
+msgid "%(matched)d of %(total)d"
+msgstr "%(matched)d av %(total)d"
+
+#, python-format
 msgid "%(month)s %(year)s"
 msgstr "%(month)s %(year)s"
 
@@ -71,6 +75,12 @@ msgstr[0] "%(num)d månad"
 msgstr[1] "%(num)d månader"
 
 #, python-format
+msgid "%(num)d phone"
+msgid_plural "%(num)d phones"
+msgstr[0] "%(num)d telefon"
+msgstr[1] "%(num)d telefoner"
+
+#, python-format
 msgid "%(num)d route"
 msgid_plural "%(num)d routes"
 msgstr[0] "%(num)d rutt"
@@ -91,6 +101,10 @@ msgstr "%(object)s: hänvisning till okänt %(type)s %(id)s"
 #, python-format
 msgid "%(object)s: unknown media file %(path)s"
 msgstr "%(object)s: okänd mediefil %(path)s"
+
+#, python-format
+msgid "%(start)d–%(end)d of %(matched)d"
+msgstr "%(start)d–%(end)d av %(matched)d"
 
 #, python-format
 msgid "%(used)s of %(total)s"
@@ -363,6 +377,9 @@ msgstr "Avancerat: en key=value per rad, läggs till i den genererade endpointen
 
 msgid "Advanced: one key=value per line, appended to the generated section."
 msgstr "Avancerat: en key=value per rad, läggs till i den genererade sektionen."
+
+msgid "All"
+msgstr "Alla"
 
 msgid "An Asterisk sound in the prompt language of the system, e.g. welcome. You can also type the name of another sound."
 msgstr "Ett Asterisk-ljud på systemets promptspråk, t.ex. welcome. Du kan också skriva namnet på ett annat ljud."
@@ -781,6 +798,9 @@ msgstr "Välj öppettider utan egna specialperioder"
 
 msgid "Choose or upload an announcement"
 msgstr "Välj eller ladda upp ett meddelande"
+
+msgid "Clear search"
+msgstr "Rensa sökning"
 
 msgid "Client ID"
 msgstr "Klient-ID"
@@ -1285,6 +1305,9 @@ msgstr "Anknytningen måste bestå av siffror eller ett Asterisk-mönster (X, N,
 
 msgid "Extension must consist of 1-20 digits"
 msgstr "Anknytningen måste bestå av 1–20 siffror"
+
+msgid "Extension, name or description"
+msgstr "Anknytning, namn eller beskrivning"
 
 msgid "External"
 msgstr "Extern"
@@ -2048,6 +2071,9 @@ msgstr "Nytt röstmeddelande från ${VM_CALLERID}"
 msgid "Newer"
 msgstr "Nyare"
 
+msgid "Next page"
+msgstr "Nästa sida"
+
 msgid "No API tokens"
 msgstr "Inga API-token"
 
@@ -2100,6 +2126,9 @@ msgstr "Inga manager-användare"
 
 msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
 msgstr "Inget lösenord angivet: endast nyckelinloggning (/data/ssh/authorized_keys) fungerar. Minst 8 tecken."
+
+msgid "No phones found"
+msgstr "Inga telefoner hittades"
 
 msgid "No phones yet"
 msgstr "Inga telefoner än"
@@ -2362,6 +2391,9 @@ msgstr "Mönstret %(pattern)s används redan av %(name)s"
 msgid "Pending changes"
 msgstr "Väntande ändringar"
 
+msgid "Per page"
+msgstr "Per sida"
+
 msgid "Permitted networks"
 msgstr "Tillåtna nätverk"
 
@@ -2489,6 +2521,9 @@ msgstr "Prefix som ska läggas till får bara innehålla siffror, '*' och '#'"
 
 msgid "Preview"
 msgstr "Förhandsgranskning"
+
+msgid "Previous page"
+msgstr "Föregående sida"
 
 msgid "Print"
 msgstr "Skriv ut"
@@ -2829,6 +2864,9 @@ msgstr "Sparade perioder slås på och av högst upp på sidan."
 
 msgid "Saving a backup of the configuration ..."
 msgstr "Sparar en säkerhetskopia av konfigurationen ..."
+
+msgid "Search"
+msgstr "Sök"
 
 msgid "Secret"
 msgstr "Hemlighet"

@@ -453,3 +453,11 @@
 /* Tom Select with data-tom-sortable: the chosen items are dragged into order (SortableJS) */
 select[data-tom-sortable] + .ts-wrapper .ts-control > .item { cursor: grab; }
 select[data-tom-sortable] + .ts-wrapper .ts-control > .item.sortable-ghost { opacity: 0.4; }
+
+/* list views (macros/lists.html): search field and count on the left, page size on the right */
+.list-header { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; width: 100%; }
+.list-search { flex: 0 1 20rem; }
+.list-per-page { display: flex; align-items: center; gap: 0.5rem; margin-inline-start: auto; }
+.list-per-page .form-select { width: auto; }
+/* search matches without Tabler's padding, so highlighting does not shift the text */
+.table mark { padding: 0; }

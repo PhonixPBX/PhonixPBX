@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-25 09:53+0100\n"
+"POT-Creation-Date: 2026-10-25 12:58+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ru\n"
@@ -43,6 +43,10 @@ msgid "%(language)s (default)"
 msgstr "%(language)s (по умолчанию)"
 
 #, python-format
+msgid "%(matched)d of %(total)d"
+msgstr "%(matched)d из %(total)d"
+
+#, python-format
 msgid "%(month)s %(year)s"
 msgstr "%(month)s %(year)s"
 
@@ -73,6 +77,13 @@ msgstr[1] "%(num)d месяца"
 msgstr[2] "%(num)d месяцев"
 
 #, python-format
+msgid "%(num)d phone"
+msgid_plural "%(num)d phones"
+msgstr[0] "%(num)d телефон"
+msgstr[1] "%(num)d телефона"
+msgstr[2] "%(num)d телефонов"
+
+#, python-format
 msgid "%(num)d route"
 msgid_plural "%(num)d routes"
 msgstr[0] "%(num)d маршрут"
@@ -94,6 +105,10 @@ msgstr "%(object)s: ссылка на неизвестный объект %(type
 #, python-format
 msgid "%(object)s: unknown media file %(path)s"
 msgstr "%(object)s: неизвестный медиафайл %(path)s"
+
+#, python-format
+msgid "%(start)d–%(end)d of %(matched)d"
+msgstr "%(start)d–%(end)d из %(matched)d"
 
 #, python-format
 msgid "%(used)s of %(total)s"
@@ -366,6 +381,9 @@ msgstr "Для опытных: по одной паре key=value в строк�
 
 msgid "Advanced: one key=value per line, appended to the generated section."
 msgstr "Для опытных: по одной паре key=value в строке, добавляются к сгенерированной секции."
+
+msgid "All"
+msgstr "Все"
 
 msgid "An Asterisk sound in the prompt language of the system, e.g. welcome. You can also type the name of another sound."
 msgstr "Звук Asterisk на языке голосовых подсказок системы, например welcome. Можно также ввести имя другого звука."
@@ -784,6 +802,9 @@ msgstr "Выберите рабочее время без собственных
 
 msgid "Choose or upload an announcement"
 msgstr "Выберите или загрузите объявление"
+
+msgid "Clear search"
+msgstr "Сбросить поиск"
 
 msgid "Client ID"
 msgstr "ID клиента"
@@ -1290,6 +1311,9 @@ msgstr "Внутренний номер должен состоять из ци�
 
 msgid "Extension must consist of 1-20 digits"
 msgstr "Внутренний номер должен состоять из 1–20 цифр"
+
+msgid "Extension, name or description"
+msgstr "Внутренний номер, имя или описание"
 
 msgid "External"
 msgstr "Внешний"
@@ -2055,6 +2079,9 @@ msgstr "Новое голосовое сообщение от ${VM_CALLERID}"
 msgid "Newer"
 msgstr "Новее"
 
+msgid "Next page"
+msgstr "Следующая страница"
+
 msgid "No API tokens"
 msgstr "Нет токенов API"
 
@@ -2105,6 +2132,9 @@ msgstr "Нет пользователей AMI"
 
 msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
 msgstr "Пароль не задан: возможен только вход по ключу (/data/ssh/authorized_keys). Не менее 8 символов."
+
+msgid "No phones found"
+msgstr "Телефоны не найдены"
 
 msgid "No phones yet"
 msgstr "Телефонов пока нет"
@@ -2366,6 +2396,9 @@ msgstr "Шаблон %(pattern)s уже используется провайд�
 msgid "Pending changes"
 msgstr "Ожидающие изменения"
 
+msgid "Per page"
+msgstr "На странице"
+
 msgid "Permitted networks"
 msgstr "Разрешенные сети"
 
@@ -2493,6 +2526,9 @@ msgstr "Добавляемые префиксы могут содержать т
 
 msgid "Preview"
 msgstr "Предпросмотр"
+
+msgid "Previous page"
+msgstr "Предыдущая страница"
 
 msgid "Print"
 msgstr "Печать"
@@ -2833,6 +2869,9 @@ msgstr "Сохранённые периоды включаются и выклю
 
 msgid "Saving a backup of the configuration ..."
 msgstr "Сохранение резервной копии конфигурации ..."
+
+msgid "Search"
+msgstr "Поиск"
 
 msgid "Secret"
 msgstr "Секрет"

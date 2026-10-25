@@ -4,7 +4,8 @@
 
 from __future__ import annotations
 
-from typing import Any
+from collections.abc import Callable, Iterable, Sequence
+from typing import Any, TypeVar
 
 from fastapi import Request
 from fastapi.responses import RedirectResponse, Response
@@ -13,9 +14,12 @@ from sqlalchemy.orm import Session
 
 from phonix.core import settings as st
 from phonix.i18n import _
+from phonix.services import listing
 from phonix.services.common import ServiceError, audit, diff_dicts, errors_from_validation, mark_dirty
 from phonix.web.deps import form_to_dict
 from phonix.web.templating import flash, render
+
+T = TypeVar("T")
 
 
 def is_htmx(request: Request) -> bool:
@@ -91,6 +95,20 @@ def service_errors(exc: ServiceError) -> dict[str, str]:
 
 def page(request: Request, template: str, status_code: int = 200, **ctx: Any) -> Response:
     return render(request, template, ctx, status_code=status_code)
+
+
+def list_page(
+    request: Request,
+    items: Sequence[T],
+    fields: Callable[[T], Iterable[object]],
+    choices: tuple[int | None, ...] = listing.PER_PAGE_CHOICES,
+) -> listing.ListPage[T]:
+    """Search and page `items` by the `q`, `page` and `per_page` query parameters of a list view."""
+    params = request.query_params
+    q = params.get("q", "").strip()
+    per_page = listing.parse_per_page(params.get("per_page", ""), choices)
+    matched = listing.search(items, q, fields)
+    return listing.page_of(matched, len(items), q, listing.parse_page(params.get("page", "")), per_page, choices)
 
 
 def model_values(schema: type[BaseModel], data: dict[str, Any]) -> dict[str, Any]:

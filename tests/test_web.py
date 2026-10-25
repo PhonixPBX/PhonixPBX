@@ -962,3 +962,62 @@ def test_every_resource_has_search_fields():
     from phonix.services.resources import RESOURCES
 
     assert all(callable(r.search_fields) for r in RESOURCES)
+
+
+def _bulk_phones(n):
+    """Create `n` extra phones "Bulk 0".."Bulk n-1" with extensions 400, 401, ..."""
+    from phonix.services import phones as phone_svc
+
+    with session_scope() as s:
+        for i in range(n):
+            phone_svc.create_phone(s, phone_svc.PhoneIn(extension="4" + f"{i:02}", callerid=f"Bulk {i}"))
+
+
+def test_phone_list_search_and_paging(client):
+    from phonix.services import phones as phone_svc
+
+    login(client)
+    _bulk_phones(60)
+    page = client.get("/accounts/phones").text
+    assert 'id="list-phones"' in page and 'name="q"' in page and 'name="per_page"' in page
+    assert page.count('id="phone-') - page.count('id="phone-status-') == 50
+    assert 'hx-select="#list-phones"' in page and 'hx-replace-url="true"' in page
+    assert "?page=2" in page  # footer link
+    r = client.get("/accounts/phones", params={"q": "bulk 5"})
+    assert "<mark>Bulk 5</mark>" in r.text and "Bulk 12" not in r.text
+    assert "11 of 64" in r.text
+    r = client.get("/accounts/phones", params={"q": "zzz-none"})
+    assert "No phones found" in r.text and 'href="/accounts/phones"' in r.text
+    r = client.get("/accounts/phones", params={"per_page": "all"})
+    with session_scope() as s:
+        n = len(phone_svc.list_phones(s))
+    assert r.text.count('<tr id="phone-') == n  # all rows; no footer
+    assert 'class="pagination' not in r.text
+
+
+def test_phone_list_bad_params(client):
+    login(client)
+    for q in ("page=0", "page=-3", "page=x", "page=999", "per_page=7", "per_page=all&page=5"):
+        assert client.get(f"/accounts/phones?{q}").status_code == 200, q
+
+
+def test_phone_list_search_escapes(client):
+    login(client)
+    r = client.get("/accounts/phones", params={"q": '<script>"x'})
+    assert '<script>"x' not in r.text and "&lt;script&gt;" in r.text
+
+
+def test_phone_list_blank_search(client):
+    login(client)
+    r = client.get("/accounts/phones", params={"q": "   "})
+    assert "No phones found" not in r.text and " of " not in r.text.split('id="list-phones-count"')[1][:40]
+
+
+def test_phone_status_follows_view(client):
+    login(client)
+    _bulk_phones(60)
+    page = client.get("/accounts/phones", params={"q": "bulk 1"}).text
+    assert 'hx-get="/accounts/phones/status?q=bulk+1"' in page
+    part = client.get("/accounts/phones/status", params={"q": "bulk 1"}).text
+    shown = re.findall(r'hx-target="#phone-status-(\d+)"', part)
+    assert 0 < len(shown) <= 11

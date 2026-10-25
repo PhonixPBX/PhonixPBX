@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-25 09:53+0100\n"
+"POT-Creation-Date: 2026-10-25 12:58+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: fr\n"
@@ -43,6 +43,10 @@ msgid "%(language)s (default)"
 msgstr "%(language)s (par défaut)"
 
 #, python-format
+msgid "%(matched)d of %(total)d"
+msgstr "%(matched)d sur %(total)d"
+
+#, python-format
 msgid "%(month)s %(year)s"
 msgstr "%(month)s %(year)s"
 
@@ -71,6 +75,12 @@ msgstr[0] "%(num)d mois"
 msgstr[1] "%(num)d mois"
 
 #, python-format
+msgid "%(num)d phone"
+msgid_plural "%(num)d phones"
+msgstr[0] "%(num)d téléphone"
+msgstr[1] "%(num)d téléphones"
+
+#, python-format
 msgid "%(num)d route"
 msgid_plural "%(num)d routes"
 msgstr[0] "%(num)d route"
@@ -91,6 +101,10 @@ msgstr "%(object)s : référence à un objet %(type)s inconnu (%(id)s)"
 #, python-format
 msgid "%(object)s: unknown media file %(path)s"
 msgstr "%(object)s : fichier média inconnu %(path)s"
+
+#, python-format
+msgid "%(start)d–%(end)d of %(matched)d"
+msgstr "%(start)d–%(end)d sur %(matched)d"
 
 #, python-format
 msgid "%(used)s of %(total)s"
@@ -364,6 +378,9 @@ msgstr "Avancé : une ligne key=value par ligne, ajoutée à l'endpoint/au pair
 
 msgid "Advanced: one key=value per line, appended to the generated section."
 msgstr "Avancé : une ligne key=value par ligne, ajoutée à la section générée."
+
+msgid "All"
+msgstr "Tous"
 
 msgid "An Asterisk sound in the prompt language of the system, e.g. welcome. You can also type the name of another sound."
 msgstr ""
@@ -784,6 +801,9 @@ msgstr "Choisissez des horaires d'ouverture sans périodes spéciales propres"
 
 msgid "Choose or upload an announcement"
 msgstr "Choisissez ou envoyez une annonce"
+
+msgid "Clear search"
+msgstr "Effacer la recherche"
 
 msgid "Client ID"
 msgstr "ID client"
@@ -1290,6 +1310,9 @@ msgstr "Le numéro interne doit être composé de chiffres ou d'un modèle Aster
 
 msgid "Extension must consist of 1-20 digits"
 msgstr "Le numéro interne doit comporter de 1 à 20 chiffres"
+
+msgid "Extension, name or description"
+msgstr "Poste, nom ou description"
 
 msgid "External"
 msgstr "Externe"
@@ -2059,6 +2082,9 @@ msgstr "Nouveau message vocal de ${VM_CALLERID}"
 msgid "Newer"
 msgstr "Plus récents"
 
+msgid "Next page"
+msgstr "Page suivante"
+
 msgid "No API tokens"
 msgstr "Aucun jeton API"
 
@@ -2113,6 +2139,9 @@ msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At lea
 msgstr ""
 "Aucun mot de passe défini : seules les connexions par clé (/data/ssh/authorized_keys) fonctionnent. Au moins 8 "
 "caractères."
+
+msgid "No phones found"
+msgstr "Aucun téléphone trouvé"
 
 msgid "No phones yet"
 msgstr "Aucun téléphone pour l'instant"
@@ -2375,6 +2404,9 @@ msgstr "Le modèle %(pattern)s est déjà utilisé par %(name)s"
 msgid "Pending changes"
 msgstr "Modifications en attente"
 
+msgid "Per page"
+msgstr "Par page"
+
 msgid "Permitted networks"
 msgstr "Réseaux autorisés"
 
@@ -2502,6 +2534,9 @@ msgstr "Les préfixes à ajouter ne peuvent contenir que des chiffres, '*' et '#
 
 msgid "Preview"
 msgstr "Aperçu"
+
+msgid "Previous page"
+msgstr "Page précédente"
 
 msgid "Print"
 msgstr "Imprimer"
@@ -2842,6 +2877,9 @@ msgstr "Les périodes enregistrées s'activent et se désactivent en haut de la 
 
 msgid "Saving a backup of the configuration ..."
 msgstr "Enregistrement d'une sauvegarde de la configuration ..."
+
+msgid "Search"
+msgstr "Rechercher"
 
 msgid "Secret"
 msgstr "Secret"

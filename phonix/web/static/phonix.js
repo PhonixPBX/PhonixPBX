@@ -474,6 +474,23 @@
       .forEach((el) => el.dispatchEvent(new CustomEvent("phonix:tab-shown")));
   });
 
+  // ---- list views (macros/lists.html) ---------------------------------------------------
+  // the search form sends all its fields; leave the defaults (no search, the default page size
+  // in data-list-search) out of the address, as the page links do
+  document.addEventListener("htmx:before:history:update", (evt) => {
+    const detail = evt.detail;
+    const source = detail && detail.sourceElement;
+    const form = source && source.closest ? source.closest("form[data-list-search]") : null;
+    if (!form || !detail.history) return;
+    const url = new URL(detail.history.path, location.href);
+    const params = url.searchParams;
+    if (!params.get("q")) params.delete("q");
+    if (params.get("page") === "1") params.delete("page");
+    if (params.get("per_page") === form.dataset.listSearch) params.delete("per_page");
+    url.search = params.toString();
+    detail.history.path = url.pathname + url.search;
+  });
+
   // ---- sidebar links (hx-boost) ----------------------------------------------------
   // they swap #page only (not <body>, whose scripts would run again); a response without
   // #page (an error page, a redirect to the login) is loaded as a normal page instead

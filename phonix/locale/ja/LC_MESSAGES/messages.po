@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-25 09:53+0100\n"
+"POT-Creation-Date: 2026-10-25 12:58+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ja\n"
@@ -43,6 +43,10 @@ msgid "%(language)s (default)"
 msgstr "%(language)s（デフォルト）"
 
 #, python-format
+msgid "%(matched)d of %(total)d"
+msgstr "%(matched)d / %(total)d"
+
+#, python-format
 msgid "%(month)s %(year)s"
 msgstr "%(year)s年%(month)s"
 
@@ -69,6 +73,11 @@ msgid_plural "%(num)d months"
 msgstr[0] "%(num)d か月"
 
 #, python-format
+msgid "%(num)d phone"
+msgid_plural "%(num)d phones"
+msgstr[0] "%(num)d 台の電話機"
+
+#, python-format
 msgid "%(num)d route"
 msgid_plural "%(num)d routes"
 msgstr[0] "%(num)d 件のルート"
@@ -88,6 +97,10 @@ msgstr "%(object)s: 不明な %(type)s %(id)s への参照です"
 #, python-format
 msgid "%(object)s: unknown media file %(path)s"
 msgstr "%(object)s: 不明なメディアファイル %(path)s"
+
+#, python-format
+msgid "%(start)d–%(end)d of %(matched)d"
+msgstr "%(start)d–%(end)d / %(matched)d"
 
 #, python-format
 msgid "%(used)s of %(total)s"
@@ -351,6 +364,9 @@ msgstr "詳細: 1 行に 1 つの key=value を記述します。生成された
 
 msgid "Advanced: one key=value per line, appended to the generated section."
 msgstr "詳細: 1 行に 1 つの key=value を記述します。生成されたセクションに追加されます。"
+
+msgid "All"
+msgstr "すべて"
 
 msgid "An Asterisk sound in the prompt language of the system, e.g. welcome. You can also type the name of another sound."
 msgstr "システムのガイダンス言語の Asterisk サウンドです（例: welcome）。他のサウンド名を入力することもできます。"
@@ -765,6 +781,9 @@ msgstr "独自の特別期間を持たない営業時間を選択してくださ
 
 msgid "Choose or upload an announcement"
 msgstr "アナウンスを選択またはアップロードしてください"
+
+msgid "Clear search"
+msgstr "検索をクリア"
 
 msgid "Client ID"
 msgstr "クライアント ID"
@@ -1269,6 +1288,9 @@ msgstr "内線番号は数字または Asterisk パターン（X、N、Z、[]、
 
 msgid "Extension must consist of 1-20 digits"
 msgstr "内線番号は 1～20 桁の数字で入力してください"
+
+msgid "Extension, name or description"
+msgstr "内線番号、名前または説明"
 
 msgid "External"
 msgstr "外部"
@@ -2028,6 +2050,9 @@ msgstr "${VM_CALLERID} からの新しいボイスメール"
 msgid "Newer"
 msgstr "新しい順"
 
+msgid "Next page"
+msgstr "次のページ"
+
 msgid "No API tokens"
 msgstr "API トークンはありません"
 
@@ -2078,6 +2103,9 @@ msgstr "マネージャーユーザーはいません"
 
 msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
 msgstr "パスワードは未設定です。鍵によるログイン（/data/ssh/authorized_keys）のみ使用できます。8 文字以上。"
+
+msgid "No phones found"
+msgstr "電話機が見つかりません"
 
 msgid "No phones yet"
 msgstr "電話機はまだありません"
@@ -2334,6 +2362,9 @@ msgstr "パターン %(pattern)s はすでに %(name)s で使用されていま�
 msgid "Pending changes"
 msgstr "保留中の変更"
 
+msgid "Per page"
+msgstr "表示件数"
+
 msgid "Permitted networks"
 msgstr "許可するネットワーク"
 
@@ -2454,6 +2485,9 @@ msgstr "追加するプレフィックスには数字、'*'、'#' のみ使用�
 
 msgid "Preview"
 msgstr "プレビュー"
+
+msgid "Previous page"
+msgstr "前のページ"
 
 msgid "Print"
 msgstr "印刷"
@@ -2784,6 +2818,9 @@ msgstr "保存済みの期間は、ページ上部でオン／オフを切り替
 
 msgid "Saving a backup of the configuration ..."
 msgstr "設定のバックアップを保存しています ..."
+
+msgid "Search"
+msgstr "検索"
 
 msgid "Secret"
 msgstr "シークレット"

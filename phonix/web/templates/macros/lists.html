@@ -1,0 +1,64 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+{#
+  Search and paging for list views; import `with context`. `lv` is a ListPage (routes/ui/common.py list_page).
+  A list named <name> wraps its table (or empty state) and the footer in <div id="list-<name>">, the region
+  replaced on search, page and page size changes; the count <span id="list-<name>-count"> sits in the header,
+  outside the region, and is swapped out of band. The search field stays in place, so it keeps focus.
+#}
+
+{# the htmx attributes shared by everything that loads another view of the list #}
+{% macro _swap(list_id) %}hx-target="#{{ list_id }}" hx-select="#{{ list_id }}" hx-select-oob="#{{ list_id }}-count" hx-swap="outerHTML"{% endmacro %}
+
+{% macro list_header(lv, list_id, url, count_text, placeholder) %}
+<div class="card-header">
+  <form method="get" action="{{ url }}" role="search" class="list-header" data-list-search="{{ PER_PAGE_DEFAULT }}">
+    <div class="input-icon list-search">
+      <span class="input-icon-addon">{{ icon("search") }}</span>
+      <input type="search" name="q" class="form-control" value="{{ lv.q }}" placeholder="{{ placeholder }}" aria-label="{{ _('Search') }}" autocomplete="off"
+             hx-get="{{ url }}" hx-trigger="input changed delay:300ms, search" hx-include="closest form" {{ _swap(list_id) }} hx-replace-url="true">
+    </div>
+    <span id="{{ list_id }}-count" class="text-secondary">{{ count_text }}</span>
+    <div class="list-per-page">
+      <label class="text-secondary text-nowrap" for="{{ list_id }}-per-page">{{ _("Per page") }}</label>
+      <select id="{{ list_id }}-per-page" name="per_page" class="form-select form-select-sm"
+              hx-get="{{ url }}" hx-trigger="change" hx-include="closest form" {{ _swap(list_id) }} hx-push-url="true">
+        {% for n in lv.choices %}
+        <option value="{{ 'all' if n is none else n }}"{% if n == lv.per_page %} selected{% endif %}>{{ _("All") if n is none else n }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </form>
+</div>
+{% endmacro %}
+
+{% macro _page_link(lv, list_id, url, number, label, aria_label=None) %}
+{% set qs = lv.query(page=number) %}
+{% set href = url ~ ("?" ~ qs if qs else "") %}
+<a class="page-link" href="{{ href }}" hx-get="{{ href }}" {{ _swap(list_id) }} hx-push-url="true"{% if aria_label %} aria-label="{{ aria_label }}"{% endif %}{% if number == lv.page %} aria-current="page"{% endif %}>{{ label }}</a>
+{% endmacro %}
+
+{% macro list_footer(lv, list_id, url) %}
+{% if lv.pages > 1 %}
+<div class="card-footer d-flex flex-wrap align-items-center gap-2">
+  <p class="m-0 text-secondary">{{ _("%(start)d–%(end)d of %(matched)d", start=lv.start, end=lv.end, matched=lv.matched) }}</p>
+  <ul class="pagination m-0 ms-auto">
+    {% if lv.page > 1 %}<li class="page-item">{{ _page_link(lv, list_id, url, lv.page - 1, "‹", _("Previous page")) }}</li>
+    {% else %}<li class="page-item disabled"><span class="page-link" aria-hidden="true">‹</span></li>{% endif %}
+    {% for n in lv.page_links() %}
+    {% if n is none %}<li class="page-item disabled"><span class="page-link">…</span></li>
+    {% else %}<li class="page-item{% if n == lv.page %} active{% endif %}">{{ _page_link(lv, list_id, url, n, n) }}</li>{% endif %}
+    {% endfor %}
+    {% if lv.page < lv.pages %}<li class="page-item">{{ _page_link(lv, list_id, url, lv.page + 1, "›", _("Next page")) }}</li>
+    {% else %}<li class="page-item disabled"><span class="page-link" aria-hidden="true">›</span></li>{% endif %}
+  </ul>
+</div>
+{% endif %}
+{% endmacro %}
+
+{% macro no_matches(text, url) %}
+<div class="empty">
+  <div class="empty-icon">{{ icon("search") }}</div>
+  <p class="empty-title">{{ text }}</p>
+  <div class="empty-action"><a href="{{ url }}" class="btn">{{ icon("x") }}{{ _("Clear search") }}</a></div>
+</div>
+{% endmacro %}

@@ -19,7 +19,7 @@ Den Typ wählen Sie mit den Schaltflächen **SIP-Telefon**, **IAX-Telefon** und 
 
 ## Telefonliste {#list}
 
-Die Liste zeigt alle Telefone, sortiert nach Nummer:
+Die Liste zeigt die Telefone sortiert nach Nummer, 50 pro Seite. Das Suchfeld darüber findet Telefone nach Nummer, Name oder Beschreibung; wie Suchen und Blättern funktionieren, steht unter [Listen]({{< relref "/getting-started/_index.md#lists" >}}). Die Tabelle hat diese Spalten:
 
 | Spalte | Bedeutung |
 |---|---|

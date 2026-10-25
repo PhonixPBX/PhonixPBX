@@ -8,6 +8,7 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ### Added
 
+- *Accounts → Phones*: search (extension, name, description) as you type, and paging with 25/50/100/all per page; the address keeps the view.
 - REST API: list endpoints accept `q` (search), `limit` and `offset`; the `X-Total-Count` header carries the number of matches.
 - MCP: the `list_*` tools accept `q` (search), `limit` and `offset`, and their result carries `total`, the number of matches.
 - *Dialplan → Business Hours*: an out-of-office key with a lamp. A phone key on the feature code of business hours

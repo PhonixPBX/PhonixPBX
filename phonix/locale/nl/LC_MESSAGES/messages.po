@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-25 09:53+0100\n"
+"POT-Creation-Date: 2026-10-25 12:58+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: nl\n"
@@ -43,6 +43,10 @@ msgid "%(language)s (default)"
 msgstr "%(language)s (standaard)"
 
 #, python-format
+msgid "%(matched)d of %(total)d"
+msgstr "%(matched)d van %(total)d"
+
+#, python-format
 msgid "%(month)s %(year)s"
 msgstr "%(month)s %(year)s"
 
@@ -71,6 +75,12 @@ msgstr[0] "%(num)d maand"
 msgstr[1] "%(num)d maanden"
 
 #, python-format
+msgid "%(num)d phone"
+msgid_plural "%(num)d phones"
+msgstr[0] "%(num)d telefoon"
+msgstr[1] "%(num)d telefoons"
+
+#, python-format
 msgid "%(num)d route"
 msgid_plural "%(num)d routes"
 msgstr[0] "%(num)d route"
@@ -91,6 +101,10 @@ msgstr "%(object)s: verwijzing naar onbekend %(type)s %(id)s"
 #, python-format
 msgid "%(object)s: unknown media file %(path)s"
 msgstr "%(object)s: onbekend mediabestand %(path)s"
+
+#, python-format
+msgid "%(start)d–%(end)d of %(matched)d"
+msgstr "%(start)d–%(end)d van %(matched)d"
 
 #, python-format
 msgid "%(used)s of %(total)s"
@@ -364,6 +378,9 @@ msgstr "Geavanceerd: één key=value per regel, toegevoegd aan het gegenereerde 
 
 msgid "Advanced: one key=value per line, appended to the generated section."
 msgstr "Geavanceerd: één key=value per regel, toegevoegd aan de gegenereerde sectie."
+
+msgid "All"
+msgstr "Alle"
 
 msgid "An Asterisk sound in the prompt language of the system, e.g. welcome. You can also type the name of another sound."
 msgstr ""
@@ -782,6 +799,9 @@ msgstr "Kies openingstijden zonder eigen speciale perioden"
 
 msgid "Choose or upload an announcement"
 msgstr "Kies of upload een aankondiging"
+
+msgid "Clear search"
+msgstr "Zoekopdracht wissen"
 
 msgid "Client ID"
 msgstr "Client-ID"
@@ -1288,6 +1308,9 @@ msgstr "Extensie moet uit cijfers of een Asterisk-patroon (X, N, Z, [], ., !) be
 
 msgid "Extension must consist of 1-20 digits"
 msgstr "Extensie moet uit 1-20 cijfers bestaan"
+
+msgid "Extension, name or description"
+msgstr "Extensie, naam of omschrijving"
 
 msgid "External"
 msgstr "Extern"
@@ -2051,6 +2074,9 @@ msgstr "Nieuwe voicemail van ${VM_CALLERID}"
 msgid "Newer"
 msgstr "Nieuwer"
 
+msgid "Next page"
+msgstr "Volgende pagina"
+
 msgid "No API tokens"
 msgstr "Geen API-tokens"
 
@@ -2101,6 +2127,9 @@ msgstr "Geen managergebruikers"
 
 msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
 msgstr "Geen wachtwoord ingesteld: alleen aanmelden met sleutel (/data/ssh/authorized_keys) werkt. Minstens 8 tekens."
+
+msgid "No phones found"
+msgstr "Geen telefoons gevonden"
 
 msgid "No phones yet"
 msgstr "Nog geen telefoons"
@@ -2363,6 +2392,9 @@ msgstr "Patroon %(pattern)s wordt al gebruikt door %(name)s"
 msgid "Pending changes"
 msgstr "Openstaande wijzigingen"
 
+msgid "Per page"
+msgstr "Per pagina"
+
 msgid "Permitted networks"
 msgstr "Toegestane netwerken"
 
@@ -2490,6 +2522,9 @@ msgstr "Toe te voegen prefixen mogen alleen cijfers, '*' en '#' bevatten"
 
 msgid "Preview"
 msgstr "Voorbeeld"
+
+msgid "Previous page"
+msgstr "Vorige pagina"
 
 msgid "Print"
 msgstr "Afdrukken"
@@ -2830,6 +2865,9 @@ msgstr "Opgeslagen perioden worden bovenaan de pagina in- en uitgeschakeld."
 
 msgid "Saving a backup of the configuration ..."
 msgstr "Back-up van de configuratie wordt opgeslagen ..."
+
+msgid "Search"
+msgstr "Zoeken"
 
 msgid "Secret"
 msgstr "Geheim"

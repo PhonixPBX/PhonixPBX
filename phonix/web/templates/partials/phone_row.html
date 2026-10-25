@@ -1,8 +1,10 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% from "macros/ui.html" import delete_button, toggle_button with context %}
+{# also rendered alone by the toggle route, without a list view #}
+{% set hl = lv.q if lv is defined else "" %}
 <tr id="phone-{{ p.id }}"{% if not p.enabled %} class="text-secondary"{% endif %}>
-  <td><a href="/accounts/phones/{{ p.id }}" class="fw-bold">{{ p.extension }}</a></td>
-  <td>{{ p.callerid }}</td>
+  <td><a href="/accounts/phones/{{ p.id }}" class="fw-bold">{{ p.extension | highlight(hl) }}</a></td>
+  <td>{{ p.callerid | highlight(hl) }}</td>
   <td><span class="badge bg-primary-lt">{{ _(techs[p.tech]) }}</span></td>
   <td id="phone-status-{{ p.id }}">
     {% if not p.enabled %}<span class="badge bg-secondary-lt">{{ _("disabled") }}</span>
@@ -11,7 +13,7 @@
     {% else %}<span class="text-secondary small">&hellip;</span>{% endif %}
   </td>
   <td>{% if p.vm_enabled %}{{ icon("mail", "text-green") }}{% else %}<span class="text-secondary">&ndash;</span>{% endif %}</td>
-  <td class="text-secondary">{{ p.description }}</td>
+  <td class="text-secondary">{{ p.description | highlight(hl) }}</td>
   <td class="table-actions">
     <a href="/accounts/phones/{{ p.id }}" class="btn btn-ghost-primary btn-icon btn-sm" title="{{ _('Edit') }}" aria-label="{{ _('Edit phone %(ext)s', ext=p.extension) }}">{{ icon("edit") }}</a>
     {{ toggle_button("/accounts/phones/" ~ p.id ~ "/toggle", p.enabled, _("phone %(ext)s", ext=p.extension)) }}
