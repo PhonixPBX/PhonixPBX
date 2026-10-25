@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import os
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -12,7 +13,7 @@ from typing import Any
 import jinja2
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
-from markupsafe import Markup
+from markupsafe import Markup, escape
 
 from phonix import __version__, i18n
 from phonix.core import validation as v
@@ -255,6 +256,20 @@ templates.env.globals["UI_LANGUAGES"] = i18n.LANGUAGE_NAMES
 templates.env.globals["ui_language"] = i18n.get_language
 templates.env.filters["filesize"] = _filesize
 templates.env.filters["state"] = _state
+
+
+def _highlight(text: object, q: str) -> Markup:
+    """Escape `text` and wrap each case-insensitive occurrence of `q` in <mark>."""
+    s = str(text)
+    q = q.strip()
+    if not q:
+        return escape(s)
+    parts = re.split(f"({re.escape(q)})", s, flags=re.IGNORECASE)
+    # re.split with one group puts the matches at the odd indexes
+    return Markup("").join(Markup("<mark>{}</mark>").format(p) if i % 2 else escape(p) for i, p in enumerate(parts))
+
+
+templates.env.filters["highlight"] = _highlight
 templates.env.trim_blocks = True
 templates.env.lstrip_blocks = True
 

@@ -31,6 +31,8 @@ def _on_connect(dbapi_conn: Any, _record: Any) -> None:
     cur.execute("PRAGMA journal_mode=WAL")
     cur.execute("PRAGMA synchronous=NORMAL")
     cur.execute("PRAGMA busy_timeout=5000")
+    # SQLite's lower() only folds ASCII; list searches need real case-insensitivity
+    dbapi_conn.create_function("casefold", 1, lambda s: s.casefold() if isinstance(s, str) else s, deterministic=True)
     cur.close()
 
 
