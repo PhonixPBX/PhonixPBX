@@ -46,7 +46,7 @@ RUN apk add --no-cache \
         python3 py3-fastapi uvicorn py3-pydantic py3-sqlalchemy py3-alembic py3-jinja2 \
         py3-argon2-cffi py3-itsdangerous py3-python-multipart py3-babel py3-defusedxml \
         py3-cryptography py3-zstandard py3-httpx \
-        nginx msmtp nftables sox doas su-exec tini logrotate lego \
+        nginx msmtp nftables sox doas su-exec tini logrotate \
         tzdata ca-certificates-bundle iproute2 curl \
     && rm -f /etc/nginx/http.d/default.conf \
     && sed -i -e 's/^worker_processes .*/worker_processes 1;/' \
@@ -55,6 +55,11 @@ RUN apk add --no-cache \
     && grep -q '^worker_processes 1;' /etc/nginx/nginx.conf \
     && grep -q '^error_log stderr warn;' /etc/nginx/nginx.conf \
     && ! grep -q 'access_log /' /etc/nginx/nginx.conf
+
+# lego >= 5.2 is only in Alpine edge; same pinned version as the appliance
+# images (LEGO_VERSION in image/lib/common.sh)
+ARG LEGO_VERSION=5.5.2-r0
+RUN apk add --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/community "lego=$LEGO_VERSION"
 
 COPY --from=build /staging/ /
 COPY system/ /tmp/system/

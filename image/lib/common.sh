@@ -13,6 +13,13 @@ ALPINE_BRANCH=${ALPINE_BRANCH:-v3.24}
 ALPINE_MIRROR=${ALPINE_MIRROR:-https://dl-cdn.alpinelinux.org/alpine}
 KEYS_DIR=${PHONIX_KEYS_DIR:-$IMG/keys}
 LOCAL_REPO=$OUT/repo
+# lego >= 5.2 (current DNS provider APIs, e.g. Infomaniak) is only in Alpine
+# edge; the package needs nothing but musl and ca-certificates, so the edge
+# build runs on the Alpine release. build-apk.sh puts it into the local
+# repository, where it wins over the release's lego 4. Pinned for reproducible
+# builds: edge drops old versions, bump it (and the Containerfiles) then.
+LEGO_VERSION=${LEGO_VERSION:-5.5.2-r0}
+LEGO_REPO=${LEGO_REPO:-$ALPINE_MIRROR/edge/community}
 SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH:-$(date +%s)}
 export SOURCE_DATE_EPOCH
 

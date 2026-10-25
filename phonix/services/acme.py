@@ -6,7 +6,10 @@ lego does the ACME protocol, HTTP-01 (webroot served by nginx) and DNS-01
 (about 180 DNS provider APIs, credentials in environment variables). Its state
 (account key, issued certificates) lives in ``<data>/acme``; a fresh
 certificate is copied to the regular TLS paths and the consumers are reloaded.
-``phonix cert renew`` runs daily from cron and renews 30 days before expiry.
+``phonix cert renew`` runs daily from cron and renews 30 days before expiry;
+PhonixPBX decides when, lego always renews when it is called. lego v5 changed
+the layout of its state; data written by lego v4 is converted with
+``lego migrate`` before the first run.
 """
 
 from __future__ import annotations
@@ -20,6 +23,7 @@ import re
 import secrets
 import subprocess
 import sys
+import tempfile
 import threading
 from collections.abc import Iterator
 from contextlib import contextmanager
@@ -56,12 +60,15 @@ def build_command(acme: st.AcmeSettings, names: list[str]) -> tuple[list[str], d
     """lego command line and environment for obtaining a certificate for ``names``."""
     cfg = config.get()
     argv = [
-        LEGO,
+        LEGO, "run",
         "--accept-tos",
         "--email", acme.email,
         "--server", acme.directory_url,
         "--path", str(cfg.acme_dir),
-        "--key-type", "ec256",
+        "--key-type", "EC256",
+        # renew now, for exactly these names (default: only when lego thinks
+        # it is due, after a random sleep, merged with the stored names)
+        "--renew-force", "--no-random-sleep", "--force-cert-domains",
     ]  # fmt: skip
     for name in names:
         argv += ["--domains", name]
@@ -76,14 +83,65 @@ def build_command(acme: st.AcmeSettings, names: list[str]) -> tuple[list[str], d
         for resolver in acme.dns_resolvers:
             argv += ["--dns.resolvers", resolver]
         env.update(acme.dns_env)
-    argv.append("run")
     return argv, env
 
 
 def issued_files(names: list[str]) -> tuple[Path, Path]:
     """Where lego stores the certificate (with chain) and key for ``names``."""
-    base = config.get().acme_dir / "certificates" / names[0].replace("*", "_")
+    name = names[0].replace(":", "-").replace("*", "_").encode("idna").decode("ascii")
+    base = config.get().acme_dir / "certificates" / name
     return base.with_name(base.name + ".crt"), base.with_name(base.name + ".key")
+
+
+def needs_migration() -> bool:
+    """Whether ``<data>/acme`` holds accounts or certificates in the lego v4 layout.
+
+    Like ``lego migrate`` itself: account and certificate JSON files written by
+    lego v4 lack the ``origin`` that v5 adds. A v5 run on that state would
+    register a new account and fail to read the certificates.
+    """
+    base = config.get().acme_dir
+    for path in [*base.glob("accounts/*/*/account.json"), *base.glob("certificates/*.json")]:
+        try:
+            data = json.loads(path.read_text())
+        except (OSError, ValueError):
+            continue
+        if isinstance(data, dict) and "origin" not in data:
+            return True
+    return False
+
+
+def migrate() -> None:
+    """Convert lego v4 state with ``lego migrate`` (idempotent)."""
+    cfg = config.get()
+    env = {"PATH": "/usr/sbin:/usr/bin:/sbin:/bin", "HOME": str(cfg.acme_dir)}
+    # lego migrate fails if one of them is missing (v4 account, no certificate yet)
+    for name in ("accounts", "certificates"):
+        (cfg.acme_dir / name).mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory() as tmp:
+        # the confirmation prompt is answered on stdin; the suggested
+        # configuration file it writes into the working directory is not needed
+        try:
+            proc = subprocess.run(
+                [LEGO, "migrate", "--path", str(cfg.acme_dir)],
+                env=env,
+                cwd=tmp,
+                input="y\n",
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                timeout=60,
+                check=False,
+            )
+        except FileNotFoundError:
+            raise ServiceError(_("The lego ACME client is not installed.")) from None
+        except subprocess.TimeoutExpired as exc:
+            output = exc.output if isinstance(exc.output, str) else ""
+            raise LegoError("lego migrate did not finish within 60 seconds.", output) from None
+    output = proc.stdout or ""
+    if proc.returncode != 0:
+        raise LegoError(_lego_error(output) or f"lego migrate failed (exit code {proc.returncode}).", output)
+    log.info("migrated %s to the lego v5 layout", cfg.acme_dir)
 
 
 def renewal_reason(names: list[str], days: int = RENEW_DAYS) -> str:
@@ -234,6 +292,8 @@ def _obtain(session: Session, acme: st.AcmeSettings, names: list[str], user: str
     argv, env = build_command(acme, names)
     if acme.challenge == "http":
         cfg.acme_webroot.mkdir(parents=True, exist_ok=True)
+    if needs_migration():
+        migrate()
     try:
         proc = subprocess.run(
             argv,
@@ -272,9 +332,14 @@ def _obtain(session: Session, acme: st.AcmeSettings, names: list[str], user: str
 
 
 def _lego_error(output: str) -> str:
-    """lego's fatal message: its last log line, without the timestamp."""
+    """lego's fatal message: its last log line, without timestamp and level.
+
+    lego v5 ends with ``<time> ERROR Error error="<message>"``.
+    """
     for line in reversed(output.splitlines()):
-        line = re.sub(r"^\d{4}/\d\d/\d\d \d\d:\d\d:\d\d ", "", line.strip())
+        line = re.sub(r"^\d{4}-\d\d-\d\dT\S+\s+(?:[A-Z]+\s+)?", "", line.strip())
+        if m := re.fullmatch(r'Error error="(.*)"', line):
+            line = m.group(1).replace('\\"', '"').replace("\\\\", "\\")
         if line:
             return line[:500]
     return ""

@@ -2,7 +2,8 @@
 # SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
 # SPDX-License-Identifier: Apache-2.0
 # Build the "phonix" apk from the working tree and publish it, signed, in the
-# local repository out/repo/<arch>/ for every architecture (noarch package).
+# local repository out/repo/<arch>/ for every architecture (noarch package),
+# together with lego from Alpine edge (see LEGO_VERSION in common.sh).
 . /src/image/lib/common.sh
 
 VERSION=$(phonix_version)
@@ -54,15 +55,22 @@ built=$(find "$WORK/apkbuild/repo" -name "phonix-*$PKGVER-r*.apk")
 for a in $ARCHES; do
 	d=$LOCAL_REPO/$a
 	mkdir -p "$d"
-	rm -f "$d"/phonix-*.apk
+	rm -f "$d"/phonix-*.apk "$d"/lego-*.apk
 	# shellcheck disable=SC2086
 	cp $built "$d/"
+	wget -q -O "$d/lego-$LEGO_VERSION.apk" "$LEGO_REPO/$a/lego-$LEGO_VERSION.apk" ||
+		die "lego $LEGO_VERSION ($a) is not in $LEGO_REPO"
+	# apk index checks the package signatures: Alpine's keys for <arch>, ours
+	keys=$WORK/apkbuild/keys-$a
+	rm -rf "$keys"
+	mkdir -p "$keys"
+	cp /usr/share/apk/keys/"$a"/*.pub "$KEYS_DIR/abuild/phonix-abuild.rsa.pub" "$keys/"
 	(
 		cd "$d" || exit 1
-		apk index --no-warnings --quiet --output APKINDEX.tar.gz.new \
+		apk index --keys-dir "$keys" --no-warnings --quiet --output APKINDEX.tar.gz.new \
 			--description "phonix local" --rewrite-arch "$a" ./*.apk
 		abuild-sign -q APKINDEX.tar.gz.new
 		mv APKINDEX.tar.gz.new APKINDEX.tar.gz
 	)
 done
-msg "phonix $PKGVER published to $LOCAL_REPO ($ARCHES)"
+msg "phonix $PKGVER and lego $LEGO_VERSION published to $LOCAL_REPO ($ARCHES)"

@@ -324,7 +324,7 @@ Everything hardware-specific listed in the confirmed decisions, plus Humbug anal
 - Login attempts are rate-limited, by nginx and in the app.
 
 **HTTPS**
-- HTTPS is the default. A self-signed certificate is generated on first boot. Port 80 redirects to HTTPS (except `/.well-known/acme-challenge/`). Users can upload their own certificate or have one issued and renewed automatically by an ACME CA (Let's Encrypt, ZeroSSL or a custom directory) through the `lego` client, validated over HTTP-01 or DNS-01 with a DNS provider API. `phonix cert renew` runs daily from cron and renews 30 days before expiry.
+- HTTPS is the default. A self-signed certificate is generated on first boot. Port 80 redirects to HTTPS (except `/.well-known/acme-challenge/`). Users can upload their own certificate or have one issued and renewed automatically by an ACME CA (Let's Encrypt, ZeroSSL or a custom directory) through the `lego` client, validated over HTTP-01 or DNS-01 with a DNS provider API. `phonix cert renew` runs daily from cron and renews 30 days before expiry; PhonixPBX decides when to renew and calls `lego run --renew-force --no-random-sleep --force-cert-domains`. lego 5 (≥ 5.2, current DNS provider APIs) is only in Alpine edge: the images and containers install a pinned edge build (`LEGO_VERSION` in `image/lib/common.sh`, `Containerfile`, `dev/Containerfile`). ACME state written by lego 4 (e.g. from a restored backup) is converted with `lego migrate` before the next run.
 
 **Secrets**
 - SIP and IAX secrets are stored in the DB.

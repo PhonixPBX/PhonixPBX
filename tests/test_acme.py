@@ -53,6 +53,8 @@ class FakeLego:
 
     def __call__(self, argv, **kwargs):
         self.calls.append((argv, kwargs["env"]))
+        if argv[1] == "migrate":
+            return subprocess.CompletedProcess(argv, 0, stdout="")
         names = [argv[i + 1] for i, a in enumerate(argv) if a == "--domains"]
         if self.returncode == 0:
             crt, key = acme.issued_files(names)
@@ -60,9 +62,13 @@ class FakeLego:
             crt_pem, key_pem = _issue_pem(names, self.days)
             crt.write_bytes(crt_pem)
             key.write_bytes(key_pem)
-            out = "[INFO] [pbx.example.org] Server responded with a certificate.\n"
+            out = '2026-10-25T16:31:42.7Z INFO  Server responded with a certificate. domains="pbx.example.org"\n'
         else:
-            out = "[INFO] acme: Trying to solve DNS-01\nerror: one or more domains had a problem: NXDOMAIN\n"
+            out = (
+                "2026-10-25T16:30:47.472653920Z INFO  dns01: Trying to solve DNS-01. domain=pbx.example.org\n"
+                '2026-10-25T16:30:51.607662001Z ERROR Error error="obtain certificate: resolver: one or more domains'
+                ' had a problem: [pbx.example.org: NXDOMAIN for \\"_acme-challenge\\"]"\n'
+            )
         return subprocess.CompletedProcess(argv, self.returncode, stdout=out)
 
 
@@ -82,7 +88,8 @@ def _enable(session, **kw):
 def test_build_command_http(runtime):
     s = st.AcmeSettings(enabled=True, email="a@example.org")
     argv, env = acme.build_command(s, ["pbx.example.org", "sip.example.org"])
-    assert argv[0] == "lego" and argv[-1] == "run"
+    assert argv[:2] == ["lego", "run"]
+    assert {"--renew-force", "--no-random-sleep", "--force-cert-domains"} <= set(argv)
     assert argv[argv.index("--server") + 1] == st.ACME_SERVERS["letsencrypt"]
     assert argv[argv.index("--http.webroot") + 1] == str(runtime.acme_webroot)
     assert argv.count("--domains") == 2 and "--dns" not in argv
@@ -167,6 +174,51 @@ def test_issue_failure_keeps_certificate(session, fake_lego):
     assert status["state"] == "error" and "NXDOMAIN" in status["message"]
     assert any("DNS-01" in line for line in status["log"])
     assert tls.certificate_info() == before
+
+
+def test_lego_error():
+    out = (
+        "2026-10-25T16:30:51.604819344Z INFO  Deactivating authorization. url=https://x\n"
+        '2026-10-25T16:30:51.607662001Z ERROR Error error="obtain certificate: \\"a\\" failed"\n\n'
+    )
+    assert acme._lego_error(out) == 'obtain certificate: "a" failed'
+    assert acme._lego_error("2026-10-25T16:30:51.6Z WARN  something odd\n") == "something odd"
+    assert acme._lego_error("") == ""
+
+
+def _v4_state(base):
+    account = base / "accounts" / "acme-v02.api.letsencrypt.org" / "admin@example.org"
+    (account / "keys").mkdir(parents=True)
+    (account / "keys" / "admin@example.org.key").write_text("KEY")
+    (account / "account.json").write_text('{"email": "admin@example.org"}')
+    (base / "certificates").mkdir()
+    (base / "certificates" / "pbx.example.org.json").write_text('{"domain": "pbx.example.org"}')
+
+
+def test_needs_migration(runtime):
+    base = runtime.acme_dir
+    assert not acme.needs_migration()
+    _v4_state(base)
+    assert acme.needs_migration()
+    # what lego migrate leaves behind
+    account = base / "accounts" / "acme-v02.api.letsencrypt.org" / "admin@example.org"
+    (account / "account.json").write_text('{"id": "admin@example.org", "origin": "migration"}')
+    assert acme.needs_migration()
+    (base / "certificates" / "pbx.example.org.json").write_text('{"id": "pbx.example.org", "origin": "migration"}')
+    assert not acme.needs_migration()
+
+
+def test_issue_migrates_v4_state(session, runtime, fake_lego):
+    _enable(session)
+    _v4_state(runtime.acme_dir)
+    (runtime.acme_dir / "certificates" / "pbx.example.org.json").unlink()
+    (runtime.acme_dir / "certificates").rmdir()
+    acme.issue(session, force=True)
+    assert (runtime.acme_dir / "certificates").is_dir()
+    (migrate_argv, migrate_env), (run_argv, _) = fake_lego.calls
+    assert migrate_argv == ["lego", "migrate", "--path", str(runtime.acme_dir)]
+    assert migrate_env == {"PATH": migrate_env["PATH"], "HOME": str(runtime.acme_dir)}
+    assert run_argv[1] == "run"
 
 
 def test_interrupted_status(runtime):

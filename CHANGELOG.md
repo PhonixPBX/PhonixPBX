@@ -6,6 +6,20 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- *Advanced → Certificate*: requesting a certificate over DNS-01 with the Infomaniak provider failed with
+  `cannot unmarshal number into Go struct field APIResponse[string].data`, because Infomaniak changed its API. The
+  newer lego client supports the current API. If a failed request left a `_acme-challenge` TXT record in your
+  Infomaniak zone, delete it.
+
+### Changed
+
+- The ACME client lego is updated from version 4.35 to 5.5. The ACME account and the certificates under `/data/acme`
+  are converted to the new layout before the first request after the update, so the existing account is kept. The
+  **lego output** on *Advanced → Certificate* uses lego 5's log format. Restoring an older backup works as well: its
+  ACME files are converted the same way.
+
 ## [1.9.0] - 2026-10-25
 
 ### Added

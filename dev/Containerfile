@@ -7,7 +7,11 @@ RUN apk add --no-cache \
         python3 py3-fastapi uvicorn py3-pydantic py3-sqlalchemy py3-alembic py3-jinja2 \
         py3-argon2-cffi py3-itsdangerous py3-python-multipart py3-babel py3-defusedxml \
         py3-cryptography py3-zstandard py3-httpx py3-pytest \
-        msmtp nftables chrony sipp lego tzdata ca-certificates openssl iproute2 bash
+        msmtp nftables chrony sipp tzdata ca-certificates openssl iproute2 bash
+
+# lego >= 5.2 is only in Alpine edge (LEGO_VERSION in image/lib/common.sh)
+ARG LEGO_VERSION=5.5.2-r0
+RUN apk add --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/community "lego=$LEGO_VERSION"
 
 ENV PHONIX_DATA_DIR=/data \
     PHONIX_PRIVILEGED=dry-run \

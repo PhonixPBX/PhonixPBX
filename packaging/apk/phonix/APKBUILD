@@ -39,7 +39,7 @@ depends="
 	chrony-openrc
 	nginx
 	nginx-openrc
-	lego
+	lego>=5.2
 	doas
 	tzdata
 	ca-certificates-bundle
