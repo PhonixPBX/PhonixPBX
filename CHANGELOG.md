@@ -44,6 +44,7 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   Before, the mode of the replaced configuration could stick to restored business hours with the same number.
 - The help button at the top right of each page is bigger.
 - The pages of the web interface use the full width of the browser window.
+- The sidebar marks the open page more clearly: a solid background, bold text and a bar on the left.
 - The web interface is built on Tabler 1.7.1: buttons, switches, small selects and some dark mode surfaces look
   slightly different, and dark mode has better contrast.
 - Configuration backups (`config.json`) are now version 5 and contain the special periods. Older backups still

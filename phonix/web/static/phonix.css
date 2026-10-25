@@ -83,10 +83,20 @@
 .phonix-sidebar .dropdown-menu {
   background: transparent;
 }
-.phonix-sidebar .dropdown-item.active,
+/* the section of the open page; the next rules are as specific as Tabler's and win because they come later */
+.phonix-sidebar[class*="navbar-expand"] .navbar-nav .nav-item.active > .nav-link {
+  font-weight: var(--tblr-font-weight-semibold);
+}
 .phonix-sidebar .dropdown-item:hover {
-  background: rgba(var(--phonix-accent-rgb), 0.55);
+  background: rgba(var(--phonix-accent-rgb), 0.4);
   color: #fff;
+}
+/* the open page: solid accent, bold and a white bar on the left, so it stands out from hover */
+.phonix-sidebar[class*="navbar-expand"] .navbar-collapse .dropdown-menu .dropdown-item.active {
+  background: var(--phonix-accent);
+  box-shadow: inset 3px 0 0 #fff;
+  color: #fff;
+  font-weight: var(--tblr-font-weight-semibold);
 }
 .phonix-brand {
   background: transparent;
