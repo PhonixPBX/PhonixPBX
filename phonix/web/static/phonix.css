@@ -180,15 +180,15 @@
   background: var(--phonix-primary) !important;
   border: 0;
 }
-.phonix-topbar > .container-xl > .navbar-nav > .nav-link,
-.phonix-topbar > .container-xl > .navbar-nav > .nav-item > .nav-link {
+.phonix-topbar > .container-fluid > .navbar-nav > .nav-link,
+.phonix-topbar > .container-fluid > .navbar-nav > .nav-item > .nav-link {
   color: rgba(255, 255, 255, 0.86) !important;
 }
-.phonix-topbar > .container-xl > .navbar-nav > .nav-link:hover,
-.phonix-topbar > .container-xl > .navbar-nav > .nav-item > .nav-link:hover {
+.phonix-topbar > .container-fluid > .navbar-nav > .nav-link:hover,
+.phonix-topbar > .container-fluid > .navbar-nav > .nav-item > .nav-link:hover {
   color: #fff !important;
 }
-.phonix-topbar > .container-xl > .navbar-nav .nav-link .text-secondary,
+.phonix-topbar > .container-fluid > .navbar-nav .nav-link .text-secondary,
 .phonix-topbar .navbar-collapse .text-secondary {
   color: rgba(255, 255, 255, 0.65) !important;
 }

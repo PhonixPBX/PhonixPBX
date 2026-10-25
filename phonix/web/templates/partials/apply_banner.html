@@ -1,7 +1,7 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% if dirty %}
 <div class="alert alert-warning alert-important mb-0 rounded-0 border-0 phonix-apply" role="alert">
-  <div class="container-xl d-flex align-items-center gap-3">
+  <div class="container-fluid d-flex align-items-center gap-3">
     {{ icon("alert-triangle") }}
     <div class="flex-fill">
       {% set areas %}{% for area in dirty %}{{ _(area) }}{% if not loop.last %}, {% endif %}{% endfor %}{% endset %}

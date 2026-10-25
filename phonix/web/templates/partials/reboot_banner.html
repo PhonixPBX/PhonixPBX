@@ -2,7 +2,7 @@
 {# an installed update waits for the reboot; the firmware page shows its own button #}
 {% if reboot_pending and not (active_item and active_item.url == "/system/firmware") %}
 <div class="alert alert-info alert-important mb-0 rounded-0 border-0" role="alert">
-  <div class="container-xl d-flex align-items-center gap-3">
+  <div class="container-fluid d-flex align-items-center gap-3">
     {{ icon("refresh") }}
     <div class="flex-fill">
       <strong>{{ _("Reboot required") }}</strong> &mdash; {{ _("Version %(version)s has been installed. Reboot to start it; until then version %(running)s keeps running.", version=reboot_pending, running=VERSION) }}
