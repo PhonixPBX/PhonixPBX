@@ -607,6 +607,52 @@ class DialplanBuilder:
             ]
             ctx.ext("s", steps)
 
+    # -- announcements recorded by phone --------------------------------------------
+
+    def recording(self) -> None:
+        """``phonix-record``: only reached by AMI Originate from the web interface (``services/recording.py``).
+
+        ``PHX_REC`` is the token; the progress goes to ``DB(phonix-rec/<token>)``, which the page polls.
+        """
+        incoming = f"{self.snap.facts.data_dir}/media/incoming"
+        state = "DB(phonix-rec/${PHX_REC})"
+        ctx = self.ctx("phonix-record", "record an announcement (started from the web interface)")
+        ctx.ext(
+            "s",
+            [
+                "NoOp(Record an announcement)",
+                'GotoIf($[${REGEX("^[0-9a-f]{32}$" ${PHX_REC})}]?:bad)',
+                "Set(PHX_REC_OK=1)",
+                "Answer()",
+                f"Set({state}=recording)",
+                "Wait(1)",
+                # Record() beeps first; # ends the recording
+                f"@record Record({incoming}/${{PHX_REC}}.wav,0,300)",
+                f"Set({state}=review)",
+                f"@review Playback({incoming}/${{PHX_REC}})",
+                # 1 accept, 2 listen again, 3 record again
+                "Read(PHX_KEY,vm-review,1,,3,5)",
+                'GotoIf($["${PHX_KEY}" = "1"]?save)',
+                'GotoIf($["${PHX_KEY}" = "2"]?review)',
+                'GotoIf($["${PHX_KEY}" = "3"]?record)',
+                f"Set({state}=cancel)",
+                "Playback(vm-goodbye)",
+                "Hangup()",
+                f"@save Set({state}=saved)",
+                "Playback(vm-msgsaved)",
+                "Hangup()",
+                "@bad Hangup()",
+            ],
+        )
+        # hanging up before saving discards the recording
+        ctx.ext(
+            "h",
+            [
+                f'ExecIf($["${{PHX_REC_OK}}" = "1" & "${{{state}}}" != "saved" & "${{{state}}}" != "cancel"]'
+                f"?Set({state}=hangup))",
+            ],
+        )
+
     # -- IVR menus and business hours --------------------------------------------
 
     def prompt(self, menu: IvrMenu) -> str:
@@ -985,6 +1031,7 @@ class DialplanBuilder:
         self.internal()
         self.applications()
         self.rooms()
+        self.recording()
         self.ivr_menus()
         self.business_hours()
         for provider in snap.active_providers:

@@ -24,7 +24,7 @@ CHANNEL_TECH = {"pjsip": "PJSIP", "iax": "IAX2"}
 RING_TIMEOUT_MS = 30000
 
 
-def _phone(session: Session, extension: str) -> Phone:
+def phone_for_call(session: Session, extension: str) -> Phone:
     phone = session.scalar(select(Phone).where(Phone.extension == extension.strip()))
     if phone is None:
         raise NotFound(f"no phone with extension {extension!r}")
@@ -35,7 +35,11 @@ def _phone(session: Session, extension: str) -> Phone:
     return phone
 
 
-def _originate(phone: Phone, context: str, exten: str, callerid: str) -> None:
+def originate_into(
+    phone: Phone, context: str, exten: str, callerid: str, variables: dict[str, str] | None = None
+) -> None:
+    """Ring the phone; when it is answered, the call continues at ``context``/``exten``."""
+    extra = {"Variable": ",".join(f"{k}={v}" for k, v in variables.items())} if variables else {}
     try:
         with ami.AmiClient() as client:
             resp = client.action(
@@ -47,6 +51,7 @@ def _originate(phone: Phone, context: str, exten: str, callerid: str) -> None:
                 CallerID=callerid,
                 Timeout=RING_TIMEOUT_MS,
                 Async="true",
+                **extra,
             )
     except (ami.AmiError, OSError) as exc:
         raise ServiceError(f"Asterisk manager: {exc}") from exc
@@ -58,14 +63,14 @@ def originate(session: Session, extension: str, number: str, actor: str, via: st
     number = number.strip()
     if not NUMBER_RE.match(number):
         raise ServiceError(fields={"number": "digits, *, # and + only (up to 32)"})
-    phone = _phone(session, extension)
-    _originate(phone, f"phone-{phone.extension}", number, f'"Call to {number}" <{number}>')
+    phone = phone_for_call(session, extension)
+    originate_into(phone, f"phone-{phone.extension}", number, f'"Call to {number}" <{number}>')
     audit(session, actor, "originate", "phone", phone.id, f"{phone.extension} -> {number} ({via})")
     return {"extension": phone.extension, "number": number, "status": "ringing"}
 
 
 def test_menu(session: Session, extension: str, menu: IvrMenu, actor: str) -> None:
     """Ring the phone and connect it to the (applied) IVR menu, as an internal caller."""
-    phone = _phone(session, extension)
-    _originate(phone, f"ivr-{menu.id}", "s", f'"IVR test" <{menu.extension or "ivr"}>')
+    phone = phone_for_call(session, extension)
+    originate_into(phone, f"ivr-{menu.id}", "s", f'"IVR test" <{menu.extension or "ivr"}>')
     audit(session, actor, "originate", "ivr", menu.id, f"{phone.extension} -> IVR menu {menu.name} (test)")

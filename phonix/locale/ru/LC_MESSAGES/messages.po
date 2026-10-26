@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 07:55+0100\n"
+"POT-Creation-Date: 2026-10-26 13:55+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ru\n"
@@ -391,6 +391,9 @@ msgstr "Активные каналы"
 
 msgid "Add"
 msgstr "Добавить"
+
+msgid "Add a SIP or IAX phone to record announcements by phone."
+msgstr "Добавьте телефон SIP или IAX, чтобы записывать объявления по телефону."
 
 msgid "Add a SIP or IAX phone to test the menu."
 msgstr "Добавьте телефон SIP или IAX, чтобы проверить меню."
@@ -1368,6 +1371,9 @@ msgstr "Английский"
 
 msgid "English (UK)"
 msgstr "Английский (Великобритания)"
+
+msgid "Enter a name for the announcement"
+msgstr "Введите имя объявления"
 
 msgid "Enter a name of up to 64 characters"
 msgstr "Введите имя длиной до 64 символов"
@@ -2394,6 +2400,9 @@ msgstr "Трубка снята"
 msgid "On Hold"
 msgstr "На удержании"
 
+msgid "On the phone: press 1 to save the recording, 2 to listen to it again or 3 to record it again."
+msgstr "На телефоне: нажмите 1, чтобы сохранить запись, 2, чтобы прослушать ее снова, или 3, чтобы записать ее заново."
+
 msgid "On, applies today"
 msgstr "Вкл., действует сегодня"
 
@@ -2818,6 +2827,18 @@ msgstr ""
 "Рекомендуется, если резервная копия сделана на другой системе или в другой сети: ее IP-адрес, правила межсетевого "
 "экрана или настройки SSH могут закрыть вам доступ."
 
+msgid "Record"
+msgstr "Записать"
+
+msgid "Record by phone"
+msgstr "Записать по телефону"
+
+msgid "Recording in progress. Press # on the phone when you are done."
+msgstr "Идет запись. Нажмите # на телефоне, когда закончите."
+
+msgid "Recording not found"
+msgstr "Запись не найдена"
+
 msgid "Recording script"
 msgstr "Текст для записи"
 
@@ -3033,6 +3054,9 @@ msgstr "Сохранённые периоды включаются и выклю
 
 msgid "Saving a backup of the configuration ..."
 msgstr "Сохранение резервной копии конфигурации ..."
+
+msgid "Saving the recording."
+msgstr "Сохранение записи."
 
 msgid "Search"
 msgstr "Поиск"
@@ -3304,6 +3328,16 @@ msgstr ""
 "Центр сертификации подключается к <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: имена должны "
 "разрешаться в адрес этой АТС, а порт 80 должен быть доступен из интернета."
 
+msgid "The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it."
+msgstr "АТС позвонит на ваш телефон. Произнесите объявление после сигнала, нажмите #, а затем 1, чтобы сохранить его."
+
+msgid ""
+"The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it. Recordings are stored"
+" like uploaded files."
+msgstr ""
+"АТС позвонит на ваш телефон. Произнесите объявление после сигнала, нажмите #, а затем 1, чтобы сохранить его. Записи "
+"хранятся так же, как загруженные файлы."
+
 msgid "The caller hung up"
 msgstr "Абонент положил трубку"
 
@@ -3382,6 +3416,29 @@ msgstr "Номер для вызова этого телефона."
 
 msgid "The password must have at least 8 characters"
 msgstr "Пароль должен содержать не менее 8 символов"
+
+msgid "The phone is ringing. Answer it, speak after the tone and press # when you are done."
+msgstr "Телефон звонит. Ответьте, говорите после сигнала и нажмите #, когда закончите."
+
+msgid "The phone was not answered."
+msgstr "На звонок не ответили."
+
+#, python-format
+msgid "The recording could not be saved: %(error)s"
+msgstr "Не удалось сохранить запись: %(error)s"
+
+msgid "The recording is missing"
+msgstr "Запись отсутствует"
+
+msgid "The recording took too long and was discarded."
+msgstr "Запись оказалась слишком длинной и была отброшена."
+
+msgid "The recording was discarded."
+msgstr "Запись отброшена."
+
+#, python-format
+msgid "The recording was saved as %(name)s."
+msgstr "Запись сохранена как %(name)s."
 
 msgid "The system has not come back yet. Check its console, or try the link below."
 msgstr "Система ещё не вернулась. Проверьте её консоль или попробуйте ссылку ниже."
@@ -4048,6 +4105,9 @@ msgstr "например, monitoring"
 
 msgid "e.g. powerdns"
 msgstr "например, powerdns"
+
+msgid "e.g. welcome"
+msgstr "например, welcome"
 
 msgid "enabled"
 msgstr "включено"

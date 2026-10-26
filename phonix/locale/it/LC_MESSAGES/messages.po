@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 07:55+0100\n"
+"POT-Creation-Date: 2026-10-26 13:55+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: it\n"
@@ -375,6 +375,9 @@ msgstr "Canali attivi"
 
 msgid "Add"
 msgstr "Aggiungi"
+
+msgid "Add a SIP or IAX phone to record announcements by phone."
+msgstr "Aggiunga un telefono SIP o IAX per registrare annunci tramite telefono."
 
 msgid "Add a SIP or IAX phone to test the menu."
 msgstr "Aggiunga un telefono SIP o IAX per provare il menu."
@@ -1354,6 +1357,9 @@ msgstr "Inglese"
 
 msgid "English (UK)"
 msgstr "Inglese (UK)"
+
+msgid "Enter a name for the announcement"
+msgstr "Inserisca un nome per l'annuncio"
 
 msgid "Enter a name of up to 64 characters"
 msgstr "Inserisca un nome di massimo 64 caratteri"
@@ -2380,6 +2386,9 @@ msgstr "Sganciato"
 msgid "On Hold"
 msgstr "In attesa"
 
+msgid "On the phone: press 1 to save the recording, 2 to listen to it again or 3 to record it again."
+msgstr "Sul telefono: prema 1 per salvare la registrazione, 2 per riascoltarla o 3 per registrarla di nuovo."
+
 msgid "On, applies today"
 msgstr "Attivato, vale oggi"
 
@@ -2805,6 +2814,18 @@ msgstr ""
 "Consigliato se il backup proviene da un altro sistema o da un'altra rete: il suo indirizzo IP, le regole del firewall"
 " o le impostazioni SSH potrebbero bloccarti l'accesso."
 
+msgid "Record"
+msgstr "Registra"
+
+msgid "Record by phone"
+msgstr "Registra tramite telefono"
+
+msgid "Recording in progress. Press # on the phone when you are done."
+msgstr "Registrazione in corso. Prema # sul telefono quando ha finito."
+
+msgid "Recording not found"
+msgstr "Registrazione non trovata"
+
 msgid "Recording script"
 msgstr "Testo da registrare"
 
@@ -3020,6 +3041,9 @@ msgstr "I periodi salvati si attivano e disattivano in cima alla pagina."
 
 msgid "Saving a backup of the configuration ..."
 msgstr "Salvataggio di un backup della configurazione in corso ..."
+
+msgid "Saving the recording."
+msgstr "Salvataggio della registrazione."
 
 msgid "Search"
 msgstr "Cerca"
@@ -3293,6 +3317,16 @@ msgstr ""
 "La CA si collega a <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: i nomi devono risolversi in questo "
 "centralino e la porta 80 deve essere raggiungibile da internet."
 
+msgid "The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it."
+msgstr "Il centralino chiama il Suo telefono. Pronunci l'annuncio dopo il segnale acustico, prema # e poi 1 per salvarlo."
+
+msgid ""
+"The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it. Recordings are stored"
+" like uploaded files."
+msgstr ""
+"Il centralino chiama il Suo telefono. Pronunci l'annuncio dopo il segnale acustico, prema # e poi 1 per salvarlo. Le "
+"registrazioni vengono memorizzate come i file caricati."
+
 msgid "The caller hung up"
 msgstr "Il chiamante ha riagganciato"
 
@@ -3375,6 +3409,29 @@ msgstr "Il numero usato per chiamare questo telefono."
 
 msgid "The password must have at least 8 characters"
 msgstr "La password deve avere almeno 8 caratteri"
+
+msgid "The phone is ringing. Answer it, speak after the tone and press # when you are done."
+msgstr "Il telefono sta squillando. Risponda, parli dopo il segnale acustico e prema # quando ha finito."
+
+msgid "The phone was not answered."
+msgstr "Nessuno ha risposto al telefono."
+
+#, python-format
+msgid "The recording could not be saved: %(error)s"
+msgstr "Impossibile salvare la registrazione: %(error)s"
+
+msgid "The recording is missing"
+msgstr "La registrazione è mancante"
+
+msgid "The recording took too long and was discarded."
+msgstr "La registrazione è durata troppo ed è stata scartata."
+
+msgid "The recording was discarded."
+msgstr "La registrazione è stata scartata."
+
+#, python-format
+msgid "The recording was saved as %(name)s."
+msgstr "La registrazione è stata salvata come %(name)s."
 
 msgid "The system has not come back yet. Check its console, or try the link below."
 msgstr "Il sistema non è ancora tornato disponibile. Controlli la sua console o provi il link qui sotto."
@@ -4042,6 +4099,9 @@ msgstr "ad es. monitoring"
 
 msgid "e.g. powerdns"
 msgstr "ad es. powerdns"
+
+msgid "e.g. welcome"
+msgstr "ad es. benvenuto"
 
 msgid "enabled"
 msgstr "attivo"

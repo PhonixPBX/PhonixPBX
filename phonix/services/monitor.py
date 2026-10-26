@@ -17,7 +17,7 @@ from collections import defaultdict, deque
 from phonix import ami
 from phonix.core import settings as st
 from phonix.core.db import session_scope
-from phonix.services import hours_sync, privileged
+from phonix.services import hours_sync, privileged, recording
 
 log = logging.getLogger(__name__)
 
@@ -95,8 +95,19 @@ def _load(previous: Banner | None = None) -> Banner | None:
     return previous
 
 
+def _recording_cleanup(interval: float = 600.0) -> None:
+    """Recordings by phone whose page was closed: files, state and AstDB entries."""
+    while True:
+        try:
+            recording.cleanup()
+        except Exception:
+            log.exception("cleaning up recordings failed")
+        time.sleep(interval)
+
+
 def run_forever() -> None:
     threading.Thread(target=hours_sync.run_forever, name="hours-sync", daemon=True).start()
+    threading.Thread(target=_recording_cleanup, name="recording-cleanup", daemon=True).start()
     banner: Banner | None = None
     while True:
         banner = _load(banner)

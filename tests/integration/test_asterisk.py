@@ -512,3 +512,40 @@ def test_special_period_parity(pbx: Path) -> None:
         assert db_value("phonix-hours", late.id) is None
         assert [db_value("phonix-special", key) for key in (old, soon, season)] == ["0", "0", "0"]
         routed("closed-auto-0")
+
+
+def test_record_announcement_by_phone(pbx: Path) -> None:
+    """phonix-record end to end: record, end with #, listen, 1 saves; then it becomes a media file."""
+    from phonix.services import media, recording
+
+    # the layout of phonix-firstboot: media is setgid with group asterisk, incoming inherits the group
+    media_dir = config.get().media_dir
+    media_dir.mkdir(exist_ok=True)
+    sh("chgrp", "asterisk", str(media_dir))
+    sh("chmod", "2750", str(media_dir))
+    incoming = recording.incoming_dir()
+    token = "0123456789abcdef0123456789abcdef"
+    meta = {"kind": "ivr_prompt", "name": "Recorded", "user": "test", "started": time.time()}
+    (config.get().state_dir / "recordings").mkdir(parents=True, exist_ok=True)
+    (config.get().state_dir / "recordings" / f"{token}.json").write_text(__import__("json").dumps(meta))
+    # the other side of the Local channel is "the phone": wait, # ends the recording, 1 saves it
+    # while vm-review plays (w = 0.5 s)
+    with ami.AmiClient() as client:
+        resp = client.action(
+            "Originate",
+            Channel="Local/s@phonix-record",
+            Application="SendDTMF",
+            Data="wwww#" + "w" * 10 + "1",
+            Variable=f"PHX_REC={token}",
+            Async="true",
+        )
+    assert resp.get("Response") == "Success", resp
+    wait_until(lambda: db_value("phonix-rec", token) == "saved", "the recording to be saved", timeout=30)  # type: ignore[arg-type]
+    # SendDTMF sends no audio: the WAV is only a header, but it is there and readable for the web user's group
+    wav = incoming / f"{token}.wav"
+    assert wav.stat().st_size >= 44 and wav.stat().st_mode & 0o040
+    with db.session_scope() as session:
+        status = recording.poll(session, token)
+        assert status.state == "saved" and status.media is not None, status
+        assert media.media_path(status.media).exists()
+    assert not wav.exists()

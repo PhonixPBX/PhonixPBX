@@ -49,6 +49,8 @@ Die Ansage wird abgespielt, wenn der Anruf das Menü erreicht. Anrufer können s
 
 > Kann das System andere Formate nicht umwandeln, werden nur PCM-WAV-Dateien angenommen; die Fehlermeldung zeigt, wie Sie eine Datei mit `sox` umwandeln.
 
+Mit **Per Telefon aufnehmen** sprechen Sie die Ansage stattdessen in ein Telefon: Geben Sie einen **Namen** ein, wählen Sie unter **Telefon klingeln lassen** das Telefon und klicken Sie auf **Mich anrufen**. Nehmen Sie den Anruf an, sprechen Sie nach dem Signalton, drücken Sie `#` und dann `1` zum Speichern; die neue Aufnahme ist sofort unter **Ansage** ausgewählt. Die Schritte sind unter [*Dienste → Medien*]({{< relref "/services/media.md#record" >}}) beschrieben.
+
 Der **Aufnahmetext** hilft Ihnen, eine passende Ansage aufzunehmen. **Aus Optionen erstellen** füllt ihn aus den Tastenoptionen in ihrer Reihenfolge, in der Ansagesprache des Systems, etwa „Für Vertrieb drücken Sie 1. Für Support drücken Sie 2.“. Passen Sie den Text bei Bedarf an, **kopieren** Sie ihn, nehmen Sie ihn mit einer beliebigen Aufnahme-App auf und laden Sie die Datei hoch. Der Text selbst wird nie abgespielt.
 
 ### Tasten {#keys}

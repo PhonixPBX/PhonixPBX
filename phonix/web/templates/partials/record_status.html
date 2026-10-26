@@ -1,0 +1,41 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+{% set pending = status is not none and not status.done %}
+<div id="record-status-{{ ctx }}"{% if pending %} hx-post="/services/media/record/{{ token }}?ctx={{ ctx }}" hx-trigger="every 2s" hx-swap="outerHTML"{% endif %}>
+{% if status is none %}
+  <div class="alert alert-danger mt-3 mb-0" role="alert">{{ error }}</div>
+{% elif pending %}
+  <div class="alert alert-info mt-3 mb-0" role="status">
+    <div class="d-flex align-items-center gap-2">
+      <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+      <div>
+      {% if status.state == "ringing" %}{{ _("The phone is ringing. Answer it, speak after the tone and press # when you are done.") }}
+      {% elif status.state == "recording" %}{{ _("Recording in progress. Press # on the phone when you are done.") }}
+      {% elif status.state == "saving" %}{{ _("Saving the recording.") }}
+      {% else %}{{ _("On the phone: press 1 to save the recording, 2 to listen to it again or 3 to record it again.") }}{% endif %}
+      </div>
+    </div>
+  </div>
+{% elif status.state == "saved" %}
+  <div class="alert alert-success alert-dismissible mt-3 mb-0" role="status">
+    <div>{{ _("The recording was saved as %(name)s.", name=status.media.name) }}</div>
+    <a class="btn-close" data-bs-dismiss="alert" aria-label="{{ _('close') }}"></a>
+  </div>
+{% else %}
+  <div class="alert alert-{{ 'danger' if status.state == 'failed' else 'warning' }} alert-dismissible mt-3 mb-0" role="status">
+    <div>
+    {% if status.state == "no-answer" %}{{ _("The phone was not answered.") }}
+    {% elif status.state == "expired" %}{{ _("The recording took too long and was discarded.") }}
+    {% elif status.state == "failed" %}{{ _("The recording could not be saved: %(error)s", error=status.error) }}
+    {% else %}{{ _("The recording was discarded.") }}{% endif %}
+    </div>
+    <a class="btn-close" data-bs-dismiss="alert" aria-label="{{ _('close') }}"></a>
+  </div>
+{% endif %}
+</div>
+{% if status is not none and status.media is not none %}
+{% if ctx == "ivr" %}
+<div id="prompt-select" hx-swap-oob="true">{% include "partials/ivr_prompt_select.html" %}</div>
+{% else %}
+<div class="card" id="media-files" hx-swap-oob="true">{% include "partials/media_table.html" %}</div>
+{% endif %}
+{% endif %}

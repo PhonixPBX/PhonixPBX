@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 07:55+0100\n"
+"POT-Creation-Date: 2026-10-26 13:55+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: nl\n"
@@ -375,6 +375,9 @@ msgstr "Actieve kanalen"
 
 msgid "Add"
 msgstr "Toevoegen"
+
+msgid "Add a SIP or IAX phone to record announcements by phone."
+msgstr "Voeg een SIP- of IAX-telefoon toe om aankondigingen via de telefoon op te nemen."
 
 msgid "Add a SIP or IAX phone to test the menu."
 msgstr "Voeg een SIP- of IAX-telefoon toe om het menu te testen."
@@ -1352,6 +1355,9 @@ msgstr "Engels"
 
 msgid "English (UK)"
 msgstr "Engels (VK)"
+
+msgid "Enter a name for the announcement"
+msgstr "Voer een naam in voor de aankondiging"
 
 msgid "Enter a name of up to 64 characters"
 msgstr "Voer een naam in van maximaal 64 tekens"
@@ -2376,6 +2382,9 @@ msgstr "Hoorn van de haak"
 msgid "On Hold"
 msgstr "In de wacht"
 
+msgid "On the phone: press 1 to save the recording, 2 to listen to it again or 3 to record it again."
+msgstr "Op de telefoon: druk op 1 om de opname op te slaan, 2 om deze opnieuw te beluisteren of 3 om opnieuw op te nemen."
+
 msgid "On, applies today"
 msgstr "Aan, geldt vandaag"
 
@@ -2801,6 +2810,18 @@ msgstr ""
 "Aanbevolen als de back-up van een ander systeem of netwerk komt: het IP-adres, de firewallregels of de SSH-"
 "instellingen daarvan kunnen u buitensluiten."
 
+msgid "Record"
+msgstr "Opnemen"
+
+msgid "Record by phone"
+msgstr "Opnemen via telefoon"
+
+msgid "Recording in progress. Press # on the phone when you are done."
+msgstr "Opname bezig. Druk op # op de telefoon wanneer u klaar bent."
+
+msgid "Recording not found"
+msgstr "Opname niet gevonden"
+
 msgid "Recording script"
 msgstr "Tekst voor de opname"
 
@@ -3016,6 +3037,9 @@ msgstr "Opgeslagen perioden worden bovenaan de pagina in- en uitgeschakeld."
 
 msgid "Saving a backup of the configuration ..."
 msgstr "Back-up van de configuratie wordt opgeslagen ..."
+
+msgid "Saving the recording."
+msgstr "De opname wordt opgeslagen."
 
 msgid "Search"
 msgstr "Zoeken"
@@ -3287,6 +3311,16 @@ msgstr ""
 "De CA maakt verbinding met <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: de namen moeten naar deze "
 "PBX verwijzen en poort 80 moet vanaf internet bereikbaar zijn."
 
+msgid "The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it."
+msgstr "De PBX belt uw telefoon. Spreek de aankondiging in na de toon, druk op # en daarna op 1 om deze op te slaan."
+
+msgid ""
+"The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it. Recordings are stored"
+" like uploaded files."
+msgstr ""
+"De PBX belt uw telefoon. Spreek de aankondiging in na de toon, druk op # en daarna op 1 om deze op te slaan. Opnamen "
+"worden opgeslagen zoals geüploade bestanden."
+
 msgid "The caller hung up"
 msgstr "De beller heeft opgehangen"
 
@@ -3367,6 +3401,29 @@ msgstr "Het nummer waarmee deze telefoon wordt gebeld."
 
 msgid "The password must have at least 8 characters"
 msgstr "Het wachtwoord moet minstens 8 tekens hebben"
+
+msgid "The phone is ringing. Answer it, speak after the tone and press # when you are done."
+msgstr "De telefoon gaat over. Neem op, spreek na de toon en druk op # wanneer u klaar bent."
+
+msgid "The phone was not answered."
+msgstr "De telefoon is niet opgenomen."
+
+#, python-format
+msgid "The recording could not be saved: %(error)s"
+msgstr "De opname kon niet worden opgeslagen: %(error)s"
+
+msgid "The recording is missing"
+msgstr "De opname ontbreekt"
+
+msgid "The recording took too long and was discarded."
+msgstr "De opname duurde te lang en is verwijderd."
+
+msgid "The recording was discarded."
+msgstr "De opname is verwijderd."
+
+#, python-format
+msgid "The recording was saved as %(name)s."
+msgstr "De opname is opgeslagen als %(name)s."
 
 msgid "The system has not come back yet. Check its console, or try the link below."
 msgstr "Het systeem is nog niet terug. Controleer de console of probeer de link hieronder."
@@ -4034,6 +4091,9 @@ msgstr "bijv. monitoring"
 
 msgid "e.g. powerdns"
 msgstr "bijv. powerdns"
+
+msgid "e.g. welcome"
+msgstr "bijv. welkom"
 
 msgid "enabled"
 msgstr "ingeschakeld"

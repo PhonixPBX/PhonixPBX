@@ -1,7 +1,7 @@
 ---
 title: "Media"
 weight: 40
-description: "Music on hold, the voicemail greeting, IVR announcements and the prompt language."
+description: "Music on hold, the voicemail greeting, IVR announcements, recording by phone and the prompt language."
 ---
 *Services → Media* holds your own audio files: music on hold, a custom voicemail greeting, and the announcements of IVR menus. It also shows which language the system prompts use.
 
@@ -24,6 +24,18 @@ Record a neutral text that fits every mailbox, for example "The person you are c
 ## IVR announcements {#ivr}
 
 The announcements of IVR menus are uploaded in the menu editor under [Dialplan → IVR Menus]({{< relref "/dialplan/ivr.md" >}}). They appear here in the file list with the type *IVR announcement*. Deleting an announcement that a menu still uses leaves that menu silent until you choose another announcement; apply the change afterwards.
+
+## Record by phone {#record}
+
+Instead of uploading a file you can speak an IVR announcement or the voicemail greeting into a phone. Under **Record by phone** choose what to **Record** (for an IVR announcement also its **Name**) and the phone under **Ring phone**, then click **Call me**:
+
+1. The PBX calls the phone. Answer it and speak the text after the tone.
+2. Press `#` to end the recording. The phone plays it back.
+3. Press `1` to save it, `2` to listen again or `3` to record it again.
+
+The page shows each step and, once you pressed `1`, the new file in the list. Hanging up before pressing `1` discards the recording; so does not answering the call. A recording is stored like an uploaded file: an IVR announcement appears in the menu editor, a new voicemail greeting replaces the old one and has to be applied.
+
+Only SIP and IAX phones can be rung. The instructions on the phone are played in the phone's prompt language.
 
 ## Uploaded files {#files}
 

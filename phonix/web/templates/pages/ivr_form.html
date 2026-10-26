@@ -51,6 +51,25 @@
             <div class="dropzone mb-3" data-dropzone data-url="/dialplan/ivr/prompts" data-param="file" data-max-mb="16"
                  data-accept="audio/*,.wav,.mp3,.ogg,.flac" data-target="#prompt-select"
                  data-message="{{ _("Drop an audio file here or click to upload (WAV, MP3, OGG or FLAC, converted to 8 kHz)") }}"></div>
+            {# the controls belong to #ivr-record outside the menu form (forms cannot be nested) #}
+            <div class="hr-text hr-text-start">{{ _("Record by phone") }}</div>
+            {% if test_phones %}
+            <div class="text-secondary mb-2">{{ _("The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it.") }}</div>
+            <div class="row">
+              <div class="col-sm-6 mb-3">
+                <label class="form-label" for="rec-name">{{ _("Name") }}</label>
+                <input class="form-control" id="rec-name" name="name" form="ivr-record" value="{{ values.name or '' }}" placeholder="{{ _('e.g. welcome') }}">
+              </div>
+              <div class="col-sm-6 mb-3">
+                <label class="form-label" for="rec-ext">{{ _("Ring phone") }}</label>
+                <select class="form-select" id="rec-ext" name="extension" form="ivr-record">{% for p in test_phones %}<option value="{{ p.extension }}">{{ p.extension }} – {{ p.callerid }}</option>{% endfor %}</select>
+              </div>
+            </div>
+            <button type="submit" class="btn" id="ivr-record-call" form="ivr-record">{{ icon("microphone") }}{{ _("Call me") }}</button>
+            {% else %}
+            <p class="text-secondary">{{ _("Add a SIP or IAX phone to record announcements by phone.") }}</p>
+            {% endif %}
+            <div id="record-status-ivr" class="mb-3"></div>
           </div>
           <div data-show-if="prompt_mode=sound">
             {% set sound_opts = [] %}{% for s in sounds %}{% set _unused = sound_opts.append((s, s)) %}{% endfor %}
@@ -130,6 +149,9 @@
   {# filled with the open tab on submit, so "Save and stay" returns to it #}
   <input type="hidden" name="tab" data-active-tab>
   {{ submit(_("Create") if is_new else _("Save"), cancel="/dialplan/ivr", stay=_("Create and stay") if is_new else _("Save and stay")) }}
+</form>
+<form id="ivr-record" hx-post="/services/media/record" hx-target="#record-status-ivr" hx-swap="outerHTML" hx-disable="#ivr-record-call">
+  <input type="hidden" name="kind" value="ivr_prompt"><input type="hidden" name="ctx" value="ivr">
 </form>
 {% if saved %}<form id="ivr-test" hx-post="/dialplan/ivr/{{ saved.id }}/test" hx-target="#test-result" hx-disable="#ivr-test-call"></form>{% endif %}
 {% endblock %}

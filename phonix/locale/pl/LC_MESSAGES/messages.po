@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 07:55+0100\n"
+"POT-Creation-Date: 2026-10-26 13:55+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: pl\n"
@@ -391,6 +391,9 @@ msgstr "Aktywne kanały"
 
 msgid "Add"
 msgstr "Dodaj"
+
+msgid "Add a SIP or IAX phone to record announcements by phone."
+msgstr "Dodaj telefon SIP lub IAX, aby nagrywać zapowiedzi przez telefon."
 
 msgid "Add a SIP or IAX phone to test the menu."
 msgstr "Dodaj telefon SIP lub IAX, aby przetestować menu."
@@ -1366,6 +1369,9 @@ msgstr "Angielski"
 
 msgid "English (UK)"
 msgstr "Angielski (Wielka Brytania)"
+
+msgid "Enter a name for the announcement"
+msgstr "Podaj nazwę zapowiedzi"
 
 msgid "Enter a name of up to 64 characters"
 msgstr "Proszę podać nazwę o długości do 64 znaków"
@@ -2394,6 +2400,9 @@ msgstr "Podniesiona słuchawka"
 msgid "On Hold"
 msgstr "Zawieszone"
 
+msgid "On the phone: press 1 to save the recording, 2 to listen to it again or 3 to record it again."
+msgstr "Na telefonie: naciśnij 1, aby zapisać nagranie, 2, aby odsłuchać je ponownie, lub 3, aby nagrać je jeszcze raz."
+
 msgid "On, applies today"
 msgstr "Włączony, obowiązuje dziś"
 
@@ -2818,6 +2827,18 @@ msgstr ""
 "Zalecane, gdy kopia zapasowa pochodzi z innego systemu lub sieci: jej adres IP, reguły zapory lub ustawienia SSH mogą"
 " odciąć Ci dostęp."
 
+msgid "Record"
+msgstr "Nagraj"
+
+msgid "Record by phone"
+msgstr "Nagraj przez telefon"
+
+msgid "Recording in progress. Press # on the phone when you are done."
+msgstr "Trwa nagrywanie. Naciśnij # na telefonie, gdy skończysz."
+
+msgid "Recording not found"
+msgstr "Nie znaleziono nagrania"
+
 msgid "Recording script"
 msgstr "Tekst do nagrania"
 
@@ -3033,6 +3054,9 @@ msgstr "Zapisane okresy włącza się i wyłącza u góry strony."
 
 msgid "Saving a backup of the configuration ..."
 msgstr "Zapisywanie kopii zapasowej konfiguracji ..."
+
+msgid "Saving the recording."
+msgstr "Zapisywanie nagrania."
 
 msgid "Search"
 msgstr "Szukaj"
@@ -3304,6 +3328,16 @@ msgstr ""
 "CA łączy się z <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: nazwy muszą wskazywać na ten PBX, a port"
 " 80 musi być osiągalny z internetu."
 
+msgid "The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it."
+msgstr "PBX zadzwoni na Twój telefon. Nagraj zapowiedź po sygnale, naciśnij #, a następnie 1, aby ją zapisać."
+
+msgid ""
+"The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it. Recordings are stored"
+" like uploaded files."
+msgstr ""
+"PBX zadzwoni na Twój telefon. Nagraj zapowiedź po sygnale, naciśnij #, a następnie 1, aby ją zapisać. Nagrania są "
+"przechowywane tak jak przesłane pliki."
+
 msgid "The caller hung up"
 msgstr "Dzwoniący się rozłączył"
 
@@ -3384,6 +3418,29 @@ msgstr "Numer służący do dzwonienia na ten telefon."
 
 msgid "The password must have at least 8 characters"
 msgstr "Hasło musi mieć co najmniej 8 znaków"
+
+msgid "The phone is ringing. Answer it, speak after the tone and press # when you are done."
+msgstr "Telefon dzwoni. Odbierz, mów po sygnale i naciśnij #, gdy skończysz."
+
+msgid "The phone was not answered."
+msgstr "Telefon nie został odebrany."
+
+#, python-format
+msgid "The recording could not be saved: %(error)s"
+msgstr "Nie udało się zapisać nagrania: %(error)s"
+
+msgid "The recording is missing"
+msgstr "Brak nagrania"
+
+msgid "The recording took too long and was discarded."
+msgstr "Nagranie trwało zbyt długo i zostało odrzucone."
+
+msgid "The recording was discarded."
+msgstr "Nagranie zostało odrzucone."
+
+#, python-format
+msgid "The recording was saved as %(name)s."
+msgstr "Nagranie zostało zapisane jako %(name)s."
 
 msgid "The system has not come back yet. Check its console, or try the link below."
 msgstr "System jeszcze nie wrócił. Proszę sprawdzić jego konsolę lub użyć poniższego linku."
@@ -4049,6 +4106,9 @@ msgstr "np. monitoring"
 
 msgid "e.g. powerdns"
 msgstr "np. powerdns"
+
+msgid "e.g. welcome"
+msgstr "np. powitanie"
 
 msgid "enabled"
 msgstr "włączone"

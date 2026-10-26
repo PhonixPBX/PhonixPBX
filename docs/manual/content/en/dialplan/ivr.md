@@ -49,6 +49,8 @@ The announcement is played when the call reaches the menu. Callers can press a k
 
 > If the system cannot convert other formats, only PCM WAV files are accepted; the error message shows how to convert a file with `sox`.
 
+With **Record by phone** you speak the announcement into a phone instead: enter a **Name**, choose the phone under **Ring phone** and click **Call me**. Answer the call, speak after the tone, press `#` and then `1` to save; the new recording is chosen under **Announcement** right away. The steps are described under [*Services → Media*]({{< relref "/services/media.md#record" >}}).
+
 The **Recording script** helps you record a matching announcement. **Write from options** fills it from the key options in their order, in the prompt language of the system, for example "For Sales, press 1. For Support, press 2.". Edit the text if you like, **Copy** it, record it with any recording app and upload the file. The script itself is never played.
 
 ### Keys {#keys}

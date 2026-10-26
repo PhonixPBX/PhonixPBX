@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 07:55+0100\n"
+"POT-Creation-Date: 2026-10-26 13:55+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: da\n"
@@ -374,6 +374,9 @@ msgstr "Aktive kanaler"
 
 msgid "Add"
 msgstr "Tilføj"
+
+msgid "Add a SIP or IAX phone to record announcements by phone."
+msgstr "Tilføj en SIP- eller IAX-telefon for at optage meddelelser via telefonen."
 
 msgid "Add a SIP or IAX phone to test the menu."
 msgstr "Tilføj en SIP- eller IAX-telefon for at teste menuen."
@@ -1349,6 +1352,9 @@ msgstr "Engelsk"
 
 msgid "English (UK)"
 msgstr "Engelsk (UK)"
+
+msgid "Enter a name for the announcement"
+msgstr "Angiv et navn til meddelelsen"
 
 msgid "Enter a name of up to 64 characters"
 msgstr "Angiv et navn på op til 64 tegn"
@@ -2372,6 +2378,9 @@ msgstr "Røret løftet"
 msgid "On Hold"
 msgstr "På hold"
 
+msgid "On the phone: press 1 to save the recording, 2 to listen to it again or 3 to record it again."
+msgstr "På telefonen: tryk 1 for at gemme optagelsen, 2 for at høre den igen eller 3 for at optage den igen."
+
 msgid "On, applies today"
 msgstr "Til, gælder i dag"
 
@@ -2797,6 +2806,18 @@ msgstr ""
 "Anbefales, når backuppen stammer fra et andet system eller netværk: dens IP-adresse, firewallregler eller SSH-"
 "indstillinger kan låse dig ude."
 
+msgid "Record"
+msgstr "Optag"
+
+msgid "Record by phone"
+msgstr "Optag via telefon"
+
+msgid "Recording in progress. Press # on the phone when you are done."
+msgstr "Optagelse i gang. Tryk # på telefonen, når du er færdig."
+
+msgid "Recording not found"
+msgstr "Optagelsen blev ikke fundet"
+
 msgid "Recording script"
 msgstr "Indtalingsmanuskript"
 
@@ -3012,6 +3033,9 @@ msgstr "Gemte perioder slås til og fra øverst på siden."
 
 msgid "Saving a backup of the configuration ..."
 msgstr "Gemmer en backup af konfigurationen ..."
+
+msgid "Saving the recording."
+msgstr "Optagelsen gemmes."
 
 msgid "Search"
 msgstr "Søg"
@@ -3283,6 +3307,16 @@ msgstr ""
 "CA'en forbinder til <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: navnene skal pege på denne PBX, og "
 "port 80 skal kunne nås fra internettet."
 
+msgid "The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it."
+msgstr "PBX'en ringer til din telefon. Indtal meddelelsen efter tonen, tryk # og derefter 1 for at gemme den."
+
+msgid ""
+"The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it. Recordings are stored"
+" like uploaded files."
+msgstr ""
+"PBX'en ringer til din telefon. Indtal meddelelsen efter tonen, tryk # og derefter 1 for at gemme den. Optagelser "
+"gemmes ligesom uploadede filer."
+
 msgid "The caller hung up"
 msgstr "Den, der ringede, lagde på"
 
@@ -3363,6 +3397,29 @@ msgstr "Nummeret, der bruges til at ringe til denne telefon."
 
 msgid "The password must have at least 8 characters"
 msgstr "Adgangskoden skal have mindst 8 tegn"
+
+msgid "The phone is ringing. Answer it, speak after the tone and press # when you are done."
+msgstr "Telefonen ringer. Besvar opkaldet, tal efter tonen, og tryk #, når du er færdig."
+
+msgid "The phone was not answered."
+msgstr "Telefonen blev ikke besvaret."
+
+#, python-format
+msgid "The recording could not be saved: %(error)s"
+msgstr "Optagelsen kunne ikke gemmes: %(error)s"
+
+msgid "The recording is missing"
+msgstr "Optagelsen mangler"
+
+msgid "The recording took too long and was discarded."
+msgstr "Optagelsen varede for længe og blev kasseret."
+
+msgid "The recording was discarded."
+msgstr "Optagelsen blev kasseret."
+
+#, python-format
+msgid "The recording was saved as %(name)s."
+msgstr "Optagelsen blev gemt som %(name)s."
 
 msgid "The system has not come back yet. Check its console, or try the link below."
 msgstr "Systemet er ikke kommet tilbage endnu. Tjek dets konsol, eller prøv linket nedenfor."
@@ -4021,6 +4078,9 @@ msgstr "f.eks. monitoring"
 
 msgid "e.g. powerdns"
 msgstr "f.eks. powerdns"
+
+msgid "e.g. welcome"
+msgstr "f.eks. velkommen"
 
 msgid "enabled"
 msgstr "aktiveret"

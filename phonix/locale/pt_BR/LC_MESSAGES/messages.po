@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 07:55+0100\n"
+"POT-Creation-Date: 2026-10-26 13:55+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: pt_BR\n"
@@ -374,6 +374,9 @@ msgstr "Canais ativos"
 
 msgid "Add"
 msgstr "Adicionar"
+
+msgid "Add a SIP or IAX phone to record announcements by phone."
+msgstr "Adicione um telefone SIP ou IAX para gravar anúncios pelo telefone."
 
 msgid "Add a SIP or IAX phone to test the menu."
 msgstr "Adicione um telefone SIP ou IAX para testar o menu."
@@ -1353,6 +1356,9 @@ msgstr "Inglês"
 
 msgid "English (UK)"
 msgstr "Inglês (Reino Unido)"
+
+msgid "Enter a name for the announcement"
+msgstr "Informe um nome para o anúncio"
 
 msgid "Enter a name of up to 64 characters"
 msgstr "Informe um nome de até 64 caracteres"
@@ -2379,6 +2385,9 @@ msgstr "Fora do gancho"
 msgid "On Hold"
 msgstr "Em espera"
 
+msgid "On the phone: press 1 to save the recording, 2 to listen to it again or 3 to record it again."
+msgstr "No telefone: pressione 1 para salvar a gravação, 2 para ouvi-la novamente ou 3 para gravá-la de novo."
+
 msgid "On, applies today"
 msgstr "Ativado, vale hoje"
 
@@ -2803,6 +2812,18 @@ msgstr ""
 "Recomendado quando o backup vem de outro sistema ou rede: o endereço IP, as regras de firewall ou as configurações de"
 " SSH dele podem bloquear seu acesso."
 
+msgid "Record"
+msgstr "Gravar"
+
+msgid "Record by phone"
+msgstr "Gravar pelo telefone"
+
+msgid "Recording in progress. Press # on the phone when you are done."
+msgstr "Gravação em andamento. Pressione # no telefone quando terminar."
+
+msgid "Recording not found"
+msgstr "Gravação não encontrada"
+
 msgid "Recording script"
 msgstr "Roteiro de gravação"
 
@@ -3018,6 +3039,9 @@ msgstr "Os períodos salvos são ativados e desativados no topo da página."
 
 msgid "Saving a backup of the configuration ..."
 msgstr "Salvando um backup da configuração ..."
+
+msgid "Saving the recording."
+msgstr "Salvando a gravação."
 
 msgid "Search"
 msgstr "Pesquisar"
@@ -3291,6 +3315,16 @@ msgstr ""
 "A CA se conecta a <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: os nomes devem apontar para este PBX "
 "e a porta 80 deve estar acessível pela internet."
 
+msgid "The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it."
+msgstr "O PBX liga para o seu telefone. Fale o anúncio após o sinal, pressione # e depois 1 para salvá-lo."
+
+msgid ""
+"The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it. Recordings are stored"
+" like uploaded files."
+msgstr ""
+"O PBX liga para o seu telefone. Fale o anúncio após o sinal, pressione # e depois 1 para salvá-lo. As gravações são "
+"armazenadas como os arquivos enviados."
+
 msgid "The caller hung up"
 msgstr "O chamador desligou"
 
@@ -3373,6 +3407,29 @@ msgstr "O número usado para ligar para este telefone."
 
 msgid "The password must have at least 8 characters"
 msgstr "A senha deve ter pelo menos 8 caracteres"
+
+msgid "The phone is ringing. Answer it, speak after the tone and press # when you are done."
+msgstr "O telefone está tocando. Atenda, fale após o sinal e pressione # quando terminar."
+
+msgid "The phone was not answered."
+msgstr "O telefone não foi atendido."
+
+#, python-format
+msgid "The recording could not be saved: %(error)s"
+msgstr "Não foi possível salvar a gravação: %(error)s"
+
+msgid "The recording is missing"
+msgstr "A gravação está ausente"
+
+msgid "The recording took too long and was discarded."
+msgstr "A gravação demorou demais e foi descartada."
+
+msgid "The recording was discarded."
+msgstr "A gravação foi descartada."
+
+#, python-format
+msgid "The recording was saved as %(name)s."
+msgstr "A gravação foi salva como %(name)s."
 
 msgid "The system has not come back yet. Check its console, or try the link below."
 msgstr "O sistema ainda não voltou. Verifique o console dele ou tente o link abaixo."
@@ -4031,6 +4088,9 @@ msgstr "por exemplo, monitoramento"
 
 msgid "e.g. powerdns"
 msgstr "por exemplo, powerdns"
+
+msgid "e.g. welcome"
+msgstr "por exemplo, boas-vindas"
 
 msgid "enabled"
 msgstr "ativado"

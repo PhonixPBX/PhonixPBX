@@ -170,6 +170,9 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 - Voicemail and missed call e-mails in the e-mail language of each phone (*E-mail language*, default: the phone's language). The built-in texts are translated through the catalogs, and dates are formatted for the language. *Services → Voicemail* overrides the subject and text per language and resets a language to the built-in text; a text equal to the built-in one is not stored, so it keeps following the translations.
 - Conferencing (ConfBridge)
 - Media: music-on-hold upload, custom voicemail greetings, IVR announcements, prompt language
+  - Recording by phone (`services/recording.py`): the UI rings a SIP/IAX phone by AMI Originate into the static context `phonix-record` with the channel variable `PHX_REC=<32 hex token>`; no other context includes or jumps to it. Asterisk records to `<data>/media/incoming/<token>.wav` (`Record()`, `#` ends, at most 300 s), plays it back and asks with `vm-review` (1 save, 2 listen, 3 record again). The progress is in AstDB `phonix-rec/<token>` (`recording`, `review`, `saved`, `cancel`, `hangup` from the `h` extension). The page polls every 2 s (`POST /services/media/record/<token>`); on `saved` the web app reads the file (no symlinks, regular file, at most 64 MB) and stores it through `add_media()`, then removes file and state. Not answered after the ring timeout + 15 s, or pending for more than 30 min: discarded.
+  - Kinds: `ivr_prompt` (named) and `vm_greeting`. What a pending recording is for (kind, name, user) is in `<data>/state/recordings/<token>.json`, out of Asterisk's reach.
+  - `media/incoming` is the only place Asterisk writes to below `media`: mode 2770, owner `phonix`, group `asterisk`, created by the web app on demand (it is not part of backups; a restore replaces `media` and the next recording recreates it).
 
 **Status**
 - Dashboard: system info, uptime, registrations, active calls

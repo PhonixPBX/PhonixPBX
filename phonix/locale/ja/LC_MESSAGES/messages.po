@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 07:55+0100\n"
+"POT-Creation-Date: 2026-10-26 13:55+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ja\n"
@@ -348,6 +348,9 @@ msgstr "アクティブなチャンネル"
 
 msgid "Add"
 msgstr "追加"
+
+msgid "Add a SIP or IAX phone to record announcements by phone."
+msgstr "電話でアナウンスを録音するには、SIP または IAX の電話機を追加してください。"
 
 msgid "Add a SIP or IAX phone to test the menu."
 msgstr "メニューをテストするには、SIP または IAX の電話機を追加してください。"
@@ -1319,6 +1322,9 @@ msgstr "英語"
 
 msgid "English (UK)"
 msgstr "英語（イギリス）"
+
+msgid "Enter a name for the announcement"
+msgstr "アナウンスの名前を入力してください"
 
 msgid "Enter a name of up to 64 characters"
 msgstr "64 文字以内で名前を入力してください"
@@ -2337,6 +2343,9 @@ msgstr "オフフック"
 msgid "On Hold"
 msgstr "保留中"
 
+msgid "On the phone: press 1 to save the recording, 2 to listen to it again or 3 to record it again."
+msgstr "電話機で 1 を押すと録音を保存、2 を押すと再度聞き直し、3 を押すと録音し直します。"
+
 msgid "On, applies today"
 msgstr "オン（本日適用）"
 
@@ -2747,6 +2756,18 @@ msgid ""
 "could lock you out."
 msgstr "バックアップが別のシステムまたはネットワークのものである場合に推奨します。その IP アドレス、ファイアウォールルール、SSH 設定によってアクセスできなくなる可能性があります。"
 
+msgid "Record"
+msgstr "録音対象"
+
+msgid "Record by phone"
+msgstr "電話で録音"
+
+msgid "Recording in progress. Press # on the phone when you are done."
+msgstr "録音中です。終了したら電話機で # を押してください。"
+
+msgid "Recording not found"
+msgstr "録音が見つかりません"
+
 msgid "Recording script"
 msgstr "録音用原稿"
 
@@ -2954,6 +2975,9 @@ msgstr "保存済みの期間は、ページ上部でオン／オフを切り替
 
 msgid "Saving a backup of the configuration ..."
 msgstr "設定のバックアップを保存しています ..."
+
+msgid "Saving the recording."
+msgstr "録音を保存しています。"
 
 msgid "Search"
 msgstr "検索"
@@ -3211,6 +3235,14 @@ msgstr ""
 "認証局は <code>http://&lt;name&gt;/.well-known/acme-challenge/</code> に接続します。名前はこの PBX に解決される必要があり、ポート 80 "
 "にインターネットから到達できる必要があります。"
 
+msgid "The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it."
+msgstr "PBX からお使いの電話機に発信します。発信音の後にアナウンスを話し、# を押してから 1 を押すと保存されます。"
+
+msgid ""
+"The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it. Recordings are stored"
+" like uploaded files."
+msgstr "PBX からお使いの電話機に発信します。発信音の後にアナウンスを話し、# を押してから 1 を押すと保存されます。 録音はアップロードしたファイルと同様に保存されます。"
+
 msgid "The caller hung up"
 msgstr "発信者が切断しました"
 
@@ -3289,6 +3321,29 @@ msgstr "この電話機を呼び出す番号です。"
 
 msgid "The password must have at least 8 characters"
 msgstr "パスワードは 8 文字以上にしてください"
+
+msgid "The phone is ringing. Answer it, speak after the tone and press # when you are done."
+msgstr "電話機を呼び出しています。応答して発信音の後に話し、終了したら # を押してください。"
+
+msgid "The phone was not answered."
+msgstr "電話機が応答しませんでした。"
+
+#, python-format
+msgid "The recording could not be saved: %(error)s"
+msgstr "録音を保存できませんでした: %(error)s"
+
+msgid "The recording is missing"
+msgstr "録音がありません"
+
+msgid "The recording took too long and was discarded."
+msgstr "録音が長すぎたため破棄されました。"
+
+msgid "The recording was discarded."
+msgstr "録音は破棄されました。"
+
+#, python-format
+msgid "The recording was saved as %(name)s."
+msgstr "録音は %(name)s として保存されました。"
 
 msgid "The system has not come back yet. Check its console, or try the link below."
 msgstr "システムはまだ復帰していません。コンソールを確認するか、下のリンクをお試しください。"
@@ -3925,6 +3980,9 @@ msgstr "例: monitoring"
 
 msgid "e.g. powerdns"
 msgstr "例: powerdns"
+
+msgid "e.g. welcome"
+msgstr "例: welcome"
 
 msgid "enabled"
 msgstr "有効"

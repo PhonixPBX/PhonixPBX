@@ -30,6 +30,8 @@ fi
 phonix apply --boot >/dev/null
 chown -R asterisk:asterisk /data/asterisk /var/log/asterisk /var/run/asterisk /var/spool/asterisk
 chgrp -R asterisk /srv/root/etc/asterisk /data/media /data/tls
+# setgid like phonix-firstboot: media/incoming (recordings by phone) keeps group asterisk
+find /data/media -type d -exec chmod g+s {} +
 chmod 750 /data && chgrp asterisk /data
 
 # voicemail and missed call e-mails (mailcmd, sub-missed-call)

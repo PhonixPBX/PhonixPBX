@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 07:55+0100\n"
+"POT-Creation-Date: 2026-10-26 13:55+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: sv\n"
@@ -374,6 +374,9 @@ msgstr "Aktiva kanaler"
 
 msgid "Add"
 msgstr "Lägg till"
+
+msgid "Add a SIP or IAX phone to record announcements by phone."
+msgstr "Lägg till en SIP- eller IAX-telefon för att spela in meddelanden via telefon."
 
 msgid "Add a SIP or IAX phone to test the menu."
 msgstr "Lägg till en SIP- eller IAX-telefon för att testa menyn."
@@ -1349,6 +1352,9 @@ msgstr "Engelska"
 
 msgid "English (UK)"
 msgstr "Engelska (Storbritannien)"
+
+msgid "Enter a name for the announcement"
+msgstr "Ange ett namn för meddelandet"
 
 msgid "Enter a name of up to 64 characters"
 msgstr "Ange ett namn på högst 64 tecken"
@@ -2375,6 +2381,9 @@ msgstr "Lur av"
 msgid "On Hold"
 msgstr "Parkerad"
 
+msgid "On the phone: press 1 to save the recording, 2 to listen to it again or 3 to record it again."
+msgstr "På telefonen: tryck 1 för att spara inspelningen, 2 för att lyssna på den igen eller 3 för att spela in den igen."
+
 msgid "On, applies today"
 msgstr "På, gäller i dag"
 
@@ -2800,6 +2809,18 @@ msgstr ""
 "Rekommenderas när säkerhetskopian kommer från ett annat system eller nätverk: dess IP-adress, brandväggsregler eller "
 "SSH-inställningar kan låsa ute dig."
 
+msgid "Record"
+msgstr "Spela in"
+
+msgid "Record by phone"
+msgstr "Spela in via telefon"
+
+msgid "Recording in progress. Press # on the phone when you are done."
+msgstr "Inspelning pågår. Tryck # på telefonen när du är klar."
+
+msgid "Recording not found"
+msgstr "Inspelningen hittades inte"
+
 msgid "Recording script"
 msgstr "Inspelningsmanus"
 
@@ -3015,6 +3036,9 @@ msgstr "Sparade perioder slås på och av högst upp på sidan."
 
 msgid "Saving a backup of the configuration ..."
 msgstr "Sparar en säkerhetskopia av konfigurationen ..."
+
+msgid "Saving the recording."
+msgstr "Inspelningen sparas."
 
 msgid "Search"
 msgstr "Sök"
@@ -3286,6 +3310,16 @@ msgstr ""
 "CA:n ansluter till <code>http://&lt;name&gt;/.well-known/acme-challenge/</code>: namnen måste peka på den här växeln "
 "och port 80 måste kunna nås från internet."
 
+msgid "The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it."
+msgstr "Växeln ringer upp din telefon. Tala in meddelandet efter tonen, tryck # och sedan 1 för att spara det."
+
+msgid ""
+"The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it. Recordings are stored"
+" like uploaded files."
+msgstr ""
+"Växeln ringer upp din telefon. Tala in meddelandet efter tonen, tryck # och sedan 1 för att spara det. Inspelningar "
+"lagras på samma sätt som uppladdade filer."
+
 msgid "The caller hung up"
 msgstr "Den som ringde lade på"
 
@@ -3366,6 +3400,29 @@ msgstr "Numret som används för att ringa den här telefonen."
 
 msgid "The password must have at least 8 characters"
 msgstr "Lösenordet måste ha minst 8 tecken"
+
+msgid "The phone is ringing. Answer it, speak after the tone and press # when you are done."
+msgstr "Telefonen ringer. Svara, tala efter tonen och tryck # när du är klar."
+
+msgid "The phone was not answered."
+msgstr "Telefonen besvarades inte."
+
+#, python-format
+msgid "The recording could not be saved: %(error)s"
+msgstr "Inspelningen kunde inte sparas: %(error)s"
+
+msgid "The recording is missing"
+msgstr "Inspelningen saknas"
+
+msgid "The recording took too long and was discarded."
+msgstr "Inspelningen tog för lång tid och kasserades."
+
+msgid "The recording was discarded."
+msgstr "Inspelningen kasserades."
+
+#, python-format
+msgid "The recording was saved as %(name)s."
+msgstr "Inspelningen sparades som %(name)s."
 
 msgid "The system has not come back yet. Check its console, or try the link below."
 msgstr "Systemet har inte kommit tillbaka än. Kontrollera dess konsol eller prova länken nedan."
@@ -4026,6 +4083,9 @@ msgstr "t.ex. monitoring"
 
 msgid "e.g. powerdns"
 msgstr "t.ex. powerdns"
+
+msgid "e.g. welcome"
+msgstr "t.ex. välkommen"
 
 msgid "enabled"
 msgstr "aktiverad"

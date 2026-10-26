@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 07:55+0100\n"
+"POT-Creation-Date: 2026-10-26 13:55+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: fr\n"
@@ -377,6 +377,9 @@ msgstr "Canaux actifs"
 
 msgid "Add"
 msgstr "Ajouter"
+
+msgid "Add a SIP or IAX phone to record announcements by phone."
+msgstr "Ajoutez un téléphone SIP ou IAX pour enregistrer des annonces par téléphone."
 
 msgid "Add a SIP or IAX phone to test the menu."
 msgstr "Ajoutez un téléphone SIP ou IAX pour tester le menu."
@@ -1356,6 +1359,9 @@ msgstr "Anglais"
 
 msgid "English (UK)"
 msgstr "Anglais (Royaume-Uni)"
+
+msgid "Enter a name for the announcement"
+msgstr "Saisissez un nom pour l'annonce"
 
 msgid "Enter a name of up to 64 characters"
 msgstr "Saisissez un nom de 64 caractères au maximum"
@@ -2390,6 +2396,9 @@ msgstr "Décroché"
 msgid "On Hold"
 msgstr "En attente"
 
+msgid "On the phone: press 1 to save the recording, 2 to listen to it again or 3 to record it again."
+msgstr "Sur le téléphone : appuyez sur 1 pour conserver l'enregistrement, 2 pour le réécouter ou 3 pour le refaire."
+
 msgid "On, applies today"
 msgstr "Activé, s'applique aujourd'hui"
 
@@ -2815,6 +2824,18 @@ msgstr ""
 "Recommandé si la sauvegarde provient d'un autre système ou réseau : son adresse IP, ses règles de pare-feu ou ses "
 "paramètres SSH pourraient vous bloquer l'accès."
 
+msgid "Record"
+msgstr "À enregistrer"
+
+msgid "Record by phone"
+msgstr "Enregistrer par téléphone"
+
+msgid "Recording in progress. Press # on the phone when you are done."
+msgstr "Enregistrement en cours. Appuyez sur # sur le téléphone lorsque vous avez terminé."
+
+msgid "Recording not found"
+msgstr "Enregistrement introuvable"
+
 msgid "Recording script"
 msgstr "Texte à enregistrer"
 
@@ -3030,6 +3051,9 @@ msgstr "Les périodes enregistrées s'activent et se désactivent en haut de la 
 
 msgid "Saving a backup of the configuration ..."
 msgstr "Enregistrement d'une sauvegarde de la configuration ..."
+
+msgid "Saving the recording."
+msgstr "Sauvegarde de l'enregistrement."
 
 msgid "Search"
 msgstr "Rechercher"
@@ -3303,6 +3327,16 @@ msgstr ""
 "L'autorité de certification se connecte à <code>http://&lt;name&gt;/.well-known/acme-challenge/</code> : les noms "
 "doivent pointer vers ce PBX et le port 80 doit être accessible depuis Internet."
 
+msgid "The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it."
+msgstr "Le PBX appelle votre téléphone. Prononcez l'annonce après le bip, appuyez sur # puis sur 1 pour la conserver."
+
+msgid ""
+"The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it. Recordings are stored"
+" like uploaded files."
+msgstr ""
+"Le PBX appelle votre téléphone. Prononcez l'annonce après le bip, appuyez sur # puis sur 1 pour la conserver. Les "
+"enregistrements sont stockés comme les fichiers envoyés."
+
 msgid "The caller hung up"
 msgstr "L'appelant a raccroché"
 
@@ -3387,6 +3421,29 @@ msgstr "Le numéro pour appeler ce téléphone."
 
 msgid "The password must have at least 8 characters"
 msgstr "Le mot de passe doit comporter au moins 8 caractères"
+
+msgid "The phone is ringing. Answer it, speak after the tone and press # when you are done."
+msgstr "Le téléphone sonne. Décrochez, parlez après le bip et appuyez sur # lorsque vous avez terminé."
+
+msgid "The phone was not answered."
+msgstr "Le téléphone n'a pas répondu."
+
+#, python-format
+msgid "The recording could not be saved: %(error)s"
+msgstr "L'enregistrement n'a pas pu être sauvegardé : %(error)s"
+
+msgid "The recording is missing"
+msgstr "L'enregistrement est manquant"
+
+msgid "The recording took too long and was discarded."
+msgstr "L'enregistrement a duré trop longtemps et a été abandonné."
+
+msgid "The recording was discarded."
+msgstr "L'enregistrement a été abandonné."
+
+#, python-format
+msgid "The recording was saved as %(name)s."
+msgstr "L'enregistrement a été sauvegardé sous %(name)s."
 
 msgid "The system has not come back yet. Check its console, or try the link below."
 msgstr "Le système n'est pas encore revenu. Vérifiez sa console ou essayez le lien ci-dessous."
@@ -4053,6 +4110,9 @@ msgstr "p. ex. supervision"
 
 msgid "e.g. powerdns"
 msgstr "p. ex. powerdns"
+
+msgid "e.g. welcome"
+msgstr "p. ex. bienvenue"
 
 msgid "enabled"
 msgstr "activé"

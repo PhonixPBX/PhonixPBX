@@ -16,9 +16,13 @@ from phonix.core import settings as st
 from phonix.core.models import MediaFile, User
 from phonix.i18n import N_, _
 from phonix.notify import VARIABLES
+from phonix.services import calls as calls_svc
 from phonix.services import dialplan as dp
+from phonix.services import ivr as ivr_svc
 from phonix.services import media as media_svc
 from phonix.services import notifications
+from phonix.services import phones as phone_svc
+from phonix.services import recording as rec_svc
 from phonix.services.common import NotFound, ServiceError
 from phonix.web.deps import get_db, ui_user
 from phonix.web.routes.ui.common import dirty_trigger, list_page, page, redirect, save_settings_form, service_errors
@@ -190,7 +194,62 @@ def media(request: Request, user: User = Depends(ui_user), db: Session = Depends
         lv=list_page(request, media_svc.list_media(db), media_svc.search_fields),
         kinds=media_svc.KINDS,
         system=st.load(db, st.SystemSettings),
+        record_kinds=[(k, media_svc.KINDS[k]) for k in rec_svc.KINDS],
+        record_phones=call_phones(db),
     )
+
+
+def call_phones(db: Session) -> list[Any]:
+    """Phones the PBX can ring (test calls, recording by phone)."""
+    return [p for p in phone_svc.list_phones(db) if p.enabled and p.tech in calls_svc.CHANNEL_TECH]
+
+
+# before /media/{kind}, which would take "record" as a kind
+# "ctx": the page that started the recording (media: the file list, ivr: the announcement select)
+RECORD_CTX = ("media", "ivr")
+
+
+def _record_status(
+    request: Request, db: Session, token: str, ctx: str, status: rec_svc.Status | None, error: str = ""
+) -> Response:
+    values: dict[str, Any] = {}
+    context: dict[str, Any] = {"token": token, "ctx": ctx, "status": status, "error": error}
+    if status is not None and status.media is not None:
+        if ctx == "ivr":
+            values = {"prompt_media_id": status.media.id}
+            context.update(values=values, errors={}, prompts=ivr_svc.list_prompts(db))
+        else:
+            context.update(lv=list_page(request, media_svc.list_media(db), media_svc.search_fields))
+            context.update(kinds=media_svc.KINDS)
+    resp = render(request, "partials/record_status.html", context)
+    return dirty_trigger(resp) if status is not None and status.media is not None and ctx == "media" else resp
+
+
+@router.post("/media/record")
+async def media_record(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
+    form = await request.form()
+    ctx = str(form.get("ctx", "media"))
+    ctx = ctx if ctx in RECORD_CTX else "media"
+    try:
+        token = rec_svc.start(
+            db, str(form.get("extension", "")), str(form.get("kind", "")), str(form.get("name", "")), user.username
+        )
+    except ServiceError as exc:
+        db.rollback()
+        return _record_status(request, db, "", ctx, None, "; ".join(service_errors(exc).values()) or str(exc))
+    return _record_status(request, db, token, ctx, rec_svc.Status("ringing", "", ""))
+
+
+@router.post("/media/record/{token}")
+def media_record_status(
+    request: Request, token: str, ctx: str = "media", user: User = Depends(ui_user), db: Session = Depends(get_db)
+) -> Response:
+    ctx = ctx if ctx in RECORD_CTX else "media"
+    try:
+        status = rec_svc.poll(db, token, user.username)
+    except NotFound as exc:
+        return _record_status(request, db, "", ctx, None, str(exc))
+    return _record_status(request, db, token, ctx, status)
 
 
 @router.post("/media/{kind}")

@@ -1,7 +1,7 @@
 ---
 title: "Medien"
 weight: 40
-description: "Wartemusik, die Mailbox-Ansage, IVR-Ansagen und die Sprache der Ansagen."
+description: "Wartemusik, die Mailbox-Ansage, IVR-Ansagen, Aufnahmen per Telefon und die Sprache der Ansagen."
 ---
 Unter *Dienste → Medien* verwalten Sie eigene Audiodateien: Wartemusik, eine eigene Mailbox-Ansage und die Ansagen von IVR-Menüs. Außerdem zeigt die Seite, in welcher Sprache die Systemansagen abgespielt werden.
 
@@ -24,6 +24,18 @@ Sprechen Sie einen neutralen Text auf, der zu jeder Mailbox passt, zum Beispiel 
 ## IVR-Ansagen {#ivr}
 
 Die Ansagen von IVR-Menüs laden Sie im Menü-Editor unter [Wählplan → IVR-Menüs]({{< relref "/dialplan/ivr.md" >}}) hoch. Sie erscheinen hier in der Dateiliste mit dem Typ *IVR-Ansage*. Wenn Sie eine Ansage löschen, die ein Menü noch verwendet, bleibt dieses Menü stumm, bis Sie eine andere Ansage wählen; übernehmen Sie die Änderung anschließend.
+
+## Per Telefon aufnehmen {#record}
+
+Statt eine Datei hochzuladen, können Sie eine IVR-Ansage oder die Mailbox-Ansage auch in ein Telefon sprechen. Wählen Sie unter **Per Telefon aufnehmen**, was Sie **Aufnehmen** (bei einer IVR-Ansage auch ihren **Namen**), und unter **Telefon klingeln lassen** das Telefon, und klicken Sie auf **Mich anrufen**:
+
+1. Die Anlage ruft das Telefon an. Nehmen Sie ab und sprechen Sie den Text nach dem Signalton.
+2. Beenden Sie die Aufnahme mit `#`. Das Telefon spielt sie ab.
+3. Drücken Sie `1` zum Speichern, `2` zum erneuten Anhören oder `3` für eine neue Aufnahme.
+
+Die Seite zeigt jeden Schritt an und, sobald Sie `1` gedrückt haben, die neue Datei in der Liste. Legen Sie vor der `1` auf, wird die Aufnahme verworfen, ebenso wenn Sie den Anruf nicht annehmen. Eine Aufnahme wird wie eine hochgeladene Datei gespeichert: Eine IVR-Ansage steht im Menü-Editor zur Auswahl, eine neue Mailbox-Ansage ersetzt die alte und muss übernommen werden.
+
+Anrufen kann die Anlage nur SIP- und IAX-Telefone. Die Hinweise am Telefon kommen in der Sprache der Ansagen dieses Telefons.
 
 ## Hochgeladene Dateien {#files}
 

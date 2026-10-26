@@ -8,6 +8,11 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ### Added
 
+- Announcements can be recorded by phone: under *Services → Media* (IVR announcement or voicemail greeting) and on
+  the **Announcement** tab of *Dialplan → IVR Menus*, **Record by phone** rings a SIP or IAX phone. Speak after the
+  tone, press `#`, listen to the recording and press `1` to save it. The recording is stored like an uploaded file,
+  and in the IVR editor it is chosen as the menu's announcement right away.
+
 - Announcements, music on hold and the voicemail greeting can be managed through the REST API: upload a file with
   `POST /api/v1/media?kind=ivr_prompt&filename=welcome.wav` (the audio as the request body, e.g.
   `curl --data-binary @welcome.wav`), list, download and delete them under `/api/v1/media`. An IVR menu uses an

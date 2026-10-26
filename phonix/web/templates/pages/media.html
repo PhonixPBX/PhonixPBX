@@ -1,5 +1,6 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
+{% from "macros/forms.html" import input, select with context %}
 {% block content %}
 <div class="row row-cards">
   <div class="col-lg-6">
@@ -19,6 +20,31 @@
         <p class="text-secondary">{{ _('A custom greeting played before callers leave a message (replaces the standard "unavailable" message).') }}</p>
         <form action="/services/media/vm_greeting" class="dropzone" data-dropzone data-param="file" data-max-mb="16" data-accept="audio/*,.wav,.mp3,.ogg" data-target="#media-files"
               data-message="{{ _("Drop the greeting here or click to upload") }}"></form>
+      </div>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">{{ _("Record by phone") }}</h3></div>
+      <div class="card-body">
+        <p class="text-secondary">{{ _("The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it. Recordings are stored like uploaded files.") }}</p>
+        {% if record_phones %}
+        {% set kind_opts = [] %}{% for k, label in record_kinds %}{% set _unused = kind_opts.append((k, _(label))) %}{% endfor %}
+        {% set phone_opts = [] %}{% for p in record_phones %}{% set _unused = phone_opts.append((p.extension, p.extension ~ " – " ~ p.callerid)) %}{% endfor %}
+        {% set rec_values = {"kind": "ivr_prompt", "name": "", "extension": record_phones[0].extension} %}
+        <form hx-post="/services/media/record" hx-target="#record-status-media" hx-swap="outerHTML" hx-disable="find button">
+          <input type="hidden" name="ctx" value="media">
+          <div class="row">
+            <div class="col-md-4">{{ select("kind", _("Record"), rec_values, {}, kind_opts) }}</div>
+            <div class="col-md-4" data-show-if="kind=ivr_prompt">{{ input("name", _("Name"), rec_values, {}, placeholder=_("e.g. welcome")) }}</div>
+            <div class="col-md-4">{{ select("extension", _("Ring phone"), rec_values, {}, phone_opts) }}</div>
+          </div>
+          <button type="submit" class="btn btn-primary">{{ icon("microphone") }}{{ _("Call me") }}</button>
+        </form>
+        {% else %}
+        <p class="text-secondary mb-0">{{ _("Add a SIP or IAX phone to record announcements by phone.") }}</p>
+        {% endif %}
+        <div id="record-status-media"></div>
       </div>
     </div>
   </div>

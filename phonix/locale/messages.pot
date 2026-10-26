@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 07:55+0100\n"
+"POT-Creation-Date: 2026-10-26 13:55+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -372,6 +372,9 @@ msgid "Active channels"
 msgstr ""
 
 msgid "Add"
+msgstr ""
+
+msgid "Add a SIP or IAX phone to record announcements by phone."
 msgstr ""
 
 msgid "Add a SIP or IAX phone to test the menu."
@@ -1359,6 +1362,9 @@ msgid "English"
 msgstr ""
 
 msgid "English (UK)"
+msgstr ""
+
+msgid "Enter a name for the announcement"
 msgstr ""
 
 msgid "Enter a name of up to 64 characters"
@@ -2383,6 +2389,11 @@ msgstr ""
 msgid "On Hold"
 msgstr ""
 
+msgid ""
+"On the phone: press 1 to save the recording, 2 to listen to it again or 3"
+" to record it again."
+msgstr ""
+
 msgid "On, applies today"
 msgstr ""
 
@@ -2808,6 +2819,18 @@ msgid ""
 "address, firewall rules or SSH settings could lock you out."
 msgstr ""
 
+msgid "Record"
+msgstr ""
+
+msgid "Record by phone"
+msgstr ""
+
+msgid "Recording in progress. Press # on the phone when you are done."
+msgstr ""
+
+msgid "Recording not found"
+msgstr ""
+
 msgid "Recording script"
 msgstr ""
 
@@ -3016,6 +3039,9 @@ msgid "Saved periods are switched on and off at the top of the page."
 msgstr ""
 
 msgid "Saving a backup of the configuration ..."
+msgstr ""
+
+msgid "Saving the recording."
 msgstr ""
 
 msgid "Search"
@@ -3284,6 +3310,16 @@ msgid ""
 " reachable from the internet."
 msgstr ""
 
+msgid ""
+"The PBX calls your phone. Speak the announcement after the tone, press # "
+"and then 1 to save it."
+msgstr ""
+
+msgid ""
+"The PBX calls your phone. Speak the announcement after the tone, press # "
+"and then 1 to save it. Recordings are stored like uploaded files."
+msgstr ""
+
 msgid "The caller hung up"
 msgstr ""
 
@@ -3366,6 +3402,31 @@ msgid "The number used to dial this phone."
 msgstr ""
 
 msgid "The password must have at least 8 characters"
+msgstr ""
+
+msgid ""
+"The phone is ringing. Answer it, speak after the tone and press # when "
+"you are done."
+msgstr ""
+
+msgid "The phone was not answered."
+msgstr ""
+
+#, python-format
+msgid "The recording could not be saved: %(error)s"
+msgstr ""
+
+msgid "The recording is missing"
+msgstr ""
+
+msgid "The recording took too long and was discarded."
+msgstr ""
+
+msgid "The recording was discarded."
+msgstr ""
+
+#, python-format
+msgid "The recording was saved as %(name)s."
 msgstr ""
 
 msgid ""
@@ -4029,6 +4090,9 @@ msgid "e.g. monitoring"
 msgstr ""
 
 msgid "e.g. powerdns"
+msgstr ""
+
+msgid "e.g. welcome"
 msgstr ""
 
 msgid "enabled"
