@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 00:10+0100\n"
+"POT-Creation-Date: 2026-10-26 07:35+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: da\n"
@@ -115,6 +115,12 @@ msgid "%(num)d conference room"
 msgid_plural "%(num)d conference rooms"
 msgstr[0] "%(num)d konferencerum"
 msgstr[1] "%(num)d konferencerum"
+
+#, python-format
+msgid "%(num)d day left"
+msgid_plural "%(num)d days left"
+msgstr[0] "%(num)d dag tilbage"
+msgstr[1] "%(num)d dage tilbage"
 
 #, python-format
 msgid "%(num)d entry"
@@ -250,6 +256,9 @@ msgstr ""
 msgid "A call group cannot contain itself, directly or through another group"
 msgstr "En opkaldsgruppe kan ikke indeholde sig selv, hverken direkte eller via en anden gruppe"
 
+msgid "A certificate from your own or a commercial CA, used for the web interface and SIP over TLS."
+msgstr "Et certifikat fra din egen eller en kommerciel CA, der bruges til webgrænsefladen og SIP over TLS."
+
 msgid "A certificate request is already running."
 msgstr "En certifikatanmodning kører allerede."
 
@@ -341,6 +350,9 @@ msgstr "Adgangstoken"
 
 msgid "Account"
 msgstr "Konto"
+
+msgid "Account and domain names"
+msgstr "Konto og domænenavne"
 
 msgid "Account e-mail address"
 msgstr "E-mailadresse til kontoen"
@@ -594,11 +606,11 @@ msgstr "Auto"
 msgid "Automatic"
 msgstr "Automatisk"
 
+msgid "Automatic (ACME)"
+msgstr "Automatisk (ACME)"
+
 msgid "Automatic (SLAAC)"
 msgstr "Automatisk (SLAAC)"
-
-msgid "Automatic certificate (Let's Encrypt / ACME)"
-msgstr "Automatisk certifikat (Let's Encrypt / ACME)"
 
 msgid "Automatic certificates were turned off."
 msgstr "Automatiske certifikater blev slået fra."
@@ -1010,6 +1022,9 @@ msgstr "Opret token"
 
 msgid "Created"
 msgstr "Oprettet"
+
+msgid "Creating a self-signed certificate turns off automatic certificates."
+msgstr "Oprettelse af et selvsigneret certifikat slår automatiske certifikater fra."
 
 msgid "Credentials"
 msgstr "Loginoplysninger"
@@ -1445,6 +1460,13 @@ msgstr "Tryk %(key)s for %(what)s."
 msgid "For example when the backup comes from a system with another host name."
 msgstr "For eksempel når backuppen stammer fra et system med et andet værtsnavn."
 
+msgid ""
+"For testing or internal use only: browsers and phones warn about a self-signed certificate because no trusted CA has "
+"signed it. The connection is still encrypted."
+msgstr ""
+"Kun til test eller intern brug: browsere og telefoner advarer om et selvsigneret certifikat, fordi ingen betroet CA "
+"har signeret det. Forbindelsen er stadig krypteret."
+
 msgid "For your reference only."
 msgstr "Kun til din egen reference."
 
@@ -1687,6 +1709,9 @@ msgstr "Installer en opdatering"
 
 msgid "Installed firmware"
 msgstr "Installeret firmware"
+
+msgid "Installing a certificate turns off automatic certificates."
+msgstr "Installation af et certifikat slår automatiske certifikater fra."
 
 msgid "Installing the new version ..."
 msgstr "Den nye version installeres ..."
@@ -3014,6 +3039,9 @@ msgstr "Vælg mindst én codec"
 msgid "Select at least one member"
 msgstr "Vælg mindst ét medlem"
 
+msgid "Self-signed"
+msgstr "Selvsigneret"
+
 msgid "Send a test message"
 msgstr "Send en testbesked"
 
@@ -3257,6 +3285,10 @@ msgstr ""
 
 msgid "The caller hung up"
 msgstr "Den, der ringede, lagde på"
+
+#, python-format
+msgid "The certificate is created for %(name)s (host name and domain from System → General Setup)."
+msgstr "Certifikatet oprettes til %(name)s (værtsnavn og domæne fra System → Generel opsætning)."
 
 msgid "The configuration in the backup is missing or damaged"
 msgstr "Konfigurationen i backuppen mangler eller er beskadiget"
@@ -3611,6 +3643,9 @@ msgstr "Signeringsnøglen til opdateringer er ikke en ed25519-nøgle"
 msgid "Updates: replace the container image"
 msgstr "Opdateringer: udskift container-imaget"
 
+msgid "Upload"
+msgstr "Upload"
+
 msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). You get a preview before anything changes."
 msgstr "Upload en PhonixPBX-backup (<code>.tar.zst</code>). Du får en forhåndsvisning, før noget ændres."
 
@@ -3629,9 +3664,6 @@ msgstr ""
 "Upload en signeret <code>.update</code>-pakke til dette board. Containerens pakker opgraderes på stedet; "
 "konfigurationen og data bevares. Først gemmes en backup af konfigurationen (<em>System &rarr; "
 "Backup/gendannelse</em>)."
-
-msgid "Upload certificate"
-msgstr "Upload certifikat"
 
 msgid "Upload complete. Starting the update ..."
 msgstr "Upload fuldført. Starter opdateringen ..."
@@ -3674,9 +3706,6 @@ msgstr "Bruges af PhonixPBX (certifikat, Asterisk). Selve containerens værtsnav
 
 msgid "Used by the phone to register. Generated passwords are strong; keep them."
 msgstr "Bruges af telefonen til registrering. Genererede adgangskoder er stærke; behold dem."
-
-msgid "Used for the web interface and SIP over TLS. Installing a certificate turns off automatic certificates."
-msgstr "Bruges til webgrænsefladen og SIP over TLS. Installation af et certifikat slår automatiske certifikater fra."
 
 msgid "Used for voicemail-to-e-mail and missed call notifications."
 msgstr "Bruges til telefonsvarer-til-e-mail og notifikationer om ubesvarede opkald."
@@ -3722,6 +3751,10 @@ msgstr "Bruger den anvendte konfiguration &mdash; anvend først ventende ændrin
 
 msgid "Valid until"
 msgstr "Gyldig indtil"
+
+#, python-format
+msgid "Valid until %(date)s"
+msgstr "Gyldig indtil %(date)s"
 
 msgid "Validation"
 msgstr "Validering"
@@ -4119,6 +4152,9 @@ msgstr "registreret"
 
 msgid "remove route"
 msgstr "fjern rute"
+
+msgid "renewed automatically"
+msgstr "fornyes automatisk"
 
 msgid "replace name with number"
 msgstr "erstat navn med nummer"

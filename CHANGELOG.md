@@ -6,6 +6,14 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- *Advanced → Certificate* is easier to read: a card at the top shows the names of the certificate in use, how many
+  days it is still valid and whether it is renewed automatically, with subject, issuer and fingerprint under
+  **Details**. The three ways to get a certificate are tabs below it (**Automatic (ACME)**, **Upload**,
+  **Self-signed**); the tab of the current certificate is marked *active* and opens first. Uploading or creating a
+  self-signed certificate warns when that turns off automatic certificates.
+
 ### Fixed
 
 - *Advanced → Certificate*: the empty **DNS resolvers for the propagation check** field showed `1.1.1.1:53` as its

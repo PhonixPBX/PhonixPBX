@@ -119,11 +119,18 @@ def _certificate_page(
     acme = st.load(db, st.AcmeSettings)
     system = st.load(db, st.SystemSettings)
     default_domain = f"{system.hostname}.{system.domain}"
+    cert = tls.certificate_info()
+    # where the certificate in use comes from; its tab opens first
+    source = "acme" if acme.enabled else "" if not cert else "selfsigned" if cert["self_signed"] == "True" else "upload"
+    active_tab = "upload" if upload_errors else "acme" if errors else source or "acme"
     return page(
         request,
         "pages/advanced_certificate.html",
         status_code=status_code,
-        cert=tls.certificate_info(),
+        cert=cert,
+        source=source,
+        active_tab=active_tab,
+        acme_enabled=acme.enabled,
         values=values if values is not None else _acme_values(acme),
         errors=errors or {},
         upload_errors=upload_errors or {},
@@ -170,7 +177,7 @@ async def certificate_upload(
     _disable_acme(request, db)
     _flash_warnings(request, acme_svc.reload_consumers(db))
     flash(request, _("Certificate installed."))
-    return redirect(request, "/advanced/certificate")
+    return redirect(request, "/advanced/certificate#tab-upload")
 
 
 @router.post("/certificate/regenerate")
@@ -181,7 +188,7 @@ def certificate_regenerate(request: Request, user: User = Depends(ui_user), db: 
     _disable_acme(request, db)
     _flash_warnings(request, acme_svc.reload_consumers(db))
     flash(request, _("A new self-signed certificate was created."))
-    return redirect(request, "/advanced/certificate")
+    return redirect(request, "/advanced/certificate#tab-selfsigned")
 
 
 def _acme_dns_form(form: Any, current: st.AcmeSettings) -> tuple[str, dict[str, str], dict[str, str]]:
@@ -262,16 +269,16 @@ async def certificate_acme(
         audit(db, user.username, "update", "settings", "acme", summary="acme", diff=diff)
     if not issue:
         flash(request, _("Settings saved."))
-        return redirect(request, "/advanced/certificate#acme")
+        return redirect(request, "/advanced/certificate#tab-acme")
     if not new.enabled:
         flash(request, _("Turn on automatic certificates to request one."), "warning")
-        return redirect(request, "/advanced/certificate#acme")
+        return redirect(request, "/advanced/certificate#tab-acme")
     db.commit()  # the background process reads the settings from the database
     try:
         acme_svc.start_background()
     except ServiceError as exc:
         flash(request, str(exc), "warning")
-    return redirect(request, "/advanced/certificate#acme")
+    return redirect(request, "/advanced/certificate#tab-acme")
 
 
 @router.get("/certificate/acme/status")

@@ -1,7 +1,7 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {# ACME request status; polls itself while lego is running #}
 {% set state = status.get("state", "none") %}
-<div id="acme-status"{% if state != "none" %} class="mb-3"{% endif %}{% if state == "running" %} hx-get="/advanced/certificate/acme/status?was=running" hx-trigger="every 2s" hx-swap="outerHTML"{% endif %}>
+<div id="acme-status"{% if state != "none" %} class="mt-3"{% endif %}{% if state == "running" %} hx-get="/advanced/certificate/acme/status?was=running" hx-trigger="every 2s" hx-swap="outerHTML"{% endif %}>
 {% if state == "running" %}
   <div class="alert alert-info mb-0"><div class="d-flex align-items-center"><span class="spinner-border spinner-border-sm me-2"></span>{{ status.message or _("Requesting a certificate ...") }}</div></div>
 {% elif state == "ok" %}

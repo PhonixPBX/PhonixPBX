@@ -1,6 +1,7 @@
 # SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
 # SPDX-License-Identifier: Apache-2.0
 import datetime as dt
+import re
 import subprocess
 
 import pytest
@@ -265,7 +266,7 @@ def _form(c, **extra):
 
 def test_acme_form_keeps_secrets(client):
     page = client.get("/advanced/certificate").text
-    assert "Automatic certificate" in page and "phonix.local is not a public DNS name" in page
+    assert "Automatic (ACME)" in page and "phonix.local is not a public DNS name" in page
     # the token is required for the chosen provider
     r = _form(client)
     assert r.status_code == 422 and "Missing DNS provider credentials" in r.text
@@ -332,6 +333,25 @@ def test_regenerate_turns_acme_off(client):
     assert r.status_code == 303
     with session_scope() as s:
         assert not st.load(s, st.AcmeSettings).enabled
+
+
+def test_certificate_tab_follows_source(client):
+    def active(page):
+        return re.search(r'class="tab-pane active show" id="tab-(\w+)"', page).group(1)
+
+    page = client.get("/advanced/certificate").text
+    assert active(page) == "selfsigned" and "days left" in page
+    # an upload error opens the upload tab
+    r = client.post(
+        "/advanced/certificate",
+        data={"csrf_token": csrf(client, "/advanced/certificate")},
+        files={"certificate": ("c.pem", b"junk"), "private_key": ("k.pem", b"junk")},
+    )
+    assert r.status_code == 422 and active(r.text) == "upload"
+    with session_scope() as s:
+        _enable(s)
+    page = client.get("/advanced/certificate").text
+    assert active(page) == "acme" and "renewed automatically" in page
 
 
 def test_self_signed_includes_mdns_name():

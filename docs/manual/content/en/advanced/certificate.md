@@ -9,19 +9,25 @@ description: "The TLS certificate of the web interface and SIP over TLS: self-si
 - an **uploaded certificate** from your own or a commercial CA;
 - an **automatic certificate** from an ACME CA such as Let's Encrypt, renewed by PhonixPBX.
 
+The page shows the certificate in use at the top. Below it, the tabs **Automatic (ACME)**, **Upload** and **Self-signed** hold one way each. The tab of the way the current certificate came from carries the badge *active* and is open when the page loads.
+
 Changes on this page take effect immediately, without applying: the web server reloads the certificate, and Asterisk is restarted to load it once no call is active if SIP over TLS is in use.
 
 ## Current certificate {#current}
 
-The card shows the certificate in use: **Subject**, **Names** (the DNS names it is valid for), **Issuer** (with the badge *self-signed* for a self-signed certificate), **Valid until** and the SHA-256 fingerprint. You can compare the fingerprint with the one your browser shows to make sure you are connected to your PBX.
+The card shows the names the certificate in use is valid for, the date it is valid until and the days left (orange below 30 days, red below 14). The badge *self-signed* marks a self-signed certificate, *renewed automatically* an active ACME setup. **Details** opens **Subject**, **Names**, **Issuer** and the SHA-256 fingerprint. You can compare the fingerprint with the one your browser shows to make sure you are connected to your PBX.
+
+The card also shows the result of the last ACME request; while a request is running the status updates by itself.
 
 ## Self-signed certificate {#self-signed}
 
 On first boot PhonixPBX creates a self-signed certificate for `<hostname>.<domain>` from [System → General Setup]({{< relref "/system/general.md#name" >}}). Browsers warn about such a certificate because no trusted CA has signed it; the connection is still encrypted.
 
-**Create new self-signed certificate** replaces the current certificate with a new self-signed one, for example after changing the host name. This also turns off automatic certificates.
+The tab **Self-signed** shows the name the certificate is created for. **Create new self-signed certificate** replaces the current certificate with a new self-signed one, for example after changing the host name. This also turns off automatic certificates.
 
 ## Upload a certificate {#upload}
+
+On the tab **Upload**:
 
 | Field | Meaning |
 |---|---|
@@ -32,7 +38,7 @@ Click **Install**. PhonixPBX checks that the files are valid PEM and that the ke
 
 ## Automatic certificate (ACME) {#acme}
 
-PhonixPBX can obtain a certificate from an ACME CA with the `lego` client and renew it automatically. The card at the bottom of the page shows the result of the last request; while a request is running the status updates by itself.
+PhonixPBX can obtain a certificate from an ACME CA with the `lego` client and renew it automatically. The tab **Automatic (ACME)** has two sections: *Account and domain names* and *Validation*. The result of the last request is shown in the card *Current certificate*.
 
 | Field | Meaning | Default |
 |---|---|---|
@@ -66,7 +72,7 @@ The CA checks a TXT record that `lego` creates through the API of your DNS provi
 | Credential fields | API token, key or similar, depending on the provider. Fields marked *(optional)* may stay empty. Stored secrets are not shown; leave a field empty to keep it. |
 | lego provider code | With *Other lego provider ...*: the code of any provider supported by lego, e.g. `powerdns`. See the lego DNS provider list. |
 | Credentials | With *Other lego provider ...*: the environment variables for that provider, `NAME=value` per line, as documented by lego. Stored values are not shown; write `NAME=` to keep a stored value. |
-| DNS resolvers for the propagation check (optional) | DNS servers that `lego` asks to check whether the TXT record is visible, e.g. `1.1.1.1:53`. Useful when the PBX resolves its own domain through an internal DNS server. |
+| DNS resolvers for the propagation check (optional) | Under **Advanced**. DNS servers that `lego` asks to check whether the TXT record is visible, e.g. `1.1.1.1:53`. Useful when the PBX resolves its own domain through an internal DNS server. |
 
 > Give the API credentials as few rights as possible, for example a Cloudflare token limited to editing DNS of one zone.
 

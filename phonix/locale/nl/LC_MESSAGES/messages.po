@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 00:10+0100\n"
+"POT-Creation-Date: 2026-10-26 07:35+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: nl\n"
@@ -115,6 +115,12 @@ msgid "%(num)d conference room"
 msgid_plural "%(num)d conference rooms"
 msgstr[0] "%(num)d vergaderruimte"
 msgstr[1] "%(num)d vergaderruimtes"
+
+#, python-format
+msgid "%(num)d day left"
+msgid_plural "%(num)d days left"
+msgstr[0] "nog %(num)d dag"
+msgstr[1] "nog %(num)d dagen"
 
 #, python-format
 msgid "%(num)d entry"
@@ -250,6 +256,9 @@ msgstr ""
 msgid "A call group cannot contain itself, directly or through another group"
 msgstr "Een belgroep kan zichzelf niet bevatten, niet direct en niet via een andere groep"
 
+msgid "A certificate from your own or a commercial CA, used for the web interface and SIP over TLS."
+msgstr "Een certificaat van uw eigen of een commerciële CA, gebruikt voor de webinterface en SIP via TLS."
+
 msgid "A certificate request is already running."
 msgstr "Er loopt al een certificaataanvraag."
 
@@ -342,6 +351,9 @@ msgstr "Toegangstoken"
 
 msgid "Account"
 msgstr "Account"
+
+msgid "Account and domain names"
+msgstr "Account en domeinnamen"
 
 msgid "Account e-mail address"
 msgstr "E-mailadres van het account"
@@ -597,11 +609,11 @@ msgstr "Auto"
 msgid "Automatic"
 msgstr "Automatisch"
 
+msgid "Automatic (ACME)"
+msgstr "Automatisch (ACME)"
+
 msgid "Automatic (SLAAC)"
 msgstr "Automatisch (SLAAC)"
-
-msgid "Automatic certificate (Let's Encrypt / ACME)"
-msgstr "Automatisch certificaat (Let's Encrypt / ACME)"
 
 msgid "Automatic certificates were turned off."
 msgstr "Automatische certificaten zijn uitgeschakeld."
@@ -1013,6 +1025,9 @@ msgstr "Token aanmaken"
 
 msgid "Created"
 msgstr "Aangemaakt"
+
+msgid "Creating a self-signed certificate turns off automatic certificates."
+msgstr "Het aanmaken van een zelfondertekend certificaat schakelt automatische certificaten uit."
 
 msgid "Credentials"
 msgstr "Inloggegevens"
@@ -1448,6 +1463,13 @@ msgstr "Voor %(what)s, toets %(key)s."
 msgid "For example when the backup comes from a system with another host name."
 msgstr "Bijvoorbeeld als de back-up van een systeem met een andere hostnaam komt."
 
+msgid ""
+"For testing or internal use only: browsers and phones warn about a self-signed certificate because no trusted CA has "
+"signed it. The connection is still encrypted."
+msgstr ""
+"Alleen voor tests of intern gebruik: browsers en telefoons waarschuwen bij een zelfondertekend certificaat omdat geen"
+" vertrouwde CA het heeft ondertekend. De verbinding is wel versleuteld."
+
 msgid "For your reference only."
 msgstr "Alleen ter informatie."
 
@@ -1691,6 +1713,9 @@ msgstr "Een update installeren"
 
 msgid "Installed firmware"
 msgstr "Geïnstalleerde firmware"
+
+msgid "Installing a certificate turns off automatic certificates."
+msgstr "Het installeren van een certificaat schakelt automatische certificaten uit."
 
 msgid "Installing the new version ..."
 msgstr "De nieuwe versie wordt geïnstalleerd ..."
@@ -3018,6 +3043,9 @@ msgstr "Selecteer minstens één codec"
 msgid "Select at least one member"
 msgstr "Selecteer minstens één lid"
 
+msgid "Self-signed"
+msgstr "Zelfondertekend"
+
 msgid "Send a test message"
 msgstr "Een testbericht verzenden"
 
@@ -3261,6 +3289,10 @@ msgstr ""
 
 msgid "The caller hung up"
 msgstr "De beller heeft opgehangen"
+
+#, python-format
+msgid "The certificate is created for %(name)s (host name and domain from System → General Setup)."
+msgstr "Het certificaat wordt aangemaakt voor %(name)s (hostnaam en domein uit Systeem → Algemene instellingen)."
 
 msgid "The configuration in the backup is missing or damaged"
 msgstr "De configuratie in de back-up ontbreekt of is beschadigd"
@@ -3619,6 +3651,9 @@ msgstr "Ondertekeningssleutel voor updates is geen ed25519-sleutel"
 msgid "Updates: replace the container image"
 msgstr "Updates: vervang de container-image"
 
+msgid "Upload"
+msgstr "Uploaden"
+
 msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). You get a preview before anything changes."
 msgstr "Upload een PhonixPBX-back-up (<code>.tar.zst</code>). U krijgt een voorbeeld te zien voordat er iets verandert."
 
@@ -3638,9 +3673,6 @@ msgstr ""
 "Upload een ondertekende <code>.update</code>-bundel voor dit board. De pakketten van de container worden ter plekke "
 "bijgewerkt; configuratie en gegevens blijven behouden. Eerst wordt een back-up van de configuratie opgeslagen "
 "(<em>Systeem &rarr; Back-up/herstel</em>)."
-
-msgid "Upload certificate"
-msgstr "Certificaat uploaden"
 
 msgid "Upload complete. Starting the update ..."
 msgstr "Upload voltooid. Update wordt gestart ..."
@@ -3688,11 +3720,6 @@ msgstr ""
 msgid "Used by the phone to register. Generated passwords are strong; keep them."
 msgstr "Wordt door de telefoon gebruikt om te registreren. Gegenereerde wachtwoorden zijn sterk; behoud ze."
 
-msgid "Used for the web interface and SIP over TLS. Installing a certificate turns off automatic certificates."
-msgstr ""
-"Gebruikt voor de webinterface en SIP via TLS. Het installeren van een certificaat schakelt automatische certificaten "
-"uit."
-
 msgid "Used for voicemail-to-e-mail and missed call notifications."
 msgstr "Gebruikt voor voicemail-naar-e-mail en meldingen van gemiste oproepen."
 
@@ -3737,6 +3764,10 @@ msgstr "Gebruikt de toegepaste configuratie &mdash; pas eerst openstaande wijzig
 
 msgid "Valid until"
 msgstr "Geldig tot"
+
+#, python-format
+msgid "Valid until %(date)s"
+msgstr "Geldig tot %(date)s"
 
 msgid "Validation"
 msgstr "Validatie"
@@ -4134,6 +4165,9 @@ msgstr "geregistreerd"
 
 msgid "remove route"
 msgstr "route verwijderen"
+
+msgid "renewed automatically"
+msgstr "wordt automatisch vernieuwd"
 
 msgid "replace name with number"
 msgstr "naam door nummer vervangen"

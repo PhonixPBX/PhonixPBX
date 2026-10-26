@@ -9,19 +9,25 @@ Unter *Erweitert → Zertifikat* verwalten Sie das TLS-Zertifikat, das die Webob
 - ein **hochgeladenes Zertifikat** Ihrer eigenen oder einer kommerziellen CA;
 - ein **automatisches Zertifikat** einer ACME-CA wie Let's Encrypt, das PhonixPBX selbst erneuert.
 
+Oben zeigt die Seite das verwendete Zertifikat. Darunter enthalten die Reiter **Automatisch (ACME)**, **Hochladen** und **Selbstsigniert** je einen dieser Wege. Der Reiter des Wegs, über den das aktuelle Zertifikat kam, trägt die Markierung *aktiv* und ist beim Laden der Seite geöffnet.
+
 Änderungen auf dieser Seite wirken sofort, ohne Übernehmen: Der Webserver lädt das Zertifikat neu, und wenn SIP über TLS verwendet wird, startet Asterisk neu, sobald kein Gespräch aktiv ist, um es zu laden.
 
 ## Aktuelles Zertifikat {#current}
 
-Die Karte zeigt das verwendete Zertifikat: **Betreff**, **Namen** (die DNS-Namen, für die es gilt), **Aussteller** (bei einem selbstsignierten Zertifikat mit der Markierung *selbstsigniert*), **Gültig bis** und den SHA-256-Fingerabdruck. Vergleichen Sie den Fingerabdruck mit dem, den Ihr Browser anzeigt, um sicherzugehen, dass Sie mit Ihrer TK-Anlage verbunden sind.
+Die Karte zeigt die Namen, für die das verwendete Zertifikat gilt, das Datum, bis zu dem es gültig ist, und die verbleibenden Tage (orange unter 30 Tagen, rot unter 14). Die Markierung *selbstsigniert* kennzeichnet ein selbstsigniertes Zertifikat, *wird automatisch erneuert* eine aktive ACME-Einrichtung. **Details** zeigt **Betreff**, **Namen**, **Aussteller** und den SHA-256-Fingerabdruck. Vergleichen Sie den Fingerabdruck mit dem, den Ihr Browser anzeigt, um sicherzugehen, dass Sie mit Ihrer TK-Anlage verbunden sind.
+
+Die Karte zeigt auch das Ergebnis der letzten ACME-Anfrage; während eine Anfrage läuft, aktualisiert sich die Anzeige von selbst.
 
 ## Selbstsigniertes Zertifikat {#self-signed}
 
 Beim ersten Start erstellt PhonixPBX ein selbstsigniertes Zertifikat für `<Hostname>.<Domain>` aus [System → Grundeinstellungen]({{< relref "/system/general.md#name" >}}). Browser warnen bei einem solchen Zertifikat, weil keine vertrauenswürdige CA es signiert hat; die Verbindung ist trotzdem verschlüsselt.
 
-**Neues selbstsigniertes Zertifikat erstellen** ersetzt das aktuelle Zertifikat durch ein neues selbstsigniertes, zum Beispiel nach einer Änderung des Hostnamens. Dabei werden automatische Zertifikate deaktiviert.
+Der Reiter **Selbstsigniert** zeigt den Namen, für den das Zertifikat erstellt wird. **Neues selbstsigniertes Zertifikat erstellen** ersetzt das aktuelle Zertifikat durch ein neues selbstsigniertes, zum Beispiel nach einer Änderung des Hostnamens. Dabei werden automatische Zertifikate deaktiviert.
 
 ## Zertifikat hochladen {#upload}
+
+Auf dem Reiter **Hochladen**:
 
 | Feld | Bedeutung |
 |---|---|
@@ -32,7 +38,7 @@ Klicken Sie auf **Installieren**. PhonixPBX prüft, ob die Dateien gültiges PEM
 
 ## Automatisches Zertifikat (ACME) {#acme}
 
-PhonixPBX kann mit dem Client `lego` ein Zertifikat von einer ACME-CA beziehen und automatisch erneuern. Die Karte unten auf der Seite zeigt das Ergebnis der letzten Anfrage; während eine Anfrage läuft, aktualisiert sich die Anzeige von selbst.
+PhonixPBX kann mit dem Client `lego` ein Zertifikat von einer ACME-CA beziehen und automatisch erneuern. Der Reiter **Automatisch (ACME)** hat zwei Abschnitte: *Konto und Domainnamen* und *Validierung*. Das Ergebnis der letzten Anfrage steht in der Karte *Aktuelles Zertifikat*.
 
 | Feld | Bedeutung | Standard |
 |---|---|---|
@@ -66,7 +72,7 @@ Die CA prüft einen TXT-Eintrag, den `lego` über die API Ihres DNS-Providers an
 | Felder für Zugangsdaten | API-Token, Schlüssel oder Ähnliches, je nach Anbieter. Felder mit *(optional)* dürfen leer bleiben. Gespeicherte Geheimnisse werden nicht angezeigt; lassen Sie ein Feld leer, um den Wert beizubehalten. |
 | lego-Provider-Code | Bei *Anderer lego-Provider ...*: der Code eines beliebigen von lego unterstützten Anbieters, z. B. `powerdns`. Siehe die Liste der lego-DNS-Provider. |
 | Zugangsdaten | Bei *Anderer lego-Provider ...*: die Umgebungsvariablen für diesen Anbieter laut lego-Dokumentation, `NAME=Wert` pro Zeile. Gespeicherte Werte werden nicht angezeigt; schreiben Sie `NAME=`, um einen gespeicherten Wert beizubehalten. |
-| DNS-Resolver für die Propagationsprüfung (optional) | DNS-Server, bei denen `lego` prüft, ob der TXT-Eintrag sichtbar ist, z. B. `1.1.1.1:53`. Nützlich, wenn die TK-Anlage ihre eigene Domain über einen internen DNS-Server auflöst. |
+| DNS-Resolver für die Propagationsprüfung (optional) | Unter **Erweitert**. DNS-Server, bei denen `lego` prüft, ob der TXT-Eintrag sichtbar ist, z. B. `1.1.1.1:53`. Nützlich, wenn die TK-Anlage ihre eigene Domain über einen internen DNS-Server auflöst. |
 
 > Geben Sie den API-Zugangsdaten so wenige Rechte wie möglich, zum Beispiel ein Cloudflare-Token, das nur DNS-Einträge einer Zone bearbeiten darf.
 

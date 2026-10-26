@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 00:10+0100\n"
+"POT-Creation-Date: 2026-10-26 07:35+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ja\n"
@@ -106,6 +106,11 @@ msgstr[0] "%(num)d 件のコールグループ"
 msgid "%(num)d conference room"
 msgid_plural "%(num)d conference rooms"
 msgstr[0] "%(num)d 件の会議室"
+
+#, python-format
+msgid "%(num)d day left"
+msgid_plural "%(num)d days left"
+msgstr[0] "残り %(num)d 日"
 
 #, python-format
 msgid "%(num)d entry"
@@ -229,6 +234,9 @@ msgstr "DNS プロバイダーの API を通じて TXT レコードを作成し�
 msgid "A call group cannot contain itself, directly or through another group"
 msgstr "コールグループは、直接または別のグループを介して自分自身を含めることはできません"
 
+msgid "A certificate from your own or a commercial CA, used for the web interface and SIP over TLS."
+msgstr "独自の認証局または商用認証局が発行した証明書です。Web インターフェースと SIP over TLS で使用されます。"
+
 msgid "A certificate request is already running."
 msgstr "証明書リクエストはすでに実行中です。"
 
@@ -316,6 +324,9 @@ msgstr "アクセストークン"
 
 msgid "Account"
 msgstr "アカウント"
+
+msgid "Account and domain names"
+msgstr "アカウントとドメイン名"
 
 msgid "Account e-mail address"
 msgstr "アカウントのメールアドレス"
@@ -569,11 +580,11 @@ msgstr "自動"
 msgid "Automatic"
 msgstr "自動"
 
+msgid "Automatic (ACME)"
+msgstr "自動（ACME）"
+
 msgid "Automatic (SLAAC)"
 msgstr "自動（SLAAC）"
-
-msgid "Automatic certificate (Let's Encrypt / ACME)"
-msgstr "自動証明書（Let's Encrypt / ACME）"
 
 msgid "Automatic certificates were turned off."
 msgstr "自動証明書を無効にしました。"
@@ -981,6 +992,9 @@ msgstr "トークンを作成"
 
 msgid "Created"
 msgstr "作成日時"
+
+msgid "Creating a self-signed certificate turns off automatic certificates."
+msgstr "自己署名証明書を作成すると自動証明書は無効になります。"
 
 msgid "Credentials"
 msgstr "認証情報"
@@ -1416,6 +1430,11 @@ msgstr "%(what)s は %(key)s を押してください。"
 msgid "For example when the backup comes from a system with another host name."
 msgstr "たとえば、バックアップが別のホスト名のシステムのものである場合。"
 
+msgid ""
+"For testing or internal use only: browsers and phones warn about a self-signed certificate because no trusted CA has "
+"signed it. The connection is still encrypted."
+msgstr "テストまたは内部での使用のみを想定しています。自己署名証明書は信頼された認証局によって署名されていないため、ブラウザーや電話機で警告が表示されます。通信は暗号化されます。"
+
 msgid "For your reference only."
 msgstr "参照用のメモです。"
 
@@ -1655,6 +1674,9 @@ msgstr "アップデートのインストール"
 
 msgid "Installed firmware"
 msgstr "インストール済みファームウェア"
+
+msgid "Installing a certificate turns off automatic certificates."
+msgstr "証明書をインストールすると自動証明書は無効になります。"
 
 msgid "Installing the new version ..."
 msgstr "新しいバージョンをインストールしています ..."
@@ -2957,6 +2979,9 @@ msgstr "コーデックを 1 つ以上選択してください"
 msgid "Select at least one member"
 msgstr "メンバーを 1 人以上選択してください"
 
+msgid "Self-signed"
+msgstr "自己署名"
+
 msgid "Send a test message"
 msgstr "テストメッセージを送信"
 
@@ -3188,6 +3213,10 @@ msgstr ""
 
 msgid "The caller hung up"
 msgstr "発信者が切断しました"
+
+#, python-format
+msgid "The certificate is created for %(name)s (host name and domain from System → General Setup)."
+msgstr "証明書は %(name)s 用に作成されます（ホスト名とドメインは「システム → 全般設定」の設定です）。"
 
 msgid "The configuration in the backup is missing or damaged"
 msgstr "バックアップ内の設定が見つからないか、破損しています"
@@ -3531,6 +3560,9 @@ msgstr "アップデート署名鍵が ed25519 鍵ではありません"
 msgid "Updates: replace the container image"
 msgstr "アップデート: コンテナーイメージを置き換えてください"
 
+msgid "Upload"
+msgstr "アップロード"
+
 msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). You get a preview before anything changes."
 msgstr "PhonixPBX のバックアップ (<code>.tar.zst</code>) をアップロードしてください。変更前にプレビューが表示されます。"
 
@@ -3548,9 +3580,6 @@ msgid ""
 msgstr ""
 "このボード用の署名済み <code>.update</code> バンドルをアップロードしてください。コンテナーのパッケージはその場でアップグレードされ、設定とデータは保持されます。事前に設定のバックアップが保存されます "
 "(<em>システム &rarr; バックアップ/復元</em>)。"
-
-msgid "Upload certificate"
-msgstr "証明書をアップロード"
 
 msgid "Upload complete. Starting the update ..."
 msgstr "アップロードが完了しました。アップデートを開始しています ..."
@@ -3593,9 +3622,6 @@ msgstr "PhonixPBX（証明書、Asterisk）で使用されます。コンテナ�
 
 msgid "Used by the phone to register. Generated passwords are strong; keep them."
 msgstr "電話機の登録に使用します。生成されたパスワードは強力なので、そのまま使用してください。"
-
-msgid "Used for the web interface and SIP over TLS. Installing a certificate turns off automatic certificates."
-msgstr "Web インターフェースと SIP over TLS で使用されます。証明書をインストールすると自動証明書は無効になります。"
 
 msgid "Used for voicemail-to-e-mail and missed call notifications."
 msgstr "ボイスメールのメール送信と不在着信通知に使用されます。"
@@ -3641,6 +3667,10 @@ msgstr "適用済みの設定を使用します &mdash; 先に保留中の変更
 
 msgid "Valid until"
 msgstr "有効期限"
+
+#, python-format
+msgid "Valid until %(date)s"
+msgstr "有効期限 %(date)s"
 
 msgid "Validation"
 msgstr "検証"
@@ -4026,6 +4056,9 @@ msgstr "登録済み"
 
 msgid "remove route"
 msgstr "ルートを削除"
+
+msgid "renewed automatically"
+msgstr "自動更新"
 
 msgid "replace name with number"
 msgstr "名前を番号に置き換え"

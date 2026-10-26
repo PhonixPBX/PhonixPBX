@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 00:10+0100\n"
+"POT-Creation-Date: 2026-10-26 07:35+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -114,6 +114,12 @@ msgstr[1] ""
 #, python-format
 msgid "%(num)d conference room"
 msgid_plural "%(num)d conference rooms"
+msgstr[0] ""
+msgstr[1] ""
+
+#, python-format
+msgid "%(num)d day left"
+msgid_plural "%(num)d days left"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -247,6 +253,11 @@ msgstr ""
 msgid "A call group cannot contain itself, directly or through another group"
 msgstr ""
 
+msgid ""
+"A certificate from your own or a commercial CA, used for the web "
+"interface and SIP over TLS."
+msgstr ""
+
 msgid "A certificate request is already running."
 msgstr ""
 
@@ -337,6 +348,9 @@ msgid "Access token"
 msgstr ""
 
 msgid "Account"
+msgstr ""
+
+msgid "Account and domain names"
 msgstr ""
 
 msgid "Account e-mail address"
@@ -599,10 +613,10 @@ msgstr ""
 msgid "Automatic"
 msgstr ""
 
-msgid "Automatic (SLAAC)"
+msgid "Automatic (ACME)"
 msgstr ""
 
-msgid "Automatic certificate (Let's Encrypt / ACME)"
+msgid "Automatic (SLAAC)"
 msgstr ""
 
 msgid "Automatic certificates were turned off."
@@ -1014,6 +1028,9 @@ msgid "Create token"
 msgstr ""
 
 msgid "Created"
+msgstr ""
+
+msgid "Creating a self-signed certificate turns off automatic certificates."
 msgstr ""
 
 msgid "Credentials"
@@ -1456,6 +1473,12 @@ msgstr ""
 msgid "For example when the backup comes from a system with another host name."
 msgstr ""
 
+msgid ""
+"For testing or internal use only: browsers and phones warn about a self-"
+"signed certificate because no trusted CA has signed it. The connection is"
+" still encrypted."
+msgstr ""
+
 msgid "For your reference only."
 msgstr ""
 
@@ -1680,6 +1703,9 @@ msgid "Install an update"
 msgstr ""
 
 msgid "Installed firmware"
+msgstr ""
+
+msgid "Installing a certificate turns off automatic certificates."
 msgstr ""
 
 msgid "Installing the new version ..."
@@ -3018,6 +3044,9 @@ msgstr ""
 msgid "Select at least one member"
 msgstr ""
 
+msgid "Self-signed"
+msgstr ""
+
 msgid "Send a test message"
 msgstr ""
 
@@ -3256,6 +3285,12 @@ msgid ""
 msgstr ""
 
 msgid "The caller hung up"
+msgstr ""
+
+#, python-format
+msgid ""
+"The certificate is created for %(name)s (host name and domain from System"
+" → General Setup)."
 msgstr ""
 
 msgid "The configuration in the backup is missing or damaged"
@@ -3613,6 +3648,9 @@ msgstr ""
 msgid "Updates: replace the container image"
 msgstr ""
 
+msgid "Upload"
+msgstr ""
+
 msgid ""
 "Upload a PhonixPBX backup (<code>.tar.zst</code>). You get a preview "
 "before anything changes."
@@ -3629,9 +3667,6 @@ msgid ""
 "of the container are upgraded in place; the configuration and data are "
 "kept. A backup of the configuration is saved first (<em>System &rarr; "
 "Backup/Restore</em>)."
-msgstr ""
-
-msgid "Upload certificate"
 msgstr ""
 
 msgid "Upload complete. Starting the update ..."
@@ -3682,11 +3717,6 @@ msgstr ""
 msgid "Used by the phone to register. Generated passwords are strong; keep them."
 msgstr ""
 
-msgid ""
-"Used for the web interface and SIP over TLS. Installing a certificate "
-"turns off automatic certificates."
-msgstr ""
-
 msgid "Used for voicemail-to-e-mail and missed call notifications."
 msgstr ""
 
@@ -3730,6 +3760,10 @@ msgid "Uses the applied configuration &mdash; apply pending changes first."
 msgstr ""
 
 msgid "Valid until"
+msgstr ""
+
+#, python-format
+msgid "Valid until %(date)s"
 msgstr ""
 
 msgid "Validation"
@@ -4125,6 +4159,9 @@ msgid "registered"
 msgstr ""
 
 msgid "remove route"
+msgstr ""
+
+msgid "renewed automatically"
 msgstr ""
 
 msgid "replace name with number"

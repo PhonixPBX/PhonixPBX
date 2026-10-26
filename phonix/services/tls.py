@@ -101,6 +101,7 @@ def certificate_info() -> dict[str, str] | None:
         "issuer": cert.issuer.rfc4514_string(),
         "names": ", ".join(dns_names(cert)),
         "not_after": cert.not_valid_after_utc.strftime("%Y-%m-%d"),
+        "days_left": str((cert.not_valid_after_utc - dt.datetime.now(dt.timezone.utc)).days),
         "self_signed": str(cert.subject == cert.issuer),
         "sha256": cert.fingerprint(hashes.SHA256()).hex(":"),
     }

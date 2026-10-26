@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 00:10+0100\n"
+"POT-Creation-Date: 2026-10-26 07:35+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: pt_BR\n"
@@ -115,6 +115,12 @@ msgid "%(num)d conference room"
 msgid_plural "%(num)d conference rooms"
 msgstr[0] "%(num)d sala de conferência"
 msgstr[1] "%(num)d salas de conferência"
+
+#, python-format
+msgid "%(num)d day left"
+msgid_plural "%(num)d days left"
+msgstr[0] "resta %(num)d dia"
+msgstr[1] "restam %(num)d dias"
 
 #, python-format
 msgid "%(num)d entry"
@@ -250,6 +256,9 @@ msgstr ""
 msgid "A call group cannot contain itself, directly or through another group"
 msgstr "Um grupo de chamada não pode conter a si mesmo, nem diretamente nem por meio de outro grupo"
 
+msgid "A certificate from your own or a commercial CA, used for the web interface and SIP over TLS."
+msgstr "Um certificado da sua própria CA ou de uma CA comercial, usado para a interface web e SIP sobre TLS."
+
 msgid "A certificate request is already running."
 msgstr "Uma solicitação de certificado já está em andamento."
 
@@ -341,6 +350,9 @@ msgstr "Token de acesso"
 
 msgid "Account"
 msgstr "Conta"
+
+msgid "Account and domain names"
+msgstr "Conta e nomes de domínio"
 
 msgid "Account e-mail address"
 msgstr "Endereço de e-mail da conta"
@@ -598,11 +610,11 @@ msgstr "Automático"
 msgid "Automatic"
 msgstr "Automático"
 
+msgid "Automatic (ACME)"
+msgstr "Automático (ACME)"
+
 msgid "Automatic (SLAAC)"
 msgstr "Automático (SLAAC)"
-
-msgid "Automatic certificate (Let's Encrypt / ACME)"
-msgstr "Certificado automático (Let's Encrypt / ACME)"
 
 msgid "Automatic certificates were turned off."
 msgstr "Os certificados automáticos foram desativados."
@@ -1014,6 +1026,9 @@ msgstr "Criar token"
 
 msgid "Created"
 msgstr "Criado"
+
+msgid "Creating a self-signed certificate turns off automatic certificates."
+msgstr "Criar um certificado autoassinado desativa os certificados automáticos."
 
 msgid "Credentials"
 msgstr "Credenciais"
@@ -1449,6 +1464,13 @@ msgstr "Para %(what)s, tecle %(key)s."
 msgid "For example when the backup comes from a system with another host name."
 msgstr "Por exemplo, quando o backup vem de um sistema com outro nome de host."
 
+msgid ""
+"For testing or internal use only: browsers and phones warn about a self-signed certificate because no trusted CA has "
+"signed it. The connection is still encrypted."
+msgstr ""
+"Somente para testes ou uso interno: navegadores e telefones exibem avisos para um certificado autoassinado porque "
+"nenhuma CA confiável o assinou. A conexão continua criptografada."
+
 msgid "For your reference only."
 msgstr "Apenas para sua referência."
 
@@ -1692,6 +1714,9 @@ msgstr "Instalar uma atualização"
 
 msgid "Installed firmware"
 msgstr "Firmware instalado"
+
+msgid "Installing a certificate turns off automatic certificates."
+msgstr "Instalar um certificado desativa os certificados automáticos."
 
 msgid "Installing the new version ..."
 msgstr "Instalando a nova versão ..."
@@ -3020,6 +3045,9 @@ msgstr "Selecione pelo menos um codec"
 msgid "Select at least one member"
 msgstr "Selecione pelo menos um membro"
 
+msgid "Self-signed"
+msgstr "Autoassinado"
+
 msgid "Send a test message"
 msgstr "Enviar uma mensagem de teste"
 
@@ -3265,6 +3293,10 @@ msgstr ""
 
 msgid "The caller hung up"
 msgstr "O chamador desligou"
+
+#, python-format
+msgid "The certificate is created for %(name)s (host name and domain from System → General Setup)."
+msgstr "O certificado é criado para %(name)s (nome do host e domínio de Sistema → Configuração geral)."
 
 msgid "The configuration in the backup is missing or damaged"
 msgstr "A configuração no backup está ausente ou danificada"
@@ -3619,6 +3651,9 @@ msgstr "A chave de assinatura de atualizações não é uma chave ed25519"
 msgid "Updates: replace the container image"
 msgstr "Atualizações: substitua a imagem do contêiner"
 
+msgid "Upload"
+msgstr "Enviar"
+
 msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). You get a preview before anything changes."
 msgstr "Envie um backup do PhonixPBX (<code>.tar.zst</code>). Você verá uma prévia antes de qualquer alteração."
 
@@ -3637,9 +3672,6 @@ msgstr ""
 "Envie um pacote <code>.update</code> assinado para esta placa. Os pacotes do contêiner são atualizados no local; a "
 "configuração e os dados são mantidos. Antes, um backup da configuração é salvo (<em>Sistema &rarr; "
 "Backup/Restauração</em>)."
-
-msgid "Upload certificate"
-msgstr "Enviar certificado"
 
 msgid "Upload complete. Starting the update ..."
 msgstr "Envio concluído. Iniciando a atualização ..."
@@ -3685,9 +3717,6 @@ msgstr "Usado pelo PhonixPBX (certificado, Asterisk). O nome do host do próprio
 msgid "Used by the phone to register. Generated passwords are strong; keep them."
 msgstr "Usada pelo telefone para se registrar. As senhas geradas são fortes; mantenha-as."
 
-msgid "Used for the web interface and SIP over TLS. Installing a certificate turns off automatic certificates."
-msgstr "Usado para a interface web e SIP sobre TLS. Instalar um certificado desativa os certificados automáticos."
-
 msgid "Used for voicemail-to-e-mail and missed call notifications."
 msgstr "Usado para correio de voz por e-mail e notificações de chamadas perdidas."
 
@@ -3732,6 +3761,10 @@ msgstr "Usa a configuração aplicada &mdash; aplique antes as alterações pend
 
 msgid "Valid until"
 msgstr "Válido até"
+
+#, python-format
+msgid "Valid until %(date)s"
+msgstr "Válido até %(date)s"
 
 msgid "Validation"
 msgstr "Validação"
@@ -4129,6 +4162,9 @@ msgstr "registrado"
 
 msgid "remove route"
 msgstr "remover rota"
+
+msgid "renewed automatically"
+msgstr "renovado automaticamente"
 
 msgid "replace name with number"
 msgstr "substituir nome pelo número"

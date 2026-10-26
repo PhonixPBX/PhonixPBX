@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 00:10+0100\n"
+"POT-Creation-Date: 2026-10-26 07:35+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: fr\n"
@@ -115,6 +115,12 @@ msgid "%(num)d conference room"
 msgid_plural "%(num)d conference rooms"
 msgstr[0] "%(num)d salle de conférence"
 msgstr[1] "%(num)d salles de conférence"
+
+#, python-format
+msgid "%(num)d day left"
+msgid_plural "%(num)d days left"
+msgstr[0] "%(num)d jour restant"
+msgstr[1] "%(num)d jours restants"
 
 #, python-format
 msgid "%(num)d entry"
@@ -250,6 +256,11 @@ msgstr ""
 msgid "A call group cannot contain itself, directly or through another group"
 msgstr "Un groupe d'appels ne peut pas se contenir lui-même, ni directement ni via un autre groupe"
 
+msgid "A certificate from your own or a commercial CA, used for the web interface and SIP over TLS."
+msgstr ""
+"Un certificat émis par votre propre autorité de certification ou par une autorité commerciale, utilisé pour "
+"l'interface web et SIP sur TLS."
+
 msgid "A certificate request is already running."
 msgstr "Une demande de certificat est déjà en cours."
 
@@ -342,6 +353,9 @@ msgstr "Jeton d'accès"
 
 msgid "Account"
 msgstr "Compte"
+
+msgid "Account and domain names"
+msgstr "Compte et noms de domaine"
 
 msgid "Account e-mail address"
 msgstr "Adresse e-mail du compte"
@@ -599,11 +613,11 @@ msgstr "Auto"
 msgid "Automatic"
 msgstr "Automatique"
 
+msgid "Automatic (ACME)"
+msgstr "Automatique (ACME)"
+
 msgid "Automatic (SLAAC)"
 msgstr "Automatique (SLAAC)"
-
-msgid "Automatic certificate (Let's Encrypt / ACME)"
-msgstr "Certificat automatique (Let's Encrypt / ACME)"
 
 msgid "Automatic certificates were turned off."
 msgstr "Les certificats automatiques ont été désactivés."
@@ -1015,6 +1029,9 @@ msgstr "Créer un jeton"
 
 msgid "Created"
 msgstr "Créé"
+
+msgid "Creating a self-signed certificate turns off automatic certificates."
+msgstr "La création d'un certificat auto-signé désactive les certificats automatiques."
 
 msgid "Credentials"
 msgstr "Identifiants"
@@ -1450,6 +1467,13 @@ msgstr "Pour %(what)s, tapez %(key)s."
 msgid "For example when the backup comes from a system with another host name."
 msgstr "Par exemple si la sauvegarde provient d'un système avec un autre nom d'hôte."
 
+msgid ""
+"For testing or internal use only: browsers and phones warn about a self-signed certificate because no trusted CA has "
+"signed it. The connection is still encrypted."
+msgstr ""
+"Uniquement pour des tests ou un usage interne : les navigateurs et les téléphones affichent un avertissement pour un "
+"certificat auto-signé, car aucune autorité de certification de confiance ne l'a signé. La connexion reste chiffrée."
+
 msgid "For your reference only."
 msgstr "Pour information uniquement."
 
@@ -1695,6 +1719,9 @@ msgstr "Installer une mise à jour"
 
 msgid "Installed firmware"
 msgstr "Micrologiciel installé"
+
+msgid "Installing a certificate turns off automatic certificates."
+msgstr "L'installation d'un certificat désactive les certificats automatiques."
 
 msgid "Installing the new version ..."
 msgstr "Installation de la nouvelle version ..."
@@ -3030,6 +3057,9 @@ msgstr "Sélectionnez au moins un codec"
 msgid "Select at least one member"
 msgstr "Sélectionnez au moins un membre"
 
+msgid "Self-signed"
+msgstr "Auto-signé"
+
 msgid "Send a test message"
 msgstr "Envoyer un message de test"
 
@@ -3275,6 +3305,10 @@ msgstr ""
 
 msgid "The caller hung up"
 msgstr "L'appelant a raccroché"
+
+#, python-format
+msgid "The certificate is created for %(name)s (host name and domain from System → General Setup)."
+msgstr "Le certificat est créé pour %(name)s (nom d'hôte et domaine de Système → Configuration générale)."
 
 msgid "The configuration in the backup is missing or damaged"
 msgstr "La configuration de la sauvegarde est manquante ou endommagée"
@@ -3635,6 +3669,9 @@ msgstr "La clé de signature des mises à jour n'est pas une clé ed25519"
 msgid "Updates: replace the container image"
 msgstr "Mises à jour : remplacez l'image du conteneur"
 
+msgid "Upload"
+msgstr "Envoyer"
+
 msgid "Upload a PhonixPBX backup (<code>.tar.zst</code>). You get a preview before anything changes."
 msgstr "Envoyez une sauvegarde PhonixPBX (<code>.tar.zst</code>). Vous obtenez un aperçu avant toute modification."
 
@@ -3654,9 +3691,6 @@ msgstr ""
 "Envoyez un paquet <code>.update</code> signé pour cette carte. Les paquets du conteneur sont mis à niveau sur place ;"
 " la configuration et les données sont conservées. Une sauvegarde de la configuration est enregistrée au préalable "
 "(<em>Système &rarr; Sauvegarde/Restauration</em>)."
-
-msgid "Upload certificate"
-msgstr "Envoyer un certificat"
 
 msgid "Upload complete. Starting the update ..."
 msgstr "Envoi terminé. Démarrage de la mise à jour ..."
@@ -3702,9 +3736,6 @@ msgstr "Utilisé par PhonixPBX (certificat, Asterisk). Le nom d'hôte du contene
 msgid "Used by the phone to register. Generated passwords are strong; keep them."
 msgstr "Utilisé par le téléphone pour s'enregistrer. Les mots de passe générés sont robustes ; conservez-les."
 
-msgid "Used for the web interface and SIP over TLS. Installing a certificate turns off automatic certificates."
-msgstr "Utilisé pour l'interface web et SIP sur TLS. L'installation d'un certificat désactive les certificats automatiques."
-
 msgid "Used for voicemail-to-e-mail and missed call notifications."
 msgstr "Utilisé pour l'envoi des messages vocaux par e-mail et les notifications d'appels manqués."
 
@@ -3749,6 +3780,10 @@ msgstr "Utilise la configuration appliquée &mdash; appliquez d'abord les modifi
 
 msgid "Valid until"
 msgstr "Valable jusqu'au"
+
+#, python-format
+msgid "Valid until %(date)s"
+msgstr "Valable jusqu'au %(date)s"
 
 msgid "Validation"
 msgstr "Validation"
@@ -4149,6 +4184,9 @@ msgstr "enregistré"
 
 msgid "remove route"
 msgstr "supprimer la route"
+
+msgid "renewed automatically"
+msgstr "renouvelé automatiquement"
 
 msgid "replace name with number"
 msgstr "remplacer le nom par le numéro"
