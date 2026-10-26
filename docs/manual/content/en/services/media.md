@@ -36,6 +36,7 @@ The search field above the list finds files by name or type; how searching and p
 - Music on hold accepts WAV, MP3, OGG and FLAC files up to 64 MB each; the voicemail greeting WAV, MP3 and OGG up to 16 MB.
 - Every upload is converted to 8 kHz, 16 bit mono WAV, the format Asterisk plays without further conversion. Telephone audio is limited to this quality anyway, so high-quality sources bring no benefit.
 - For best results, use recordings without long silence at the start and with moderate volume.
+- Scripts can upload files as well, through the [REST API]({{< relref "/reference/api.md#media" >}}).
 
 ## Prompt language {#prompt-language}
 

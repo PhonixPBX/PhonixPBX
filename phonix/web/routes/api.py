@@ -12,15 +12,17 @@ cookie plus the ``X-CSRF-Token`` header.
 from typing import Any, Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
-from fastapi.responses import JSONResponse, PlainTextResponse, Response
+from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, Response
 from pydantic import BaseModel, Field, StrictBool
 from sqlalchemy.orm import Session
+from starlette.concurrency import run_in_threadpool
 
 from phonix.core.models import User
 from phonix.services import apply as apply_svc
 from phonix.services import calls as calls_svc
 from phonix.services import hours as hours_svc
 from phonix.services import listing, settings_api
+from phonix.services import media as media_svc
 from phonix.services import status as status_svc
 from phonix.services.common import NotFound, ServiceError, dirty_areas
 from phonix.services.resources import RESOURCES, Resource
@@ -153,6 +155,90 @@ def business_hours_special(
     except ServiceError as exc:
         db.rollback()
         raise _error(exc) from None
+
+
+MediaKind = Literal["moh", "vm_greeting", "ivr_prompt"]
+
+
+@router.get("/media", tags=["media"], summary="List the uploaded audio files")
+def list_media(
+    response: Response,
+    kind: MediaKind | None = Query(None, description="Only files of this kind"),
+    q: str = Query("", description="Search text; keeps the items that contain it (case-insensitive)"),
+    limit: int | None = Query(None, ge=1, description="Maximum number of items; default: all"),
+    offset: int = Query(0, ge=0, description="Number of matches to skip"),
+    user: User = Depends(api_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    found = listing.search(media_svc.list_media(db, kind), q, media_svc.search_fields)
+    response.headers["X-Total-Count"] = str(len(found))
+    return [media_svc.to_dict(m) for m in listing.slice_api(found, offset, limit)]
+
+
+@router.get("/media/{media_id}", tags=["media"], summary="Get one audio file's details")
+def get_media(media_id: int, user: User = Depends(api_user), db: Session = Depends(get_db)) -> dict[str, Any]:
+    try:
+        return media_svc.to_dict(media_svc.get_media(db, media_id))
+    except ServiceError as exc:
+        raise _error(exc) from None
+
+
+@router.get(
+    "/media/{media_id}/audio",
+    tags=["media"],
+    summary="Download the audio (8 kHz mono WAV)",
+    response_class=Response,
+    responses={200: {"content": {"audio/wav": {}}}},
+)
+def get_media_audio(media_id: int, user: User = Depends(api_user), db: Session = Depends(get_db)) -> Response:
+    try:
+        media = media_svc.get_media(db, media_id)
+    except ServiceError as exc:
+        raise _error(exc) from None
+    path = media_svc.media_path(media)
+    if not path.exists():
+        raise HTTPException(404, "the audio file is missing")
+    return FileResponse(path, media_type="audio/wav", filename=f"{media.name.rsplit('.', 1)[0]}.wav")
+
+
+@router.post(
+    "/media",
+    tags=["media"],
+    status_code=201,
+    summary="Upload an audio file (request body); it is converted to 8 kHz mono WAV",
+    responses={413: {"description": "larger than 64 MB"}},
+)
+async def upload_media(
+    request: Request,
+    kind: MediaKind = Query(
+        description="moh: music on hold; vm_greeting: replaces the voicemail greeting; ivr_prompt: an IVR announcement"
+    ),
+    filename: str = Query(description="Original file name; names the stored file", examples=["welcome.wav"]),
+    user: User = Depends(api_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    """Send the file as the raw body, e.g. ``curl --data-binary @welcome.wav``. WAV is always accepted;
+    other formats (MP3, OGG, FLAC ...) need sox, which the appliance and container images include."""
+    data = bytearray()
+    async for chunk in request.stream():
+        data += chunk
+        if len(data) > media_svc.MAX_UPLOAD:
+            raise HTTPException(413, "the file is larger than 64 MB")
+    try:
+        media = await run_in_threadpool(media_svc.add_media, db, kind, filename, bytes(data), user.username)
+    except ServiceError as exc:
+        db.rollback()
+        raise _error(exc) from None
+    return media_svc.to_dict(media)
+
+
+@router.delete("/media/{media_id}", tags=["media"], status_code=204, summary="Delete an audio file")
+def delete_media(media_id: int, user: User = Depends(api_user), db: Session = Depends(get_db)) -> Response:
+    try:
+        media_svc.delete_media(db, media_id, user.username)
+    except ServiceError as exc:
+        raise _error(exc) from None
+    return Response(status_code=204)
 
 
 @router.get("/settings/{group}", tags=["settings"])

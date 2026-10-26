@@ -73,6 +73,21 @@ Rufgruppen führen ihre Mitglieder in `members`, in der Klingelreihenfolge: `"ph
 - `PUT /api/v1/business-hours/{id}/special/{special_id}` mit `{"active": true}` oder `false` – schaltet einen Sonderzeitraum sofort ein oder aus, ohne Übernehmen.
 - Die Sonderzeiträume selbst sind die Liste `specials` der Geschäftszeiten (anlegen und ändern, dann übernehmen).
 
+## Audiodateien {#media}
+
+Ansagen, Wartemusik und die Voicemail-Begrüßung lassen sich auch per Skript hochladen, zum Beispiel aus einem Text-to-Speech-Dienst:
+
+- `POST /api/v1/media?kind=<Art>&filename=<Name>` mit der Audiodatei als Anfrageinhalt (höchstens 64 MB, Antwort `201`). `kind` ist `moh` (Wartemusik), `vm_greeting` (ersetzt die Voicemail-Begrüßung) oder `ivr_prompt` (eine IVR-Ansage). Die Datei wird wie beim Hochladen in der Weboberfläche in 8-kHz-Mono-WAV umgewandelt; neben WAV werden Formate wie MP3, OGG und FLAC angenommen.
+- `GET /api/v1/media` listet die Dateien (wahlweise `?kind=...`), `GET /api/v1/media/{id}` liefert eine, `GET /api/v1/media/{id}/audio` lädt die umgewandelte WAV-Datei herunter.
+- `DELETE /api/v1/media/{id}` löscht eine Datei (Antwort `204`).
+
+Ein IVR-Menü verwendet eine hochgeladene Ansage über ihre ID: Setzen Sie bei `/api/v1/ivr-menus` `"prompt_mode": "upload"` und `"prompt_media_id": <id>` und übernehmen Sie danach die Änderungen. Auch Wartemusik und Voicemail-Begrüßung sind nach dem Hochladen ausstehende Änderungen.
+
+```sh
+curl -H "Authorization: Bearer phx_..." --data-binary @willkommen.wav \
+     "https://pbx.example.com/api/v1/media?kind=ivr_prompt&filename=willkommen.wav"
+```
+
 ## Click-to-Call {#calls}
 
 `POST /api/v1/calls` mit `{"extension": "21", "number": "0441234567"}` lässt das SIP- oder IAX-Telefon mit dieser Nummer klingeln. Sobald dort abgehoben wird, wählt die Anlage die Rufnummer von diesem Telefon aus, mit dessen eigenen Regeln für ausgehende Anrufe und dessen Rufnummer. Die Antwort ist `202` mit `"status": "ringing"`. Die Rufnummer darf Ziffern, `*`, `#` und `+` enthalten. Das Token braucht *Darf Anrufe tätigen*.
@@ -121,6 +136,7 @@ Sinnvolle Alarme: `phonix_provider_up == 0`, `phonix_asterisk_up == 0`, `phonix_
 | `401` | Kein Token, oder das Token ist ungültig, deaktiviert oder abgelaufen. |
 | `403` | Das Token darf nur lesen (gilt auch für den `config.xml`-Export) bzw. keine Anrufe tätigen. |
 | `404` | Das Objekt existiert nicht. |
+| `413` | Die hochgeladene Audiodatei ist größer als 64 MB. |
 | `422` | Ungültige Eingabe. Der Body enthält `detail.message` und pro Feld `detail.fields`. |
 | `429` | Zu viele fehlgeschlagene Anmeldeversuche; warten Sie einige Minuten. |
 
@@ -140,6 +156,7 @@ Die Werkzeuge:
 - `list_*`, `get_*`, `create_*`, `update_*` und `delete_*` für Telefone, Provider, Rufgruppen, Konferenzräume, Anwendungen, IVR-Menüs, Geschäftszeiten und AMI-Benutzer. `update_*` ändert nur die angegebenen Felder.
 - `set_phone_enabled`, `set_provider_enabled`, `set_ivr_menu_enabled`.
 - `get_business_hours_status`, `set_business_hours_mode` und `set_business_hours_special` (wirken sofort).
+- `list_media` und `delete_media` für die Audiodateien; hochgeladen werden sie über die REST-API.
 - `list_settings_groups`, `get_settings`, `update_settings`.
 - `get_status`, `get_pending_changes`, `preview_apply` (welche Dateien und Komponenten sich ändern würden), `apply_changes`.
 - `tail_log` – die letzten Zeilen des Logs `asterisk`, `system`, `web` oder `monitor` (bis zu 1000). In einem OCI-Container gibt es keine Logdateien, und das Werkzeug meldet einen Fehler.

@@ -36,6 +36,7 @@ Das Suchfeld über der Liste findet Dateien nach Name oder Typ; wie Suchen und B
 - Für Wartemusik werden WAV-, MP3-, OGG- und FLAC-Dateien bis je 64 MB angenommen, für die Mailbox-Ansage WAV, MP3 und OGG bis 16 MB.
 - Jede Datei wird in 8 kHz, 16 Bit Mono-WAV konvertiert, das Format, das Asterisk ohne weitere Umwandlung abspielt. Telefonaudio ist ohnehin auf diese Qualität begrenzt, hochwertige Quellen bringen also keinen Vorteil.
 - Am besten eignen sich Aufnahmen ohne lange Stille am Anfang und mit gemäßigter Lautstärke.
+- Skripte können Dateien auch über die [REST-API]({{< relref "/reference/api.md#media" >}}) hochladen.
 
 ## Sprache der Ansagen {#prompt-language}
 

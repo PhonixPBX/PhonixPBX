@@ -1144,3 +1144,49 @@ def test_audit_search_like_wildcards(client):
     assert "100<mark>%</mark> done" in r.text and "plain" not in r.text  # the match is highlighted
     r = client.get("/status/audit", params={"q": "_"})
     assert "plain" not in r.text
+
+
+def test_api_media(client, monkeypatch):
+    import io
+    import wave
+
+    from phonix.services import media
+
+    monkeypatch.setattr(media.shutil, "which", lambda _name: None)
+    buf = io.BytesIO()
+    with wave.open(buf, "wb") as wf:
+        wf.setnchannels(1)
+        wf.setsampwidth(2)
+        wf.setframerate(16000)
+        wf.writeframes(b"\x10\x00" * 3200)
+    auth, read_only = bearer(), bearer(read_only=True)
+    url = "/api/v1/media?kind=ivr_prompt&filename=Welcome%20Text.wav"
+    assert client.post(url, content=buf.getvalue(), headers=read_only).status_code == 403
+    r = client.post(url, content=buf.getvalue(), headers=auth)
+    assert r.status_code == 201, r.text
+    item = r.json()
+    assert item["kind"] == "ivr_prompt" and item["path"] == "ivr_prompt/Welcome_Text.wav" and item["size"] > 0
+    # not a WAV and no sox: a field error
+    r = client.post("/api/v1/media?kind=moh&filename=x.mp3", content=b"ID3 not audio", headers=auth)
+    assert r.status_code == 422 and "file" in r.json()["detail"]["fields"]
+    assert client.post("/api/v1/media?kind=nope&filename=x.wav", content=b"x", headers=auth).status_code == 422
+
+    r = client.get("/api/v1/media?kind=ivr_prompt", headers=read_only)
+    assert [m["id"] for m in r.json()] == [item["id"]] and r.headers["X-Total-Count"] == "1"
+    assert client.get("/api/v1/media?kind=moh", headers=read_only).json() == []
+    assert client.get(f"/api/v1/media/{item['id']}", headers=read_only).json()["name"] == "Welcome Text.wav"
+    r = client.get(f"/api/v1/media/{item['id']}/audio", headers=read_only)
+    assert r.status_code == 200 and r.headers["content-type"] == "audio/wav"
+    with wave.open(io.BytesIO(r.content)) as wf:
+        assert wf.getframerate() == 8000
+
+    # an IVR menu can use the uploaded announcement
+    menu = client.post(
+        "/api/v1/ivr-menus", json={"name": "API", "prompt_mode": "upload", "prompt_media_id": item["id"]}, headers=auth
+    )
+    assert menu.status_code == 201, menu.text
+
+    assert client.delete(f"/api/v1/media/{item['id']}", headers=read_only).status_code == 403
+    assert client.delete(f"/api/v1/media/{item['id']}", headers=auth).status_code == 204
+    assert client.get(f"/api/v1/media/{item['id']}", headers=auth).status_code == 404
+    assert client.delete(f"/api/v1/media/{item['id']}", headers=auth).status_code == 404

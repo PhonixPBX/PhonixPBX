@@ -73,6 +73,21 @@ Changes over the API become pending changes, just like in the web interface:
 - `PUT /api/v1/business-hours/{id}/special/{special_id}` with `{"active": true}` or `false` – switches a special period on or off immediately, without apply.
 - The special periods themselves are the `specials` list of the business hours (create and update, then apply).
 
+## Audio files {#media}
+
+Announcements, music on hold and the voicemail greeting can also be uploaded by scripts, for example from a text-to-speech service:
+
+- `POST /api/v1/media?kind=<kind>&filename=<name>` with the audio as the request body (at most 64 MB, answer `201`). `kind` is `moh` (music on hold), `vm_greeting` (replaces the voicemail greeting) or `ivr_prompt` (an IVR announcement). The file is converted to 8 kHz mono WAV, like an upload in the web interface; besides WAV, formats such as MP3, OGG and FLAC are accepted.
+- `GET /api/v1/media` lists the files (optionally `?kind=...`), `GET /api/v1/media/{id}` returns one, `GET /api/v1/media/{id}/audio` downloads the converted WAV file.
+- `DELETE /api/v1/media/{id}` deletes a file (answer `204`).
+
+An IVR menu uses an uploaded announcement through its id: set `"prompt_mode": "upload"` and `"prompt_media_id": <id>` on `/api/v1/ivr-menus`, then apply. Music on hold and the voicemail greeting are pending changes after an upload as well.
+
+```sh
+curl -H "Authorization: Bearer phx_..." --data-binary @welcome.wav \
+     "https://pbx.example.com/api/v1/media?kind=ivr_prompt&filename=welcome.wav"
+```
+
 ## Click-to-call {#calls}
 
 `POST /api/v1/calls` with `{"extension": "21", "number": "0441234567"}` rings the SIP or IAX phone with that extension. When it is answered, the PBX dials the number from that phone, with the phone's own outgoing rules and caller ID. The answer is `202` with `"status": "ringing"`. The number may contain digits, `*`, `#` and `+`. The token needs *May place calls*.
@@ -121,6 +136,7 @@ Useful alerts: `phonix_provider_up == 0`, `phonix_asterisk_up == 0`, `phonix_tls
 | `401` | No token, or the token is invalid, disabled or expired. |
 | `403` | The token is read-only (also for the `config.xml` export), or it may not place calls. |
 | `404` | The object does not exist. |
+| `413` | The uploaded audio file is larger than 64 MB. |
 | `422` | Invalid input. The body contains `detail.message` and, per field, `detail.fields`. |
 | `429` | Too many failed authentication attempts; wait a few minutes. |
 
@@ -140,6 +156,7 @@ The tools:
 - `list_*`, `get_*`, `create_*`, `update_*` and `delete_*` for phones, providers, call groups, conferences, applications, IVR menus, business hours and AMI users. `update_*` changes only the fields that are given.
 - `set_phone_enabled`, `set_provider_enabled`, `set_ivr_menu_enabled`.
 - `get_business_hours_status`, `set_business_hours_mode` and `set_business_hours_special` (take effect immediately).
+- `list_media` and `delete_media` for the audio files; upload them with the REST API.
 - `list_settings_groups`, `get_settings`, `update_settings`.
 - `get_status`, `get_pending_changes`, `preview_apply` (which files and components would change), `apply_changes`.
 - `tail_log` – the last lines of the `asterisk`, `system`, `web` or `monitor` log (up to 1000). In an OCI container there are no log files, and the tool returns an error.

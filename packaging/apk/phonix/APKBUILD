@@ -33,6 +33,7 @@ depends="
 	asterisk-opus
 	asterisk-speex
 	msmtp
+	sox
 	nftables
 	nftables-openrc
 	chrony

@@ -6,6 +6,14 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Announcements, music on hold and the voicemail greeting can be managed through the REST API: upload a file with
+  `POST /api/v1/media?kind=ivr_prompt&filename=welcome.wav` (the audio as the request body, e.g.
+  `curl --data-binary @welcome.wav`), list, download and delete them under `/api/v1/media`. An IVR menu uses an
+  uploaded announcement through `prompt_media_id`. MCP has the new tools `list_media` and `delete_media`. The
+  manual chapter *REST API and MCP* describes the endpoints.
+
 ## [1.10.0] - 2026-10-26
 
 ### Changed

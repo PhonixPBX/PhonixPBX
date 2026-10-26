@@ -24,6 +24,7 @@ from phonix.services import apply as apply_svc
 from phonix.services import calls as calls_svc
 from phonix.services import hours as hours_svc
 from phonix.services import listing, platform, settings_api
+from phonix.services import media as media_svc
 from phonix.services import status as status_svc
 from phonix.services.common import ServiceError, dirty_areas
 from phonix.services.resources import RESOURCES, Resource
@@ -147,18 +148,23 @@ LIST_PARAMS = {
 }
 
 
+def _paging(args: dict[str, Any]) -> tuple[str, int | None, int]:
+    q = _str(args, "q") if args.get("q") is not None else ""
+    limit = _int(args, "limit") if args.get("limit") is not None else None
+    offset = _int(args, "offset") if args.get("offset") is not None else 0
+    if limit is not None and limit < 1:
+        raise ToolInputError("'limit' must be at least 1")
+    if offset < 0:
+        raise ToolInputError("'offset' must be at least 0")
+    return q, limit, offset
+
+
 def _resource_tools(res: Resource) -> list[Tool]:
     props, required, defs = _schema(res)
     name, tag = res.name, res.tag
 
     def list_items(ctx: Context, args: dict[str, Any]) -> Any:
-        q = _str(args, "q") if args.get("q") is not None else ""
-        limit = _int(args, "limit") if args.get("limit") is not None else None
-        offset = _int(args, "offset") if args.get("offset") is not None else 0
-        if limit is not None and limit < 1:
-            raise ToolInputError("'limit' must be at least 1")
-        if offset < 0:
-            raise ToolInputError("'offset' must be at least 0")
+        q, limit, offset = _paging(args)
         found = listing.search(res.list_fn(ctx.db), q, res.search_fields)
         items = [res.public(o, ctx.read_only) for o in listing.slice_api(found, offset, limit)]
         return {"items": items, "total": len(found)}
@@ -292,6 +298,20 @@ def tail_log(ctx: Context, args: dict[str, Any]) -> Any:
     return {"log": log, "path": str(path), "lines": status_svc.tail(path, lines)}
 
 
+def list_media(ctx: Context, args: dict[str, Any]) -> Any:
+    q, limit, offset = _paging(args)
+    kind = _str(args, "kind") if args.get("kind") is not None else None
+    if kind is not None and kind not in media_svc.KINDS:
+        raise ToolInputError(f"'kind' must be one of {', '.join(media_svc.KINDS)}")
+    found = listing.search(media_svc.list_media(ctx.db, kind), q, media_svc.search_fields)
+    return {"items": [media_svc.to_dict(m) for m in listing.slice_api(found, offset, limit)], "total": len(found)}
+
+
+def delete_media(ctx: Context, args: dict[str, Any]) -> Any:
+    media_svc.delete_media(ctx.db, _int(args, "id"), ctx.actor)
+    return {"deleted": True}
+
+
 def originate_call(ctx: Context, args: dict[str, Any]) -> Any:
     return calls_svc.originate(ctx.db, _str(args, "extension"), _str(args, "number"), ctx.actor, via="MCP")
 
@@ -357,6 +377,15 @@ def _tools() -> dict[str, Tool]:
             },
             ("log",),
         ),
+        Tool(
+            "list_media",
+            "List the uploaded audio files (music on hold, voicemail greeting, IVR announcements). "
+            "IVR menus refer to an announcement by its id (prompt_media_id). Upload files with the REST API "
+            "(POST /api/v1/media).",
+            list_media,
+            {**LIST_PARAMS, "kind": {"type": "string", "enum": list(media_svc.KINDS)}},
+        ),
+        Tool("delete_media", "Delete an uploaded audio file.", delete_media, ID, ("id",), write=True, destructive=True),
         Tool(
             "get_business_hours_status",
             "Whether business hours are open right now, and their live mode (auto, open or closed).",

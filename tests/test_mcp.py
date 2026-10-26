@@ -236,3 +236,30 @@ def test_list_tool_search_and_paging(client):
     bad = call(client, "list_phones", auth, limit=0)
     assert bad["isError"]
     assert call(client, "list_phones", auth, q=5)["isError"]
+
+
+def test_media_tools(client, monkeypatch):
+    import io
+    import wave
+
+    from phonix.core.db import session_scope
+    from phonix.services import media
+
+    monkeypatch.setattr(media.shutil, "which", lambda _name: None)
+    buf = io.BytesIO()
+    with wave.open(buf, "wb") as wf:
+        wf.setnchannels(1)
+        wf.setsampwidth(2)
+        wf.setframerate(8000)
+        wf.writeframes(b"\x00\x00" * 800)
+    with session_scope() as s:
+        item_id = media.add_media(s, "moh", "song.wav", buf.getvalue()).id
+
+    ro = bearer(read_only=True)
+    found = call(client, "list_media", ro, kind="moh")["structuredContent"]
+    assert found["total"] == 1 and found["items"][0]["id"] == item_id
+    assert call(client, "list_media", ro, kind="ivr_prompt")["structuredContent"]["total"] == 0
+    assert call(client, "list_media", ro, kind="nope")["isError"] is True
+    assert call(client, "delete_media", ro, id=item_id)["isError"] is True
+    assert call(client, "delete_media", id=item_id)["structuredContent"] == {"deleted": True}
+    assert call(client, "list_media")["structuredContent"]["total"] == 0

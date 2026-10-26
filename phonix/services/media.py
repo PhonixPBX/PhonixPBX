@@ -117,6 +117,24 @@ def list_media(session: Session, kind: str | None = None) -> list[MediaFile]:
     return list(session.scalars(stmt))
 
 
+def get_media(session: Session, media_id: int) -> MediaFile:
+    media = session.get(MediaFile, media_id)
+    if media is None:
+        raise NotFound(_("Media file not found"))
+    return media
+
+
+def to_dict(media: MediaFile) -> dict[str, object]:
+    return {
+        "id": media.id,
+        "kind": media.kind,
+        "name": media.name,
+        "path": media.path,
+        "size": media.size,
+        "created_at": media.created_at.isoformat() if media.created_at else None,
+    }
+
+
 def add_media(session: Session, kind: str, filename: str, data: bytes, user: str = "") -> MediaFile:
     if kind not in KINDS:
         raise ServiceError(fields={"kind": _("Unknown media type")})
@@ -163,9 +181,7 @@ def add_media(session: Session, kind: str, filename: str, data: bytes, user: str
 
 
 def delete_media(session: Session, media_id: int, user: str = "") -> None:
-    media = session.get(MediaFile, media_id)
-    if media is None:
-        raise NotFound(_("Media file not found"))
+    media = get_media(session, media_id)
     path = config.get().media_dir / media.path
     if path.exists():
         path.unlink()
