@@ -8,6 +8,7 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ### Changed
 
+- *PhonixPBX* in the footer of the web interface links to the project website [phonixpbx.org](https://phonixpbx.org/).
 - The graphs on *Status → Summary* and *Status → Graphs* are drawn with uPlot instead of ApexCharts. The ApexCharts
   version that came with the web interface is no longer under an open source license (it is free only for
   organisations with less than USD 2 million revenue and may not be redistributed in platforms). The graphs show the

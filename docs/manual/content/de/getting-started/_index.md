@@ -70,7 +70,7 @@ Die Sprache der Ansagen, die Anrufer hören, ist eine eigene Einstellung, siehe 
 - Das PhonixPBX-Logo führt zu *Status → Übersicht*, der Startseite.
 - Die **obere Leiste** zeigt den Hostnamen der Anlage, das Mond- bzw. Sonnensymbol zum Umschalten zwischen **dunklem Modus** und **hellem Modus** (der Browser merkt sich die Wahl) und das Benutzermenü mit *Einstellungen*, *Passwort ändern* und *Abmelden*.
 - Jede Seite hat rechts neben dem Seitentitel eine Schaltfläche **Hilfe** (Fragezeichen). Sie öffnet das passende Kapitel dieses Handbuchs.
-- Die Fußzeile zeigt die installierte Version, einen Link zu diesem *Handbuch* und zur interaktiven *API*-Dokumentation.
+- Die Fußzeile zeigt die installierte Version, einen Link zu diesem *Handbuch* und zur interaktiven *API*-Dokumentation. *PhonixPBX* in der Fußzeile verlinkt auf die Projekt-Website [phonixpbx.org](https://phonixpbx.org/).
 
 Nach einer Zeit ohne Aktivität werden Sie automatisch abgemeldet; die Dauer stellen Sie unter [Erweitert → Weboberflächenoptionen]({{< relref "/advanced/gui.md" >}}) ein.
 

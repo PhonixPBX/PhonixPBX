@@ -70,7 +70,7 @@ The language of the voice prompts that callers hear is a different setting, see 
 - The PhonixPBX logo leads to *Status → Summary*, the start page.
 - The **top bar** shows the host name of the PBX, the moon or sun icon to switch between **dark mode** and **light mode** (your browser remembers the choice), and the user menu with *Preferences*, *Change password* and *Logout*.
 - Every page has a **Help** button (question mark) at the right of the page title. It opens the matching chapter of this manual.
-- The footer shows the installed version, a link to this *Manual* and to the interactive *API* documentation.
+- The footer shows the installed version, a link to this *Manual* and to the interactive *API* documentation. *PhonixPBX* in the footer links to the project website [phonixpbx.org](https://phonixpbx.org/).
 
 After a period of inactivity you are logged out automatically; the time is set under [Advanced → GUI Options]({{< relref "/advanced/gui.md" >}}).
 
