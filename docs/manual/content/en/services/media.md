@@ -1,7 +1,7 @@
 ---
 title: "Media"
 weight: 40
-description: "Music on hold, the voicemail greeting, IVR announcements, recording by phone and the prompt language."
+description: "Music on hold, the voicemail greeting, IVR announcements, recording by phone, text to speech and the prompt language."
 ---
 *Services → Media* holds your own audio files: music on hold, a custom voicemail greeting, and the announcements of IVR menus. It also shows which language the system prompts use.
 
@@ -36,6 +36,28 @@ Instead of uploading a file you can speak an IVR announcement or the voicemail g
 The page shows each step and, once you pressed `1`, the new file in the list. Hanging up before pressing `1` discards the recording; so does not answering the call. A recording is stored like an uploaded file: an IVR announcement appears in the menu editor, a new voicemail greeting replaces the old one and has to be applied.
 
 Only SIP and IAX phones can be rung. The instructions on the phone are played in the phone's prompt language.
+
+## Create from text {#tts}
+
+A text-to-speech server can speak an IVR announcement or the voicemail greeting for you. Set up the server first under [Text-to-speech server](#tts-server).
+
+Under **Create from text** choose what to **Create** (for an IVR announcement also its **Name**), a **Voice** and the **Speed**, and type the **Text** (up to 2000 characters). **Listen** plays the result in the browser without storing it; **Create** stores it like an uploaded file. A new voicemail greeting replaces the old one and has to be applied.
+
+> The text is sent to the text-to-speech server. Use a server you trust, ideally one in your own network.
+
+## Text-to-speech server {#tts-server}
+
+PhonixPBX uses a server with the RestfulTTS API. It does not ship text-to-speech itself.
+
+| Field | Meaning | Default |
+|---|---|---|
+| Server address | Base URL of the server, for example `http://tts.example.com:8000`. Empty turns the feature off. | empty |
+| Access token | Only if the server requires one; it is sent as a bearer token. Leave the field empty to keep the stored token; changing the server address without a new token removes it. | empty |
+| Default voice | The voice used when you do not choose one. Empty: the server's voice for the [prompt language](#prompt-language) of the system. | empty |
+| Speed | 0.5 (slow) to 2 (fast). | 1 |
+| Timeout (seconds) | How long to wait for the server. | 60 |
+
+The audio is requested in telephone quality (8 kHz mono WAV). Scripts can create announcements from text through the [REST API]({{< relref "/reference/api.md#media" >}}).
 
 ## Uploaded files {#files}
 

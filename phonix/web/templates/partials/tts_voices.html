@@ -1,0 +1,14 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+{% if error %}
+<input class="form-control" id="{{ target }}" name="{{ field }}" value="{{ selected }}" placeholder="{{ _('Default voice') }}" autocomplete="off">
+<small class="form-hint text-warning">{{ _("The voices could not be loaded: %(error)s", error=error) }}</small>
+{% else %}
+<select class="form-select" id="{{ target }}" name="{{ field }}">
+  <option value="">{{ _("Default voice") }}</option>
+  {% set ns = namespace(found=false) %}
+  {% for v in voices %}{% if v.id == selected %}{% set ns.found = true %}{% endif %}
+  <option value="{{ v.id }}"{% if v.id == selected %} selected{% endif %}>{{ v.label }} ({{ v.language }})</option>
+  {% endfor %}
+  {% if selected and not ns.found %}<option value="{{ selected }}" selected>{{ selected }}</option>{% endif %}
+</select>
+{% endif %}

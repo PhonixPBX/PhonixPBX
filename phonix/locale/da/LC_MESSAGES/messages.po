@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 13:55+0100\n"
+"POT-Creation-Date: 2026-10-26 14:14+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: da\n"
@@ -295,6 +295,20 @@ msgstr "En udbyder kan ikke have failover til sig selv"
 
 msgid "A secret is required"
 msgstr "En hemmelighed er påkrævet"
+
+msgid ""
+"A text-to-speech server speaks the recording script. The new announcement is named after the menu and chosen under "
+"Uploaded audio."
+msgstr ""
+"En tekst-til-tale-server læser indtalingsmanuskriptet op. Den nye meddelelse navngives efter menuen og vælges under "
+"»Uploadet lyd«."
+
+msgid ""
+"A text-to-speech server speaks the text. Listen to it first, then create the announcement; it is stored like an "
+"uploaded file. The text is sent to the server."
+msgstr ""
+"En tekst-til-tale-server læser teksten op. Lyt til den først, og opret derefter meddelelsen; den gemmes som en "
+"uploadet fil. Teksten sendes til serveren."
 
 msgid "ACME account"
 msgstr "ACME-konto"
@@ -665,8 +679,14 @@ msgstr "Backup/gendannelse"
 msgid "Backups"
 msgstr "Backups"
 
+msgid "Base URL of a server with the RestfulTTS API (/api/v1/synthesize). Empty: off."
+msgstr "Basis-URL for en server med RestfulTTS-API’et (/api/v1/synthesize). Tom: fra."
+
 msgid "Belgium"
 msgstr "Belgien"
+
+msgid "Between 0.5 and 2"
+msgstr "Mellem 0,5 og 2"
 
 msgid "Blind transfer"
 msgstr "Blind viderestilling"
@@ -1011,8 +1031,14 @@ msgstr "Opret et token for at bruge REST API'et (/api/v1) fra scripts."
 msgid "Create and stay"
 msgstr "Opret og fortsæt redigering"
 
+msgid "Create announcement"
+msgstr "Opret meddelelse"
+
 msgid "Create backup"
 msgstr "Opret backup"
+
+msgid "Create from text"
+msgstr "Opret fra tekst"
 
 msgid "Create new self-signed certificate"
 msgstr "Opret nyt selvsigneret certifikat"
@@ -1089,6 +1115,9 @@ msgstr "Standardudløbstid (s)"
 
 msgid "Default prompt language"
 msgstr "Standardsprog for talebeskeder"
+
+msgid "Default voice"
+msgstr "Standardstemme"
 
 msgid "Defaults to the host."
 msgstr "Standard er værten."
@@ -1313,6 +1342,9 @@ msgstr "Tom = indtil opkalderen lægger på (pr. telefon ved 'én efter én': st
 msgid "Empty square brackets"
 msgstr "Tomme firkantede parenteser"
 
+msgid "Empty: the server's voice for the prompt language of the system."
+msgstr "Tom: serverens stemme til systemets promptsprog."
+
 msgid "Enable"
 msgstr "Aktiver"
 
@@ -1365,14 +1397,23 @@ msgstr "Angiv et antal dage"
 msgid "Enter a time as HH:MM"
 msgstr "Angiv et klokkeslæt som HH:MM"
 
+msgid "Enter an http:// or https:// URL"
+msgstr "Angiv en http://- eller https://-URL"
+
 msgid "Enter both the first and the last day, or neither"
 msgstr "Angiv både den første og den sidste dag eller ingen af dem"
+
+msgid "Enter the address of a text-to-speech server below to create announcements from text."
+msgstr "Angiv adressen på en tekst-til-tale-server nedenfor for at oprette meddelelser fra tekst."
 
 msgid "Enter the directory URL of the ACME server"
 msgstr "Angiv ACME-serverens katalog-URL"
 
 msgid "Enter the name of an Asterisk sound, e.g. welcome"
 msgstr "Angiv navnet på en Asterisk-lyd, f.eks. welcome"
+
+msgid "Enter the text to speak"
+msgstr "Angiv den tekst, der skal læses op"
 
 msgid "Error"
 msgstr "Fejl"
@@ -1883,11 +1924,17 @@ msgstr "Gammel AskoziaPBX"
 msgid "Let's Encrypt staging (testing, untrusted)"
 msgstr "Let's Encrypt staging (test, ikke betroet)"
 
+msgid "Letters, digits, '.', '_' and '-' only"
+msgstr "Kun bogstaver, cifre, '.', '_' og '-'"
+
 msgid "Light mode"
 msgstr "Lys tilstand"
 
 msgid "Light/dark theme: use the moon/sun icon in the top bar."
 msgstr "Lyst/mørkt tema: brug måne-/solikonet i topbjælken."
+
+msgid "Listen"
+msgstr "Lyt"
 
 msgid "Listen to the announcement"
 msgstr "Lyt til meddelelsen"
@@ -2293,6 +2340,9 @@ msgstr "Ingen udbydere fundet"
 msgid "No providers yet"
 msgstr "Ingen udbydere endnu"
 
+msgid "No text-to-speech server is configured (Services > Media)."
+msgstr "Der er ikke konfigureret nogen tekst-til-tale-server (Tjenester > Medier)."
+
 msgid "No update signing key installed on this system"
 msgstr "Der er ikke installeret nogen signeringsnøgle til opdateringer på dette system"
 
@@ -2429,6 +2479,9 @@ msgstr "Aktiver kun, når det er nødvendigt. Adgangen kan desuden begrænses un
 
 msgid "Only if different from the username."
 msgstr "Kun hvis forskellig fra brugernavnet."
+
+msgid "Only if the server requires one (sent as bearer token)."
+msgstr "Kun hvis serveren kræver et (sendes som bearer-token)."
 
 msgid "Only web interface, SSH (if enabled), SIP/IAX and RTP are reachable."
 msgstr "Kun webgrænseflade, SSH (hvis aktiveret), SIP/IAX og RTP kan nås."
@@ -3094,6 +3147,9 @@ msgstr "Afsendelse mislykkedes (har du anvendt indstillingerne?): %(detail)s"
 msgid "September"
 msgstr "September"
 
+msgid "Server address"
+msgstr "Serveradresse"
+
 msgid "Server requires authentication"
 msgstr "Serveren kræver godkendelse"
 
@@ -3162,6 +3218,9 @@ msgstr "Særlig periode ikke fundet"
 
 msgid "Special periods"
 msgstr "Særlige perioder"
+
+msgid "Speed"
+msgstr "Hastighed"
 
 msgid "State"
 msgstr "Tilstand"
@@ -3283,6 +3342,12 @@ msgstr "Testopkald"
 msgid "Test message sent to %(to)s."
 msgstr "Testbesked sendt til %(to)s."
 
+msgid "Text"
+msgstr "Tekst"
+
+msgid "Text-to-speech server"
+msgstr "Tekst-til-tale-server"
+
 msgid "Thailand"
 msgstr "Thailand"
 
@@ -3316,6 +3381,10 @@ msgid ""
 msgstr ""
 "PBX'en ringer til din telefon. Indtal meddelelsen efter tonen, tryk # og derefter 1 for at gemme den. Optagelser "
 "gemmes ligesom uploadede filer."
+
+#, python-format
+msgid "The announcement was created as %(name)s."
+msgstr "Meddelelsen blev oprettet som %(name)s."
 
 msgid "The caller hung up"
 msgstr "Den, der ringede, lagde på"
@@ -3450,6 +3519,23 @@ msgstr "Teksten må ikke indeholde kontroltegn"
 msgid "The text to record for this menu. It is not played; record it and upload the file above."
 msgstr "Teksten, der skal indtales til denne menu. Den afspilles ikke; indtal den, og upload filen ovenfor."
 
+#, python-format
+msgid "The text-to-speech server is not reachable: %(error)s"
+msgstr "Tekst-til-tale-serveren kan ikke nås: %(error)s"
+
+#, python-format
+msgid "The text-to-speech server refused: %(error)s"
+msgstr "Tekst-til-tale-serveren afviste: %(error)s"
+
+msgid "The text-to-speech server sent an invalid answer"
+msgstr "Tekst-til-tale-serveren sendte et ugyldigt svar"
+
+msgid "The text-to-speech server sent more than 16 MB"
+msgstr "Tekst-til-tale-serveren sendte mere end 16 MB"
+
+msgid "The text-to-speech server sent no audio"
+msgstr "Tekst-til-tale-serveren sendte ingen lyd"
+
 msgid ""
 "The update was interrupted before it finished (see <a href=\"/status/logs\">Status &rarr; Logs</a>). Upload the file "
 "again."
@@ -3463,6 +3549,10 @@ msgstr "Opdateringen lykkedes: PhonixPBX <strong>%(version)s</strong> kører."
 
 msgid "The uploaded file expired, please upload it again."
 msgstr "Den uploadede fil er udløbet, upload den igen."
+
+#, python-format
+msgid "The voices could not be loaded: %(error)s"
+msgstr "Stemmerne kunne ikke indlæses: %(error)s"
 
 msgid ""
 "The web interface uses a self-signed certificate. <a href=\"/advanced/certificate\">Get one from Let's Encrypt or "
@@ -3523,6 +3613,9 @@ msgstr "Tidsservere"
 
 msgid "Time zone"
 msgstr "Tidszone"
+
+msgid "Timeout (seconds)"
+msgstr "Timeout (sekunder)"
 
 msgid ""
 "To answer calls from outside with a menu, mark it as reachable from outside or choose it as the destination of a "
@@ -3864,6 +3957,9 @@ msgstr ""
 "Version <strong>%(version)s</strong> er installeret. Genstart containeren for at starte den; indtil da kører den "
 "forrige version videre."
 
+msgid "Voice"
+msgstr "Stemme"
+
 msgid "Voice prompts"
 msgstr "Talebeskeder"
 
@@ -4072,6 +4168,9 @@ msgstr "deaktiveret"
 #, python-format
 msgid "e.g. %(value)s"
 msgstr "f.eks. %(value)s"
+
+msgid "e.g. Welcome. For sales, press 1. For support, press 2."
+msgstr "f.eks. Velkommen. Tryk 1 for salg. Tryk 2 for support."
 
 msgid "e.g. monitoring"
 msgstr "f.eks. monitoring"

@@ -8,6 +8,15 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ### Added
 
+- Announcements can be created from text with a text-to-speech server that offers the RestfulTTS API. Set the
+  server under *Services → Media* → **Text-to-speech server**; then **Create from text** on the same page speaks an
+  IVR announcement or the voicemail greeting, with a choice of voice and speed and **Listen** to check it first. In
+  *Dialplan → IVR Menus* (**Announcement** tab) **Create announcement** turns the menu's recording script into its
+  announcement. Scripts use `POST /api/v1/media/tts` and `GET /api/v1/tts/voices` (settings group `tts`), assistants
+  the MCP tools `create_media_from_text` and `list_tts_voices`. The text is sent to that server. Configuration
+  backups (`config.json`) now contain the settings group `tts`, so backups of this version cannot be restored on
+  PhonixPBX 1.10 or older; older backups restore unchanged.
+
 - Announcements can be recorded by phone: under *Services → Media* (IVR announcement or voicemail greeting) and on
   the **Announcement** tab of *Dialplan → IVR Menus*, **Record by phone** rings a SIP or IAX phone. Speak after the
   tone, press `#`, listen to the recording and press `1` to save it. The recording is stored like an uploaded file,

@@ -1729,6 +1729,17 @@
           ],
           "default": null
         },
+        "tts": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TtsSettingsDoc"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "update": {
           "anyOf": [
             {
@@ -2055,6 +2066,43 @@
         "prefix"
       ],
       "title": "TokenDoc",
+      "type": "object"
+    },
+    "TtsSettingsDoc": {
+      "additionalProperties": false,
+      "properties": {
+        "speed": {
+          "default": 1.0,
+          "maximum": 2.0,
+          "minimum": 0.5,
+          "title": "Speed",
+          "type": "number"
+        },
+        "timeout": {
+          "default": 60,
+          "maximum": 300,
+          "minimum": 5,
+          "title": "Timeout",
+          "type": "integer"
+        },
+        "token": {
+          "default": "",
+          "title": "Token",
+          "type": "string"
+        },
+        "url": {
+          "default": "",
+          "title": "Url",
+          "type": "string"
+        },
+        "voice": {
+          "default": "",
+          "maxLength": 64,
+          "title": "Voice",
+          "type": "string"
+        }
+      },
+      "title": "TtsSettingsDoc",
       "type": "object"
     },
     "UpdateSettingsDoc": {

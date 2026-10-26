@@ -4,12 +4,16 @@
 
 from __future__ import annotations
 
+import secrets
 import subprocess
+import time
+from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse, Response
 from sqlalchemy.orm import Session
+from starlette.concurrency import run_in_threadpool
 
 from phonix import config, i18n
 from phonix.core import settings as st
@@ -23,6 +27,7 @@ from phonix.services import media as media_svc
 from phonix.services import notifications
 from phonix.services import phones as phone_svc
 from phonix.services import recording as rec_svc
+from phonix.services import tts as tts_svc
 from phonix.services.common import NotFound, ServiceError
 from phonix.web.deps import get_db, ui_user
 from phonix.web.routes.ui.common import dirty_trigger, list_page, page, redirect, save_settings_form, service_errors
@@ -188,9 +193,27 @@ register(ROOMS, router, "/services")
 
 @router.get("/media")
 def media(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
+    return _media_page(request, db)
+
+
+def _media_page(
+    request: Request,
+    db: Session,
+    tts_values: dict[str, Any] | None = None,
+    tts_errors: dict[str, str] | None = None,
+    status_code: int = 200,
+) -> Response:
+    tts = st.load(db, st.TtsSettings)
+    if tts_values is None:
+        tts_values = {**tts.model_dump(), "token": ""}
     return page(
         request,
         "pages/media.html",
+        status_code=status_code,
+        tts=tts,
+        tts_values=tts_values,
+        tts_errors=tts_errors or {},
+        tts_kinds=[(k, media_svc.KINDS[k]) for k in tts_svc.KINDS],
         lv=list_page(request, media_svc.list_media(db), media_svc.search_fields),
         kinds=media_svc.KINDS,
         system=st.load(db, st.SystemSettings),
@@ -204,23 +227,158 @@ def call_phones(db: Session) -> list[Any]:
     return [p for p in phone_svc.list_phones(db) if p.enabled and p.tech in calls_svc.CHANNEL_TECH]
 
 
-# before /media/{kind}, which would take "record" as a kind
+# before /media/{kind}, which would take "record" or "tts" as a kind
+
+# --- text to speech ---
+
+
+@router.post("/media/tts-settings")
+async def tts_settings_save(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
+    form = await request.form()
+    current = st.load(db, st.TtsSettings)
+    # a kept token belongs to the old server (settings_api.SECRET_BOUND)
+    try:
+        url_changed = st.TtsSettings(url=str(form.get("url", ""))).url != current.url
+    except ValueError:
+        url_changed = False  # the form reports the invalid address
+    extra = {"token": ""} if url_changed and not form.get("token") else None
+    saved, values, errors = await save_settings_form(
+        request, db, st.TtsSettings, (), secret_fields=("token",), extra=extra
+    )
+    if not saved:
+        return _media_page(request, db, values, errors, status_code=422)
+    return redirect(request, "/services/media#tts")
+
+
+@router.get("/media/tts/voices")
+def tts_voices(
+    request: Request,
+    field: str = "tts_voice",
+    selected: str = "",
+    target: str = "",
+    user: User = Depends(ui_user),
+    db: Session = Depends(get_db),
+) -> Response:
+    """The voice select, loaded after the page (the server may be slow or down)."""
+    field = field if field in ("tts_voice", "voice") else "tts_voice"
+    try:
+        voices, error = tts_svc.voices(db), ""
+    except ServiceError as exc:
+        voices, error = [], str(exc)
+    context = {"voices": voices, "error": error, "field": field, "selected": selected, "target": target}
+    return render(request, "partials/tts_voices.html", context)
+
+
+def _tts_text(form: Any) -> str:
+    # the IVR editor sends its recording script
+    return str(form.get("text") or form.get("prompt_text") or "")
+
+
+def _tts_speed(form: Any) -> float | None:
+    try:
+        return float(form["tts_speed"]) if form.get("tts_speed") else None
+    except ValueError:
+        raise ServiceError(fields={"speed": _("Between 0.5 and 2")}) from None
+
+
+PREVIEW_MAX_AGE = 600
+PREVIEW_KEEP = 20
+
+
+def _preview_dir() -> Path:
+    path = config.get().state_dir / "tts-preview"
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def _store_preview(audio: bytes) -> str:
+    """Keep a preview for the audio element: at most ``PREVIEW_KEEP`` files, none older than 10 minutes."""
+    folder = _preview_dir()
+    files = sorted(folder.glob("*.wav"), key=lambda f: f.stat().st_mtime, reverse=True)
+    for i, old in enumerate(files):
+        if i >= PREVIEW_KEEP - 1 or time.time() - old.stat().st_mtime > PREVIEW_MAX_AGE:
+            old.unlink(missing_ok=True)
+    token = secrets.token_hex(16)
+    (folder / f"{token}.wav").write_bytes(audio)
+    return token
+
+
+@router.post("/media/tts/player")
+async def tts_player(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
+    """Speak the text without storing it; the page plays it."""
+    form = await request.form()
+    ctx = _ctx(form.get("ctx"))
+    try:
+        audio = await run_in_threadpool(
+            tts_svc.synthesize, db, _tts_text(form), str(form.get("tts_voice", "")), _tts_speed(form)
+        )
+    except ServiceError as exc:
+        error = "; ".join(service_errors(exc).values()) or str(exc)
+        return render(request, "partials/tts_player.html", {"ctx": ctx, "error": error, "src": ""})
+    token = await run_in_threadpool(_store_preview, audio)
+    src = f"/services/media/tts/preview/{token}"
+    return render(request, "partials/tts_player.html", {"ctx": ctx, "error": "", "src": src})
+
+
+@router.get("/media/tts/preview/{token}")
+def tts_preview(token: str, user: User = Depends(ui_user)) -> Response:
+    if not rec_svc.TOKEN_RE.match(token):
+        raise HTTPException(404)
+    path = _preview_dir() / f"{token}.wav"
+    if not path.is_file():
+        raise HTTPException(404)
+    return FileResponse(path, media_type="audio/wav")
+
+
+@router.post("/media/tts")
+async def tts_create(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
+    form = await request.form()
+    ctx = _ctx(form.get("ctx"))
+    kind = "ivr_prompt" if ctx == "ivr" else str(form.get("kind", ""))
+    try:
+        item = await run_in_threadpool(
+            tts_svc.create,
+            db,
+            kind,
+            str(form.get("name", "")),
+            _tts_text(form),
+            str(form.get("tts_voice", "")),
+            _tts_speed(form),
+            user.username,
+        )
+    except ServiceError as exc:
+        db.rollback()
+        error = "; ".join(service_errors(exc).values()) or str(exc)
+        return render(request, "partials/tts_result.html", {"ctx": ctx, "error": error, "new_media": None})
+    context = {"ctx": ctx, "error": "", "new_media": item, **_new_media_context(request, db, ctx, item)}
+    resp = render(request, "partials/tts_result.html", context)
+    return dirty_trigger(resp) if ctx == "media" else resp
+
+
 # "ctx": the page that started the recording (media: the file list, ivr: the announcement select)
 RECORD_CTX = ("media", "ivr")
+
+
+def _ctx(value: object) -> str:
+    return value if isinstance(value, str) and value in RECORD_CTX else "media"
+
+
+def _new_media_context(request: Request, db: Session, ctx: str, item: MediaFile) -> dict[str, Any]:
+    """What partials/media_oob.html needs to show a new file on the page that created it."""
+    if ctx == "ivr":
+        return {"values": {"prompt_media_id": item.id}, "errors": {}, "prompts": ivr_svc.list_prompts(db)}
+    return {
+        "lv": list_page(request, media_svc.list_media(db), media_svc.search_fields),
+        "kinds": media_svc.KINDS,
+    }
 
 
 def _record_status(
     request: Request, db: Session, token: str, ctx: str, status: rec_svc.Status | None, error: str = ""
 ) -> Response:
-    values: dict[str, Any] = {}
     context: dict[str, Any] = {"token": token, "ctx": ctx, "status": status, "error": error}
     if status is not None and status.media is not None:
-        if ctx == "ivr":
-            values = {"prompt_media_id": status.media.id}
-            context.update(values=values, errors={}, prompts=ivr_svc.list_prompts(db))
-        else:
-            context.update(lv=list_page(request, media_svc.list_media(db), media_svc.search_fields))
-            context.update(kinds=media_svc.KINDS)
+        context.update(new_media=status.media, **_new_media_context(request, db, ctx, status.media))
     resp = render(request, "partials/record_status.html", context)
     return dirty_trigger(resp) if status is not None and status.media is not None and ctx == "media" else resp
 
@@ -228,8 +386,7 @@ def _record_status(
 @router.post("/media/record")
 async def media_record(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
     form = await request.form()
-    ctx = str(form.get("ctx", "media"))
-    ctx = ctx if ctx in RECORD_CTX else "media"
+    ctx = _ctx(form.get("ctx"))
     try:
         token = rec_svc.start(
             db, str(form.get("extension", "")), str(form.get("kind", "")), str(form.get("name", "")), user.username
@@ -244,7 +401,7 @@ async def media_record(request: Request, user: User = Depends(ui_user), db: Sess
 def media_record_status(
     request: Request, token: str, ctx: str = "media", user: User = Depends(ui_user), db: Session = Depends(get_db)
 ) -> Response:
-    ctx = ctx if ctx in RECORD_CTX else "media"
+    ctx = _ctx(ctx)
     try:
         status = rec_svc.poll(db, token, user.username)
     except NotFound as exc:

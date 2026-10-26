@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 13:55+0100\n"
+"POT-Creation-Date: 2026-10-26 14:14+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: nl\n"
@@ -296,6 +296,20 @@ msgstr "Een provider kan niet naar zichzelf uitwijken"
 
 msgid "A secret is required"
 msgstr "Een geheim is vereist"
+
+msgid ""
+"A text-to-speech server speaks the recording script. The new announcement is named after the menu and chosen under "
+"Uploaded audio."
+msgstr ""
+"Een tekst-naar-spraakserver spreekt de tekst voor de opname uit. De nieuwe aankondiging krijgt de naam van het menu "
+"en wordt geselecteerd onder “Geüploade audio”."
+
+msgid ""
+"A text-to-speech server speaks the text. Listen to it first, then create the announcement; it is stored like an "
+"uploaded file. The text is sent to the server."
+msgstr ""
+"Een tekst-naar-spraakserver spreekt de tekst uit. Beluister deze eerst en maak daarna de aankondiging aan; deze wordt"
+" opgeslagen als een geüpload bestand. De tekst wordt naar de server verzonden."
 
 msgid "ACME account"
 msgstr "ACME-account"
@@ -668,8 +682,14 @@ msgstr "Back-up/herstel"
 msgid "Backups"
 msgstr "Back-ups"
 
+msgid "Base URL of a server with the RestfulTTS API (/api/v1/synthesize). Empty: off."
+msgstr "Basis-URL van een server met de RestfulTTS-API (/api/v1/synthesize). Leeg: uit."
+
 msgid "Belgium"
 msgstr "België"
+
+msgid "Between 0.5 and 2"
+msgstr "Tussen 0,5 en 2"
 
 msgid "Blind transfer"
 msgstr "Direct doorverbinden"
@@ -1014,8 +1034,14 @@ msgstr "Maak een token aan om de REST-API (/api/v1) vanuit scripts te gebruiken.
 msgid "Create and stay"
 msgstr "Aanmaken en verder bewerken"
 
+msgid "Create announcement"
+msgstr "Aankondiging aanmaken"
+
 msgid "Create backup"
 msgstr "Back-up maken"
+
+msgid "Create from text"
+msgstr "Aanmaken uit tekst"
 
 msgid "Create new self-signed certificate"
 msgstr "Nieuw zelfondertekend certificaat aanmaken"
@@ -1092,6 +1118,9 @@ msgstr "Standaard verlooptijd (s)"
 
 msgid "Default prompt language"
 msgstr "Standaardtaal van de aankondigingen"
+
+msgid "Default voice"
+msgstr "Standaardstem"
 
 msgid "Defaults to the host."
 msgstr "Standaard de host."
@@ -1316,6 +1345,9 @@ msgstr "Leeg = tot de beller ophangt (per telefoon bij 'na elkaar': standaard 20
 msgid "Empty square brackets"
 msgstr "Lege vierkante haken"
 
+msgid "Empty: the server's voice for the prompt language of the system."
+msgstr "Leeg: de stem van de server voor de meldingstaal van het systeem."
+
 msgid "Enable"
 msgstr "Inschakelen"
 
@@ -1368,14 +1400,23 @@ msgstr "Voer een aantal dagen in"
 msgid "Enter a time as HH:MM"
 msgstr "Voer een tijd in als HH:MM"
 
+msgid "Enter an http:// or https:// URL"
+msgstr "Voer een http://- of https://-URL in"
+
 msgid "Enter both the first and the last day, or neither"
 msgstr "Voer zowel de eerste als de laatste dag in, of geen van beide"
+
+msgid "Enter the address of a text-to-speech server below to create announcements from text."
+msgstr "Voer hieronder het adres van een tekst-naar-spraakserver in om aankondigingen uit tekst aan te maken."
 
 msgid "Enter the directory URL of the ACME server"
 msgstr "Voer de directory-URL van de ACME-server in"
 
 msgid "Enter the name of an Asterisk sound, e.g. welcome"
 msgstr "Voer de naam van een Asterisk-geluid in, bijv. welcome"
+
+msgid "Enter the text to speak"
+msgstr "Voer de uit te spreken tekst in"
 
 msgid "Error"
 msgstr "Fout"
@@ -1887,11 +1928,17 @@ msgstr "Oude AskoziaPBX"
 msgid "Let's Encrypt staging (testing, untrusted)"
 msgstr "Let's Encrypt staging (test, niet vertrouwd)"
 
+msgid "Letters, digits, '.', '_' and '-' only"
+msgstr "Alleen letters, cijfers, '.', '_' en '-'"
+
 msgid "Light mode"
 msgstr "Lichte modus"
 
 msgid "Light/dark theme: use the moon/sun icon in the top bar."
 msgstr "Licht/donker thema: gebruik het maan-/zonpictogram in de bovenbalk."
+
+msgid "Listen"
+msgstr "Beluisteren"
 
 msgid "Listen to the announcement"
 msgstr "Aankondiging beluisteren"
@@ -2297,6 +2344,9 @@ msgstr "Geen providers gevonden"
 msgid "No providers yet"
 msgstr "Nog geen providers"
 
+msgid "No text-to-speech server is configured (Services > Media)."
+msgstr "Er is geen tekst-naar-spraakserver geconfigureerd (Diensten > Media)."
+
 msgid "No update signing key installed on this system"
 msgstr "Er is geen ondertekeningssleutel voor updates op dit systeem geïnstalleerd"
 
@@ -2433,6 +2483,9 @@ msgstr "Alleen inschakelen indien nodig. De toegang kan bovendien worden beperkt
 
 msgid "Only if different from the username."
 msgstr "Alleen als deze afwijkt van de gebruikersnaam."
+
+msgid "Only if the server requires one (sent as bearer token)."
+msgstr "Alleen als de server er een vereist (verzonden als bearer-token)."
 
 msgid "Only web interface, SSH (if enabled), SIP/IAX and RTP are reachable."
 msgstr "Alleen de webinterface, SSH (indien ingeschakeld), SIP/IAX en RTP zijn bereikbaar."
@@ -3098,6 +3151,9 @@ msgstr "Verzenden mislukt (hebt u de instellingen toegepast?): %(detail)s"
 msgid "September"
 msgstr "September"
 
+msgid "Server address"
+msgstr "Serveradres"
+
 msgid "Server requires authentication"
 msgstr "Server vereist authenticatie"
 
@@ -3166,6 +3222,9 @@ msgstr "Speciale periode niet gevonden"
 
 msgid "Special periods"
 msgstr "Speciale perioden"
+
+msgid "Speed"
+msgstr "Snelheid"
 
 msgid "State"
 msgstr "Status"
@@ -3287,6 +3346,12 @@ msgstr "Testgesprek"
 msgid "Test message sent to %(to)s."
 msgstr "Testbericht verzonden naar %(to)s."
 
+msgid "Text"
+msgstr "Tekst"
+
+msgid "Text-to-speech server"
+msgstr "Tekst-naar-spraakserver"
+
 msgid "Thailand"
 msgstr "Thailand"
 
@@ -3320,6 +3385,10 @@ msgid ""
 msgstr ""
 "De PBX belt uw telefoon. Spreek de aankondiging in na de toon, druk op # en daarna op 1 om deze op te slaan. Opnamen "
 "worden opgeslagen zoals geüploade bestanden."
+
+#, python-format
+msgid "The announcement was created as %(name)s."
+msgstr "De aankondiging is aangemaakt als %(name)s."
 
 msgid "The caller hung up"
 msgstr "De beller heeft opgehangen"
@@ -3456,6 +3525,23 @@ msgstr ""
 "De tekst die voor dit menu moet worden ingesproken. Deze wordt niet afgespeeld; neem hem op en upload het bestand "
 "hierboven."
 
+#, python-format
+msgid "The text-to-speech server is not reachable: %(error)s"
+msgstr "De tekst-naar-spraakserver is niet bereikbaar: %(error)s"
+
+#, python-format
+msgid "The text-to-speech server refused: %(error)s"
+msgstr "De tekst-naar-spraakserver weigerde: %(error)s"
+
+msgid "The text-to-speech server sent an invalid answer"
+msgstr "De tekst-naar-spraakserver stuurde een ongeldig antwoord"
+
+msgid "The text-to-speech server sent more than 16 MB"
+msgstr "De tekst-naar-spraakserver stuurde meer dan 16 MB"
+
+msgid "The text-to-speech server sent no audio"
+msgstr "De tekst-naar-spraakserver stuurde geen audio"
+
 msgid ""
 "The update was interrupted before it finished (see <a href=\"/status/logs\">Status &rarr; Logs</a>). Upload the file "
 "again."
@@ -3469,6 +3555,10 @@ msgstr "De update is geslaagd: PhonixPBX <strong>%(version)s</strong> draait."
 
 msgid "The uploaded file expired, please upload it again."
 msgstr "Het geüploade bestand is verlopen, upload het opnieuw."
+
+#, python-format
+msgid "The voices could not be loaded: %(error)s"
+msgstr "De stemmen konden niet worden geladen: %(error)s"
 
 msgid ""
 "The web interface uses a self-signed certificate. <a href=\"/advanced/certificate\">Get one from Let's Encrypt or "
@@ -3529,6 +3619,9 @@ msgstr "Tijdservers"
 
 msgid "Time zone"
 msgstr "Tijdzone"
+
+msgid "Timeout (seconds)"
+msgstr "Time-out (seconden)"
 
 msgid ""
 "To answer calls from outside with a menu, mark it as reachable from outside or choose it as the destination of a "
@@ -3877,6 +3970,9 @@ msgstr ""
 "Versie <strong>%(version)s</strong> is geïnstalleerd. Herstart de container om deze te starten; tot die tijd blijft "
 "de vorige versie draaien."
 
+msgid "Voice"
+msgstr "Stem"
+
 msgid "Voice prompts"
 msgstr "Gesproken aankondigingen"
 
@@ -4085,6 +4181,9 @@ msgstr "uitgeschakeld"
 #, python-format
 msgid "e.g. %(value)s"
 msgstr "bijv. %(value)s"
+
+msgid "e.g. Welcome. For sales, press 1. For support, press 2."
+msgstr "bijv. Welkom. Voor verkoop, toets 1. Voor support, toets 2."
 
 msgid "e.g. monitoring"
 msgstr "bijv. monitoring"

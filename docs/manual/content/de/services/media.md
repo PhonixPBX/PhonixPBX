@@ -1,7 +1,7 @@
 ---
 title: "Medien"
 weight: 40
-description: "Wartemusik, die Mailbox-Ansage, IVR-Ansagen, Aufnahmen per Telefon und die Sprache der Ansagen."
+description: "Wartemusik, die Mailbox-Ansage, IVR-Ansagen, Aufnahmen per Telefon, Sprachausgabe aus Text und die Sprache der Ansagen."
 ---
 Unter *Dienste → Medien* verwalten Sie eigene Audiodateien: Wartemusik, eine eigene Mailbox-Ansage und die Ansagen von IVR-Menüs. Außerdem zeigt die Seite, in welcher Sprache die Systemansagen abgespielt werden.
 
@@ -36,6 +36,28 @@ Statt eine Datei hochzuladen, können Sie eine IVR-Ansage oder die Mailbox-Ansag
 Die Seite zeigt jeden Schritt an und, sobald Sie `1` gedrückt haben, die neue Datei in der Liste. Legen Sie vor der `1` auf, wird die Aufnahme verworfen, ebenso wenn Sie den Anruf nicht annehmen. Eine Aufnahme wird wie eine hochgeladene Datei gespeichert: Eine IVR-Ansage steht im Menü-Editor zur Auswahl, eine neue Mailbox-Ansage ersetzt die alte und muss übernommen werden.
 
 Anrufen kann die Anlage nur SIP- und IAX-Telefone. Die Hinweise am Telefon kommen in der Sprache der Ansagen dieses Telefons.
+
+## Aus Text erzeugen {#tts}
+
+Ein Text-to-Speech-Server kann eine IVR-Ansage oder die Mailbox-Ansage für Sie sprechen. Richten Sie den Server zuerst unter [Text-to-Speech-Server](#tts-server) ein.
+
+Wählen Sie unter **Aus Text erzeugen**, was Sie **Erstellen** (bei einer IVR-Ansage auch ihren **Namen**), eine **Stimme** und das **Tempo**, und geben Sie den **Text** ein (bis 2000 Zeichen). **Anhören** spielt das Ergebnis im Browser ab, ohne es zu speichern; **Erstellen** speichert es wie eine hochgeladene Datei. Eine neue Mailbox-Ansage ersetzt die alte und muss übernommen werden.
+
+> Der Text wird an den Text-to-Speech-Server gesendet. Verwenden Sie einen Server, dem Sie vertrauen, am besten einen in Ihrem eigenen Netz.
+
+## Text-to-Speech-Server {#tts-server}
+
+PhonixPBX verwendet einen Server mit der RestfulTTS-API. Eine eigene Sprachausgabe bringt die Anlage nicht mit.
+
+| Feld | Bedeutung | Standard |
+|---|---|---|
+| Serveradresse | Basis-URL des Servers, zum Beispiel `http://tts.example.com:8000`. Leer schaltet die Funktion aus. | leer |
+| Access-Token | Nur wenn der Server eines verlangt; es wird als Bearer-Token gesendet. Lassen Sie das Feld leer, um das gespeicherte Token zu behalten; wenn Sie die Serveradresse ohne neues Token ändern, wird es entfernt. | leer |
+| Standardstimme | Die Stimme, wenn Sie keine wählen. Leer: die Stimme des Servers für die [Sprache der Ansagen](#prompt-language) des Systems. | leer |
+| Tempo | 0,5 (langsam) bis 2 (schnell). | 1 |
+| Zeitlimit (Sekunden) | Wie lange auf den Server gewartet wird. | 60 |
+
+Die Audiodaten werden in Telefonqualität angefordert (8 kHz Mono-WAV). Skripte können Ansagen über die [REST-API]({{< relref "/reference/api.md#media" >}}) aus Text erzeugen.
 
 ## Hochgeladene Dateien {#files}
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 13:55+0100\n"
+"POT-Creation-Date: 2026-10-26 14:14+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ru\n"
@@ -312,6 +312,20 @@ msgstr "Провайдер не может быть резервным для с
 
 msgid "A secret is required"
 msgstr "Требуется секрет"
+
+msgid ""
+"A text-to-speech server speaks the recording script. The new announcement is named after the menu and chosen under "
+"Uploaded audio."
+msgstr ""
+"Сервер синтеза речи озвучивает текст для записи. Новое объявление получает имя меню и выбирается в разделе "
+"«Загруженное аудио»."
+
+msgid ""
+"A text-to-speech server speaks the text. Listen to it first, then create the announcement; it is stored like an "
+"uploaded file. The text is sent to the server."
+msgstr ""
+"Сервер синтеза речи озвучивает текст. Сначала прослушайте его, затем создайте объявление; оно сохраняется как "
+"загруженный файл. Текст передаётся на сервер."
 
 msgid "ACME account"
 msgstr "Учетная запись ACME"
@@ -684,8 +698,14 @@ msgstr "Архивация/Восстановление"
 msgid "Backups"
 msgstr "Резервные копии"
 
+msgid "Base URL of a server with the RestfulTTS API (/api/v1/synthesize). Empty: off."
+msgstr "Базовый URL сервера с API RestfulTTS (/api/v1/synthesize). Пусто: выключено."
+
 msgid "Belgium"
 msgstr "Бельгия"
+
+msgid "Between 0.5 and 2"
+msgstr "От 0,5 до 2"
 
 msgid "Blind transfer"
 msgstr "Слепой перевод"
@@ -1030,8 +1050,14 @@ msgstr "Создайте токен, чтобы использовать REST AP
 msgid "Create and stay"
 msgstr "Создать и продолжить"
 
+msgid "Create announcement"
+msgstr "Создать объявление"
+
 msgid "Create backup"
 msgstr "Создать резервную копию"
+
+msgid "Create from text"
+msgstr "Создать из текста"
 
 msgid "Create new self-signed certificate"
 msgstr "Создать новый самоподписанный сертификат"
@@ -1108,6 +1134,9 @@ msgstr "Срок регистрации по умолчанию (с)"
 
 msgid "Default prompt language"
 msgstr "Язык голосовых подсказок по умолчанию"
+
+msgid "Default voice"
+msgstr "Голос по умолчанию"
 
 msgid "Defaults to the host."
 msgstr "По умолчанию — хост."
@@ -1332,6 +1361,9 @@ msgstr "Пусто = пока звонящий не положит трубку 
 msgid "Empty square brackets"
 msgstr "Пустые квадратные скобки"
 
+msgid "Empty: the server's voice for the prompt language of the system."
+msgstr "Пусто: голос сервера для языка голосовых подсказок системы."
+
 msgid "Enable"
 msgstr "Включить"
 
@@ -1384,14 +1416,23 @@ msgstr "Введите количество дней"
 msgid "Enter a time as HH:MM"
 msgstr "Введите время в формате HH:MM"
 
+msgid "Enter an http:// or https:// URL"
+msgstr "Введите URL http:// или https://"
+
 msgid "Enter both the first and the last day, or neither"
 msgstr "Укажите и первый, и последний день или ни одного"
+
+msgid "Enter the address of a text-to-speech server below to create announcements from text."
+msgstr "Введите ниже адрес сервера синтеза речи, чтобы создавать объявления из текста."
 
 msgid "Enter the directory URL of the ACME server"
 msgstr "Введите URL каталога сервера ACME"
 
 msgid "Enter the name of an Asterisk sound, e.g. welcome"
 msgstr "Введите имя звука Asterisk, например welcome"
+
+msgid "Enter the text to speak"
+msgstr "Введите текст для озвучивания"
 
 msgid "Error"
 msgstr "Ошибка"
@@ -1903,11 +1944,17 @@ msgstr "Старая AskoziaPBX"
 msgid "Let's Encrypt staging (testing, untrusted)"
 msgstr "Let's Encrypt staging (тестовый, недоверенный)"
 
+msgid "Letters, digits, '.', '_' and '-' only"
+msgstr "Только буквы, цифры, '.', '_' и '-'"
+
 msgid "Light mode"
 msgstr "Светлая тема"
 
 msgid "Light/dark theme: use the moon/sun icon in the top bar."
 msgstr "Светлая/темная тема: используйте значок луны/солнца на верхней панели."
+
+msgid "Listen"
+msgstr "Прослушать"
 
 msgid "Listen to the announcement"
 msgstr "Прослушать объявление"
@@ -2315,6 +2362,9 @@ msgstr "Провайдеры не найдены"
 msgid "No providers yet"
 msgstr "Провайдеров пока нет"
 
+msgid "No text-to-speech server is configured (Services > Media)."
+msgstr "Сервер синтеза речи не настроен (Службы > Медиафайлы)."
+
 msgid "No update signing key installed on this system"
 msgstr "В этой системе не установлен ключ подписи обновлений"
 
@@ -2450,6 +2500,9 @@ msgstr "Включайте только при необходимости. До�
 
 msgid "Only if different from the username."
 msgstr "Только если отличается от имени пользователя."
+
+msgid "Only if the server requires one (sent as bearer token)."
+msgstr "Только если сервер его требует (передаётся как bearer-токен)."
 
 msgid "Only web interface, SSH (if enabled), SIP/IAX and RTP are reachable."
 msgstr "Доступны только веб-интерфейс, SSH (если включен), SIP/IAX и RTP."
@@ -3115,6 +3168,9 @@ msgstr "Ошибка отправки (вы применили настройк�
 msgid "September"
 msgstr "Сентябрь"
 
+msgid "Server address"
+msgstr "Адрес сервера"
+
 msgid "Server requires authentication"
 msgstr "Сервер требует аутентификации"
 
@@ -3183,6 +3239,9 @@ msgstr "Особый период не найден"
 
 msgid "Special periods"
 msgstr "Особые периоды"
+
+msgid "Speed"
+msgstr "Скорость"
 
 msgid "State"
 msgstr "Состояние"
@@ -3304,6 +3363,12 @@ msgstr "Тестовый вызов"
 msgid "Test message sent to %(to)s."
 msgstr "Тестовое сообщение отправлено на %(to)s."
 
+msgid "Text"
+msgstr "Текст"
+
+msgid "Text-to-speech server"
+msgstr "Сервер синтеза речи"
+
 msgid "Thailand"
 msgstr "Таиланд"
 
@@ -3337,6 +3402,10 @@ msgid ""
 msgstr ""
 "АТС позвонит на ваш телефон. Произнесите объявление после сигнала, нажмите #, а затем 1, чтобы сохранить его. Записи "
 "хранятся так же, как загруженные файлы."
+
+#, python-format
+msgid "The announcement was created as %(name)s."
+msgstr "Объявление создано под именем %(name)s."
 
 msgid "The caller hung up"
 msgstr "Абонент положил трубку"
@@ -3469,6 +3538,23 @@ msgstr "Текст не должен содержать управляющих �
 msgid "The text to record for this menu. It is not played; record it and upload the file above."
 msgstr "Текст, который нужно записать для этого меню. Он не воспроизводится: запишите его и загрузите файл выше."
 
+#, python-format
+msgid "The text-to-speech server is not reachable: %(error)s"
+msgstr "Сервер синтеза речи недоступен: %(error)s"
+
+#, python-format
+msgid "The text-to-speech server refused: %(error)s"
+msgstr "Сервер синтеза речи отказал: %(error)s"
+
+msgid "The text-to-speech server sent an invalid answer"
+msgstr "Сервер синтеза речи прислал недопустимый ответ"
+
+msgid "The text-to-speech server sent more than 16 MB"
+msgstr "Сервер синтеза речи прислал более 16 МБ"
+
+msgid "The text-to-speech server sent no audio"
+msgstr "Сервер синтеза речи не прислал аудио"
+
 msgid ""
 "The update was interrupted before it finished (see <a href=\"/status/logs\">Status &rarr; Logs</a>). Upload the file "
 "again."
@@ -3482,6 +3568,10 @@ msgstr "Обновление выполнено успешно: работает
 
 msgid "The uploaded file expired, please upload it again."
 msgstr "Срок хранения загруженного файла истек, загрузите его снова."
+
+#, python-format
+msgid "The voices could not be loaded: %(error)s"
+msgstr "Не удалось загрузить голоса: %(error)s"
 
 msgid ""
 "The web interface uses a self-signed certificate. <a href=\"/advanced/certificate\">Get one from Let's Encrypt or "
@@ -3542,6 +3632,9 @@ msgstr "Серверы времени"
 
 msgid "Time zone"
 msgstr "Часовой пояс"
+
+msgid "Timeout (seconds)"
+msgstr "Тайм-аут (секунды)"
 
 msgid ""
 "To answer calls from outside with a menu, mark it as reachable from outside or choose it as the destination of a "
@@ -3891,6 +3984,9 @@ msgstr ""
 "Версия <strong>%(version)s</strong> установлена. Перезапустите контейнер, чтобы запустить её; до этого продолжает "
 "работать прежняя версия."
 
+msgid "Voice"
+msgstr "Голос"
+
 msgid "Voice prompts"
 msgstr "Голосовые подсказки"
 
@@ -4099,6 +4195,9 @@ msgstr "отключено"
 #, python-format
 msgid "e.g. %(value)s"
 msgstr "например, %(value)s"
+
+msgid "e.g. Welcome. For sales, press 1. For support, press 2."
+msgstr "например: Добро пожаловать. Отдел продаж — нажмите 1. Техподдержка — нажмите 2."
 
 msgid "e.g. monitoring"
 msgstr "например, monitoring"

@@ -57,7 +57,7 @@ Call groups list their members in `members`, in ringing order: `"phone:<id>"` fo
 
 ## Settings {#settings}
 
-`GET /api/v1/settings/{group}` returns a settings group, `PATCH /api/v1/settings/{group}` changes only the fields you send. The groups are `system`, `network`, `rtp`, `sip`, `iax`, `voicemail`, `email`, `features`, `media`, `firewall`, `acme`, `gui` and `update`.
+`GET /api/v1/settings/{group}` returns a settings group, `PATCH /api/v1/settings/{group}` changes only the fields you send. The groups are `system`, `network`, `rtp`, `sip`, `iax`, `voicemail`, `email`, `features`, `media`, `tts`, `firewall`, `acme`, `gui` and `update`.
 
 ## Applying changes {#apply}
 
@@ -80,6 +80,8 @@ Announcements, music on hold and the voicemail greeting can also be uploaded by 
 - `POST /api/v1/media?kind=<kind>&filename=<name>` with the audio as the request body (at most 64 MB, answer `201`). `kind` is `moh` (music on hold), `vm_greeting` (replaces the voicemail greeting) or `ivr_prompt` (an IVR announcement). The file is converted to 8 kHz mono WAV, like an upload in the web interface; besides WAV, formats such as MP3, OGG and FLAC are accepted.
 - `GET /api/v1/media` lists the files (optionally `?kind=...`), `GET /api/v1/media/{id}` returns one, `GET /api/v1/media/{id}/audio` downloads the converted WAV file.
 - `DELETE /api/v1/media/{id}` deletes a file (answer `204`).
+
+With a [text-to-speech server]({{< relref "/services/media.md#tts-server" >}}) set up (settings group `tts`), `POST /api/v1/media/tts` with `{"kind": "ivr_prompt", "name": "welcome", "text": "Welcome ..."}` creates an announcement from text (optional `voice` and `speed`; answer `201`, like an upload). `GET /api/v1/tts/voices` lists the server's voices.
 
 An IVR menu uses an uploaded announcement through its id: set `"prompt_mode": "upload"` and `"prompt_media_id": <id>` on `/api/v1/ivr-menus`, then apply. Music on hold and the voicemail greeting are pending changes after an upload as well.
 
@@ -156,7 +158,7 @@ The tools:
 - `list_*`, `get_*`, `create_*`, `update_*` and `delete_*` for phones, providers, call groups, conferences, applications, IVR menus, business hours and AMI users. `update_*` changes only the fields that are given.
 - `set_phone_enabled`, `set_provider_enabled`, `set_ivr_menu_enabled`.
 - `get_business_hours_status`, `set_business_hours_mode` and `set_business_hours_special` (take effect immediately).
-- `list_media` and `delete_media` for the audio files; upload them with the REST API.
+- `list_media` and `delete_media` for the audio files; upload them with the REST API. `create_media_from_text` and `list_tts_voices` use the text-to-speech server.
 - `list_settings_groups`, `get_settings`, `update_settings`.
 - `get_status`, `get_pending_changes`, `preview_apply` (which files and components would change), `apply_changes`.
 - `tail_log` – the last lines of the `asterisk`, `system`, `web` or `monitor` log (up to 1000). In an OCI container there are no log files, and the tool returns an error.

@@ -81,6 +81,24 @@
             <button type="button" class="btn btn-sm" hx-post="/dialplan/ivr/script" hx-include="closest form" hx-target="#ivr-script" hx-swap="outerHTML">{{ icon("wand") }}{{ _("Write from options") }}</button>
             <button type="button" class="btn btn-sm" data-copy="#f-prompt_text" data-copied="{{ _('Copied') }}">{{ icon("copy") }}{{ _("Copy") }}</button>
           </div>
+          {% if tts_configured %}
+          <div class="hr-text hr-text-start">{{ _("Create from text") }}</div>
+          <div class="text-secondary mb-2">{{ _("A text-to-speech server speaks the recording script. The new announcement is named after the menu and chosen under Uploaded audio.") }}</div>
+          <div class="row align-items-end">
+            <div class="col-sm-6 mb-3">
+              <label class="form-label" for="ivr-tts-voice">{{ _("Voice") }}</label>
+              <div hx-get="/services/media/tts/voices?target=ivr-tts-voice&selected={{ tts_voice | urlencode }}" hx-trigger="load" hx-swap="outerHTML">
+                <input class="form-control" id="ivr-tts-voice" name="tts_voice" value="{{ tts_voice }}" autocomplete="off">
+              </div>
+            </div>
+            <div class="col-sm-6 mb-3 d-flex flex-wrap gap-2">
+              <button type="button" class="btn" hx-post="/services/media/tts/player" hx-vals='{"ctx": "ivr"}' hx-target="#tts-player-ivr" hx-swap="outerHTML">{{ icon("player-play") }}{{ _("Listen") }}</button>
+              <button type="button" class="btn" hx-post="/services/media/tts" hx-vals='{"ctx": "ivr"}' hx-target="#tts-result-ivr" hx-swap="outerHTML" hx-disable="this">{{ icon("wand") }}{{ _("Create announcement") }}</button>
+            </div>
+          </div>
+          <div id="tts-player-ivr"></div>
+          <div id="tts-result-ivr" class="mb-3"></div>
+          {% endif %}
         </div></div>
       </div>
 

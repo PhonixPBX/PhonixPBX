@@ -1,0 +1,12 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+<div id="tts-result-{{ ctx }}">
+{% if error %}
+  <div class="alert alert-danger mt-3 mb-0" role="alert">{{ error }}</div>
+{% else %}
+  <div class="alert alert-success alert-dismissible mt-3 mb-0" role="status">
+    <div>{{ _("The announcement was created as %(name)s.", name=new_media.name) }}</div>
+    <a class="btn-close" data-bs-dismiss="alert" aria-label="{{ _('close') }}"></a>
+  </div>
+{% endif %}
+</div>
+{% include "partials/media_oob.html" %}

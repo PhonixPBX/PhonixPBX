@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 13:55+0100\n"
+"POT-Creation-Date: 2026-10-26 14:14+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ja\n"
@@ -269,6 +269,16 @@ msgstr "プロバイダーのフェイルオーバー先に自分自身は指定
 
 msgid "A secret is required"
 msgstr "シークレットは必須です"
+
+msgid ""
+"A text-to-speech server speaks the recording script. The new announcement is named after the menu and chosen under "
+"Uploaded audio."
+msgstr "音声合成サーバーが録音用原稿を読み上げます。新しいアナウンスにはメニュー名が付けられ、「アップロードした音声」で選択されます。"
+
+msgid ""
+"A text-to-speech server speaks the text. Listen to it first, then create the announcement; it is stored like an "
+"uploaded file. The text is sent to the server."
+msgstr "音声合成サーバーがテキストを読み上げます。まず試聴してからアナウンスを作成してください。アップロードしたファイルと同様に保存されます。テキストはサーバーに送信されます。"
 
 msgid "ACME account"
 msgstr "ACME アカウント"
@@ -639,8 +649,14 @@ msgstr "バックアップ/復元"
 msgid "Backups"
 msgstr "バックアップ"
 
+msgid "Base URL of a server with the RestfulTTS API (/api/v1/synthesize). Empty: off."
+msgstr "RestfulTTS API (/api/v1/synthesize) を備えたサーバーのベース URL です。空欄の場合は無効です。"
+
 msgid "Belgium"
 msgstr "ベルギー"
+
+msgid "Between 0.5 and 2"
+msgstr "0.5～2 の範囲"
 
 msgid "Blind transfer"
 msgstr "ブラインド転送"
@@ -981,8 +997,14 @@ msgstr "スクリプトから REST API（/api/v1）を使用するには、ト�
 msgid "Create and stay"
 msgstr "作成して編集を続ける"
 
+msgid "Create announcement"
+msgstr "アナウンスを作成"
+
 msgid "Create backup"
 msgstr "バックアップを作成"
+
+msgid "Create from text"
+msgstr "テキストから作成"
 
 msgid "Create new self-signed certificate"
 msgstr "新しい自己署名証明書を作成"
@@ -1059,6 +1081,9 @@ msgstr "デフォルトの有効期限（秒）"
 
 msgid "Default prompt language"
 msgstr "デフォルトの音声ガイダンス言語"
+
+msgid "Default voice"
+msgstr "デフォルトの音声"
 
 msgid "Defaults to the host."
 msgstr "省略時はホストが使用されます。"
@@ -1283,6 +1308,9 @@ msgstr "空欄 = 発信者が切るまで（「順番に」の場合は電話機
 msgid "Empty square brackets"
 msgstr "空の角かっこ"
 
+msgid "Empty: the server's voice for the prompt language of the system."
+msgstr "空欄の場合: システムのガイダンス言語に対応するサーバーの音声。"
+
 msgid "Enable"
 msgstr "有効化"
 
@@ -1335,14 +1363,23 @@ msgstr "日数を入力してください"
 msgid "Enter a time as HH:MM"
 msgstr "時刻を HH:MM で入力してください"
 
+msgid "Enter an http:// or https:// URL"
+msgstr "http:// または https:// の URL を入力してください"
+
 msgid "Enter both the first and the last day, or neither"
 msgstr "初日と最終日の両方を入力するか、どちらも入力しないでください"
+
+msgid "Enter the address of a text-to-speech server below to create announcements from text."
+msgstr "テキストからアナウンスを作成するには、下に音声合成サーバーのアドレスを入力してください。"
 
 msgid "Enter the directory URL of the ACME server"
 msgstr "ACME サーバーのディレクトリ URL を入力してください"
 
 msgid "Enter the name of an Asterisk sound, e.g. welcome"
 msgstr "Asterisk サウンドの名前を入力してください（例: welcome）"
+
+msgid "Enter the text to speak"
+msgstr "読み上げるテキストを入力してください"
 
 msgid "Error"
 msgstr "エラー"
@@ -1848,11 +1885,17 @@ msgstr "旧 AskoziaPBX"
 msgid "Let's Encrypt staging (testing, untrusted)"
 msgstr "Let's Encrypt ステージング（テスト用、信頼されない）"
 
+msgid "Letters, digits, '.', '_' and '-' only"
+msgstr "英数字、'.'、'_'、'-' のみ使用できます"
+
 msgid "Light mode"
 msgstr "ライトモード"
 
 msgid "Light/dark theme: use the moon/sun icon in the top bar."
 msgstr "ライト/ダークテーマ: 上部バーの月/太陽アイコンで切り替えます。"
+
+msgid "Listen"
+msgstr "試聴"
 
 msgid "Listen to the announcement"
 msgstr "アナウンスを聞く"
@@ -2258,6 +2301,9 @@ msgstr "プロバイダーが見つかりません"
 msgid "No providers yet"
 msgstr "プロバイダーはまだありません"
 
+msgid "No text-to-speech server is configured (Services > Media)."
+msgstr "音声合成サーバーが設定されていません（サービス > メディア）。"
+
 msgid "No update signing key installed on this system"
 msgstr "このシステムにはアップデート署名鍵がインストールされていません"
 
@@ -2393,6 +2439,9 @@ msgstr "必要な場合のみ有効にしてください。アクセスは「詳
 
 msgid "Only if different from the username."
 msgstr "ユーザー名と異なる場合のみ。"
+
+msgid "Only if the server requires one (sent as bearer token)."
+msgstr "サーバーが必要とする場合のみ（Bearer トークンとして送信）。"
 
 msgid "Only web interface, SSH (if enabled), SIP/IAX and RTP are reachable."
 msgstr "Web インターフェース、SSH（有効な場合）、SIP/IAX、RTP のみアクセス可能になります。"
@@ -3034,6 +3083,9 @@ msgstr "送信に失敗しました（設定を適用しましたか？）: %(de
 msgid "September"
 msgstr "9月"
 
+msgid "Server address"
+msgstr "サーバーアドレス"
+
 msgid "Server requires authentication"
 msgstr "サーバーで認証が必要"
 
@@ -3098,6 +3150,9 @@ msgstr "特別期間が見つかりません"
 
 msgid "Special periods"
 msgstr "特別期間"
+
+msgid "Speed"
+msgstr "速度"
 
 msgid "State"
 msgstr "状態"
@@ -3215,6 +3270,12 @@ msgstr "テスト通話"
 msgid "Test message sent to %(to)s."
 msgstr "テストメッセージを %(to)s に送信しました。"
 
+msgid "Text"
+msgstr "テキスト"
+
+msgid "Text-to-speech server"
+msgstr "音声合成サーバー"
+
 msgid "Thailand"
 msgstr "タイ"
 
@@ -3242,6 +3303,10 @@ msgid ""
 "The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it. Recordings are stored"
 " like uploaded files."
 msgstr "PBX からお使いの電話機に発信します。発信音の後にアナウンスを話し、# を押してから 1 を押すと保存されます。 録音はアップロードしたファイルと同様に保存されます。"
+
+#, python-format
+msgid "The announcement was created as %(name)s."
+msgstr "アナウンスを %(name)s として作成しました。"
 
 msgid "The caller hung up"
 msgstr "発信者が切断しました"
@@ -3372,6 +3437,23 @@ msgstr "テキストに制御文字を含めることはできません"
 msgid "The text to record for this menu. It is not played; record it and upload the file above."
 msgstr "このメニュー用に録音するテキストです。再生はされません。録音して、上でファイルをアップロードしてください。"
 
+#, python-format
+msgid "The text-to-speech server is not reachable: %(error)s"
+msgstr "音声合成サーバーに接続できません: %(error)s"
+
+#, python-format
+msgid "The text-to-speech server refused: %(error)s"
+msgstr "音声合成サーバーが拒否しました: %(error)s"
+
+msgid "The text-to-speech server sent an invalid answer"
+msgstr "音声合成サーバーから無効な応答が返されました"
+
+msgid "The text-to-speech server sent more than 16 MB"
+msgstr "音声合成サーバーから 16 MB を超えるデータが送信されました"
+
+msgid "The text-to-speech server sent no audio"
+msgstr "音声合成サーバーから音声が返されませんでした"
+
 msgid ""
 "The update was interrupted before it finished (see <a href=\"/status/logs\">Status &rarr; Logs</a>). Upload the file "
 "again."
@@ -3383,6 +3465,10 @@ msgstr "アップデートに成功しました: PhonixPBX <strong>%(version)s</
 
 msgid "The uploaded file expired, please upload it again."
 msgstr "アップロードしたファイルの有効期限が切れました。もう一度アップロードしてください。"
+
+#, python-format
+msgid "The voices could not be loaded: %(error)s"
+msgstr "音声を読み込めませんでした: %(error)s"
 
 msgid ""
 "The web interface uses a self-signed certificate. <a href=\"/advanced/certificate\">Get one from Let's Encrypt or "
@@ -3439,6 +3525,9 @@ msgstr "タイムサーバー"
 
 msgid "Time zone"
 msgstr "タイムゾーン"
+
+msgid "Timeout (seconds)"
+msgstr "タイムアウト（秒）"
 
 msgid ""
 "To answer calls from outside with a menu, mark it as reachable from outside or choose it as the destination of a "
@@ -3774,6 +3863,9 @@ msgid ""
 "version keeps running."
 msgstr "バージョン <strong>%(version)s</strong> がインストールされました。起動するにはコンテナーを再起動してください。それまでは以前のバージョンが動作し続けます。"
 
+msgid "Voice"
+msgstr "音声"
+
 msgid "Voice prompts"
 msgstr "音声ガイダンス"
 
@@ -3974,6 +4066,9 @@ msgstr "無効"
 #, python-format
 msgid "e.g. %(value)s"
 msgstr "例: %(value)s"
+
+msgid "e.g. Welcome. For sales, press 1. For support, press 2."
+msgstr "例: お電話ありがとうございます。営業は 1 を、サポートは 2 を押してください。"
 
 msgid "e.g. monitoring"
 msgstr "例: monitoring"

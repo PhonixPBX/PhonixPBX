@@ -268,6 +268,40 @@ class MediaSettings(SettingsGroup):
     custom_vm_greeting: bool = False
 
 
+class TtsSettings(SettingsGroup):
+    """Text-to-speech server (RestfulTTS API) for announcements created from text."""
+
+    group: str = Field(default="tts", exclude=True)
+    # base URL, e.g. http://tts.example.com:8000; empty = off
+    url: str = ""
+    # optional bearer token
+    token: str = ""
+    # default voice id; empty = the server's default voice for the prompt language
+    voice: str = Field(default="", max_length=64)
+    speed: float = Field(default=1.0, ge=0.5, le=2.0)
+    timeout: int = Field(default=60, ge=5, le=300)
+
+    @field_validator("url")
+    @classmethod
+    def _url(cls, value: str) -> str:
+        value = value.strip().rstrip("/")
+        if value and not re.match(r"^https?://[^\s/?#@]+(/[^\s?#]*)?$", value):
+            raise ValueError(_("Enter an http:// or https:// URL"))
+        return value
+
+    @field_validator("voice")
+    @classmethod
+    def _voice(cls, value: str) -> str:
+        value = value.strip()
+        if value and not re.match(r"^[A-Za-z0-9_.-]+$", value):
+            raise ValueError(_("Letters, digits, '.', '_' and '-' only"))
+        return value
+
+    @property
+    def configured(self) -> bool:
+        return bool(self.url)
+
+
 class FirewallSettings(SettingsGroup):
     group: str = Field(default="firewall", exclude=True)
     enabled: bool = True
@@ -432,6 +466,7 @@ ALL_GROUPS: tuple[type[SettingsGroup], ...] = (
     FeatureSettings,
     OutgoingSettings,
     MediaSettings,
+    TtsSettings,
     FirewallSettings,
     AcmeSettings,
     GuiSettings,

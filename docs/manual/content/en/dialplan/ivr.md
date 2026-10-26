@@ -53,6 +53,8 @@ With **Record by phone** you speak the announcement into a phone instead: enter 
 
 The **Recording script** helps you record a matching announcement. **Write from options** fills it from the key options in their order, in the prompt language of the system, for example "For Sales, press 1. For Support, press 2.". Edit the text if you like, **Copy** it, record it with any recording app and upload the file. The script itself is never played.
 
+When a [text-to-speech server]({{< relref "/services/media.md#tts-server" >}}) is set up, **Create from text** speaks the recording script instead: choose a **Voice**, check it with **Listen** and click **Create announcement**. The announcement is named after the menu and chosen under **Uploaded audio** right away; save the menu and apply.
+
 ### Keys {#keys}
 
 Click **Add option** for each key the caller may press. Each option has:

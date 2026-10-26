@@ -92,6 +92,7 @@ def _menu_page(
     status_code: int = 200,
 ) -> Response:
     menu = db.get(ivr_svc.IvrMenu, menu_id) if menu_id else None
+    tts = st.load(db, st.TtsSettings)
     sounds = list(ivr_svc.SOUNDS)
     if values.get("prompt_sound") and values["prompt_sound"] not in sounds:
         sounds.insert(0, values["prompt_sound"])
@@ -111,6 +112,8 @@ def _menu_page(
         dest_value=dst.value,
         flow=ivr_svc.flow(db, menu) if menu else [],
         test_phones=[p for p in phone_svc.list_phones(db) if p.enabled and p.tech in calls_svc.CHANNEL_TECH],
+        tts_configured=tts.configured,
+        tts_voice=tts.voice,
         saved=menu,
     )
 

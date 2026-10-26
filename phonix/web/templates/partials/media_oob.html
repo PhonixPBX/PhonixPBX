@@ -1,0 +1,9 @@
+{# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
+{# a new media file on the page that created it: the announcement select of the IVR editor, or the file list #}
+{% if new_media %}
+{% if ctx == "ivr" %}
+<div id="prompt-select" hx-swap-oob="true">{% include "partials/ivr_prompt_select.html" %}</div>
+{% else %}
+<div class="card" id="media-files" hx-swap-oob="true">{% include "partials/media_table.html" %}</div>
+{% endif %}
+{% endif %}

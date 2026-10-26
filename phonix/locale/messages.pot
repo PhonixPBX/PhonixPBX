@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 13:55+0100\n"
+"POT-Creation-Date: 2026-10-26 14:14+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -291,6 +291,17 @@ msgid "A provider cannot fail over to itself"
 msgstr ""
 
 msgid "A secret is required"
+msgstr ""
+
+msgid ""
+"A text-to-speech server speaks the recording script. The new announcement"
+" is named after the menu and chosen under Uploaded audio."
+msgstr ""
+
+msgid ""
+"A text-to-speech server speaks the text. Listen to it first, then create "
+"the announcement; it is stored like an uploaded file. The text is sent to"
+" the server."
 msgstr ""
 
 msgid "ACME account"
@@ -672,7 +683,15 @@ msgstr ""
 msgid "Backups"
 msgstr ""
 
+msgid ""
+"Base URL of a server with the RestfulTTS API (/api/v1/synthesize). Empty:"
+" off."
+msgstr ""
+
 msgid "Belgium"
+msgstr ""
+
+msgid "Between 0.5 and 2"
 msgstr ""
 
 msgid "Blind transfer"
@@ -1018,7 +1037,13 @@ msgstr ""
 msgid "Create and stay"
 msgstr ""
 
+msgid "Create announcement"
+msgstr ""
+
 msgid "Create backup"
+msgstr ""
+
+msgid "Create from text"
 msgstr ""
 
 msgid "Create new self-signed certificate"
@@ -1095,6 +1120,9 @@ msgid "Default expiry (s)"
 msgstr ""
 
 msgid "Default prompt language"
+msgstr ""
+
+msgid "Default voice"
 msgstr ""
 
 msgid "Defaults to the host."
@@ -1324,6 +1352,9 @@ msgstr ""
 msgid "Empty square brackets"
 msgstr ""
 
+msgid "Empty: the server's voice for the prompt language of the system."
+msgstr ""
+
 msgid "Enable"
 msgstr ""
 
@@ -1376,13 +1407,24 @@ msgstr ""
 msgid "Enter a time as HH:MM"
 msgstr ""
 
+msgid "Enter an http:// or https:// URL"
+msgstr ""
+
 msgid "Enter both the first and the last day, or neither"
+msgstr ""
+
+msgid ""
+"Enter the address of a text-to-speech server below to create "
+"announcements from text."
 msgstr ""
 
 msgid "Enter the directory URL of the ACME server"
 msgstr ""
 
 msgid "Enter the name of an Asterisk sound, e.g. welcome"
+msgstr ""
+
+msgid "Enter the text to speak"
 msgstr ""
 
 msgid "Error"
@@ -1882,10 +1924,16 @@ msgstr ""
 msgid "Let's Encrypt staging (testing, untrusted)"
 msgstr ""
 
+msgid "Letters, digits, '.', '_' and '-' only"
+msgstr ""
+
 msgid "Light mode"
 msgstr ""
 
 msgid "Light/dark theme: use the moon/sun icon in the top bar."
+msgstr ""
+
+msgid "Listen"
 msgstr ""
 
 msgid "Listen to the announcement"
@@ -2304,6 +2352,9 @@ msgstr ""
 msgid "No providers yet"
 msgstr ""
 
+msgid "No text-to-speech server is configured (Services > Media)."
+msgstr ""
+
 msgid "No update signing key installed on this system"
 msgstr ""
 
@@ -2444,6 +2495,9 @@ msgid ""
 msgstr ""
 
 msgid "Only if different from the username."
+msgstr ""
+
+msgid "Only if the server requires one (sent as bearer token)."
 msgstr ""
 
 msgid "Only web interface, SSH (if enabled), SIP/IAX and RTP are reachable."
@@ -3103,6 +3157,9 @@ msgstr ""
 msgid "September"
 msgstr ""
 
+msgid "Server address"
+msgstr ""
+
 msgid "Server requires authentication"
 msgstr ""
 
@@ -3169,6 +3226,9 @@ msgid "Special period not found"
 msgstr ""
 
 msgid "Special periods"
+msgstr ""
+
+msgid "Speed"
 msgstr ""
 
 msgid "State"
@@ -3290,6 +3350,12 @@ msgstr ""
 msgid "Test message sent to %(to)s."
 msgstr ""
 
+msgid "Text"
+msgstr ""
+
+msgid "Text-to-speech server"
+msgstr ""
+
 msgid "Thailand"
 msgstr ""
 
@@ -3318,6 +3384,10 @@ msgstr ""
 msgid ""
 "The PBX calls your phone. Speak the announcement after the tone, press # "
 "and then 1 to save it. Recordings are stored like uploaded files."
+msgstr ""
+
+#, python-format
+msgid "The announcement was created as %(name)s."
 msgstr ""
 
 msgid "The caller hung up"
@@ -3461,6 +3531,23 @@ msgid ""
 "the file above."
 msgstr ""
 
+#, python-format
+msgid "The text-to-speech server is not reachable: %(error)s"
+msgstr ""
+
+#, python-format
+msgid "The text-to-speech server refused: %(error)s"
+msgstr ""
+
+msgid "The text-to-speech server sent an invalid answer"
+msgstr ""
+
+msgid "The text-to-speech server sent more than 16 MB"
+msgstr ""
+
+msgid "The text-to-speech server sent no audio"
+msgstr ""
+
 msgid ""
 "The update was interrupted before it finished (see <a "
 "href=\"/status/logs\">Status &rarr; Logs</a>). Upload the file again."
@@ -3473,6 +3560,10 @@ msgid ""
 msgstr ""
 
 msgid "The uploaded file expired, please upload it again."
+msgstr ""
+
+#, python-format
+msgid "The voices could not be loaded: %(error)s"
 msgstr ""
 
 msgid ""
@@ -3531,6 +3622,9 @@ msgid "Time servers"
 msgstr ""
 
 msgid "Time zone"
+msgstr ""
+
+msgid "Timeout (seconds)"
 msgstr ""
 
 msgid ""
@@ -3878,6 +3972,9 @@ msgid ""
 "container to start it; until then the previous version keeps running."
 msgstr ""
 
+msgid "Voice"
+msgstr ""
+
 msgid "Voice prompts"
 msgstr ""
 
@@ -4084,6 +4181,9 @@ msgstr ""
 
 #, python-format
 msgid "e.g. %(value)s"
+msgstr ""
+
+msgid "e.g. Welcome. For sales, press 1. For support, press 2."
 msgstr ""
 
 msgid "e.g. monitoring"

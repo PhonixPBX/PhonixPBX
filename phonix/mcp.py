@@ -26,6 +26,7 @@ from phonix.services import hours as hours_svc
 from phonix.services import listing, platform, settings_api
 from phonix.services import media as media_svc
 from phonix.services import status as status_svc
+from phonix.services import tts as tts_svc
 from phonix.services.common import ServiceError, dirty_areas
 from phonix.services.resources import RESOURCES, Resource
 
@@ -307,6 +308,21 @@ def list_media(ctx: Context, args: dict[str, Any]) -> Any:
     return {"items": [media_svc.to_dict(m) for m in listing.slice_api(found, offset, limit)], "total": len(found)}
 
 
+def create_media_from_text(ctx: Context, args: dict[str, Any]) -> Any:
+    kind = _str(args, "kind")
+    speed = args.get("speed")
+    if speed is not None and (isinstance(speed, bool) or not isinstance(speed, (int, float))):
+        raise ToolInputError("'speed' must be a number")
+    name = _str(args, "name") if args.get("name") is not None else ""
+    voice = _str(args, "voice") if args.get("voice") is not None else ""
+    item = tts_svc.create(ctx.db, kind, name, _str(args, "text"), voice, speed, ctx.actor)
+    return media_svc.to_dict(item)
+
+
+def list_tts_voices(ctx: Context, args: dict[str, Any]) -> Any:
+    return {"items": tts_svc.voices(ctx.db)}
+
+
 def delete_media(ctx: Context, args: dict[str, Any]) -> Any:
     media_svc.delete_media(ctx.db, _int(args, "id"), ctx.actor)
     return {"deleted": True}
@@ -384,6 +400,28 @@ def _tools() -> dict[str, Tool]:
             "(POST /api/v1/media).",
             list_media,
             {**LIST_PARAMS, "kind": {"type": "string", "enum": list(media_svc.KINDS)}},
+        ),
+        Tool(
+            "list_tts_voices",
+            "Voices of the configured text-to-speech server (id, language, label).",
+            list_tts_voices,
+        ),
+        Tool(
+            "create_media_from_text",
+            "Speak a text with the configured text-to-speech server and store it as an IVR announcement "
+            "(then set it as prompt_media_id of an IVR menu) or as the voicemail greeting. The text is sent "
+            "to that server.",
+            create_media_from_text,
+            {
+                "kind": {"type": "string", "enum": list(tts_svc.KINDS)},
+                "name": {"type": "string", "description": "Name of the announcement (required for ivr_prompt)"},
+                "text": {"type": "string", "maxLength": tts_svc.MAX_TEXT},
+                "voice": {"type": "string", "description": "Voice id from list_tts_voices; empty: default voice"},
+                "speed": {"type": "number", "minimum": 0.5, "maximum": 2.0},
+            },
+            ("kind", "text"),
+            write=True,
+            idempotent=False,
         ),
         Tool("delete_media", "Delete an uploaded audio file.", delete_media, ID, ("id",), write=True, destructive=True),
         Tool(

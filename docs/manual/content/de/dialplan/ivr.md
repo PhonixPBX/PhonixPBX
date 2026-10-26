@@ -53,6 +53,8 @@ Mit **Per Telefon aufnehmen** sprechen Sie die Ansage stattdessen in ein Telefon
 
 Der **Aufnahmetext** hilft Ihnen, eine passende Ansage aufzunehmen. **Aus Optionen erstellen** füllt ihn aus den Tastenoptionen in ihrer Reihenfolge, in der Ansagesprache des Systems, etwa „Für Vertrieb drücken Sie 1. Für Support drücken Sie 2.“. Passen Sie den Text bei Bedarf an, **kopieren** Sie ihn, nehmen Sie ihn mit einer beliebigen Aufnahme-App auf und laden Sie die Datei hoch. Der Text selbst wird nie abgespielt.
 
+Ist ein [Text-to-Speech-Server]({{< relref "/services/media.md#tts-server" >}}) eingerichtet, spricht **Aus Text erzeugen** den Aufnahmetext stattdessen: Wählen Sie eine **Stimme**, prüfen Sie das Ergebnis mit **Anhören** und klicken Sie auf **Ansage erzeugen**. Die Ansage erhält den Namen des Menüs und ist sofort unter **Hochgeladene Audiodatei** ausgewählt; speichern Sie das Menü und übernehmen Sie die Änderungen.
+
 ### Tasten {#keys}
 
 Klicken Sie für jede Taste, die der Anrufer drücken darf, auf **Option hinzufügen**. Jede Option hat:

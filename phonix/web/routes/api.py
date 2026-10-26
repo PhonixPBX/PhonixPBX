@@ -24,6 +24,7 @@ from phonix.services import hours as hours_svc
 from phonix.services import listing, settings_api
 from phonix.services import media as media_svc
 from phonix.services import status as status_svc
+from phonix.services import tts as tts_svc
 from phonix.services.common import NotFound, ServiceError, dirty_areas
 from phonix.services.resources import RESOURCES, Resource
 from phonix.web.deps import api_caller, api_user, api_writer, get_db
@@ -173,6 +174,42 @@ def list_media(
     found = listing.search(media_svc.list_media(db, kind), q, media_svc.search_fields)
     response.headers["X-Total-Count"] = str(len(found))
     return [media_svc.to_dict(m) for m in listing.slice_api(found, offset, limit)]
+
+
+class MediaFromText(BaseModel):
+    kind: Literal["ivr_prompt", "vm_greeting"] = Field(
+        description="ivr_prompt: an IVR announcement; vm_greeting: replaces the voicemail greeting"
+    )
+    name: str = Field("", max_length=60, description="Name of the announcement (ivr_prompt)", examples=["welcome"])
+    text: str = Field(max_length=tts_svc.MAX_TEXT, description="Text to speak")
+    voice: str = Field("", description="Voice id (GET /api/v1/tts/voices); empty: the configured default voice")
+    speed: float | None = Field(None, ge=0.5, le=2.0, description="Empty: the configured speed")
+
+
+@router.post(
+    "/media/tts",
+    tags=["media"],
+    status_code=201,
+    summary="Create an announcement from text with the configured text-to-speech server",
+)
+def create_media_from_text(
+    body: MediaFromText, user: User = Depends(api_user), db: Session = Depends(get_db)
+) -> dict[str, Any]:
+    """The text is sent to the server configured in the settings group ``tts``."""
+    try:
+        media = tts_svc.create(db, body.kind, body.name, body.text, body.voice, body.speed, user.username)
+    except ServiceError as exc:
+        db.rollback()
+        raise _error(exc) from None
+    return media_svc.to_dict(media)
+
+
+@router.get("/tts/voices", tags=["media"], summary="Voices of the configured text-to-speech server")
+def tts_voices(user: User = Depends(api_user), db: Session = Depends(get_db)) -> list[dict[str, Any]]:
+    try:
+        return tts_svc.voices(db)
+    except ServiceError as exc:
+        raise _error(exc) from None
 
 
 @router.get("/media/{media_id}", tags=["media"], summary="Get one audio file's details")

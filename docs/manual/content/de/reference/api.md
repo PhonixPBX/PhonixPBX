@@ -57,7 +57,7 @@ Rufgruppen führen ihre Mitglieder in `members`, in der Klingelreihenfolge: `"ph
 
 ## Einstellungen {#settings}
 
-`GET /api/v1/settings/{group}` liefert eine Gruppe von Einstellungen, `PATCH /api/v1/settings/{group}` ändert nur die gesendeten Felder. Die Gruppen heißen `system`, `network`, `rtp`, `sip`, `iax`, `voicemail`, `email`, `features`, `media`, `firewall`, `acme`, `gui` und `update`.
+`GET /api/v1/settings/{group}` liefert eine Gruppe von Einstellungen, `PATCH /api/v1/settings/{group}` ändert nur die gesendeten Felder. Die Gruppen heißen `system`, `network`, `rtp`, `sip`, `iax`, `voicemail`, `email`, `features`, `media`, `tts`, `firewall`, `acme`, `gui` und `update`.
 
 ## Änderungen übernehmen {#apply}
 
@@ -80,6 +80,8 @@ Ansagen, Wartemusik und die Voicemail-Begrüßung lassen sich auch per Skript ho
 - `POST /api/v1/media?kind=<Art>&filename=<Name>` mit der Audiodatei als Anfrageinhalt (höchstens 64 MB, Antwort `201`). `kind` ist `moh` (Wartemusik), `vm_greeting` (ersetzt die Voicemail-Begrüßung) oder `ivr_prompt` (eine IVR-Ansage). Die Datei wird wie beim Hochladen in der Weboberfläche in 8-kHz-Mono-WAV umgewandelt; neben WAV werden Formate wie MP3, OGG und FLAC angenommen.
 - `GET /api/v1/media` listet die Dateien (wahlweise `?kind=...`), `GET /api/v1/media/{id}` liefert eine, `GET /api/v1/media/{id}/audio` lädt die umgewandelte WAV-Datei herunter.
 - `DELETE /api/v1/media/{id}` löscht eine Datei (Antwort `204`).
+
+Ist ein [Text-to-Speech-Server]({{< relref "/services/media.md#tts-server" >}}) eingerichtet (Einstellungsgruppe `tts`), erzeugt `POST /api/v1/media/tts` mit `{"kind": "ivr_prompt", "name": "willkommen", "text": "Willkommen ..."}` eine Ansage aus Text (wahlweise mit `voice` und `speed`; Antwort `201`, wie beim Hochladen). `GET /api/v1/tts/voices` listet die Stimmen des Servers.
 
 Ein IVR-Menü verwendet eine hochgeladene Ansage über ihre ID: Setzen Sie bei `/api/v1/ivr-menus` `"prompt_mode": "upload"` und `"prompt_media_id": <id>` und übernehmen Sie danach die Änderungen. Auch Wartemusik und Voicemail-Begrüßung sind nach dem Hochladen ausstehende Änderungen.
 
@@ -156,7 +158,7 @@ Die Werkzeuge:
 - `list_*`, `get_*`, `create_*`, `update_*` und `delete_*` für Telefone, Provider, Rufgruppen, Konferenzräume, Anwendungen, IVR-Menüs, Geschäftszeiten und AMI-Benutzer. `update_*` ändert nur die angegebenen Felder.
 - `set_phone_enabled`, `set_provider_enabled`, `set_ivr_menu_enabled`.
 - `get_business_hours_status`, `set_business_hours_mode` und `set_business_hours_special` (wirken sofort).
-- `list_media` und `delete_media` für die Audiodateien; hochgeladen werden sie über die REST-API.
+- `list_media` und `delete_media` für die Audiodateien; hochgeladen werden sie über die REST-API. `create_media_from_text` und `list_tts_voices` nutzen den Text-to-Speech-Server.
 - `list_settings_groups`, `get_settings`, `update_settings`.
 - `get_status`, `get_pending_changes`, `preview_apply` (welche Dateien und Komponenten sich ändern würden), `apply_changes`.
 - `tail_log` – die letzten Zeilen des Logs `asterisk`, `system`, `web` oder `monitor` (bis zu 1000). In einem OCI-Container gibt es keine Logdateien, und das Werkzeug meldet einen Fehler.

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 13:55+0100\n"
+"POT-Creation-Date: 2026-10-26 14:14+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: pl\n"
@@ -312,6 +312,20 @@ msgstr "Dostawca nie może być zapasowym dla samego siebie"
 
 msgid "A secret is required"
 msgstr "Sekret jest wymagany"
+
+msgid ""
+"A text-to-speech server speaks the recording script. The new announcement is named after the menu and chosen under "
+"Uploaded audio."
+msgstr ""
+"Serwer syntezy mowy odczytuje tekst do nagrania. Nowa zapowiedź otrzymuje nazwę menu i jest wybierana w „Przesłany "
+"plik audio”."
+
+msgid ""
+"A text-to-speech server speaks the text. Listen to it first, then create the announcement; it is stored like an "
+"uploaded file. The text is sent to the server."
+msgstr ""
+"Serwer syntezy mowy odczytuje tekst. Najpierw proszę go odsłuchać, a następnie utworzyć zapowiedź; zostanie zapisana "
+"jak przesłany plik. Tekst jest wysyłany do serwera."
 
 msgid "ACME account"
 msgstr "Konto ACME"
@@ -682,8 +696,14 @@ msgstr "Kopia zapasowa/Przywracanie"
 msgid "Backups"
 msgstr "Kopie zapasowe"
 
+msgid "Base URL of a server with the RestfulTTS API (/api/v1/synthesize). Empty: off."
+msgstr "Bazowy URL serwera z API RestfulTTS (/api/v1/synthesize). Puste: wyłączone."
+
 msgid "Belgium"
 msgstr "Belgia"
+
+msgid "Between 0.5 and 2"
+msgstr "Od 0,5 do 2"
 
 msgid "Blind transfer"
 msgstr "Transfer bez zapowiedzi"
@@ -1028,8 +1048,14 @@ msgstr "Proszę utworzyć token, aby korzystać z REST API (/api/v1) w skryptach
 msgid "Create and stay"
 msgstr "Utwórz i kontynuuj edycję"
 
+msgid "Create announcement"
+msgstr "Utwórz zapowiedź"
+
 msgid "Create backup"
 msgstr "Utwórz kopię zapasową"
+
+msgid "Create from text"
+msgstr "Utwórz z tekstu"
 
 msgid "Create new self-signed certificate"
 msgstr "Utwórz nowy certyfikat samopodpisany"
@@ -1106,6 +1132,9 @@ msgstr "Domyślny czas ważności (s)"
 
 msgid "Default prompt language"
 msgstr "Domyślny język komunikatów"
+
+msgid "Default voice"
+msgstr "Głos domyślny"
 
 msgid "Defaults to the host."
 msgstr "Domyślnie host."
@@ -1330,6 +1359,9 @@ msgstr "Puste = do rozłączenia przez dzwoniącego (dla „po kolei” na każd
 msgid "Empty square brackets"
 msgstr "Puste nawiasy kwadratowe"
 
+msgid "Empty: the server's voice for the prompt language of the system."
+msgstr "Puste: głos serwera dla języka komunikatów systemu."
+
 msgid "Enable"
 msgstr "Włącz"
 
@@ -1382,14 +1414,23 @@ msgstr "Proszę podać liczbę dni"
 msgid "Enter a time as HH:MM"
 msgstr "Podaj godzinę w formacie HH:MM"
 
+msgid "Enter an http:// or https:// URL"
+msgstr "Proszę podać URL http:// lub https://"
+
 msgid "Enter both the first and the last day, or neither"
 msgstr "Proszę podać pierwszy i ostatni dzień albo żaden z nich"
+
+msgid "Enter the address of a text-to-speech server below to create announcements from text."
+msgstr "Proszę podać poniżej adres serwera syntezy mowy, aby tworzyć zapowiedzi z tekstu."
 
 msgid "Enter the directory URL of the ACME server"
 msgstr "Proszę podać URL katalogu serwera ACME"
 
 msgid "Enter the name of an Asterisk sound, e.g. welcome"
 msgstr "Podaj nazwę dźwięku Asteriska, np. welcome"
+
+msgid "Enter the text to speak"
+msgstr "Proszę podać tekst do odczytania"
 
 msgid "Error"
 msgstr "Błąd"
@@ -1901,11 +1942,17 @@ msgstr "Stary AskoziaPBX"
 msgid "Let's Encrypt staging (testing, untrusted)"
 msgstr "Let's Encrypt staging (testowy, niezaufany)"
 
+msgid "Letters, digits, '.', '_' and '-' only"
+msgstr "Tylko litery, cyfry, '.', '_' i '-'"
+
 msgid "Light mode"
 msgstr "Tryb jasny"
 
 msgid "Light/dark theme: use the moon/sun icon in the top bar."
 msgstr "Motyw jasny/ciemny: ikona księżyca/słońca na górnym pasku."
+
+msgid "Listen"
+msgstr "Odsłuchaj"
 
 msgid "Listen to the announcement"
 msgstr "Odsłuchaj zapowiedź"
@@ -2315,6 +2362,9 @@ msgstr "Nie znaleziono dostawców"
 msgid "No providers yet"
 msgstr "Brak dostawców"
 
+msgid "No text-to-speech server is configured (Services > Media)."
+msgstr "Nie skonfigurowano serwera syntezy mowy (Usługi > Media)."
+
 msgid "No update signing key installed on this system"
 msgstr "W tym systemie nie zainstalowano klucza podpisu aktualizacji"
 
@@ -2450,6 +2500,9 @@ msgstr "Proszę włączać tylko w razie potrzeby. Dostęp można dodatkowo ogra
 
 msgid "Only if different from the username."
 msgstr "Tylko jeśli inny niż nazwa użytkownika."
+
+msgid "Only if the server requires one (sent as bearer token)."
+msgstr "Tylko jeśli serwer go wymaga (wysyłany jako token bearer)."
 
 msgid "Only web interface, SSH (if enabled), SIP/IAX and RTP are reachable."
 msgstr "Osiągalne są tylko interfejs WWW, SSH (jeśli włączone), SIP/IAX i RTP."
@@ -3115,6 +3168,9 @@ msgstr "Wysyłanie nie powiodło się (czy ustawienia zostały zastosowane?): %(
 msgid "September"
 msgstr "Wrzesień"
 
+msgid "Server address"
+msgstr "Adres serwera"
+
 msgid "Server requires authentication"
 msgstr "Serwer wymaga uwierzytelnienia"
 
@@ -3183,6 +3239,9 @@ msgstr "Nie znaleziono okresu specjalnego"
 
 msgid "Special periods"
 msgstr "Okresy specjalne"
+
+msgid "Speed"
+msgstr "Tempo"
 
 msgid "State"
 msgstr "Stan"
@@ -3304,6 +3363,12 @@ msgstr "Połączenie testowe"
 msgid "Test message sent to %(to)s."
 msgstr "Wysłano wiadomość testową do %(to)s."
 
+msgid "Text"
+msgstr "Tekst"
+
+msgid "Text-to-speech server"
+msgstr "Serwer syntezy mowy"
+
 msgid "Thailand"
 msgstr "Tajlandia"
 
@@ -3337,6 +3402,10 @@ msgid ""
 msgstr ""
 "PBX zadzwoni na Twój telefon. Nagraj zapowiedź po sygnale, naciśnij #, a następnie 1, aby ją zapisać. Nagrania są "
 "przechowywane tak jak przesłane pliki."
+
+#, python-format
+msgid "The announcement was created as %(name)s."
+msgstr "Zapowiedź została utworzona jako %(name)s."
 
 msgid "The caller hung up"
 msgstr "Dzwoniący się rozłączył"
@@ -3471,6 +3540,23 @@ msgstr "Tekst nie może zawierać znaków sterujących"
 msgid "The text to record for this menu. It is not played; record it and upload the file above."
 msgstr "Tekst do nagrania dla tego menu. Nie jest odtwarzany; nagraj go i prześlij plik powyżej."
 
+#, python-format
+msgid "The text-to-speech server is not reachable: %(error)s"
+msgstr "Serwer syntezy mowy jest nieosiągalny: %(error)s"
+
+#, python-format
+msgid "The text-to-speech server refused: %(error)s"
+msgstr "Serwer syntezy mowy odmówił: %(error)s"
+
+msgid "The text-to-speech server sent an invalid answer"
+msgstr "Serwer syntezy mowy wysłał nieprawidłową odpowiedź"
+
+msgid "The text-to-speech server sent more than 16 MB"
+msgstr "Serwer syntezy mowy wysłał więcej niż 16 MB"
+
+msgid "The text-to-speech server sent no audio"
+msgstr "Serwer syntezy mowy nie wysłał dźwięku"
+
 msgid ""
 "The update was interrupted before it finished (see <a href=\"/status/logs\">Status &rarr; Logs</a>). Upload the file "
 "again."
@@ -3484,6 +3570,10 @@ msgstr "Aktualizacja zakończyła się powodzeniem: działa PhonixPBX <strong>%(
 
 msgid "The uploaded file expired, please upload it again."
 msgstr "Przesłany plik wygasł, proszę przesłać go ponownie."
+
+#, python-format
+msgid "The voices could not be loaded: %(error)s"
+msgstr "Nie udało się wczytać głosów: %(error)s"
 
 msgid ""
 "The web interface uses a self-signed certificate. <a href=\"/advanced/certificate\">Get one from Let's Encrypt or "
@@ -3544,6 +3634,9 @@ msgstr "Serwery czasu"
 
 msgid "Time zone"
 msgstr "Strefa czasowa"
+
+msgid "Timeout (seconds)"
+msgstr "Limit czasu (sekundy)"
 
 msgid ""
 "To answer calls from outside with a menu, mark it as reachable from outside or choose it as the destination of a "
@@ -3892,6 +3985,9 @@ msgstr ""
 "Wersja <strong>%(version)s</strong> została zainstalowana. Proszę ponownie uruchomić kontener, aby ją uruchomić; do "
 "tego czasu działa poprzednia wersja."
 
+msgid "Voice"
+msgstr "Głos"
+
 msgid "Voice prompts"
 msgstr "Komunikaty głosowe"
 
@@ -4100,6 +4196,9 @@ msgstr "wyłączone"
 #, python-format
 msgid "e.g. %(value)s"
 msgstr "np. %(value)s"
+
+msgid "e.g. Welcome. For sales, press 1. For support, press 2."
+msgstr "np. Witamy. Dział sprzedaży – proszę wybrać 1. Wsparcie – proszę wybrać 2."
 
 msgid "e.g. monitoring"
 msgstr "np. monitoring"
