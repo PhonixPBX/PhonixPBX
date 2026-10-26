@@ -76,7 +76,7 @@
                 {{ input("dns_provider_other", _("lego provider code"), values, errors, placeholder=_("e.g. powerdns"), help=_('See the <a href="https://go-acme.github.io/lego/dns/" target="_blank" rel="noopener">lego DNS provider list</a>.')) }}
                 {{ textarea("dns_env_text", _("Credentials"), values, errors, rows=4, mono=True, placeholder="PDNS_API_URL=https://ns.example.com\nPDNS_API_KEY=...", help=_("NAME=value per line. Stored values are not shown: leave the value empty (NAME=) to keep it.")) }}
               </div>
-              {{ textarea("dns_resolvers", _("DNS resolvers for the propagation check (optional)"), values, errors, rows=2, mono=True, placeholder="1.1.1.1:53", help=_("Useful when the PBX resolves its own domain to an internal DNS server.")) }}
+              {{ textarea("dns_resolvers", _("DNS resolvers for the propagation check (optional)"), values, errors, rows=2, mono=True, placeholder=_("e.g. %(value)s", value="1.1.1.1:53"), help=_("Useful when the PBX resolves its own domain to an internal DNS server.")) }}
             </div>
           </div>
         </div>

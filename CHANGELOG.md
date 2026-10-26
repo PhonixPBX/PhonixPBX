@@ -4,6 +4,14 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- *Advanced → Certificate*: the empty **DNS resolvers for the propagation check** field showed `1.1.1.1:53` as its
+  placeholder, which looked like a stored value, so the propagation check silently used the system resolver. The
+  placeholder now reads *e.g. 1.1.1.1:53*. Check that the field really contains your resolvers.
+
 ## [1.10.0rc1] - 2026-10-25
 
 ### Fixed

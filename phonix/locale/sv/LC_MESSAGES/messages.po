@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-25 13:18+0100\n"
+"POT-Creation-Date: 2026-10-26 00:10+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: sv\n"
@@ -3983,6 +3983,10 @@ msgstr "detaljer"
 
 msgid "disabled"
 msgstr "inaktiverad"
+
+#, python-format
+msgid "e.g. %(value)s"
+msgstr "t.ex. %(value)s"
 
 msgid "e.g. monitoring"
 msgstr "t.ex. monitoring"
