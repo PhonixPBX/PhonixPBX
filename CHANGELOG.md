@@ -8,18 +8,10 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ### Changed
 
-- The container image is built on Alpine Linux 3.24.3 (pinned point release instead of the moving `3.24` tag).
-- *PhonixPBX* in the footer of the web interface links to the project website [phonixpbx.org](https://phonixpbx.org/).
-- The graphs on *Status → Summary* and *Status → Graphs* are drawn with uPlot instead of ApexCharts. The ApexCharts
-  version that came with the web interface is no longer under an open source license (it is free only for
-  organisations with less than USD 2 million revenue and may not be redistributed in platforms). The graphs show the
-  same values; pointing at a graph shows the time and the values in the line below it, and the time axis shows whole
-  seconds.
-
-## [1.10.0rc2] - 2026-10-26
-
-### Changed
-
+- The ACME client lego is updated from version 4.35 to 5.5. The ACME account and the certificates under `/data/acme`
+  are converted to the new layout before the first request after the update, so the existing account is kept. The
+  **lego output** on *Advanced → Certificate* uses lego 5's log format. Restoring an older backup works as well: its
+  ACME files are converted the same way.
 - *Advanced → Certificate* is easier to read: a card at the top shows the names of the certificate in use, how many
   days it is still valid and whether it is renewed automatically, with subject, issuer and fingerprint under
   **Details**. The three ways to get a certificate are tabs below it (**Automatic (ACME)**, **Upload**,
@@ -30,14 +22,13 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   **No or invalid input** (wait time, repeats, no key, unknown key, direct dialling). A saved menu opens on **Keys**;
   when saving fails, the tab with the error opens. **Save and stay** keeps the page open on the same tab, e.g. to
   look at the call flow right after saving.
-
-### Fixed
-
-- *Advanced → Certificate*: the empty **DNS resolvers for the propagation check** field showed `1.1.1.1:53` as its
-  placeholder, which looked like a stored value, so the propagation check silently used the system resolver. The
-  placeholder now reads *e.g. 1.1.1.1:53*. Check that the field really contains your resolvers.
-
-## [1.10.0rc1] - 2026-10-25
+- *PhonixPBX* in the footer of the web interface links to the project website [phonixpbx.org](https://phonixpbx.org/).
+- The graphs on *Status → Summary* and *Status → Graphs* are drawn with uPlot instead of ApexCharts. The ApexCharts
+  version that came with the web interface is no longer under an open source license (it is free only for
+  organisations with less than USD 2 million revenue and may not be redistributed in platforms). The graphs show the
+  same values; pointing at a graph shows the time and the values in the line below it, and the time axis shows whole
+  seconds.
+- The container image `ghcr.io/phonixpbx/phonix` is based on Alpine Linux 3.24.3.
 
 ### Fixed
 
@@ -45,13 +36,9 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   `cannot unmarshal number into Go struct field APIResponse[string].data`, because Infomaniak changed its API. The
   newer lego client supports the current API. If a failed request left a `_acme-challenge` TXT record in your
   Infomaniak zone, delete it.
-
-### Changed
-
-- The ACME client lego is updated from version 4.35 to 5.5. The ACME account and the certificates under `/data/acme`
-  are converted to the new layout before the first request after the update, so the existing account is kept. The
-  **lego output** on *Advanced → Certificate* uses lego 5's log format. Restoring an older backup works as well: its
-  ACME files are converted the same way.
+- *Advanced → Certificate*: the empty **DNS resolvers for the propagation check** field showed `1.1.1.1:53` as its
+  placeholder, which looked like a stored value, so the propagation check silently used the system resolver. The
+  placeholder now reads *e.g. 1.1.1.1:53*. Check that the field really contains your resolvers.
 
 ## [1.9.0] - 2026-10-25
 
@@ -415,8 +402,6 @@ The pre-release database migrations were squashed into a single initial revision
 Nightly installs at the latest pre-release schema are upgraded automatically; older
 nightly databases must be recreated (factory reset).
 
-[1.10.0rc2]: https://github.com/PhonixPBX/PhonixPBX/compare/v1.10.0rc1...v1.10.0rc2
-[1.10.0rc1]: https://github.com/PhonixPBX/PhonixPBX/compare/v1.9.0...v1.10.0rc1
 [1.9.0]: https://github.com/PhonixPBX/PhonixPBX/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/PhonixPBX/PhonixPBX/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/PhonixPBX/PhonixPBX/compare/v1.6.0...v1.7.0
