@@ -4,6 +4,16 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- The graphs on *Status → Summary* and *Status → Graphs* are drawn with uPlot instead of ApexCharts. The ApexCharts
+  version that came with the web interface is no longer under an open source license (it is free only for
+  organisations with less than USD 2 million revenue and may not be redistributed in platforms). The graphs show the
+  same values; pointing at a graph shows the time and the values in the line below it, and the time axis shows whole
+  seconds.
+
 ## [1.10.0rc2] - 2026-10-26
 
 ### Changed

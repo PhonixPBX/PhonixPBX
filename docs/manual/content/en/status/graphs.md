@@ -3,7 +3,7 @@ title: "Graphs"
 weight: 30
 description: "Live graphs of CPU usage and network traffic."
 ---
-*Status → Graphs* shows two large live graphs. They are useful to see whether the PBX is overloaded during busy hours, or how much bandwidth the calls use.
+*Status → Graphs* shows two large live graphs. They are useful to see whether the PBX is overloaded during busy hours, or how much bandwidth the calls use. Point at a graph to see the time and the exact values of that moment in the line below it.
 
 ## CPU load {#cpu}
 
@@ -15,6 +15,6 @@ The lower graph, *Network traffic (all interfaces)*, shows the incoming (*in*) a
 
 ## How the graphs are sampled {#sampling}
 
-The PBX does not record these values in the background. They are measured only while a page with graphs is open – this page, or the small graphs on [Status → Summary]({{< relref "/status/summary.md#graphs" >}}) – every two seconds on this page. The PBX keeps the last 120 samples, about four minutes on this page. When you open the page after a while, the graphs start empty and fill up while you watch; the graph shows "collecting data..." until the first values arrive.
+The PBX does not record these values in the background. They are measured only while a page with graphs is open – this page, or the small graphs on [Status → Summary]({{< relref "/status/summary.md#graphs" >}}) – every two seconds on this page. The PBX keeps the last 120 samples, about four minutes on this page. When you open the page after a while, the graphs start empty and fill up while you watch.
 
 For long-term monitoring, collect the metrics with Prometheus from `/api/v1/metrics`, see [REST API and MCP]({{< relref "/reference/api.md#metrics" >}}).

@@ -138,7 +138,7 @@ def client_ip(request: Request) -> str:
 CSP = (
     "default-src 'self'; "
     "script-src 'self'; "
-    # Tabler and ApexCharts set inline styles
+    # Tabler and uPlot set inline styles
     "style-src 'self' 'unsafe-inline'; "
     "img-src 'self' data:; "
     "font-src 'self' data:; "

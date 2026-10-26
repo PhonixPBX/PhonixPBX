@@ -279,7 +279,19 @@
   border-radius: var(--tblr-border-radius);
 }
 .chart-lg {
+  height: auto; /* Tabler fixes it; the uPlot legend sits below the plot */
   min-height: 16rem;
+}
+/* uPlot charts (phonix.js chartOptions draws the canvas in the theme colours) */
+.uplot {
+  font-family: inherit;
+}
+.uplot .u-legend {
+  font-size: 0.75rem;
+  color: var(--tblr-secondary);
+}
+.uplot .u-legend th {
+  font-weight: var(--tblr-font-weight-medium);
 }
 .htmx-indicator {
   opacity: 0;

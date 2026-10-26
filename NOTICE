@@ -13,6 +13,7 @@ following parts which keep their own licenses:
                                              tone zone definitions from Asterisk's
                                              indications.conf.sample (GPL-2.0, Sangoma/Digium)
 - phonix/web/static/img/                     the handset glyph is based on Tabler Icons (MIT)
-- phonix/web/static/vendor/                  Tabler and Tabler Icons (MIT), ApexCharts (MIT),
+- phonix/web/static/vendor/                  Tabler and Tabler Icons (MIT), uPlot (MIT),
                                              Tom Select (Apache-2.0), Dropzone (MIT), IMask (MIT),
-                                             Autosize (MIT), htmx (0BSD); see vendor/VERSIONS
+                                             Autosize (MIT), SortableJS (MIT), htmx (0BSD);
+                                             see vendor/VERSIONS

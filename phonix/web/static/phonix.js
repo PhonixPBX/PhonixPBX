@@ -2,7 +2,7 @@
  * PhonixPBX UI glue (no inline scripts: the CSP only allows 'self').
  * - sends the CSRF token with every htmx request
  * - initialises Tabler-supported libraries (Tom Select, Autosize, IMask,
- *   Dropzone, ApexCharts, SortableJS) on page load and on htmx 4 swapped content
+ *   Dropzone, SortableJS) and uPlot charts on page load and on htmx 4 swapped content
  * - small helpers driven by data-* attributes
  */
 (function () {
@@ -193,14 +193,19 @@
       });
     }
 
-    if (window.ApexCharts) {
+    if (window.uPlot) {
       scope("[data-chart]").forEach((el) => {
         if (charts.has(el)) return;
         const kind = el.dataset.chart;
-        const options = chartOptions(kind, el);
-        const chart = new ApexCharts(el, options);
-        chart.render();
+        const chart = new uPlot(chartOptions(kind, el), kind === "cpu" ? [[], []] : [[], [], []], el);
         charts.set(el, chart);
+        // uPlot has a fixed size: follow the width of the card
+        el._resize = new ResizeObserver(() => {
+          if (el.clientWidth && el.clientWidth !== chart.width) {
+            chart.setSize({ width: el.clientWidth, height: chart.height });
+          }
+        });
+        el._resize.observe(el);
         if (el.dataset.chartUrl) pollChart(el, chart);
       });
     }
@@ -232,6 +237,7 @@
       const c = charts.get(el);
       if (c) {
         clearInterval(el._poll);
+        el._resize?.disconnect();
         c.destroy();
         charts.delete(el);
       }
@@ -239,8 +245,15 @@
   }
 
   // ---- charts ---------------------------------------------------------------------
-  const css = (name, fallback) =>
-    getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+  // resolves a CSS colour (also var() and color-mix()) for the canvas, in the theme of el
+  function color(el, value) {
+    const probe = document.createElement("span");
+    probe.style.color = value;
+    el.appendChild(probe);
+    const c = getComputedStyle(probe).color;
+    probe.remove();
+    return c;
+  }
 
   function bytes(v) {
     const units = ["B/s", "KB/s", "MB/s", "GB/s"];
@@ -252,38 +265,47 @@
     return v.toFixed(i ? 1 : 0) + " " + units[i];
   }
 
+  // uPlot options for data-chart="cpu" (one series in %) and "network" (in/out in bytes/s)
   function chartOptions(kind, el) {
-    const primary = css("--phonix-primary", "#435370");
-    const accent = css("--phonix-accent", "#687ba4");
-    const base = {
-      chart: {
-        type: "area",
-        height: Number(el.dataset.height || 240),
-        fontFamily: "inherit",
-        animations: { enabled: false },
-        toolbar: { show: false },
-        zoom: { enabled: false },
-        sparkline: { enabled: el.dataset.sparkline === "1" },
-      },
-      dataLabels: { enabled: false },
-      stroke: { width: 2, curve: "smooth" },
-      fill: { opacity: 0.16, type: "solid" },
-      grid: { strokeDashArray: 4 },
-      xaxis: { type: "datetime", labels: { datetimeUTC: false } },
-      tooltip: { theme: document.documentElement.dataset.bsTheme === "dark" ? "dark" : "light", x: { format: "HH:mm:ss" } },
-      legend: { show: true, position: "top" },
-      noData: { text: "collecting data..." },
-      colors: [primary, accent],
-      series: [],
+    const fmt = kind === "cpu" ? (v) => v.toFixed(0) + " %" : bytes;
+    const time = (ts) => new Date(ts * 1000).toLocaleTimeString();
+    const font = "12px " + getComputedStyle(el).fontFamily;
+    const axis = {
+      stroke: color(el, "var(--tblr-secondary)"),
+      grid: { stroke: color(el, "var(--tblr-border-color)"), dash: [4, 4], width: 1 },
+      ticks: { show: false },
+      font,
     };
-    if (kind === "cpu") {
-      base.yaxis = { min: 0, max: 100, labels: { formatter: (v) => v.toFixed(0) + " %" } };
-      base.series = [{ name: "CPU", data: [] }];
-    } else if (kind === "network") {
-      base.yaxis = { labels: { formatter: bytes } };
-      base.series = [{ name: "in", data: [] }, { name: "out", data: [] }];
-    }
-    return base;
+    const series = (label, value) => ({
+      label,
+      stroke: color(el, value),
+      fill: color(el, `color-mix(in srgb, ${value} 16%, transparent)`),
+      width: 2,
+      paths: uPlot.paths.spline(),
+      points: { show: false },
+      value: (u, v) => (v == null ? "–" : fmt(v)),
+    });
+    return {
+      width: el.clientWidth || 600,
+      height: Number(el.dataset.height || 240),
+      cursor: { drag: { x: false, y: false } },
+      scales: {
+        x: { time: true },
+        // CPU always 0-100 %, traffic from 0 to at least 1 KB/s
+        y: { range: kind === "cpu" ? [0, 100] : (u, min, max) => [0, Math.max(max || 0, 1024)] },
+      },
+      axes: [
+        // whole seconds only (samples are seconds apart), in the browser's time format
+        { ...axis, space: 90, incrs: [1, 2, 5, 10, 15, 30, 60, 120, 300, 600, 900, 1800, 3600], values: (u, splits) => splits.map(time) },
+        { ...axis, size: kind === "cpu" ? 50 : 75, values: (u, splits) => splits.map(fmt) },
+      ],
+      series: [
+        { value: (u, ts) => (ts == null ? "–" : time(ts)) },
+        ...(kind === "cpu"
+          ? [series("CPU", "var(--phonix-primary)")]
+          : [series("in", "var(--phonix-primary)"), series("out", "var(--phonix-accent)")]),
+      ],
+    };
   }
 
   function pollChart(el, chart) {
@@ -292,13 +314,11 @@
         .then((r) => (r.ok ? r.json() : null))
         .then((data) => {
           if (!data) return;
+          const ts = data.map((s) => s.ts);
           if (el.dataset.chart === "cpu") {
-            chart.updateSeries([{ name: "CPU", data: data.map((s) => [s.ts * 1000, s.cpu]) }]);
+            chart.setData([ts, data.map((s) => s.cpu)]);
           } else {
-            chart.updateSeries([
-              { name: "in", data: data.map((s) => [s.ts * 1000, s.rx]) },
-              { name: "out", data: data.map((s) => [s.ts * 1000, s.tx]) },
-            ]);
+            chart.setData([ts, data.map((s) => s.rx), data.map((s) => s.tx)]);
           }
         })
         .catch(() => {});

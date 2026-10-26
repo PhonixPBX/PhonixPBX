@@ -3,7 +3,7 @@ title: "Graphen"
 weight: 30
 description: "Live-Graphen der CPU-Auslastung und des Netzwerkverkehrs."
 ---
-*Status → Graphen* zeigt zwei große Live-Graphen. Sie sehen daran, ob die Anlage zu Stoßzeiten überlastet ist oder wie viel Bandbreite die Gespräche brauchen.
+*Status → Graphen* zeigt zwei große Live-Graphen. Sie sehen daran, ob die Anlage zu Stoßzeiten überlastet ist oder wie viel Bandbreite die Gespräche brauchen. Zeigen Sie mit der Maus auf einen Graphen, sehen Sie in der Zeile darunter die Uhrzeit und die genauen Werte dieses Moments.
 
 ## CPU-Last {#cpu}
 
@@ -15,6 +15,6 @@ Der untere Graph, *Netzwerkverkehr (alle Interfaces)*, zeigt den eingehenden (*i
 
 ## Wie die Werte erfasst werden {#sampling}
 
-Die Anlage zeichnet diese Werte nicht im Hintergrund auf. Sie werden nur gemessen, solange eine Seite mit Graphen geöffnet ist – diese Seite oder die kleinen Graphen auf [Status → Übersicht]({{< relref "/status/summary.md#graphs" >}}) –, auf dieser Seite alle zwei Sekunden. Die Anlage behält die letzten 120 Messwerte, auf dieser Seite also etwa vier Minuten. Öffnen Sie die Seite nach einer Weile wieder, beginnen die Graphen leer und füllen sich, während Sie zusehen; bis zu den ersten Werten zeigt der Graph „collecting data...“.
+Die Anlage zeichnet diese Werte nicht im Hintergrund auf. Sie werden nur gemessen, solange eine Seite mit Graphen geöffnet ist – diese Seite oder die kleinen Graphen auf [Status → Übersicht]({{< relref "/status/summary.md#graphs" >}}) –, auf dieser Seite alle zwei Sekunden. Die Anlage behält die letzten 120 Messwerte, auf dieser Seite also etwa vier Minuten. Öffnen Sie die Seite nach einer Weile wieder, beginnen die Graphen leer und füllen sich, während Sie zusehen.
 
 Für eine Langzeitüberwachung sammeln Sie die Metriken mit Prometheus über `/api/v1/metrics`, siehe [REST-API und MCP]({{< relref "/reference/api.md#metrics" >}}).

@@ -31,7 +31,7 @@ We are reviving the product on current technology:
 ## 1. Architecture
 
 ```
-┌─ Browser (Tabler 1.7.1 + htmx 4 + ApexCharts/Tom Select, server-rendered) ─┐
+┌─ Browser (Tabler 1.7.1 + htmx 4 + uPlot/Tom Select, server-rendered) ─────┐
                  │ HTTPS
            nginx (TLS, static files, rate limits)  ──unix socket──▶ uvicorn: phonix.web (FastAPI)
                                                                      │
@@ -174,7 +174,7 @@ The menu keeps the original structure from `usr/www/fbegin.inc`.
 - Dashboard: system info, uptime, registrations, active calls
 - Registrations and channels, from AMI
 - Logs: a tail of the Asterisk, system, web application and monitor logs, live via SSE. Logs are kept in RAM (appliance overlay, tmpfs in LXC) and rotated by size every 15 minutes (`/etc/periodic/15min/phonix-logrotate`). The OCI image writes no log files: everything goes to the container output, and the page (and MCP `tail_log`) say so instead.
-- CPU and network graphs, drawn with ApexCharts
+- CPU and network graphs, drawn with uPlot
 
 **Advanced**
 - RTP port range
@@ -350,13 +350,13 @@ Everything hardware-specific listed in the confirmed decisions, plus Humbug anal
 - Pages are server-rendered with Jinja2 and use **htmx 4.x** for partial updates: list tables, the apply banner, status polling, and the SSE log tail.
 - Code is written against htmx 4 semantics only: fetch-based requests, explicit attribute inheritance, and the htmx 4 event names and extension API. No htmx 1/2-era extensions or patterns.
 - **Use the libraries Tabler 1.7.1 itself ships and supports**, at the versions Tabler pins in its `libs.json`/`package.json`, rather than adding third-party alternatives:
-  - **ApexCharts**: all charts. This covers dashboard sparklines, the CPU/memory and network traffic graphs, and call volume. Live updates come from an htmx 4 SSE/poll that returns JSON series.
   - **Tom Select**: every non-trivial select. Examples: codec multi-select with ordering, call group member picker, provider/phone pickers, timezone search, incoming-DID target picker.
   - **Dropzone**: uploads for firmware/update bundles, MOH, greetings, IVR announcements and the backup restore. A `<div data-dropzone data-url>` works inside another form (the IVR editor), where a nested `<form>` is not allowed.
   - **IMask**: masked inputs where useful, such as IP/netmask, port ranges and PINs.
   - **Litepicker**: date ranges for log and CDR filters, if needed.
   - **Tabler Icons** (webfont/SVG sprite): all icons.
-- Library glue lives in a single `phonix/web/static/phonix.js`. It initializes the Tabler libs on `htmx:after:swap` (the htmx 4 event), so swapped-in fragments get Tom Select, ApexCharts and similar applied. It also tears them down before swap to avoid leaks. Drag and drop uses SortableJS, vendored from Tabler's libs. Rows (IVR key options) sit in a container with Tabler's `data-sortable` plugin (JSON options in the attribute, auto-initialised by `tabler.min.js`, so `Sortable.min.js` loads before it), dragged only by their `[data-sortable-handle]` so the inputs stay usable, plus `data-move` up/down buttons on `[data-sortable-item]` rows for keyboards; the rows are submitted in page order. A multi Tom Select with `data-tom-sortable` (call group members via `ordered_select`, codecs) gets a Sortable on its chips in `phonix.js` (`forceFallback`, because Tom Select cancels mousedown on items); on drop it reorders `ts.items` and calls `updateOriginalInput()`, which re-appends the selected options in that order, so the form posts the new order.
+- **Exception: charts use uPlot** (MIT, vendored from npm by `scripts/vendor-update.sh`), not the ApexCharts that Tabler bundles: ApexCharts is no longer open source since 5.1.0 (free only below USD 2M revenue, no redistribution in platforms). `data-chart="cpu|network"` with `data-chart-url` (JSON samples), `data-height` and `data-interval`; `phonix.js` builds the uPlot options (colours resolved from the Tabler/phonix CSS variables, so light and dark theme work), polls the URL with `setData`, and follows the card width with a `ResizeObserver`. The live legend below the plot replaces a tooltip.
+- Library glue lives in a single `phonix/web/static/phonix.js`. It initializes the Tabler libs on `htmx:after:swap` (the htmx 4 event), so swapped-in fragments get Tom Select, uPlot charts and similar applied. It also tears them down before swap to avoid leaks. Drag and drop uses SortableJS, vendored from Tabler's libs. Rows (IVR key options) sit in a container with Tabler's `data-sortable` plugin (JSON options in the attribute, auto-initialised by `tabler.min.js`, so `Sortable.min.js` loads before it), dragged only by their `[data-sortable-handle]` so the inputs stay usable, plus `data-move` up/down buttons on `[data-sortable-item]` rows for keyboards; the rows are submitted in page order. A multi Tom Select with `data-tom-sortable` (call group members via `ordered_select`, codecs) gets a Sortable on its chips in `phonix.js` (`forceFallback`, because Tom Select cancels mousedown on items); on drop it reorders `ts.items` and calls `updateOriginalInput()`, which re-appends the selected options in that order, so the form posts the new order.
 - The sidebar links use `hx-boost`, limited to the menu (`<ul class="navbar-nav">`): they fetch the page and swap `#page` only (`target`/`select` `#page`, `outerHTML`), never `<body>`, because htmx 4 runs the `<script>` tags of swapped content again. `#page` is also the `hx-history-elt`, so the back button restores it the same way. A response without `#page` (an error page, the print view, a redirect to the login) is loaded as a normal page by `phonix.js`. Everything else (forms, downloads, the top bar, `/api/docs`) stays a normal navigation. What a full load sets up once (`#tab-…` links, the reboot watcher, `data-sortable`) also runs for a swapped `#page`.
 - **Lists: search and paging.** Entity lists share one pattern (all entity lists except the audit log, which follows):
   - The view is in the address: `q` (case-insensitive substring over the list's search fields, the same `search_fields` the REST API and MCP use), `page` (1-based; out of range is clamped to the last page) and `per_page` (25/50/100/`all`, default 50; anything else falls back to 50; the audit log offers no `all`). `list_page()` in `routes/ui/common.py` reads them and returns a `ListPage` (`phonix/services/listing.py`); entity lists filter and slice in Python after the existing `list_*` query, so their order is kept.

@@ -1,13 +1,15 @@
 #!/bin/sh
 # SPDX-FileCopyrightText: 2026 The PhonixPBX contributors
 # SPDX-License-Identifier: Apache-2.0
-# Refresh vendored front-end assets (Tabler + Tabler-supported libraries + htmx 4).
+# Refresh vendored front-end assets (Tabler + Tabler-supported libraries + htmx 4 + uPlot).
 # Only the files the UI uses are copied; versions + SHA256 go to vendor/VERSIONS.
 set -eu
 
 TABLER_VERSION=1.7.1
 ICONS_VERSION=3.49.0
 HTMX_VERSION=4.0.0
+# charts; the ApexCharts that Tabler bundles is no longer MIT licensed (since 5.1.0)
+UPLOT_VERSION=1.6.32
 
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 DEST="$ROOT/phonix/web/static/vendor"
@@ -16,15 +18,16 @@ trap 'rm -rf "$WORK"' EXIT
 
 cd "$WORK"
 npm pack --silent "@tabler/core@$TABLER_VERSION" "@tabler/icons-webfont@$ICONS_VERSION" \
-    "htmx.org@$HTMX_VERSION" >/dev/null
+    "htmx.org@$HTMX_VERSION" "uplot@$UPLOT_VERSION" >/dev/null
 for t in *.tgz; do mkdir "${t%.tgz}" && tar xzf "$t" -C "${t%.tgz}"; done
 
 T="$WORK/tabler-core-$TABLER_VERSION/package/dist"
 I="$WORK/tabler-icons-webfont-$ICONS_VERSION/package/dist"
 H="$WORK/htmx.org-$HTMX_VERSION/package/dist"
+U="$WORK/uplot-$UPLOT_VERSION/package"
 
 rm -rf "$DEST"
-mkdir -p "$DEST"/tabler "$DEST"/icons/fonts "$DEST"/libs "$DEST"/htmx
+mkdir -p "$DEST"/tabler "$DEST"/icons/fonts "$DEST"/libs "$DEST"/htmx "$DEST"/uplot
 cp "$T/css/tabler.min.css" "$T/css/tabler-vendors.min.css" "$T/js/tabler.min.js" \
    "$T/js/tabler-theme.min.js" "$DEST/tabler/"
 cp "$I/tabler-icons.min.css" "$DEST/icons/"
@@ -34,7 +37,6 @@ sed -i -E 's#,url\("?\./fonts/tabler-icons\.woff\?[^)]*\)[^,;]*##g; s#,url\("?\.
     "$DEST/icons/tabler-icons.min.css"
 
 lib() { mkdir -p "$DEST/libs/$1"; shift_dir=$1; shift; for f in "$@"; do cp "$T/libs/$shift_dir/$f" "$DEST/libs/$shift_dir/"; done; }
-lib apexcharts dist/apexcharts.min.js
 lib tom-select dist/js/tom-select.base.min.js dist/css/tom-select.bootstrap5.min.css
 lib dropzone dist/dropzone-min.js
 lib imask dist/imask.min.js
@@ -45,6 +47,7 @@ for d in "$DEST"/libs/*; do find "$d" -mindepth 2 -type f -exec mv {} "$d"/ \; ;
 
 cp "$H/htmx.min.js" "$H/ext/hx-sse.min.js" "$DEST/htmx/"
 cp "$WORK/htmx.org-$HTMX_VERSION/package/LICENSE" "$DEST/htmx/LICENSE"
+cp "$U/dist/uPlot.iife.min.js" "$U/dist/uPlot.min.css" "$U/LICENSE" "$DEST/uplot/"
 cp "$WORK/tabler-core-$TABLER_VERSION/package/LICENSE" "$DEST/tabler/LICENSE" 2>/dev/null || true
 
 {
@@ -52,6 +55,7 @@ cp "$WORK/tabler-core-$TABLER_VERSION/package/LICENSE" "$DEST/tabler/LICENSE" 2>
     echo "@tabler/core $TABLER_VERSION"
     echo "@tabler/icons-webfont $ICONS_VERSION"
     echo "htmx.org $HTMX_VERSION"
+    echo "uplot $UPLOT_VERSION"
     echo
     cd "$DEST" && find . -type f ! -name VERSIONS | sort | xargs sha256sum
 } > "$DEST/VERSIONS"

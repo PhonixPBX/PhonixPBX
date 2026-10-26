@@ -2,13 +2,13 @@
 @tabler/core 1.7.1
 @tabler/icons-webfont 3.49.0
 htmx.org 4.0.0
+uplot 1.6.32
 
 e484d9171a9db30a39c8f16e3d709d4137f3211c659f8e6125816635033d593f  ./htmx/htmx.min.js
 8a834680c4000a9034d79228872372a92e140c810a075cb6d4a76690dfc13085  ./htmx/hx-sse.min.js
 d3d2456f76414f2456104660ebd65aff1c04cd7966b942bdabd63f3cdb316a38  ./htmx/LICENSE
 5b793beee5851ea40df5f34810f615924bc1d3b992c9d1713709aeac7c3834f9  ./icons/fonts/tabler-icons.woff2
 a55b65adec53f62cb612f94867510b69bcd37bf5e17ca01b04539eff6573fb78  ./icons/tabler-icons.min.css
-a2e892d841ef25f62517c1663ce6aaa759df51eff6f85a9a1105cba299075910  ./libs/apexcharts/apexcharts.min.js
 5421f1dc60839ddd79ea608ce4433d6c94e3ee684caebc20dad01a6fd075bd0b  ./libs/autosize/autosize.min.js
 dfeb042263220907e9106f00fcc19629246d0d00ac32a4edd3f9c47156df43d8  ./libs/dropzone/dropzone-min.js
 7fcd7b0428e446cb8fc10a9acde63838a2af5a1cf5e1d90596e326431e489610  ./libs/imask/imask.min.js
@@ -19,3 +19,6 @@ dcf84d7b4319c29ab33450bfe2a7bbf607458d994ef71023f7509e912cafdbd5  ./tabler/table
 2a3b9ecae44d821b21ba4521da33fca1bdc692454745536418c4e078e8ba6abf  ./tabler/tabler.min.js
 0d4cc450c54c8d37dca82daff89e65ed9e520320ee08974b2573466acdff6c89  ./tabler/tabler-theme.min.js
 9c757eb14ad17e1344d191fb2857ed16f99b0a4807c77ccf8fb189ea5d2c7cbd  ./tabler/tabler-vendors.min.css
+8f989229699b4fe2f1a0432d0e9edc338a8a911e250e2d1b01ecd770a5f5b1bd  ./uplot/LICENSE
+19c8d4c6ad88929a79f4ae49d6f7161566dfd0ba3d15cc495e974f787eb78f1f  ./uplot/uPlot.iife.min.js
+df630c6a8d6f8eeaff264b50f73ce5b114f646ffd9a0bb74f049b0a00135fa04  ./uplot/uPlot.min.css
