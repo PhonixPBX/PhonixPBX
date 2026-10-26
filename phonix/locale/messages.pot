@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 07:35+0100\n"
+"POT-Creation-Date: 2026-10-26 07:55+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -529,7 +529,7 @@ msgstr ""
 msgid "April"
 msgstr ""
 
-msgid "As saved."
+msgid "As saved. Save the menu to see your changes here."
 msgstr ""
 
 msgid "Asterisk database"
@@ -740,6 +740,9 @@ msgid "Call Groups"
 msgstr ""
 
 msgid "Call flow"
+msgstr ""
+
+msgid "Call flow &amp; test"
 msgstr ""
 
 msgid "Call group"
@@ -1822,9 +1825,6 @@ msgstr ""
 msgid "Key %(key)s is used more than once"
 msgstr ""
 
-msgid "Key options"
-msgstr ""
-
 msgid "Keys"
 msgstr ""
 
@@ -2270,6 +2270,9 @@ msgid "No manager users"
 msgstr ""
 
 msgid "No manager users found"
+msgstr ""
+
+msgid "No or invalid input"
 msgstr ""
 
 msgid ""
@@ -3078,9 +3081,6 @@ msgid "Server requires authentication"
 msgstr ""
 
 msgid "Services"
-msgstr ""
-
-msgid "Settings"
 msgstr ""
 
 msgid "Settings groups"

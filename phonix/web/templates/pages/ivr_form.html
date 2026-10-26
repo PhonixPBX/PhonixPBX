@@ -4,36 +4,47 @@
 {% block help_anchor %}edit{% endblock %}
 {% block page_title %}{{ _("New IVR menu") if is_new else _("Edit IVR menu %(name)s", name=values.name) }}{% endblock %}
 {% block content %}
-<form method="post" action="/dialplan/ivr/{{ 'new' if is_new else menu_id }}" id="ivr-form">
+{# the tab with the first error opens, so no error hides in a tab that is not shown; without errors a new menu
+   starts on General and a saved one on Keys, which is changed most often #}
+{% set err = namespace(general=false, prompt=false, keys=false) %}
+{% for key in (errors or {}) %}
+  {% if key.startswith(("options", "timeout", "repeats", "invalid", "direct_dial")) %}{% set err.keys = true %}
+  {% elif key.startswith("prompt") %}{% set err.prompt = true %}
+  {% elif key != "__all__" %}{% set err.general = true %}{% endif %}
+{% endfor %}
+{% set active = "general" if err.general else "prompt" if err.prompt else "keys" if err.keys else "general" if is_new else "keys" %}
+{% macro tab(name, title, failed, count=none) %}
+<li class="nav-item" role="presentation"><a href="#tab-{{ name }}" class="nav-link{% if active == name %} active{% endif %}" data-bs-toggle="tab" role="tab">{{ title }}{% if count %}<span class="badge bg-secondary-lt ms-2">{{ count }}</span>{% endif %}{% if failed %}<span class="text-danger ms-1" title="{{ _("Check the entries in this tab") }}">{{ icon("alert-circle") }}</span>{% endif %}</a></li>
+{% endmacro %}
+<form method="post" action="/dialplan/ivr/{{ 'new' if is_new else menu_id }}" id="ivr-form" class="card">
   {{ csrf() }}
-  {{ form_errors(errors) }}
-  <div class="row row-cards">
-    <div class="col-lg-8">
-      <div class="card mb-3">
-        <div class="card-header">
-          <div>
-            <h3 class="card-title">{{ _("Key options") }}</h3>
-            <div class="card-subtitle">{{ _("What happens when the caller presses a key. Drag the handle (or use the arrows) to change the order in which the options are announced.") }}</div>
+  <div class="card-header">
+    <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs" role="tablist">
+      {{ tab("general", _("General"), err.general) }}
+      {{ tab("prompt", _("Announcement"), err.prompt) }}
+      {{ tab("keys", _("Keys"), err.keys, (values.options or []) | length) }}
+      {% if saved %}{{ tab("flow", _("Call flow &amp; test"), false) }}{% endif %}
+    </ul>
+  </div>
+  <div class="card-body">
+    {{ form_errors(errors) }}
+    <div class="tab-content">
+      <div class="tab-pane{% if active == "general" %} active show{% endif %}" id="tab-general" role="tabpanel">
+        <div class="row">
+          <div class="col-md-6">{{ input("name", _("Name"), values, errors, required=True) }}</div>
+          <div class="col-md-6">{{ input("extension", _("Number"), values, errors, attrs='inputmode="numeric" data-mask="digits"', help=_("Optional - menus can also be used only as destinations.")) }}</div>
+          <div class="col-md-6">{{ input("description", _("Description"), values, errors) }}</div>
+          <div class="col-md-6">
+            {{ checkbox("public_access", _("Reachable from outside"), values, errors) }}
+            <div data-show-if="public_access=true">{{ input("public_name", _("Public name"), values, errors) }}</div>
           </div>
         </div>
-        <div class="card-body">
-          <div id="ivr-options" class="ivr-options" data-sortable='{"handle": "[data-sortable-handle]", "animation": 150}'>
-            {% for o in values.options %}{% set idx = loop.index0 %}{% include "partials/ivr_option_row.html" %}{% endfor %}
-          </div>
-          {% if errors and errors.get("options") %}<div class="invalid-feedback d-block">{{ errors.get("options") }}</div>{% endif %}
-          <button type="button" class="btn mt-3" data-add-row="#option-template" data-into="#ivr-options">{{ icon("plus") }}{{ _("Add option") }}</button>
-          <template id="option-template">{% with o=None, idx="__INDEX__", errors={} %}{% include "partials/ivr_option_row.html" %}{% endwith %}</template>
-        </div>
+        {{ checkbox("enabled", _("Enabled"), values, errors) }}
       </div>
 
-      <div class="card">
-        <div class="card-header">
-          <div>
-            <h3 class="card-title">{{ _("Announcement") }}</h3>
-            <div class="card-subtitle">{{ _("Played when the call reaches the menu. Callers can press a key while it plays.") }}</div>
-          </div>
-        </div>
-        <div class="card-body">
+      <div class="tab-pane{% if active == "prompt" %} active show{% endif %}" id="tab-prompt" role="tabpanel">
+        <div class="row"><div class="col-xl-8">
+          <p class="text-secondary">{{ _("Played when the call reaches the menu. Callers can press a key while it plays.") }}</p>
           {{ radios("prompt_mode", _("Source"), values, errors, [("upload", _("Uploaded audio")), ("sound", _("Built-in sound"))]) }}
           <div data-show-if="prompt_mode=upload">
             <div id="prompt-select">{% include "partials/ivr_prompt_select.html" %}</div>
@@ -45,80 +56,80 @@
             {% set sound_opts = [] %}{% for s in sounds %}{% set _unused = sound_opts.append((s, s)) %}{% endfor %}
             {{ select("prompt_sound", _("Sound"), values, errors, sound_opts, tom=True, attrs="data-tom-create", empty="", help=_("An Asterisk sound in the prompt language of the system, e.g. welcome. You can also type the name of another sound.")) }}
           </div>
-          <hr class="my-3">
+          <div class="hr-text hr-text-start">{{ _("Recording script") }}</div>
           {% include "partials/ivr_script.html" %}
           <div class="d-flex flex-wrap gap-2">
             <button type="button" class="btn btn-sm" hx-post="/dialplan/ivr/script" hx-include="closest form" hx-target="#ivr-script" hx-swap="outerHTML">{{ icon("wand") }}{{ _("Write from options") }}</button>
             <button type="button" class="btn btn-sm" data-copy="#f-prompt_text" data-copied="{{ _('Copied') }}">{{ icon("copy") }}{{ _("Copy") }}</button>
           </div>
-        </div>
+        </div></div>
       </div>
-    </div>
 
-    <div class="col-lg-4">
-      <div class="card">
-        <div class="card-header"><h3 class="card-title">{{ _("Settings") }}</h3></div>
-        <div class="card-body">
-          {{ input("name", _("Name"), values, errors, required=True) }}
-          {{ input("extension", _("Number"), values, errors, attrs='inputmode="numeric" data-mask="digits"', help=_("Optional - menus can also be used only as destinations.")) }}
-          {{ input("description", _("Description"), values, errors) }}
-          {{ checkbox("public_access", _("Reachable from outside"), values, errors) }}
-          <div data-show-if="public_access=true">{{ input("public_name", _("Public name"), values, errors) }}</div>
-          <div class="row">
-            <div class="col-6">{{ input("timeout", _("Wait for a key (s)"), values, errors, type="number", attrs='min="1" max="60"') }}</div>
-            <div class="col-6">{{ input("repeats", _("Repeat the menu"), values, errors, type="number", attrs='min="0" max="9"', help=_("times, when no key is pressed")) }}</div>
+      <div class="tab-pane{% if active == "keys" %} active show{% endif %}" id="tab-keys" role="tabpanel">
+        <p class="text-secondary">{{ _("What happens when the caller presses a key. Drag the handle (or use the arrows) to change the order in which the options are announced.") }}</p>
+        <div id="ivr-options" class="ivr-options" data-sortable='{"handle": "[data-sortable-handle]", "animation": 150}'>
+          {% for o in values.options %}{% set idx = loop.index0 %}{% include "partials/ivr_option_row.html" %}{% endfor %}
+        </div>
+        {% if errors and errors.get("options") %}<div class="invalid-feedback d-block">{{ errors.get("options") }}</div>{% endif %}
+        <button type="button" class="btn mt-3" data-add-row="#option-template" data-into="#ivr-options">{{ icon("plus") }}{{ _("Add option") }}</button>
+        <template id="option-template">{% with o=None, idx="__INDEX__", errors={} %}{% include "partials/ivr_option_row.html" %}{% endwith %}</template>
+
+        <div class="hr-text hr-text-start">{{ _("No or invalid input") }}</div>
+        <div class="row">
+          <div class="col-md-3 col-6">{{ input("timeout", _("Wait for a key (s)"), values, errors, type="number", attrs='min="1" max="60"') }}</div>
+          <div class="col-md-3 col-6">{{ input("repeats", _("Repeat the menu"), values, errors, type="number", attrs='min="0" max="9"', help=_("times, when no key is pressed")) }}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">{{ dest_select("timeout_dest", _("When no key is pressed"), dest_value(values.timeout_dest_type, values.timeout_dest_id) if values.timeout_dest_type else "hangup", timeout_choices, errors) }}</div>
+          <div class="col-md-6">{{ dest_select("invalid_dest", _("When an unknown key is pressed"), dest_value(values.invalid_dest_type, values.invalid_dest_id) if values.invalid_dest_type else "repeat", option_choices, errors, help=_("“Repeat the menu” says that the option is invalid and plays the menu again.")) }}</div>
+        </div>
+        {{ checkbox("direct_dial", _("Callers may dial extensions directly"), values, errors, help=_("Callers from outside reach only numbers that are reachable from outside.")) }}
+      </div>
+
+      {% if saved %}
+      <div class="tab-pane" id="tab-flow" role="tabpanel">
+        <div class="row g-4">
+          <div class="col-lg-7">
+            <h3 class="card-title mb-1">{{ _("Call flow") }}</h3>
+            <div class="text-secondary mb-3">{{ _("As saved. Save the menu to see your changes here.") }}</div>
+            <div class="fw-bold mb-2">{{ icon("phone-call") }} {{ saved.name }}{% if saved.extension %} <span class="badge bg-secondary-lt">{{ saved.extension }}</span>{% endif %}</div>
+            <ul class="list-unstyled ivr-flow mb-0">
+              {% for r in flow %}
+              <li class="ivr-flow-row ivr-depth-{{ r.depth }}">
+                <span class="kbd-key">{{ r.key }}</span>
+                {% if r.label %}<span class="fw-bold">{{ r.label }}</span>{% endif %}
+                <span class="text-secondary">{% if r.back %}&#8617; {{ _("back to %(name)s", name=r.dest) }}{% else %}&rarr; {{ r.dest }}{% endif %}</span>
+                {% if r.menu_id and r.menu_id != saved.id %}<a href="/dialplan/ivr/{{ r.menu_id }}" class="ms-1">{{ _("Edit") }}</a>{% endif %}
+              </li>
+              {% else %}
+              <li class="text-secondary">{{ _("No key options yet.") }}</li>
+              {% endfor %}
+            </ul>
           </div>
-          {{ dest_select("timeout_dest", _("When no key is pressed"), dest_value(values.timeout_dest_type, values.timeout_dest_id) if values.timeout_dest_type else "hangup", timeout_choices, errors) }}
-          {{ dest_select("invalid_dest", _("When an unknown key is pressed"), dest_value(values.invalid_dest_type, values.invalid_dest_id) if values.invalid_dest_type else "repeat", option_choices, errors, help=_("“Repeat the menu” says that the option is invalid and plays the menu again.")) }}
-          {{ checkbox("direct_dial", _("Callers may dial extensions directly"), values, errors, help=_("Callers from outside reach only numbers that are reachable from outside.")) }}
-          {{ checkbox("enabled", _("Enabled"), values, errors) }}
+          <div class="col-lg-5">
+            {# the controls belong to #ivr-test outside the menu form (forms cannot be nested) #}
+            <h3 class="card-title mb-1">{{ _("Test call") }}</h3>
+            <div class="text-secondary mb-3">{{ _("Rings your phone and connects it to this menu as it was last applied.") }}</div>
+            {% set phone_opts = [] %}{% for p in test_phones %}{% set _unused = phone_opts.append((p.extension, p.extension ~ " – " ~ p.callerid)) %}{% endfor %}
+            {% if phone_opts %}
+            <div class="mb-3">
+              <label class="form-label" for="test-ext">{{ _("Ring phone") }}</label>
+              <select class="form-select" id="test-ext" name="extension" form="ivr-test">{% for value, text in phone_opts %}<option value="{{ value }}">{{ text }}</option>{% endfor %}</select>
+            </div>
+            <button type="submit" class="btn btn-primary" id="ivr-test-call" form="ivr-test">{{ icon("phone-call") }}{{ _("Call me") }}</button>
+            {% else %}
+            <p class="text-secondary mb-0">{{ _("Add a SIP or IAX phone to test the menu.") }}</p>
+            {% endif %}
+            <div id="test-result"></div>
+          </div>
         </div>
-        {{ submit(_("Create") if is_new else _("Save"), cancel="/dialplan/ivr") }}
       </div>
+      {% endif %}
     </div>
   </div>
+  {# filled with the open tab on submit, so "Save and stay" returns to it #}
+  <input type="hidden" name="tab" data-active-tab>
+  {{ submit(_("Create") if is_new else _("Save"), cancel="/dialplan/ivr", stay=_("Create and stay") if is_new else _("Save and stay")) }}
 </form>
-
-{% if saved %}
-<div class="row row-cards mt-1">
-  <div class="col-lg-8">
-    <div class="card">
-      <div class="card-header"><div><h3 class="card-title">{{ _("Call flow") }}</h3><div class="card-subtitle">{{ _("As saved.") }}</div></div></div>
-      <div class="card-body">
-        <div class="fw-bold mb-2">{{ icon("phone-call") }} {{ saved.name }}{% if saved.extension %} <span class="badge bg-secondary-lt">{{ saved.extension }}</span>{% endif %}</div>
-        <ul class="list-unstyled ivr-flow mb-0">
-          {% for r in flow %}
-          <li class="ivr-flow-row ivr-depth-{{ r.depth }}">
-            <span class="kbd-key">{{ r.key }}</span>
-            {% if r.label %}<span class="fw-bold">{{ r.label }}</span>{% endif %}
-            <span class="text-secondary">{% if r.back %}&#8617; {{ _("back to %(name)s", name=r.dest) }}{% else %}&rarr; {{ r.dest }}{% endif %}</span>
-            {% if r.menu_id and r.menu_id != saved.id %}<a href="/dialplan/ivr/{{ r.menu_id }}" class="ms-1">{{ _("Edit") }}</a>{% endif %}
-          </li>
-          {% else %}
-          <li class="text-secondary">{{ _("No key options yet.") }}</li>
-          {% endfor %}
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-4">
-    <form class="card" hx-post="/dialplan/ivr/{{ saved.id }}/test" hx-target="#test-result" hx-disable="find button">
-      <div class="card-header"><div><h3 class="card-title">{{ _("Test call") }}</h3><div class="card-subtitle">{{ _("Rings your phone and connects it to this menu as it was last applied.") }}</div></div></div>
-      <div class="card-body">
-        {% set phone_opts = [] %}{% for p in test_phones %}{% set _unused = phone_opts.append((p.extension, p.extension ~ " – " ~ p.callerid)) %}{% endfor %}
-        {% if phone_opts %}
-        <div class="mb-3">
-          <label class="form-label" for="test-ext">{{ _("Ring phone") }}</label>
-          <select class="form-select" id="test-ext" name="extension">{% for value, text in phone_opts %}<option value="{{ value }}">{{ text }}</option>{% endfor %}</select>
-        </div>
-        <button type="submit" class="btn btn-primary">{{ icon("phone-call") }}{{ _("Call me") }}</button>
-        {% else %}
-        <p class="text-secondary mb-0">{{ _("Add a SIP or IAX phone to test the menu.") }}</p>
-        {% endif %}
-        <div id="test-result"></div>
-      </div>
-    </form>
-  </div>
-</div>
-{% endif %}
+{% if saved %}<form id="ivr-test" hx-post="/dialplan/ivr/{{ saved.id }}/test" hx-target="#test-result" hx-disable="#ivr-test-call"></form>{% endif %}
 {% endblock %}

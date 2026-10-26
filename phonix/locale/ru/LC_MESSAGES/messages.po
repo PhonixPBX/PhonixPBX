@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 07:35+0100\n"
+"POT-Creation-Date: 2026-10-26 07:55+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ru\n"
@@ -543,8 +543,8 @@ msgstr "Не удалось применить конфигурацию."
 msgid "April"
 msgstr "Апрель"
 
-msgid "As saved."
-msgstr "В сохранённом виде."
+msgid "As saved. Save the menu to see your changes here."
+msgstr "В сохранённом виде. Сохраните меню, чтобы увидеть здесь свои изменения."
 
 msgid "Asterisk database"
 msgstr "База данных Asterisk"
@@ -755,6 +755,9 @@ msgstr "Группы вызова"
 
 msgid "Call flow"
 msgstr "Схема вызова"
+
+msgid "Call flow &amp; test"
+msgstr "Схема вызова и тест"
 
 msgid "Call group"
 msgstr "Группа вызова"
@@ -1845,9 +1848,6 @@ msgstr "Клавиша"
 msgid "Key %(key)s is used more than once"
 msgstr "Клавиша %(key)s используется несколько раз"
 
-msgid "Key options"
-msgstr "Варианты по клавишам"
-
 msgid "Keys"
 msgstr "Клавиши"
 
@@ -2284,6 +2284,9 @@ msgstr "Нет пользователей AMI"
 
 msgid "No manager users found"
 msgstr "Пользователи AMI не найдены"
+
+msgid "No or invalid input"
+msgstr "Нет ввода или неверный ввод"
 
 msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
 msgstr "Пароль не задан: возможен только вход по ключу (/data/ssh/authorized_keys). Не менее 8 символов."
@@ -3093,9 +3096,6 @@ msgstr "Сервер требует аутентификации"
 
 msgid "Services"
 msgstr "Службы"
-
-msgid "Settings"
-msgstr "Настройки"
 
 msgid "Settings groups"
 msgstr "Группы настроек"

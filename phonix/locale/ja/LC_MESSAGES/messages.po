@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 07:35+0100\n"
+"POT-Creation-Date: 2026-10-26 07:55+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ja\n"
@@ -498,8 +498,8 @@ msgstr "設定の適用に失敗しました。"
 msgid "April"
 msgstr "4月"
 
-msgid "As saved."
-msgstr "保存済みの内容です。"
+msgid "As saved. Save the menu to see your changes here."
+msgstr "保存済みの内容です。変更内容をここに表示するには、メニューを保存してください。"
 
 msgid "Asterisk database"
 msgstr "Asterisk データベース"
@@ -708,6 +708,9 @@ msgstr "コールグループ"
 
 msgid "Call flow"
 msgstr "通話フロー"
+
+msgid "Call flow &amp; test"
+msgstr "通話フローとテスト"
 
 msgid "Call group"
 msgstr "コールグループ"
@@ -1790,9 +1793,6 @@ msgstr "キー"
 msgid "Key %(key)s is used more than once"
 msgstr "キー %(key)s が複数回使用されています"
 
-msgid "Key options"
-msgstr "キーの選択肢"
-
 msgid "Keys"
 msgstr "キー"
 
@@ -2227,6 +2227,9 @@ msgstr "マネージャーユーザーはいません"
 
 msgid "No manager users found"
 msgstr "マネージャーユーザーが見つかりません"
+
+msgid "No or invalid input"
+msgstr "入力なし・無効な入力"
 
 msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
 msgstr "パスワードは未設定です。鍵によるログイン（/data/ssh/authorized_keys）のみ使用できます。8 文字以上。"
@@ -3012,9 +3015,6 @@ msgstr "サーバーで認証が必要"
 
 msgid "Services"
 msgstr "サービス"
-
-msgid "Settings"
-msgstr "設定"
 
 msgid "Settings groups"
 msgstr "設定グループ"

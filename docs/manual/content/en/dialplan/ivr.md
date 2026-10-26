@@ -25,17 +25,20 @@ The buttons at the end of each row edit, disable/enable and delete the menu. A d
 
 ## Create or edit an IVR menu {#edit}
 
-The edit page has the key options and the announcement on the left and the settings on the right. Once a menu is saved, the page also shows its [call flow](#call-flow) and a [test call](#test-call).
+The edit page has the tabs **General**, **Announcement** and **Keys**; the **Keys** tab shows the number of options. A saved menu also has the tab **Call flow & test**. A new menu opens on *General*, a saved one on *Keys*. When you save and an entry is invalid, the tab with the error opens and is marked with a red icon. **Save** (or **Create**) returns to the list; **Save and stay** (**Create and stay**) keeps the page open on the same tab.
 
-### Key options {#keys}
+### General {#general}
 
-Click **Add option** for each key the caller may press. Each option has:
+The tab **General** holds the name and how the menu is reached.
 
-- **Key**: `0`–`9`, `*` or `#`. Each key can be used once per menu.
-- **Label**: optional, for example `Sales`. It is used in the recording script and in the call flow.
-- **Destination**: where the key leads, see [Destinations](#destinations). Besides phones, groups and so on, a key can lead to a voicemail box, *Repeat the menu* or *Hang up*.
-
-Drag an option by its handle, or use the arrow buttons, to change the order. The order is the order in which the options should be announced; it is used by **Write from options**. The **x** button removes an option.
+| Field | Meaning | Default |
+|---|---|---|
+| Name | A name for lists and destination pickers. | – |
+| Number | Optional internal number (1–20 digits) to call the menu directly. Menus can also be used only as destinations. | empty |
+| Description | A note for your reference. | empty |
+| Reachable from outside | Callers from providers may reach the menu directly by its number. | off |
+| Public name | With *Reachable from outside*: an alternative number or name for callers from outside. | empty |
+| Enabled | Disabled menus are left out of the configuration. | on |
 
 ### Announcement {#announcement}
 
@@ -48,31 +51,41 @@ The announcement is played when the call reaches the menu. Callers can press a k
 
 The **Recording script** helps you record a matching announcement. **Write from options** fills it from the key options in their order, in the prompt language of the system, for example "For Sales, press 1. For Support, press 2.". Edit the text if you like, **Copy** it, record it with any recording app and upload the file. The script itself is never played.
 
-### Settings {#settings}
+### Keys {#keys}
+
+Click **Add option** for each key the caller may press. Each option has:
+
+- **Key**: `0`–`9`, `*` or `#`. Each key can be used once per menu.
+- **Label**: optional, for example `Sales`. It is used in the recording script and in the call flow.
+- **Destination**: where the key leads, see [Destinations](#destinations). Besides phones, groups and so on, a key can lead to a voicemail box, *Repeat the menu* or *Hang up*.
+
+Drag an option by its handle, or use the arrow buttons, to change the order. The order is the order in which the options should be announced; it is used by **Write from options**. The **x** button removes an option.
+
+#### No or invalid input {#no-input}
+
+The section **No or invalid input** at the bottom of the tab **Keys** sets what happens when the caller presses nothing or a key without an option.
 
 | Field | Meaning | Default |
 |---|---|---|
-| Name | A name for lists and destination pickers. | – |
-| Number | Optional internal number (1–20 digits) to call the menu directly. Menus can also be used only as destinations. | empty |
-| Description | A note for your reference. | empty |
-| Reachable from outside | Callers from providers may reach the menu directly by its number. | off |
-| Public name | With *Reachable from outside*: an alternative number or name for callers from outside. | empty |
 | Wait for a key (s) | How long the menu waits for a key after the announcement (1–60). | 5 |
 | Repeat the menu | How many times the announcement is repeated when no key is pressed (0–9). | 2 |
 | When no key is pressed | Where the call goes after the last repetition without a key. Any [destination](#destinations) except *Repeat the menu*, and not the menu itself. | Hang up |
 | When an unknown key is pressed | Where the call goes when the caller presses a key without an option. *Repeat the menu* says that the option is invalid and plays the menu again; this counts as one of the repetitions. | Repeat the menu |
 | Callers may dial extensions directly | Callers can dial an internal number during the announcement instead of a key. Callers from outside reach only numbers that are reachable from outside. | off |
-| Enabled | Disabled menus are left out of the configuration. | on |
 
 With the defaults, a caller who presses nothing hears the announcement three times (once plus two repetitions), waiting 5 seconds after each, and is then hung up.
 
 > Callers from outside never get the transfer feature codes in calls that come through a menu, and with direct dialling they reach only public numbers. Internal callers can dial every internal number.
 
-### Call flow {#call-flow}
+### Call flow & test {#flow}
 
-Below a saved menu, **Call flow** shows the menu as it was saved, as a tree: each key with its label and destination. Sub-menus are expanded up to three levels, with an **Edit** link; a key that leads back to a menu already on the path is shown as "back to …".
+The tab **Call flow & test** is only there once the menu is saved.
 
-### Test call {#test-call}
+#### Call flow {#call-flow}
+
+**Call flow** shows the menu as it was saved, as a tree: each key with its label and destination. Sub-menus are expanded up to three levels, with an **Edit** link; a key that leads back to a menu already on the path is shown as "back to …".
+
+#### Test call {#test-call}
 
 **Test call** rings a phone and connects it to the menu once it is answered, as if the phone had dialled the menu. Choose the phone under **Ring phone** and click **Call me**. Only enabled SIP and IAX phones can be chosen.
 

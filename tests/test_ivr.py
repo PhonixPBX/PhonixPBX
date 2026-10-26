@@ -747,6 +747,42 @@ def test_menu_form(client):
         assert s.get(IvrMenu, menu_id) is None
 
 
+def test_menu_form_tabs(client):
+    ids = client.ids
+    login(client)
+
+    def active(page):
+        return re.search(r'class="tab-pane active show" id="tab-(\w+)"', page).group(1)
+
+    # a new menu starts on General and has no call flow yet, a saved one starts on Keys
+    page = client.get("/dialplan/ivr/new").text
+    assert active(page) == "general" and 'id="tab-flow"' not in page
+    page = client.get(f"/dialplan/ivr/{ids['main_menu']}").text
+    assert active(page) == "keys" and 'id="tab-flow"' in page and 'form="ivr-test"' in page
+    # the tab with the error opens
+    form = [
+        ("csrf_token", csrf(client, "/dialplan/ivr/new")),
+        ("name", "Tabs"),
+        ("prompt_mode", "sound"),
+        ("prompt_sound", "welcome"),
+        ("timeout", "4"),
+        ("repeats", "1"),
+        ("timeout_dest", "hangup"),
+        ("invalid_dest", "repeat"),
+        ("opt_key_0", "1"),
+        ("opt_dest_0", ""),
+    ]
+    r = _post(client, "/dialplan/ivr/new", form)
+    assert r.status_code == 422 and active(r.text) == "keys"
+    # "Create and stay" returns to the edit page on the open tab
+    form[-1] = ("opt_dest_0", "hangup")
+    r = _post(client, "/dialplan/ivr/new", [*form, ("stay", "1"), ("tab", "prompt")], follow_redirects=False)
+    assert r.status_code == 303
+    with session_scope() as s:
+        menu_id = s.query(IvrMenu).filter_by(name="Tabs").one().id
+    assert r.headers["location"].endswith(f"/dialplan/ivr/{menu_id}#tab-prompt")
+
+
 def test_script_and_prompt_upload(client):
     ids = client.ids
     login(client)

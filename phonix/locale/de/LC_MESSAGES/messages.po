@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 07:35+0100\n"
+"POT-Creation-Date: 2026-10-26 07:55+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: de\n"
@@ -527,8 +527,8 @@ msgstr "Das Übernehmen der Konfiguration ist fehlgeschlagen."
 msgid "April"
 msgstr "April"
 
-msgid "As saved."
-msgstr "Wie gespeichert."
+msgid "As saved. Save the menu to see your changes here."
+msgstr "Wie gespeichert. Speichern Sie das Menü, um Ihre Änderungen hier zu sehen."
 
 msgid "Asterisk database"
 msgstr "Asterisk-Datenbank"
@@ -739,6 +739,9 @@ msgstr "Rufgruppen"
 
 msgid "Call flow"
 msgstr "Anrufablauf"
+
+msgid "Call flow &amp; test"
+msgstr "Anrufablauf &amp; Test"
 
 msgid "Call group"
 msgstr "Rufgruppe"
@@ -1831,9 +1834,6 @@ msgstr "Taste"
 msgid "Key %(key)s is used more than once"
 msgstr "Taste %(key)s wird mehrfach verwendet"
 
-msgid "Key options"
-msgstr "Tastenoptionen"
-
 msgid "Keys"
 msgstr "Tasten"
 
@@ -2274,6 +2274,9 @@ msgstr "Keine Manager-Benutzer"
 
 msgid "No manager users found"
 msgstr "Keine Manager-Benutzer gefunden"
+
+msgid "No or invalid input"
+msgstr "Keine oder ungültige Eingabe"
 
 msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
 msgstr "Kein Passwort gesetzt: Nur Anmeldungen mit Schlüssel (/data/ssh/authorized_keys) funktionieren. Mindestens 8 Zeichen."
@@ -3087,9 +3090,6 @@ msgstr "Server erfordert Authentifizierung"
 
 msgid "Services"
 msgstr "Dienste"
-
-msgid "Settings"
-msgstr "Einstellungen"
 
 msgid "Settings groups"
 msgstr "Einstellungsgruppen"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 07:35+0100\n"
+"POT-Creation-Date: 2026-10-26 07:55+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: da\n"
@@ -524,8 +524,8 @@ msgstr "Konfigurationen kunne ikke anvendes."
 msgid "April"
 msgstr "April"
 
-msgid "As saved."
-msgstr "Som gemt."
+msgid "As saved. Save the menu to see your changes here."
+msgstr "Som gemt. Gem menuen for at se dine ændringer her."
 
 msgid "Asterisk database"
 msgstr "Asterisk-database"
@@ -736,6 +736,9 @@ msgstr "Opkaldsgrupper"
 
 msgid "Call flow"
 msgstr "Opkaldsforløb"
+
+msgid "Call flow &amp; test"
+msgstr "Opkaldsforløb &amp; test"
 
 msgid "Call group"
 msgstr "Opkaldsgruppe"
@@ -1825,9 +1828,6 @@ msgstr "Tast"
 msgid "Key %(key)s is used more than once"
 msgstr "Tasten %(key)s bruges mere end én gang"
 
-msgid "Key options"
-msgstr "Tastvalg"
-
 msgid "Keys"
 msgstr "Taster"
 
@@ -2262,6 +2262,9 @@ msgstr "Ingen manager-brugere"
 
 msgid "No manager users found"
 msgstr "Ingen manager-brugere fundet"
+
+msgid "No or invalid input"
+msgstr "Ingen eller ugyldig indtastning"
 
 msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
 msgstr "Ingen adgangskode angivet: kun login med nøgle (/data/ssh/authorized_keys) virker. Mindst 8 tegn."
@@ -3072,9 +3075,6 @@ msgstr "Serveren kræver godkendelse"
 
 msgid "Services"
 msgstr "Tjenester"
-
-msgid "Settings"
-msgstr "Indstillinger"
 
 msgid "Settings groups"
 msgstr "Indstillingsgrupper"

@@ -13,6 +13,11 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   **Details**. The three ways to get a certificate are tabs below it (**Automatic (ACME)**, **Upload**,
   **Self-signed**); the tab of the current certificate is marked *active* and opens first. Uploading or creating a
   self-signed certificate warns when that turns off automatic certificates.
+- *Dialplan → IVR Menus*: the edit page is split into the tabs **General**, **Announcement**, **Keys** and, for a
+  saved menu, **Call flow & test**. Everything about key presses is on the **Keys** tab, including the new section
+  **No or invalid input** (wait time, repeats, no key, unknown key, direct dialling). A saved menu opens on **Keys**;
+  when saving fails, the tab with the error opens. **Save and stay** keeps the page open on the same tab, e.g. to
+  look at the call flow right after saving.
 
 ### Fixed
 

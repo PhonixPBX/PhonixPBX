@@ -58,6 +58,9 @@ def _alert(request: Request, level: str, message: str, status_code: int = 200) -
 
 # --- IVR menus ----------------------------------------------------------------------------
 
+# the tabs of the edit page
+IVR_TABS = ("general", "prompt", "keys", "flow")
+
 
 def _menu_form_data(form: FormData) -> dict[str, Any]:
     data = form_to_dict(form, ivr_svc.IvrMenuIn)
@@ -153,7 +156,12 @@ async def _save_menu(request: Request, db: Session, user: User, menu_id: int | N
         values = model_values(ivr_svc.IvrMenuIn, data)
         return _menu_page(request, db, values, service_errors(exc), menu_id, status_code=422)
     flash(request, _("IVR menu %(name)s saved.", name=menu.name))
-    return redirect(request, "/dialplan/ivr")
+    if not form.get("stay"):
+        return redirect(request, "/dialplan/ivr")
+    # "Save and stay": back to the edit page, on the open tab
+    tab = str(form.get("tab", ""))
+    fragment = f"#tab-{tab}" if tab in IVR_TABS else ""
+    return redirect(request, f"/dialplan/ivr/{menu.id}{fragment}")
 
 
 @router.post("/ivr/new")

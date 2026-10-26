@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 07:35+0100\n"
+"POT-Creation-Date: 2026-10-26 07:55+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: nl\n"
@@ -527,8 +527,8 @@ msgstr "Het toepassen van de configuratie is mislukt."
 msgid "April"
 msgstr "April"
 
-msgid "As saved."
-msgstr "Zoals opgeslagen."
+msgid "As saved. Save the menu to see your changes here."
+msgstr "Zoals opgeslagen. Sla het menu op om uw wijzigingen hier te zien."
 
 msgid "Asterisk database"
 msgstr "Asterisk-database"
@@ -739,6 +739,9 @@ msgstr "Belgroepen"
 
 msgid "Call flow"
 msgstr "Gespreksverloop"
+
+msgid "Call flow &amp; test"
+msgstr "Gespreksverloop &amp; test"
 
 msgid "Call group"
 msgstr "Belgroep"
@@ -1829,9 +1832,6 @@ msgstr "Toets"
 msgid "Key %(key)s is used more than once"
 msgstr "Toets %(key)s wordt meer dan eens gebruikt"
 
-msgid "Key options"
-msgstr "Toetsopties"
-
 msgid "Keys"
 msgstr "Toetsen"
 
@@ -2266,6 +2266,9 @@ msgstr "Geen managergebruikers"
 
 msgid "No manager users found"
 msgstr "Geen managergebruikers gevonden"
+
+msgid "No or invalid input"
+msgstr "Geen of ongeldige invoer"
 
 msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
 msgstr "Geen wachtwoord ingesteld: alleen aanmelden met sleutel (/data/ssh/authorized_keys) werkt. Minstens 8 tekens."
@@ -3076,9 +3079,6 @@ msgstr "Server vereist authenticatie"
 
 msgid "Services"
 msgstr "Diensten"
-
-msgid "Settings"
-msgstr "Instellingen"
 
 msgid "Settings groups"
 msgstr "Instellingsgroepen"

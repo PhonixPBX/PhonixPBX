@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 07:35+0100\n"
+"POT-Creation-Date: 2026-10-26 07:55+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: pl\n"
@@ -541,8 +541,8 @@ msgstr "Zastosowanie konfiguracji nie powiodło się."
 msgid "April"
 msgstr "Kwiecień"
 
-msgid "As saved."
-msgstr "Według zapisanego stanu."
+msgid "As saved. Save the menu to see your changes here."
+msgstr "Według zapisanego stanu. Zapisz menu, aby zobaczyć tutaj swoje zmiany."
 
 msgid "Asterisk database"
 msgstr "Baza danych Asteriska"
@@ -753,6 +753,9 @@ msgstr "Grupy telefoniczne"
 
 msgid "Call flow"
 msgstr "Przebieg połączenia"
+
+msgid "Call flow &amp; test"
+msgstr "Przebieg połączenia i test"
 
 msgid "Call group"
 msgstr "Grupa telefoniczna"
@@ -1843,9 +1846,6 @@ msgstr "Klawisz"
 msgid "Key %(key)s is used more than once"
 msgstr "Klawisz %(key)s jest użyty więcej niż raz"
 
-msgid "Key options"
-msgstr "Opcje klawiszy"
-
 msgid "Keys"
 msgstr "Klawisze"
 
@@ -2284,6 +2284,9 @@ msgstr "Brak użytkowników AMI"
 
 msgid "No manager users found"
 msgstr "Nie znaleziono użytkowników AMI"
+
+msgid "No or invalid input"
+msgstr "Brak lub nieprawidłowy wybór"
 
 msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
 msgstr "Hasło nie jest ustawione: działa tylko logowanie kluczem (/data/ssh/authorized_keys). Co najmniej 8 znaków."
@@ -3093,9 +3096,6 @@ msgstr "Serwer wymaga uwierzytelnienia"
 
 msgid "Services"
 msgstr "Usługi"
-
-msgid "Settings"
-msgstr "Ustawienia"
 
 msgid "Settings groups"
 msgstr "Grupy ustawień"

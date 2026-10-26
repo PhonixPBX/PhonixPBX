@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 07:35+0100\n"
+"POT-Creation-Date: 2026-10-26 07:55+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: sv\n"
@@ -526,8 +526,8 @@ msgstr "Det gick inte att verkställa konfigurationen."
 msgid "April"
 msgstr "April"
 
-msgid "As saved."
-msgstr "Som sparat."
+msgid "As saved. Save the menu to see your changes here."
+msgstr "Som sparat. Spara menyn för att se dina ändringar här."
 
 msgid "Asterisk database"
 msgstr "Asterisk-databas"
@@ -738,6 +738,9 @@ msgstr "Samtalsgrupper"
 
 msgid "Call flow"
 msgstr "Samtalsflöde"
+
+msgid "Call flow &amp; test"
+msgstr "Samtalsflöde &amp; test"
 
 msgid "Call group"
 msgstr "Samtalsgrupp"
@@ -1826,9 +1829,6 @@ msgstr "Knapp"
 msgid "Key %(key)s is used more than once"
 msgstr "Knappen %(key)s används mer än en gång"
 
-msgid "Key options"
-msgstr "Knappval"
-
 msgid "Keys"
 msgstr "Knappar"
 
@@ -2265,6 +2265,9 @@ msgstr "Inga manager-användare"
 
 msgid "No manager users found"
 msgstr "Inga manager-användare hittades"
+
+msgid "No or invalid input"
+msgstr "Ingen eller ogiltig inmatning"
 
 msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
 msgstr "Inget lösenord angivet: endast nyckelinloggning (/data/ssh/authorized_keys) fungerar. Minst 8 tecken."
@@ -3075,9 +3078,6 @@ msgstr "Servern kräver autentisering"
 
 msgid "Services"
 msgstr "Tjänster"
-
-msgid "Settings"
-msgstr "Inställningar"
 
 msgid "Settings groups"
 msgstr "Inställningsgrupper"

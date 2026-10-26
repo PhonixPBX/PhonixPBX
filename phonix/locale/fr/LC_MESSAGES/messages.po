@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 07:35+0100\n"
+"POT-Creation-Date: 2026-10-26 07:55+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: fr\n"
@@ -531,8 +531,8 @@ msgstr "L'application de la configuration a échoué."
 msgid "April"
 msgstr "Avril"
 
-msgid "As saved."
-msgstr "Tel qu'enregistré."
+msgid "As saved. Save the menu to see your changes here."
+msgstr "Tel qu'enregistré. Enregistrez le menu pour voir vos modifications ici."
 
 msgid "Asterisk database"
 msgstr "Base de données Asterisk"
@@ -743,6 +743,9 @@ msgstr "Groupes d'appels"
 
 msgid "Call flow"
 msgstr "Parcours d'appel"
+
+msgid "Call flow &amp; test"
+msgstr "Parcours d'appel et test"
 
 msgid "Call group"
 msgstr "Groupe d'appels"
@@ -1835,9 +1838,6 @@ msgstr "Touche"
 msgid "Key %(key)s is used more than once"
 msgstr "La touche %(key)s est utilisée plusieurs fois"
 
-msgid "Key options"
-msgstr "Options des touches"
-
 msgid "Keys"
 msgstr "Touches"
 
@@ -2278,6 +2278,9 @@ msgstr "Aucun utilisateur manager"
 
 msgid "No manager users found"
 msgstr "Aucun utilisateur manager trouvé"
+
+msgid "No or invalid input"
+msgstr "Saisie absente ou invalide"
 
 msgid "No password set: only key logins (/data/ssh/authorized_keys) work. At least 8 characters."
 msgstr ""
@@ -3092,9 +3095,6 @@ msgstr "Le serveur exige une authentification"
 
 msgid "Services"
 msgstr "Services"
-
-msgid "Settings"
-msgstr "Réglages"
 
 msgid "Settings groups"
 msgstr "Groupes de paramètres"
