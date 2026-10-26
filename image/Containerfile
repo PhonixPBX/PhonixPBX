@@ -1,7 +1,7 @@
 # Image build environment (used by image/build.sh). Everything that touches
 # the target root file systems runs in here; no root, loop devices or binfmt
 # are needed on the host.
-FROM docker.io/library/alpine:3.24
+FROM docker.io/library/alpine:3.24.3
 
 RUN apk add --no-cache \
         abuild py3-gpep517 py3-setuptools py3-wheel py3-installer python3 \

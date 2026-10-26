@@ -1,5 +1,5 @@
 # Development / CI image: the same Alpine release and packages as the appliance.
-FROM docker.io/library/alpine:3.24
+FROM docker.io/library/alpine:3.24.3
 
 RUN apk add --no-cache \
         asterisk asterisk-sounds-en asterisk-sounds-moh asterisk-srtp asterisk-opus \

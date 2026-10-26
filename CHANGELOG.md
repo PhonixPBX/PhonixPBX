@@ -8,6 +8,7 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ### Changed
 
+- The container image is built on Alpine Linux 3.24.3 (pinned point release instead of the moving `3.24` tag).
 - *PhonixPBX* in the footer of the web interface links to the project website [phonixpbx.org](https://phonixpbx.org/).
 - The graphs on *Status → Summary* and *Status → Graphs* are drawn with uPlot instead of ApexCharts. The ApexCharts
   version that came with the web interface is no longer under an open source license (it is free only for

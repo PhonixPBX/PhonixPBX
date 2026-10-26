@@ -444,7 +444,7 @@ image/test-qemu.sh --update         # QEMU boot test (UEFI + BIOS), update and r
 image/test-lxc.sh                   # boot test of the lxc-amd64 rootfs as a podman system container
 ```
 
-`image/build.sh` does the following, all inside an `alpine:3.24` container:
+`image/build.sh` does the following, all inside an `alpine:3.24.3` container:
 
 1. Builds the `phonix` apk from this repository with abuild.
 2. Installs the package lists in `image/profiles/` with `apk --root --arch`.

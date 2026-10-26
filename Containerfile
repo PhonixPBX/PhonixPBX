@@ -13,7 +13,7 @@
 # This file is at the top of the repository because the build context must
 # be the repository root (Python package + system/ files); .dockerignore
 # keeps the context small.
-ARG ALPINE_VERSION=3.24
+ARG ALPINE_VERSION=3.24.3
 
 # --- build the phonix wheel and install it into a staging root ---------------
 FROM docker.io/library/alpine:${ALPINE_VERSION} AS build
