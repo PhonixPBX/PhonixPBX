@@ -2,4 +2,4 @@
 # SPDX-License-Identifier: Apache-2.0
 """PhonixPBX."""
 
-__version__ = "1.11.0"
+__version__ = "1.12.0.dev0"
