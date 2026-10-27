@@ -20,7 +20,7 @@ In a container (LXC/Incus or OCI), PhonixPBX does not change the host name of th
 
 | Field | Meaning | Default |
 |---|---|---|
-| Time zone | Time zone of the system, chosen from a searchable list. It sets the local time of the system and Asterisk, for example in logs, voicemail time stamps and the time conditions of [business hours]({{< relref "/dialplan/hours.md" >}}). | `UTC` |
+| Time zone | Time zone of the system, chosen from a searchable list. It sets the local time of the system and Asterisk, for example in logs, voicemail time stamps and the time conditions of [business hours]({{< relref "/dialplan/hours.md" >}}). Business hours use a changed time zone as soon as it is applied; voicemail and call record times only after the next restart (*System → Reboot*). | `UTC` |
 | Time servers | NTP servers the system synchronises its clock with, one per line (host name or IP address). | `pool.ntp.org` |
 
 In a container the time servers are not used: the clock comes from the container host.

@@ -43,7 +43,7 @@ Both destinations can be a phone, call group, conference room, application, IVR 
 
 Each weekday has its own time ranges. Click **Add time range** to add one; a day can have several ranges, for example `08:00`–`12:00` and `13:00`–`17:00` for a lunch break. A day without ranges is *Closed all day*. The **x** button removes a range.
 
-- The times are in the time zone of the system, see [*System → General Setup*]({{< relref "/system/general.md#time" >}}).
+- The times are in the time zone of the system, see [*System → General Setup*]({{< relref "/system/general.md#time" >}}). A changed time zone applies right after *Apply changes*, no restart needed.
 - The end is the first minute you are closed: `08:00`–`17:00` is open until 16:59.
 - An end of `23:59` means until midnight.
 - The end must be after the start. A range over midnight is entered as two ranges on two days.

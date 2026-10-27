@@ -11,6 +11,7 @@ from factories import sample_pbx
 from fastapi.testclient import TestClient
 from test_web import bearer, csrf, login
 
+from phonix.core import settings as core_settings
 from phonix.core.db import session_scope
 from phonix.core.models import BusinessHours, IvrMenu, IvrOption, ProviderIncomingRoute
 from phonix.generators import dialplan
@@ -522,7 +523,7 @@ def test_dialplan(session, ids):
     assert f"[ivr-{support}]\nexten => s," in out  # no direct dial: no include
     assert "exten => #,1,NoOp(IVR menu Main menu: Repeat)\n same => n,Goto(s,prompt)" in out
     assert "exten => 4930123458,1," in out and f"Goto(hours-{office}-pub,s,1)" in out
-    assert "GotoIfTime(13:00-17:29,fri,*,*?open)" in out and "GotoIfTime(09:00-23:59,sat,*,*?open)" in out
+    assert "GotoIfTime(13:00-17:29,fri,*,*,UTC?open)" in out and "GotoIfTime(09:00-23:59,sat,*,*,UTC?open)" in out
     assert "exten => *31,1,NoOp(Switch business hours Office hours)" in out
 
     # disabled menus disappear, references to them hang up
@@ -546,7 +547,7 @@ def test_dialplan_hours_subroutines(session, ids):
     for context in (f"hours-{office}", f"hours-{office}-pub"):
         assert _block(out, context).startswith(f"exten => s,1,Gosub(hours-{office}-state,s,1)")
     auto = _block(out, f"hours-{office}-auto")
-    assert "GotoIfTime(13:00-17:29,fri,*,*?open)" in auto and '"${TODAY:5}" = "12-25"' in auto
+    assert "GotoIfTime(13:00-17:29,fri,*,*,UTC?open)" in auto and '"${TODAY:5}" = "12-25"' in auto
     assert "Return(open-0)" in auto and "Return(closed-0)" in auto
     lamp = _block(out, f"hours-{office}-lamp")
     assert f"Set(DEVICE_STATE(Custom:phonix-hours-{office})=" in lamp and "INUSE:NOT_INUSE" in lamp
@@ -554,7 +555,7 @@ def test_dialplan_hours_subroutines(session, ids):
     key = out.split("exten => *31,1,", 1)[1].split("\n\n", 1)[0].split("\n; ", 1)[0]
     assert f"Gosub(hours-{office}-auto,s,1)" in key and f"Gosub(hours-{office}-state,s,1)" in key
     assert f"DB_DELETE(phonix-hours/{office})" in key and f"DB_DELETE(phonix-hours-tmp/{office})" in key
-    assert f"Set(DB(phonix-hours-tmp/{office})=${{HOURS_OPP}}:${{STRFTIME(${{EPOCH}},,%Y-%m-%d)}})" in key
+    assert f"Set(DB(phonix-hours-tmp/{office})=${{HOURS_OPP}}:${{STRFTIME(${{EPOCH}},UTC,%Y-%m-%d)}})" in key
     assert key.index(f"Gosub(hours-{office}-lamp,s,1)") < key.index("Playback(") < key.index("Hangup()")
     # without a feature code: no key, no lamp, no hint
     plain = hours.create_hours(session, _hours(name="Plain"))
@@ -622,13 +623,28 @@ def test_dialplan_override_purged_in_dialplan(session, ids):
     office = ids["office"]
     out = dialplan.generate(build_snapshot(session))
     state = _block(out, f"hours-{office}-state")
-    valid = 'GotoIf($["${TMP}" = "${OPP}:${STRFTIME(${EPOCH},,%Y-%m-%d)}"]?override)'
+    valid = 'GotoIf($["${TMP}" = "${OPP}:${STRFTIME(${EPOCH},UTC,%Y-%m-%d)}"]?override)'
     purge = f"Set(LOCAL(GONE)=${{DB_DELETE(phonix-hours-tmp/{office})}})"
     assert valid in state and purge in state
     # only a valid override skips the purge
     assert state.index(valid) < state.index(purge) < state.index("(override)")
     assert f"Set(LOCAL(MODE)=${{DB(phonix-hours/{office})}})" in state
     assert "Return(${MODE}-forced-0)" in state and "Return(${CUT(TMP,:,1)}-override-0)" in state
+
+
+def test_hours_use_configured_time_zone(session, ids):
+    # Asterisk and the web process keep the time zone they started with: the setting is passed explicitly
+    system = core_settings.load(session, core_settings.SystemSettings)
+    system.timezone = "Pacific/Auckland"
+    core_settings.save(session, system)
+    auto = _block(dialplan.generate(build_snapshot(session)), f"hours-{ids['office']}-auto")
+    assert "GotoIfTime(13:00-17:29,fri,*,*,Pacific/Auckland?open)" in auto
+    assert "Set(LOCAL(TODAY)=${STRFTIME(${EPOCH},Pacific/Auckland,%Y-%m-%d)})" in auto
+    utc = dt.datetime.now(dt.timezone.utc).replace(tzinfo=None)
+    offset = hours.local_now(session) - utc
+    assert dt.timedelta(hours=12, minutes=59) < offset < dt.timedelta(hours=13, minutes=1) or (
+        dt.timedelta(hours=11, minutes=59) < offset < dt.timedelta(hours=12, minutes=1)
+    )
 
 
 def test_dialplan_no_gosub_to_deleted_hours(session, ids):

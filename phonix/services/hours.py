@@ -14,6 +14,7 @@ import calendar
 import datetime as dt
 import logging
 import re
+import zoneinfo
 from collections.abc import Collection, Mapping
 from dataclasses import dataclass, field
 from typing import Any, Literal
@@ -349,7 +350,7 @@ def _push_special_state(session: Session, changed: list[BusinessHoursSpecial]) -
         with ami.AmiClient(timeout=3.0) as client:
             for sp in changed:
                 client.command(f"database put {SPECIAL_DB} {sp.id} {int(sp.enabled)}")
-            refresh_lamps(session, client, read_runtime(client), dt.datetime.now())
+            refresh_lamps(session, client, read_runtime(client), local_now(session))
     except (ami.AmiError, OSError):
         pass
 
@@ -396,12 +397,23 @@ def reset_runtime(session: Session) -> None:
             for h in list_hours(session):
                 for sp in h.specials:
                     client.command(f"database put {SPECIAL_DB} {sp.id} {int(sp.enabled)}")
-            refresh_lamps(session, client, read_runtime(client), dt.datetime.now())
+            refresh_lamps(session, client, read_runtime(client), local_now(session))
     except (ami.AmiError, OSError) as exc:
         log.warning("business hours: runtime state not reset, Asterisk unavailable (%s)", exc)
 
 
 # --- schedule and live mode -------------------------------------------------------------
+
+
+def local_now(session: Session) -> dt.datetime:
+    """Now in the time zone of *System → General* (naive).
+
+    Not the process local time: a changed /etc/localtime only reaches running processes after a restart.
+    """
+    try:
+        return dt.datetime.now(zoneinfo.ZoneInfo(st.load(session, st.SystemSettings).timezone)).replace(tzinfo=None)
+    except (zoneinfo.ZoneInfoNotFoundError, ValueError):
+        return dt.datetime.now()
 
 
 def holiday_on(hours: BusinessHours, day: dt.date) -> BusinessHoursHoliday | None:
@@ -592,7 +604,7 @@ def set_mode(session: Session, hours_id: int, mode: str, user: str = "") -> str:
             client.command(command)
             # a permanent mode replaces a temporary override
             client.command(f"database del {OVERRIDE_DB} {hours.id}")
-            refresh_lamps(session, client, read_runtime(client), dt.datetime.now())
+            refresh_lamps(session, client, read_runtime(client), local_now(session))
     except (ami.AmiError, OSError) as exc:
         raise ServiceError(_("Asterisk is not running, the mode cannot be changed: %(error)s", error=str(exc))) from exc
     audit(session, user, "mode", "hours", hours.id, f"{hours.name}: {mode}")
@@ -608,7 +620,7 @@ def set_special_active(session: Session, hours_id: int, special_id: int, active:
     try:
         with ami.AmiClient(timeout=3.0) as client:
             client.command(f"database put {SPECIAL_DB} {special.id} {int(active)}")
-            refresh_lamps(session, client, read_runtime(client), dt.datetime.now())
+            refresh_lamps(session, client, read_runtime(client), local_now(session))
     except (ami.AmiError, OSError) as exc:
         raise ServiceError(_("Asterisk is not running, the mode cannot be changed: %(error)s", error=str(exc))) from exc
     special.enabled = active
@@ -641,7 +653,7 @@ def live_status(session: Session, hours_id: int, now: dt.datetime | None = None)
     it is on and its dates match today (the first such period wins, see ``special_id``).
     """
     hours = get_hours(session, hours_id)
-    now = now or dt.datetime.now()
+    now = now or local_now(session)
     loaded = load_runtime()
     rt = loaded or Runtime()
     mode = None if loaded is None else rt.modes.get(hours.id, "auto")

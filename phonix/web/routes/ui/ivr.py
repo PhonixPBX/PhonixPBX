@@ -372,10 +372,10 @@ def _preview(data: dict[str, Any]) -> BusinessHours | None:
         return None
 
 
-def _year(hours: BusinessHours | None, hours_id: int | None, months: int) -> dict[str, Any]:
+def _year(hours: BusinessHours | None, hours_id: int | None, months: int, today: dt.date) -> dict[str, Any]:
     """Template values of the year at a glance (``partials/hours_year.html``); no calendars without ``hours``."""
     rt = hours_svc.load_runtime() or hours_svc.Runtime()
-    year = hours_svc.year_plan(hours, rt, dt.date.today(), months) if hours is not None else None
+    year = hours_svc.year_plan(hours, rt, today, months) if hours is not None else None
     days = [d for m in year or [] for w in m["weeks"] for d in w if d]
     legend = {(d["special"], d["name"]) for d in days if d["special"] is not None}
     return {
@@ -386,7 +386,7 @@ def _year(hours: BusinessHours | None, hours_id: int | None, months: int) -> dic
         "year_specials": sorted(legend),
         "weekdays": hours_svc.WEEKDAYS,
         "months": hours_svc.MONTHS,
-        "today_date": dt.date.today(),
+        "today_date": today,
     }
 
 
@@ -400,7 +400,8 @@ def _hours_page(
     status_code: int = 200,
     months: int = YEAR_MONTHS,
 ) -> Response:
-    live = hours_svc.live_status(db, hours_id) if hours_id else None
+    now = hours_svc.local_now(db)
+    live = hours_svc.live_status(db, hours_id, now) if hours_id else None
     # special periods may point to business hours, one level deep: not to themselves or to ones with periods
     excluded = {f"hours:{h.id}" for h in hours_svc.list_hours(db) if h.id == hours_id or h.specials}
     special_choices = [
@@ -415,19 +416,19 @@ def _hours_page(
         errors=errors,
         is_new=hours_id is None,
         week=_week(values),
-        today=dt.date.today().weekday(),
-        now_pct=round((dt.datetime.now().hour * 60 + dt.datetime.now().minute) / 14.4, 2),
+        today=now.weekday(),
+        now_pct=round((now.hour * 60 + now.minute) / 14.4, 2),
         choices=dst.choices(db, dst.HOURS_TYPES),
         special_choices=[(title, options) for title, options in special_choices if options],
         dest_value=dst.value,
         live=live,
-        **_year(year, hours_id, months),
+        **_year(year, hours_id, months, now.date()),
     )
 
 
 def _status_rows(db: Session, only: int | None = None) -> list[tuple[Any, dict[str, Any]]]:
     """The list rows: business hours with their status, mode and special period switches."""
-    now = dt.datetime.now()
+    now = hours_svc.local_now(db)
     loaded = hours_svc.load_runtime()
     rt = loaded or hours_svc.Runtime()
     items = hours_svc.list_hours(db)
@@ -493,7 +494,12 @@ async def _hours_year(request: Request, db: Session, hours_id: int | None) -> Re
     resp = render(
         request,
         "partials/hours_year.html",
-        _year(_preview(data), hours_id, _year_months(request.query_params.get("months"))),
+        _year(
+            _preview(data),
+            hours_id,
+            _year_months(request.query_params.get("months")),
+            hours_svc.local_now(db).date(),
+        ),
     )
     return HTMLResponse(resp.body)
 

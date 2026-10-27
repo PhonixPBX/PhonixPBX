@@ -62,7 +62,6 @@ SPECIAL_DB = "phonix-special"
 ASTERISK_DAYS = ("mon", "tue", "wed", "thu", "fri", "sat", "sun")
 # announcements of the out-of-office key (Asterisk core sounds; there are none saying "open" / "closed")
 HOURS_SOUNDS = {"open": "enabled", "closed": "disabled", "auto": "cancelled"}
-TODAY = "${STRFTIME(${EPOCH},,%Y-%m-%d)}"
 _UNSAFE = re.compile(r"[^\w .@+-]")
 
 
@@ -300,6 +299,10 @@ class DialplanBuilder:
     def __init__(self, snap: Snapshot) -> None:
         self.snap = snap
         self.contexts: OrderedDict[str, Context] = OrderedDict()
+        # business hours run in the configured time zone, not in the one Asterisk read at startup
+        # (a changed /etc/localtime only reaches Asterisk after a restart)
+        self.tz = snap.system.timezone
+        self.today = f"${{STRFTIME(${{EPOCH}},{self.tz},%Y-%m-%d)}}"
 
     def ctx(self, name: str, comment: str = "") -> Context:
         if name not in self.contexts:
@@ -739,7 +742,7 @@ class DialplanBuilder:
             f"@purge Set(HOURS_OLD=${{DB_DELETE({tmp})}})",
             f"Set(HOURS_SOUND={sound['auto']})",
             "Goto(lamps)",
-            f"@invert Set(DB({tmp})=${{HOURS_OPP}}:{TODAY})",
+            f"@invert Set(DB({tmp})=${{HOURS_OPP}}:{self.today})",
             f'Set(HOURS_SOUND=${{IF($["${{HOURS_OPP}}" = "open"]?{sound["open"]}:{sound["closed"]})}})',
             # the lamps before the announcement: a caller hanging up early must not stop them
             *(f"@lamps {step}" if i == 0 else step for i, step in enumerate(self.lamp_steps(hours))),
@@ -765,7 +768,7 @@ class DialplanBuilder:
     def hours_auto(self, hours: BusinessHours) -> None:
         """``hours-<id>-auto``: the first applying special period, then holidays, then the weekly ranges."""
         name = safe_text(hours.name)
-        steps = [f"NoOp(Business hours {name}: automatic state)", f"Set(LOCAL(TODAY)={TODAY})"]
+        steps = [f"NoOp(Business hours {name}: automatic state)", f"Set(LOCAL(TODAY)={self.today})"]
         for idx, sp in enumerate(hours.specials):
             skip = f"p{idx + 1}" if idx + 1 < len(hours.specials) else "schedule"
             steps += [
@@ -797,7 +800,7 @@ class DialplanBuilder:
             else:
                 steps.append(f'GotoIf($["${{TODAY}}" = "{h.date.isoformat()}"]?closed)')
         for r in hours.ranges:
-            steps.append(f"GotoIfTime({r.start}-{last_minute(r.end)},{ASTERISK_DAYS[r.weekday]},*,*?open)")
+            steps.append(f"GotoIfTime({r.start}-{last_minute(r.end)},{ASTERISK_DAYS[r.weekday]},*,*,{self.tz}?open)")
         steps += ["@closed Return(closed-0)", "@open Return(open-0)"]
         self.ctx(f"hours-{hours.id}-auto", f"business hours {name}: automatic state").ext("s", steps)
 
@@ -815,7 +818,7 @@ class DialplanBuilder:
             'GotoIf($["${TMP}" = ""]?auto)',
             # valid only on the day of the press and while the automatic state differs from it
             'Set(LOCAL(OPP)=${IF($["${CUT(AUTO,-,1)}" = "open"]?closed:open)})',
-            f'GotoIf($["${{TMP}}" = "${{OPP}}:{TODAY}"]?override)',
+            f'GotoIf($["${{TMP}}" = "${{OPP}}:{self.today}"]?override)',
             f"Set(LOCAL(GONE)=${{DB_DELETE({tmp})}})",
             "@auto Return(${CUT(AUTO,-,1)}-auto-${CUT(AUTO,-,2)})",
             "@override Return(${CUT(TMP,:,1)}-override-0)",

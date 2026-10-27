@@ -43,7 +43,7 @@ Beide Ziele können ein Telefon, eine Rufgruppe, ein Konferenzraum, eine Anwendu
 
 Jeder Wochentag hat eigene Zeitbereiche. Mit **Zeitbereich hinzufügen** fügen Sie einen hinzu; ein Tag kann mehrere Bereiche haben, zum Beispiel `08:00`–`12:00` und `13:00`–`17:00` für eine Mittagspause. Ein Tag ohne Bereiche ist *Ganztägig geschlossen*. Die Schaltfläche **x** entfernt einen Bereich.
 
-- Die Zeiten gelten in der Zeitzone des Systems, siehe [*System → Grundeinstellungen*]({{< relref "/system/general.md#time" >}}).
+- Die Zeiten gelten in der Zeitzone des Systems, siehe [*System → Grundeinstellungen*]({{< relref "/system/general.md#time" >}}). Eine geänderte Zeitzone gilt gleich nach *Änderungen übernehmen*, ohne Neustart.
 - Das Ende ist die erste Minute, in der geschlossen ist: `08:00`–`17:00` ist bis 16:59 geöffnet.
 - Ein Ende von `23:59` bedeutet bis Mitternacht.
 - Das Ende muss nach dem Beginn liegen. Einen Bereich über Mitternacht tragen Sie als zwei Bereiche an zwei Tagen ein.

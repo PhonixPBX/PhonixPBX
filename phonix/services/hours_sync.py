@@ -68,7 +68,7 @@ def run_forever(interval: float = 60.0, stop: threading.Event | None = None) -> 
     while not stop.is_set():
         try:
             with ami.AmiClient() as client, session_scope() as session:
-                sync_once(session, client, dt.datetime.now())
+                sync_once(session, client, hours.local_now(session))
         except (ami.AmiError, OSError) as exc:
             log.info("business hours sync: Asterisk unavailable (%s)", exc)
         except Exception:

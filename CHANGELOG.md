@@ -35,6 +35,13 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   text-to-speech server settings are at the bottom of the **Create from text** tab and folded away once a server is
   set up.
 
+### Fixed
+
+- Business hours ignored a time zone changed under *System → General Setup* until the next reboot and kept
+  running in the previous one (usually UTC), in call routing as well as in the status on *Dialplan → Business
+  Hours* and the out-of-office lamps. They now use the configured time zone as soon as it is applied. Times in
+  voicemail messages and call records still follow a changed time zone only after a reboot.
+
 ## [1.10.0] - 2026-10-26
 
 ### Changed
