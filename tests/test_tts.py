@@ -238,8 +238,11 @@ def test_media_page(client, no_sox):
     }
     r = client.post("/services/media/tts-settings", data=form, follow_redirects=False)
     assert r.status_code == 422 and "http://" in r.text
+    # back on the text-to-speech tab with the server settings open
+    assert 'href="#tab-tts" class="nav-link active"' in r.text and '<details class="mt-3" open>' in r.text
     form.update(url=client.tts_url, token="s3cret-tts-token")
-    assert client.post("/services/media/tts-settings", data=form, follow_redirects=False).status_code == 303
+    r = client.post("/services/media/tts-settings", data=form, follow_redirects=False)
+    assert r.status_code == 303 and r.headers["location"].endswith("/services/media#tab-tts")
     with session_scope() as s:
         assert st.load(s, st.TtsSettings).token == "s3cret-tts-token"
     FakeTts.token = "s3cret-tts-token"

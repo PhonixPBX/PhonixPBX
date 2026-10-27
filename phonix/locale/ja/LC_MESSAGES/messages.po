@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 14:14+0100\n"
+"POT-Creation-Date: 2026-10-26 22:58+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ja\n"
@@ -245,9 +245,6 @@ msgid ""
 "snapshot on the container host before you update, so you can go back to it."
 msgstr "コンテナーには 2 つ目のシステムスロットがないため、新しいバージョンが動作しなくても自動的にロールバックされません。元に戻せるように、アップデートの前にコンテナーホストでスナップショットを作成してください。"
 
-msgid "A custom greeting played before callers leave a message (replaces the standard \"unavailable\" message)."
-msgstr "発信者がメッセージを録音する前に再生されるカスタム応答メッセージです（標準の「不在」メッセージの代わりに再生されます）。"
-
 msgid "A firmware update is being installed. Wait until it has finished."
 msgstr "ファームウェアのアップデートをインストールしています。完了するまでお待ちください。"
 
@@ -451,6 +448,9 @@ msgstr "詳細: 1 行に 1 つの key=value を記述します。生成された
 
 msgid "All"
 msgstr "すべて"
+
+msgid "All files form one playlist. Without uploads the bundled music is used."
+msgstr "すべてのファイルが 1 つのプレイリストになります。アップロードしない場合は、付属の音楽が使用されます。"
 
 msgid "An Asterisk sound in the prompt language of the system, e.g. welcome. You can also type the name of another sound."
 msgstr "システムのガイダンス言語の Asterisk サウンドです（例: welcome）。他のサウンド名を入力することもできます。"
@@ -874,6 +874,9 @@ msgstr "サウンドを選択してください"
 
 msgid "Choose business hours without special periods of their own"
 msgstr "独自の特別期間を持たない営業時間を選択してください"
+
+msgid "Choose it in the IVR menu under Announcement."
+msgstr "IVR メニューの「アナウンス」で選択してください。"
 
 msgid "Choose or upload an announcement"
 msgstr "アナウンスを選択またはアップロードしてください"
@@ -1369,8 +1372,8 @@ msgstr "http:// または https:// の URL を入力してください"
 msgid "Enter both the first and the last day, or neither"
 msgstr "初日と最終日の両方を入力するか、どちらも入力しないでください"
 
-msgid "Enter the address of a text-to-speech server below to create announcements from text."
-msgstr "テキストからアナウンスを作成するには、下に音声合成サーバーのアドレスを入力してください。"
+msgid "Enter the address of a text-to-speech server to create announcements from text."
+msgstr "テキストからアナウンスを作成するには、音声合成サーバーのアドレスを入力してください。"
 
 msgid "Enter the directory URL of the ACME server"
 msgstr "ACME サーバーのディレクトリ URL を入力してください"
@@ -1444,6 +1447,9 @@ msgstr "機能コード入力のタイムアウト（ミリ秒）"
 
 msgid "February"
 msgstr "2月"
+
+msgid "Files are converted to 8 kHz mono WAV."
+msgstr "ファイルは 8 kHz モノラル WAV に変換されます。"
 
 msgid "Finland"
 msgstr "フィンランド"
@@ -2641,6 +2647,9 @@ msgstr "平文"
 msgid "Platform"
 msgstr "プラットフォーム"
 
+msgid "Played before callers leave a message (replaces the standard \"unavailable\" message)."
+msgstr "発信者がメッセージを録音する前に再生されます（標準の「不在」メッセージの代わりに再生されます）。"
+
 msgid "Played when the call reaches the menu. Callers can press a key while it plays."
 msgstr "着信がメニューに到達したときに再生されます。発信者は再生中にキーを押すことができます。"
 
@@ -3728,9 +3737,6 @@ msgstr ""
 msgid "Upload complete. Starting the update ..."
 msgstr "アップロードが完了しました。アップデートを開始しています ..."
 
-msgid "Upload your own hold music. Files are converted to 8 kHz mono WAV. Without uploads the bundled music is used."
-msgstr "独自の保留音をアップロードできます。ファイルは 8 kHz モノラル WAV に変換されます。アップロードしない場合は、付属の音楽が使用されます。"
-
 msgid "Uploaded"
 msgstr "アップロード日時"
 
@@ -3865,9 +3871,6 @@ msgstr "バージョン <strong>%(version)s</strong> がインストールされ
 
 msgid "Voice"
 msgstr "音声"
-
-msgid "Voice prompts"
-msgstr "音声ガイダンス"
 
 msgid "Voicemail"
 msgstr "ボイスメール"

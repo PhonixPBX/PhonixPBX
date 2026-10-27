@@ -28,6 +28,13 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   uploaded announcement through `prompt_media_id`. MCP has the new tools `list_media` and `delete_media`. The
   manual chapter *REST API and MCP* describes the endpoints.
 
+### Changed
+
+- *Services → Media* is organised in tabs: **Upload**, **Record by phone** and **Create from text**, with the list of
+  all files always below them. IVR announcements can now also be uploaded here, not only in the IVR editor. The
+  text-to-speech server settings are at the bottom of the **Create from text** tab and folded away once a server is
+  set up.
+
 ## [1.10.0] - 2026-10-26
 
 ### Changed

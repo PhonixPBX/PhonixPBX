@@ -5,13 +5,15 @@ description: "Music on hold, the voicemail greeting, IVR announcements, recordin
 ---
 *Services → Media* holds your own audio files: music on hold, a custom voicemail greeting, and the announcements of IVR menus. It also shows which language the system prompts use.
 
+New files come from one of three tabs: **Upload** (music on hold, voicemail greeting or IVR announcement), [**Record by phone**](#record) and [**Create from text**](#tts). Below them, the [list of all files](#files) is always shown.
+
 Uploading or deleting music on hold or the voicemail greeting has to be applied before callers hear the change, see [Applying changes]({{< relref "/getting-started/_index.md#apply" >}}).
 
 ## Music on hold {#moh}
 
 Callers hear music on hold while they are held, parked or alone in a conference. Without uploads PhonixPBX plays the bundled music.
 
-Drop one or more audio files onto the *Music on hold* box, or click it to choose files. All uploaded music files form one playlist that is played in random order. As soon as one file is uploaded, the bundled music is no longer used; once you delete the last uploaded file, it is used again.
+On the **Upload** tab, drop one or more audio files onto the *Music on hold* box, or click it to choose files. All uploaded music files form one playlist that is played in random order. As soon as one file is uploaded, the bundled music is no longer used; once you delete the last uploaded file, it is used again.
 
 > Only use music you have the rights to play to callers. Many music licences do not cover public playback on a phone system.
 
@@ -23,11 +25,11 @@ Record a neutral text that fits every mailbox, for example "The person you are c
 
 ## IVR announcements {#ivr}
 
-The announcements of IVR menus are uploaded in the menu editor under [Dialplan → IVR Menus]({{< relref "/dialplan/ivr.md" >}}). They appear here in the file list with the type *IVR announcement*. Deleting an announcement that a menu still uses leaves that menu silent until you choose another announcement; apply the change afterwards.
+Upload IVR announcements on the **Upload** tab or directly in the menu editor under [Dialplan → IVR Menus]({{< relref "/dialplan/ivr.md" >}}). They appear here in the file list with the type *IVR announcement*. Deleting an announcement that a menu still uses leaves that menu silent until you choose another announcement; apply the change afterwards.
 
 ## Record by phone {#record}
 
-Instead of uploading a file you can speak an IVR announcement or the voicemail greeting into a phone. Under **Record by phone** choose what to **Record** (for an IVR announcement also its **Name**) and the phone under **Ring phone**, then click **Call me**:
+Instead of uploading a file you can speak an IVR announcement or the voicemail greeting into a phone. On the **Record by phone** tab choose what to **Record** (for an IVR announcement also its **Name**) and the phone under **Ring phone**, then click **Call me**:
 
 1. The PBX calls the phone. Answer it and speak the text after the tone.
 2. Press `#` to end the recording. The phone plays it back.
@@ -39,15 +41,15 @@ Only SIP and IAX phones can be rung. The instructions on the phone are played in
 
 ## Create from text {#tts}
 
-A text-to-speech server can speak an IVR announcement or the voicemail greeting for you. Set up the server first under [Text-to-speech server](#tts-server).
+A text-to-speech server can speak an IVR announcement or the voicemail greeting for you. Set up the server first under [Text-to-speech server](#tts-server), at the bottom of the same tab.
 
-Under **Create from text** choose what to **Create** (for an IVR announcement also its **Name**), a **Voice** and the **Speed**, and type the **Text** (up to 2000 characters). **Listen** plays the result in the browser without storing it; **Create** stores it like an uploaded file. A new voicemail greeting replaces the old one and has to be applied.
+On the **Create from text** tab choose what to **Create** (for an IVR announcement also its **Name**), a **Voice** and the **Speed**, and type the **Text** (up to 2000 characters). **Listen** plays the result in the browser without storing it; **Create** stores it like an uploaded file. A new voicemail greeting replaces the old one and has to be applied.
 
 > The text is sent to the text-to-speech server. Use a server you trust, ideally one in your own network.
 
 ## Text-to-speech server {#tts-server}
 
-PhonixPBX uses a server with the RestfulTTS API. It does not ship text-to-speech itself.
+PhonixPBX uses a server with the RestfulTTS API. It does not ship text-to-speech itself. The settings are at the bottom of the **Create from text** tab, under **Text-to-speech server**; they are folded away once a server is set up.
 
 | Field | Meaning | Default |
 |---|---|---|

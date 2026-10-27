@@ -192,6 +192,12 @@ def test_media_page(client, fake_ami, no_sox):
     headers = _login(client)
     page = client.get("/services/media").text
     assert "Record by phone" in page and 'name="extension"' in page
+    # tabs: upload (open), record by phone, create from text; the file list below them
+    assert 'href="#tab-upload" class="nav-link active"' in page and 'href="#tab-record"' in page
+    assert page.index('id="tab-tts"') < page.index('id="media-files"')
+    # IVR announcements can be uploaded here too
+    r = client.post("/services/media/ivr_prompt", files={"file": ("menu.wav", _wav(), "audio/wav")}, headers=headers)
+    assert r.status_code == 200 and "menu.wav" in r.text
 
     r = client.post(
         "/services/media/record",

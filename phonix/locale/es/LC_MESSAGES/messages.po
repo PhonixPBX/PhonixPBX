@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 14:14+0100\n"
+"POT-Creation-Date: 2026-10-26 22:58+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: es\n"
@@ -269,11 +269,6 @@ msgstr ""
 "Un contenedor no tiene una segunda ranura del sistema: si la nueva versión no funciona, no hay reversión automática. "
 "Cree una instantánea en el host del contenedor antes de actualizar para poder volver a ella."
 
-msgid "A custom greeting played before callers leave a message (replaces the standard \"unavailable\" message)."
-msgstr ""
-"Saludo personalizado que se reproduce antes de que los llamantes dejen un mensaje (sustituye al mensaje estándar de "
-"\"no disponible\")."
-
 msgid "A firmware update is being installed. Wait until it has finished."
 msgstr "Se está instalando una actualización del firmware. Espere hasta que termine."
 
@@ -483,6 +478,9 @@ msgstr "Avanzado: una clave=valor por línea, se añade a la sección generada."
 
 msgid "All"
 msgstr "Todos"
+
+msgid "All files form one playlist. Without uploads the bundled music is used."
+msgstr "Todos los archivos forman una lista de reproducción. Si no se sube nada, se usa la música incluida."
 
 msgid "An Asterisk sound in the prompt language of the system, e.g. welcome. You can also type the name of another sound."
 msgstr ""
@@ -912,6 +910,9 @@ msgstr "Elija un sonido"
 
 msgid "Choose business hours without special periods of their own"
 msgstr "Elija un horario comercial sin periodos especiales propios"
+
+msgid "Choose it in the IVR menu under Announcement."
+msgstr "Selecciónelo en el menú IVR, en Anuncio."
 
 msgid "Choose or upload an announcement"
 msgstr "Elija o suba un anuncio"
@@ -1409,8 +1410,8 @@ msgstr "Introduzca una URL http:// o https://"
 msgid "Enter both the first and the last day, or neither"
 msgstr "Introduzca el primer y el último día, o ninguno"
 
-msgid "Enter the address of a text-to-speech server below to create announcements from text."
-msgstr "Introduzca abajo la dirección de un servidor de texto a voz para crear anuncios a partir de texto."
+msgid "Enter the address of a text-to-speech server to create announcements from text."
+msgstr "Introduzca la dirección de un servidor de texto a voz para crear anuncios a partir de texto."
 
 msgid "Enter the directory URL of the ACME server"
 msgstr "Introduzca la URL del directorio del servidor ACME"
@@ -1486,6 +1487,9 @@ msgstr "Tiempo de espera entre dígitos de función (ms)"
 
 msgid "February"
 msgstr "Febrero"
+
+msgid "Files are converted to 8 kHz mono WAV."
+msgstr "Los archivos se convierten a WAV mono de 8 kHz."
 
 msgid "Finland"
 msgstr "Finlandia"
@@ -2707,6 +2711,9 @@ msgstr "Texto plano"
 msgid "Platform"
 msgstr "Plataforma"
 
+msgid "Played before callers leave a message (replaces the standard \"unavailable\" message)."
+msgstr "Se reproduce antes de que los llamantes dejen un mensaje (sustituye al mensaje estándar de \"no disponible\")."
+
 msgid "Played when the call reaches the menu. Callers can press a key while it plays."
 msgstr "Se reproduce cuando la llamada llega al menú. Los llamantes pueden pulsar una tecla durante la reproducción."
 
@@ -3838,11 +3845,6 @@ msgstr ""
 msgid "Upload complete. Starting the update ..."
 msgstr "Subida completada. Iniciando la actualización ..."
 
-msgid "Upload your own hold music. Files are converted to 8 kHz mono WAV. Without uploads the bundled music is used."
-msgstr ""
-"Suba su propia música en espera. Los archivos se convierten a WAV mono de 8 kHz. Si no se sube nada, se usa la música"
-" incluida."
-
 msgid "Uploaded"
 msgstr "Subido"
 
@@ -3987,9 +3989,6 @@ msgstr ""
 
 msgid "Voice"
 msgstr "Voz"
-
-msgid "Voice prompts"
-msgstr "Locuciones"
 
 msgid "Voicemail"
 msgstr "Buzón de voz"

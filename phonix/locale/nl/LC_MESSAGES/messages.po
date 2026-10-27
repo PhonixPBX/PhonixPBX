@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 14:14+0100\n"
+"POT-Creation-Date: 2026-10-26 22:58+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: nl\n"
@@ -269,11 +269,6 @@ msgstr ""
 "Een container heeft geen tweede systeemslot: als de nieuwe versie niet werkt, wordt er niet automatisch "
 "teruggedraaid. Maak vóór de update een snapshot op de containerhost, zodat u ernaar terug kunt."
 
-msgid "A custom greeting played before callers leave a message (replaces the standard \"unavailable\" message)."
-msgstr ""
-"Een eigen begroeting die wordt afgespeeld voordat bellers een bericht inspreken (vervangt het standaardbericht \"niet"
-" beschikbaar\")."
-
 msgid "A firmware update is being installed. Wait until it has finished."
 msgstr "Er wordt een firmware-update geïnstalleerd. Wacht tot deze is voltooid."
 
@@ -482,6 +477,9 @@ msgstr "Geavanceerd: één key=value per regel, toegevoegd aan de gegenereerde s
 
 msgid "All"
 msgstr "Alle"
+
+msgid "All files form one playlist. Without uploads the bundled music is used."
+msgstr "Alle bestanden vormen één afspeellijst. Zonder uploads wordt de meegeleverde muziek gebruikt."
 
 msgid "An Asterisk sound in the prompt language of the system, e.g. welcome. You can also type the name of another sound."
 msgstr ""
@@ -909,6 +907,9 @@ msgstr "Kies een geluid"
 
 msgid "Choose business hours without special periods of their own"
 msgstr "Kies openingstijden zonder eigen speciale perioden"
+
+msgid "Choose it in the IVR menu under Announcement."
+msgstr "Kies deze in het IVR-menu onder Aankondiging."
 
 msgid "Choose or upload an announcement"
 msgstr "Kies of upload een aankondiging"
@@ -1406,8 +1407,8 @@ msgstr "Voer een http://- of https://-URL in"
 msgid "Enter both the first and the last day, or neither"
 msgstr "Voer zowel de eerste als de laatste dag in, of geen van beide"
 
-msgid "Enter the address of a text-to-speech server below to create announcements from text."
-msgstr "Voer hieronder het adres van een tekst-naar-spraakserver in om aankondigingen uit tekst aan te maken."
+msgid "Enter the address of a text-to-speech server to create announcements from text."
+msgstr "Voer het adres van een tekst-naar-spraakserver in om aankondigingen uit tekst aan te maken."
 
 msgid "Enter the directory URL of the ACME server"
 msgstr "Voer de directory-URL van de ACME-server in"
@@ -1481,6 +1482,9 @@ msgstr "Time-out voor functiecijfers (ms)"
 
 msgid "February"
 msgstr "Februari"
+
+msgid "Files are converted to 8 kHz mono WAV."
+msgstr "Bestanden worden geconverteerd naar 8 kHz mono WAV."
 
 msgid "Finland"
 msgstr "Finland"
@@ -2697,6 +2701,9 @@ msgstr "Platte tekst"
 msgid "Platform"
 msgstr "Platform"
 
+msgid "Played before callers leave a message (replaces the standard \"unavailable\" message)."
+msgstr "Wordt afgespeeld voordat bellers een bericht inspreken (vervangt het standaardbericht \"niet beschikbaar\")."
+
 msgid "Played when the call reaches the menu. Callers can press a key while it plays."
 msgstr "Wordt afgespeeld wanneer het gesprek het menu bereikt. Bellers kunnen tijdens het afspelen een toets indrukken."
 
@@ -3827,11 +3834,6 @@ msgstr ""
 msgid "Upload complete. Starting the update ..."
 msgstr "Upload voltooid. Update wordt gestart ..."
 
-msgid "Upload your own hold music. Files are converted to 8 kHz mono WAV. Without uploads the bundled music is used."
-msgstr ""
-"Upload uw eigen wachtmuziek. Bestanden worden geconverteerd naar 8 kHz mono WAV. Zonder uploads wordt de meegeleverde"
-" muziek gebruikt."
-
 msgid "Uploaded"
 msgstr "Geüpload"
 
@@ -3972,9 +3974,6 @@ msgstr ""
 
 msgid "Voice"
 msgstr "Stem"
-
-msgid "Voice prompts"
-msgstr "Gesproken aankondigingen"
 
 msgid "Voicemail"
 msgstr "Voicemail"

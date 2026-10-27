@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-26 14:14+0100\n"
+"POT-Creation-Date: 2026-10-26 22:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -267,11 +267,6 @@ msgid ""
 "before you update, so you can go back to it."
 msgstr ""
 
-msgid ""
-"A custom greeting played before callers leave a message (replaces the "
-"standard \"unavailable\" message)."
-msgstr ""
-
 msgid "A firmware update is being installed. Wait until it has finished."
 msgstr ""
 
@@ -478,6 +473,9 @@ msgid "Advanced: one key=value per line, appended to the generated section."
 msgstr ""
 
 msgid "All"
+msgstr ""
+
+msgid "All files form one playlist. Without uploads the bundled music is used."
 msgstr ""
 
 msgid ""
@@ -911,6 +909,9 @@ msgid "Choose a sound"
 msgstr ""
 
 msgid "Choose business hours without special periods of their own"
+msgstr ""
+
+msgid "Choose it in the IVR menu under Announcement."
 msgstr ""
 
 msgid "Choose or upload an announcement"
@@ -1414,8 +1415,8 @@ msgid "Enter both the first and the last day, or neither"
 msgstr ""
 
 msgid ""
-"Enter the address of a text-to-speech server below to create "
-"announcements from text."
+"Enter the address of a text-to-speech server to create announcements from"
+" text."
 msgstr ""
 
 msgid "Enter the directory URL of the ACME server"
@@ -1491,6 +1492,9 @@ msgid "Feature digit timeout (ms)"
 msgstr ""
 
 msgid "February"
+msgstr ""
+
+msgid "Files are converted to 8 kHz mono WAV."
 msgstr ""
 
 msgid "Finland"
@@ -2709,6 +2713,11 @@ msgid "Platform"
 msgstr ""
 
 msgid ""
+"Played before callers leave a message (replaces the standard "
+"\"unavailable\" message)."
+msgstr ""
+
+msgid ""
 "Played when the call reaches the menu. Callers can press a key while it "
 "plays."
 msgstr ""
@@ -3827,11 +3836,6 @@ msgstr ""
 msgid "Upload complete. Starting the update ..."
 msgstr ""
 
-msgid ""
-"Upload your own hold music. Files are converted to 8 kHz mono WAV. "
-"Without uploads the bundled music is used."
-msgstr ""
-
 msgid "Uploaded"
 msgstr ""
 
@@ -3973,9 +3977,6 @@ msgid ""
 msgstr ""
 
 msgid "Voice"
-msgstr ""
-
-msgid "Voice prompts"
 msgstr ""
 
 msgid "Voicemail"

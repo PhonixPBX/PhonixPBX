@@ -5,13 +5,15 @@ description: "Wartemusik, die Mailbox-Ansage, IVR-Ansagen, Aufnahmen per Telefon
 ---
 Unter *Dienste → Medien* verwalten Sie eigene Audiodateien: Wartemusik, eine eigene Mailbox-Ansage und die Ansagen von IVR-Menüs. Außerdem zeigt die Seite, in welcher Sprache die Systemansagen abgespielt werden.
 
+Neue Dateien entstehen in einem von drei Tabs: **Hochladen** (Wartemusik, Mailbox-Ansage oder IVR-Ansage), [**Per Telefon aufnehmen**](#record) und [**Aus Text erzeugen**](#tts). Darunter steht immer die [Liste aller Dateien](#files).
+
 Das Hochladen oder Löschen von Wartemusik und Mailbox-Ansage muss übernommen werden, bevor Anrufer die Änderung hören, siehe [Änderungen übernehmen]({{< relref "/getting-started/_index.md#apply" >}}).
 
 ## Wartemusik {#moh}
 
 Anrufer hören Wartemusik, während sie gehalten oder geparkt werden oder allein in einer Konferenz sind. Ohne eigene Dateien spielt PhonixPBX die mitgelieferte Musik.
 
-Ziehen Sie eine oder mehrere Audiodateien auf das Feld *Wartemusik* oder klicken Sie darauf, um Dateien auszuwählen. Alle hochgeladenen Musikdateien bilden eine Playlist, die in zufälliger Reihenfolge abgespielt wird. Sobald eine Datei hochgeladen ist, wird die mitgelieferte Musik nicht mehr verwendet; wenn Sie die letzte eigene Datei löschen, wird sie wieder verwendet.
+Ziehen Sie im Tab **Hochladen** eine oder mehrere Audiodateien auf das Feld *Wartemusik* oder klicken Sie darauf, um Dateien auszuwählen. Alle hochgeladenen Musikdateien bilden eine Playlist, die in zufälliger Reihenfolge abgespielt wird. Sobald eine Datei hochgeladen ist, wird die mitgelieferte Musik nicht mehr verwendet; wenn Sie die letzte eigene Datei löschen, wird sie wieder verwendet.
 
 > Verwenden Sie nur Musik, die Sie Anrufern vorspielen dürfen. Viele Musiklizenzen decken die öffentliche Wiedergabe in einer Telefonanlage nicht ab.
 
@@ -23,11 +25,11 @@ Sprechen Sie einen neutralen Text auf, der zu jeder Mailbox passt, zum Beispiel 
 
 ## IVR-Ansagen {#ivr}
 
-Die Ansagen von IVR-Menüs laden Sie im Menü-Editor unter [Wählplan → IVR-Menüs]({{< relref "/dialplan/ivr.md" >}}) hoch. Sie erscheinen hier in der Dateiliste mit dem Typ *IVR-Ansage*. Wenn Sie eine Ansage löschen, die ein Menü noch verwendet, bleibt dieses Menü stumm, bis Sie eine andere Ansage wählen; übernehmen Sie die Änderung anschließend.
+IVR-Ansagen laden Sie im Tab **Hochladen** oder direkt im Menü-Editor unter [Wählplan → IVR-Menüs]({{< relref "/dialplan/ivr.md" >}}) hoch. Sie erscheinen hier in der Dateiliste mit dem Typ *IVR-Ansage*. Wenn Sie eine Ansage löschen, die ein Menü noch verwendet, bleibt dieses Menü stumm, bis Sie eine andere Ansage wählen; übernehmen Sie die Änderung anschließend.
 
 ## Per Telefon aufnehmen {#record}
 
-Statt eine Datei hochzuladen, können Sie eine IVR-Ansage oder die Mailbox-Ansage auch in ein Telefon sprechen. Wählen Sie unter **Per Telefon aufnehmen**, was Sie **Aufnehmen** (bei einer IVR-Ansage auch ihren **Namen**), und unter **Telefon klingeln lassen** das Telefon, und klicken Sie auf **Mich anrufen**:
+Statt eine Datei hochzuladen, können Sie eine IVR-Ansage oder die Mailbox-Ansage auch in ein Telefon sprechen. Wählen Sie im Tab **Per Telefon aufnehmen**, was Sie **Aufnehmen** (bei einer IVR-Ansage auch ihren **Namen**), und unter **Telefon klingeln lassen** das Telefon, und klicken Sie auf **Mich anrufen**:
 
 1. Die Anlage ruft das Telefon an. Nehmen Sie ab und sprechen Sie den Text nach dem Signalton.
 2. Beenden Sie die Aufnahme mit `#`. Das Telefon spielt sie ab.
@@ -39,15 +41,15 @@ Anrufen kann die Anlage nur SIP- und IAX-Telefone. Die Hinweise am Telefon komme
 
 ## Aus Text erzeugen {#tts}
 
-Ein Text-to-Speech-Server kann eine IVR-Ansage oder die Mailbox-Ansage für Sie sprechen. Richten Sie den Server zuerst unter [Text-to-Speech-Server](#tts-server) ein.
+Ein Text-to-Speech-Server kann eine IVR-Ansage oder die Mailbox-Ansage für Sie sprechen. Richten Sie den Server zuerst unter [Text-to-Speech-Server](#tts-server) ein, unten im selben Tab.
 
-Wählen Sie unter **Aus Text erzeugen**, was Sie **Erstellen** (bei einer IVR-Ansage auch ihren **Namen**), eine **Stimme** und das **Tempo**, und geben Sie den **Text** ein (bis 2000 Zeichen). **Anhören** spielt das Ergebnis im Browser ab, ohne es zu speichern; **Erstellen** speichert es wie eine hochgeladene Datei. Eine neue Mailbox-Ansage ersetzt die alte und muss übernommen werden.
+Wählen Sie im Tab **Aus Text erzeugen**, was Sie **Erstellen** (bei einer IVR-Ansage auch ihren **Namen**), eine **Stimme** und das **Tempo**, und geben Sie den **Text** ein (bis 2000 Zeichen). **Anhören** spielt das Ergebnis im Browser ab, ohne es zu speichern; **Erstellen** speichert es wie eine hochgeladene Datei. Eine neue Mailbox-Ansage ersetzt die alte und muss übernommen werden.
 
 > Der Text wird an den Text-to-Speech-Server gesendet. Verwenden Sie einen Server, dem Sie vertrauen, am besten einen in Ihrem eigenen Netz.
 
 ## Text-to-Speech-Server {#tts-server}
 
-PhonixPBX verwendet einen Server mit der RestfulTTS-API. Eine eigene Sprachausgabe bringt die Anlage nicht mit.
+PhonixPBX verwendet einen Server mit der RestfulTTS-API. Eine eigene Sprachausgabe bringt die Anlage nicht mit. Die Einstellungen stehen unten im Tab **Aus Text erzeugen** unter **Text-to-Speech-Server**; sobald ein Server eingerichtet ist, sind sie eingeklappt.
 
 | Feld | Bedeutung | Standard |
 |---|---|---|

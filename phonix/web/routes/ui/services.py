@@ -203,6 +203,7 @@ def _media_page(
     tts_errors: dict[str, str] | None = None,
     status_code: int = 200,
 ) -> Response:
+    # the open tab: a failed text-to-speech form returns to its tab (links use #tab-<name>)
     tts = st.load(db, st.TtsSettings)
     if tts_values is None:
         tts_values = {**tts.model_dump(), "token": ""}
@@ -210,6 +211,7 @@ def _media_page(
         request,
         "pages/media.html",
         status_code=status_code,
+        active_tab="tts" if tts_errors else "upload",
         tts=tts,
         tts_values=tts_values,
         tts_errors=tts_errors or {},
@@ -247,7 +249,7 @@ async def tts_settings_save(request: Request, user: User = Depends(ui_user), db:
     )
     if not saved:
         return _media_page(request, db, values, errors, status_code=422)
-    return redirect(request, "/services/media#tts")
+    return redirect(request, "/services/media#tab-tts")
 
 
 @router.get("/media/tts/voices")

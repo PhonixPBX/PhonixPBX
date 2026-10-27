@@ -1,137 +1,145 @@
 {# SPDX-FileCopyrightText: 2026 The PhonixPBX contributors | SPDX-License-Identifier: Apache-2.0 #}
 {% extends "base.html" %}
 {% from "macros/forms.html" import csrf, input, secret, select, form_errors, submit with context %}
+{% macro tab(name, label, icon_name) %}<li class="nav-item" role="presentation"><a href="#tab-{{ name }}" class="nav-link{% if active_tab == name %} active{% endif %}" data-bs-toggle="tab" role="tab">{{ icon(icon_name, "me-1") }}{{ label }}</a></li>{% endmacro %}
 {% block content %}
 <div class="row row-cards">
-  <div class="col-lg-6">
-    <div class="card">
-      <div class="card-header"><h3 class="card-title">{{ _("Music on hold") }}</h3></div>
-      <div class="card-body">
-        <p class="text-secondary">{{ _("Upload your own hold music. Files are converted to 8 kHz mono WAV. Without uploads the bundled music is used.") }}</p>
-        <form action="/services/media/moh" class="dropzone" data-dropzone data-param="file" data-max-mb="64" data-accept="audio/*,.wav,.mp3,.ogg,.flac" data-target="#media-files"
-              data-message="{{ _("Drop audio files here or click to upload") }}"></form>
-      </div>
-    </div>
-  </div>
-  <div class="col-lg-6">
-    <div class="card">
-      <div class="card-header"><h3 class="card-title">{{ _("Voicemail greeting") }}</h3></div>
-      <div class="card-body">
-        <p class="text-secondary">{{ _('A custom greeting played before callers leave a message (replaces the standard "unavailable" message).') }}</p>
-        <form action="/services/media/vm_greeting" class="dropzone" data-dropzone data-param="file" data-max-mb="16" data-accept="audio/*,.wav,.mp3,.ogg" data-target="#media-files"
-              data-message="{{ _("Drop the greeting here or click to upload") }}"></form>
-      </div>
-    </div>
-  </div>
   <div class="col-12">
     <div class="card">
-      <div class="card-header"><h3 class="card-title">{{ _("Record by phone") }}</h3></div>
-      <div class="card-body">
-        <p class="text-secondary">{{ _("The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it. Recordings are stored like uploaded files.") }}</p>
-        {% if record_phones %}
-        {% set kind_opts = [] %}{% for k, label in record_kinds %}{% set _unused = kind_opts.append((k, _(label))) %}{% endfor %}
-        {% set phone_opts = [] %}{% for p in record_phones %}{% set _unused = phone_opts.append((p.extension, p.extension ~ " – " ~ p.callerid)) %}{% endfor %}
-        {% set rec_values = {"kind": "ivr_prompt", "name": "", "extension": record_phones[0].extension} %}
-        <form hx-post="/services/media/record" hx-target="#record-status-media" hx-swap="outerHTML" hx-disable="find button">
-          <input type="hidden" name="ctx" value="media">
-          <div class="row">
-            <div class="col-md-4">{{ select("kind", _("Record"), rec_values, {}, kind_opts) }}</div>
-            <div class="col-md-4" data-show-if="kind=ivr_prompt">{{ input("name", _("Name"), rec_values, {}, placeholder=_("e.g. welcome")) }}</div>
-            <div class="col-md-4">{{ select("extension", _("Ring phone"), rec_values, {}, phone_opts) }}</div>
-          </div>
-          <button type="submit" class="btn btn-primary">{{ icon("microphone") }}{{ _("Call me") }}</button>
-        </form>
-        {% else %}
-        <p class="text-secondary mb-0">{{ _("Add a SIP or IAX phone to record announcements by phone.") }}</p>
-        {% endif %}
-        <div id="record-status-media"></div>
+      <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" data-bs-toggle="tabs" role="tablist">
+          {{ tab("upload", _("Upload"), "upload") }}
+          {{ tab("record", _("Record by phone"), "microphone") }}
+          {{ tab("tts", _("Create from text"), "wand") }}
+        </ul>
       </div>
-    </div>
-  </div>
-  <div class="col-12" id="tts">
-    <div class="card">
-      <div class="card-header"><h3 class="card-title">{{ _("Create from text") }}</h3></div>
-      <div class="card-body">
-        <p class="text-secondary">{{ _("A text-to-speech server speaks the text. Listen to it first, then create the announcement; it is stored like an uploaded file. The text is sent to the server.") }}</p>
-        {% if tts.configured %}
-        <form hx-post="/services/media/tts" hx-target="#tts-result-media" hx-swap="outerHTML" hx-disable="find button">
-          <input type="hidden" name="ctx" value="media">
-          <div class="row">
-            <div class="col-md-4 mb-3">
-              <label class="form-label" for="tts-kind">{{ _("Create") }}</label>
-              <select class="form-select" id="tts-kind" name="kind">{% for k, label in tts_kinds %}<option value="{{ k }}">{{ _(label) }}</option>{% endfor %}</select>
+      <div class="card-body tab-content">
+
+        <div class="tab-pane{% if active_tab == "upload" %} active show{% endif %}" id="tab-upload" role="tabpanel">
+          <p class="text-secondary">{{ _("Files are converted to 8 kHz mono WAV.") }}</p>
+          <div class="row row-cards">
+            <div class="col-lg-4">
+              <h4>{{ _("Music on hold") }}</h4>
+              <p class="text-secondary small">{{ _("All files form one playlist. Without uploads the bundled music is used.") }}</p>
+              <form action="/services/media/moh" class="dropzone" data-dropzone data-param="file" data-max-mb="64" data-accept="audio/*,.wav,.mp3,.ogg,.flac" data-target="#media-files"
+                    data-message="{{ _("Drop audio files here or click to upload") }}"></form>
             </div>
-            <div class="col-md-4 mb-3" data-show-if="kind=ivr_prompt">
-              <label class="form-label" for="tts-name">{{ _("Name") }}</label>
-              <input class="form-control" id="tts-name" name="name" placeholder="{{ _('e.g. welcome') }}" autocomplete="off">
+            <div class="col-lg-4">
+              <h4>{{ _("Voicemail greeting") }}</h4>
+              <p class="text-secondary small">{{ _('Played before callers leave a message (replaces the standard "unavailable" message).') }}</p>
+              <form action="/services/media/vm_greeting" class="dropzone" data-dropzone data-param="file" data-max-mb="16" data-accept="audio/*,.wav,.mp3,.ogg" data-target="#media-files"
+                    data-message="{{ _("Drop the greeting here or click to upload") }}"></form>
             </div>
-            <div class="col-md-4 mb-3">
-              <label class="form-label" for="tts-voice">{{ _("Voice") }}</label>
-              <div hx-get="/services/media/tts/voices?target=tts-voice&selected={{ tts.voice | urlencode }}" hx-trigger="load" hx-swap="outerHTML">
-                <input class="form-control" id="tts-voice" name="tts_voice" value="{{ tts.voice }}" placeholder="{{ _('Default voice') }}" autocomplete="off">
+            <div class="col-lg-4">
+              <h4>{{ _("IVR announcement") }}</h4>
+              <p class="text-secondary small">{{ _("Choose it in the IVR menu under Announcement.") }}</p>
+              <form action="/services/media/ivr_prompt" class="dropzone" data-dropzone data-param="file" data-max-mb="16" data-accept="audio/*,.wav,.mp3,.ogg,.flac" data-target="#media-files"
+                    data-message="{{ _("Drop audio files here or click to upload") }}"></form>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane{% if active_tab == "record" %} active show{% endif %}" id="tab-record" role="tabpanel">
+          <p class="text-secondary">{{ _("The PBX calls your phone. Speak the announcement after the tone, press # and then 1 to save it. Recordings are stored like uploaded files.") }}</p>
+          {% if record_phones %}
+          {% set kind_opts = [] %}{% for k, label in record_kinds %}{% set _unused = kind_opts.append((k, _(label))) %}{% endfor %}
+          {% set phone_opts = [] %}{% for p in record_phones %}{% set _unused = phone_opts.append((p.extension, p.extension ~ " – " ~ p.callerid)) %}{% endfor %}
+          {% set rec_values = {"kind": "ivr_prompt", "name": "", "extension": record_phones[0].extension} %}
+          <form hx-post="/services/media/record" hx-target="#record-status-media" hx-swap="outerHTML" hx-disable="find button">
+            <input type="hidden" name="ctx" value="media">
+            <div class="row">
+              <div class="col-md-4">{{ select("kind", _("Record"), rec_values, {}, kind_opts) }}</div>
+              <div class="col-md-4" data-show-if="kind=ivr_prompt">{{ input("name", _("Name"), rec_values, {}, placeholder=_("e.g. welcome")) }}</div>
+              <div class="col-md-4">{{ select("extension", _("Ring phone"), rec_values, {}, phone_opts) }}</div>
+            </div>
+            <button type="submit" class="btn btn-primary">{{ icon("phone-call") }}{{ _("Call me") }}</button>
+          </form>
+          {% else %}
+          <p class="text-secondary mb-0">{{ _("Add a SIP or IAX phone to record announcements by phone.") }}</p>
+          {% endif %}
+          <div id="record-status-media"></div>
+        </div>
+
+        <div class="tab-pane{% if active_tab == "tts" %} active show{% endif %}" id="tab-tts" role="tabpanel">
+          <p class="text-secondary">{{ _("A text-to-speech server speaks the text. Listen to it first, then create the announcement; it is stored like an uploaded file. The text is sent to the server.") }}</p>
+          {% if tts.configured %}
+          <form hx-post="/services/media/tts" hx-target="#tts-result-media" hx-swap="outerHTML" hx-disable="find button">
+            <input type="hidden" name="ctx" value="media">
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label class="form-label" for="tts-kind">{{ _("Create") }}</label>
+                <select class="form-select" id="tts-kind" name="kind">{% for k, label in tts_kinds %}<option value="{{ k }}">{{ _(label) }}</option>{% endfor %}</select>
+              </div>
+              <div class="col-md-4 mb-3" data-show-if="kind=ivr_prompt">
+                <label class="form-label" for="tts-name">{{ _("Name") }}</label>
+                <input class="form-control" id="tts-name" name="name" placeholder="{{ _('e.g. welcome') }}" autocomplete="off">
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label" for="tts-voice">{{ _("Voice") }}</label>
+                <div hx-get="/services/media/tts/voices?target=tts-voice&selected={{ tts.voice | urlencode }}" hx-trigger="load" hx-swap="outerHTML">
+                  <input class="form-control" id="tts-voice" name="tts_voice" value="{{ tts.voice }}" placeholder="{{ _('Default voice') }}" autocomplete="off">
+                </div>
               </div>
             </div>
-          </div>
-          <div class="mb-3">
-            <label class="form-label" for="tts-text">{{ _("Text") }}</label>
-            <textarea class="form-control" id="tts-text" name="text" rows="4" maxlength="2000" placeholder="{{ _('e.g. Welcome. For sales, press 1. For support, press 2.') }}"></textarea>
-          </div>
-          <div class="row align-items-end">
-            <div class="col-sm-4 col-md-3 mb-3">
-              <label class="form-label" for="tts-speed">{{ _("Speed") }}</label>
-              <input class="form-control" type="number" id="tts-speed" name="tts_speed" min="0.5" max="2" step="0.05" value="{{ tts.speed }}">
+            <div class="mb-3">
+              <label class="form-label" for="tts-text">{{ _("Text") }}</label>
+              <textarea class="form-control" id="tts-text" name="text" rows="4" maxlength="2000" placeholder="{{ _('e.g. Welcome. For sales, press 1. For support, press 2.') }}"></textarea>
             </div>
-            <div class="col mb-3 d-flex flex-wrap gap-2">
-              <button type="button" class="btn" hx-post="/services/media/tts/player" hx-target="#tts-player-media" hx-swap="outerHTML">{{ icon("player-play") }}{{ _("Listen") }}</button>
-              <button type="submit" class="btn btn-primary">{{ icon("wand") }}{{ _("Create") }}</button>
+            <div class="row align-items-end">
+              <div class="col-sm-4 col-md-3 mb-3">
+                <label class="form-label" for="tts-speed">{{ _("Speed") }}</label>
+                <input class="form-control" type="number" id="tts-speed" name="tts_speed" min="0.5" max="2" step="0.05" value="{{ tts.speed }}">
+              </div>
+              <div class="col mb-3 d-flex flex-wrap gap-2">
+                <button type="button" class="btn" hx-post="/services/media/tts/player" hx-target="#tts-player-media" hx-swap="outerHTML">{{ icon("player-play") }}{{ _("Listen") }}</button>
+                <button type="submit" class="btn btn-primary">{{ icon("wand") }}{{ _("Create") }}</button>
+              </div>
             </div>
-          </div>
-        </form>
-        <div id="tts-player-media"></div>
-        <div id="tts-result-media"></div>
-        {% else %}
-        <p class="text-secondary mb-0">{{ _("Enter the address of a text-to-speech server below to create announcements from text.") }}</p>
-        {% endif %}
+          </form>
+          <div id="tts-player-media"></div>
+          <div id="tts-result-media"></div>
+          {% else %}
+          <p class="text-secondary">{{ _("Enter the address of a text-to-speech server to create announcements from text.") }}</p>
+          {% endif %}
+
+          {# open until a server is set up, and when saving failed #}
+          <details class="mt-3"{% if not tts.configured or tts_errors %} open{% endif %}>
+            <summary class="text-secondary">{{ _("Text-to-speech server") }}{% if tts.configured %}: <code>{{ tts.url }}</code>{% endif %}</summary>
+            <form method="post" action="/services/media/tts-settings" class="mt-3">
+              {{ csrf() }}
+              {{ form_errors(tts_errors) }}
+              <div class="row">
+                <div class="col-md-8">{{ input("url", _("Server address"), tts_values, tts_errors, placeholder="http://tts.example.com:8000", help=_("Base URL of a server with the RestfulTTS API (/api/v1/synthesize). Empty: off.")) }}</div>
+                <div class="col-md-4">{{ secret("token", _("Access token"), tts_values, tts_errors, generate=False, help=_("Only if the server requires one (sent as bearer token).")) }}</div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label" for="f-voice">{{ _("Default voice") }}</label>
+                  {% if tts.configured %}
+                  <div hx-get="/services/media/tts/voices?field=voice&target=f-voice&selected={{ tts_values.voice | urlencode }}" hx-trigger="load" hx-swap="outerHTML">
+                    <input class="form-control" id="f-voice" name="voice" value="{{ tts_values.voice }}" autocomplete="off">
+                  </div>
+                  {% else %}
+                  <input class="form-control" id="f-voice" name="voice" value="{{ tts_values.voice }}" autocomplete="off">
+                  {% endif %}
+                  <small class="form-hint">{{ _("Empty: the server's voice for the prompt language of the system.") }}</small>
+                </div>
+                <div class="col-md-3">{{ input("speed", _("Speed"), tts_values, tts_errors, type="number", attrs='min="0.5" max="2" step="0.05"') }}</div>
+                <div class="col-md-3">{{ input("timeout", _("Timeout (seconds)"), tts_values, tts_errors, type="number", attrs='min="5" max="300"') }}</div>
+              </div>
+              <button type="submit" class="btn">{{ icon("device-floppy") }}{{ _("Save") }}</button>
+            </form>
+          </details>
+        </div>
+
       </div>
     </div>
-  </div>
-  <div class="col-12">
-    <form method="post" action="/services/media/tts-settings" class="card">
-      {{ csrf() }}
-      <div class="card-header"><h3 class="card-title">{{ _("Text-to-speech server") }}</h3></div>
-      <div class="card-body">
-        {{ form_errors(tts_errors) }}
-        <div class="row">
-          <div class="col-md-8">{{ input("url", _("Server address"), tts_values, tts_errors, placeholder="http://tts.example.com:8000", help=_("Base URL of a server with the RestfulTTS API (/api/v1/synthesize). Empty: off.")) }}</div>
-          <div class="col-md-4">{{ secret("token", _("Access token"), tts_values, tts_errors, generate=False, help=_("Only if the server requires one (sent as bearer token).")) }}</div>
-        </div>
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <label class="form-label" for="f-voice">{{ _("Default voice") }}</label>
-            {% if tts.configured %}
-            <div hx-get="/services/media/tts/voices?field=voice&target=f-voice&selected={{ tts_values.voice | urlencode }}" hx-trigger="load" hx-swap="outerHTML">
-              <input class="form-control" id="f-voice" name="voice" value="{{ tts_values.voice }}" autocomplete="off">
-            </div>
-            {% else %}
-            <input class="form-control" id="f-voice" name="voice" value="{{ tts_values.voice }}" autocomplete="off">
-            {% endif %}
-            <small class="form-hint">{{ _("Empty: the server's voice for the prompt language of the system.") }}</small>
-          </div>
-          <div class="col-md-3">{{ input("speed", _("Speed"), tts_values, tts_errors, type="number", attrs='min="0.5" max="2" step="0.05"') }}</div>
-          <div class="col-md-3">{{ input("timeout", _("Timeout (seconds)"), tts_values, tts_errors, type="number", attrs='min="5" max="300"') }}</div>
-        </div>
-      </div>
-      {{ submit() }}
-    </form>
   </div>
   <div class="col-12">
     <div class="card" id="media-files">{% include "partials/media_table.html" %}</div>
   </div>
   <div class="col-12">
-    <div class="card"><div class="card-body">
-      <h3 class="card-title">{{ _("Voice prompts") }}</h3>
-      <p class="mb-0 text-secondary">{{ _('System prompts use the default language <strong>%(language)s</strong> (change it under <a href="/system/general">General Setup</a>). The firmware ships English prompts; other languages fall back to English recordings.', language=_(LANGUAGES[system.prompt_language])) }}</p>
-    </div></div>
+    <p class="text-secondary small mb-0">{{ icon("language", "me-1") }}{{ _('System prompts use the default language <strong>%(language)s</strong> (change it under <a href="/system/general">General Setup</a>). The firmware ships English prompts; other languages fall back to English recordings.', language=_(LANGUAGES[system.prompt_language])) }}</p>
   </div>
 </div>
 {% endblock %}
