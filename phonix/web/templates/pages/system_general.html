@@ -11,7 +11,7 @@
       <div class="col-md-6">{{ input("domain", _("Domain"), values, errors, required=True) }}</div>
     </div>
     <div class="row">
-      <div class="col-md-6">{% set tz = [] %}{% for z in timezones %}{% set _x = tz.append((z, z)) %}{% endfor %}{{ select("timezone", _("Time zone"), values, errors, tz, tom=True, help=_("Business hours use a new time zone as soon as it is applied; voicemail and call record times after the next restart.")) }}</div>
+      <div class="col-md-6">{% set tz = [] %}{% for z in timezones %}{% set _x = tz.append((z, z)) %}{% endfor %}{{ select("timezone", _("Time zone"), values, errors, tz, tom=True, help=_("Business hours use a new time zone as soon as it is applied; voicemail and call record times after the next restart.")) }}<small class="form-hint d-block mt-n2 mb-3">{{ _("Current time: %(time)s", time=current_time) }}</small></div>
       <div class="col-md-6">{{ textarea("ntp_servers", _("Time servers"), values, errors, rows=2, help=(_("Not used in a container: the clock comes from the container host.") if platform in ("lxc", "oci") else _("One per line."))) }}</div>
     </div>
     <div class="row">

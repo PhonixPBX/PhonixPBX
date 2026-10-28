@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-27 18:51+0100\n"
+"POT-Creation-Date: 2026-10-28 07:30+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: pl\n"
@@ -760,7 +760,9 @@ msgstr ""
 "poza godzinami pracy."
 
 msgid "Business hours use a new time zone as soon as it is applied; voicemail and call record times after the next restart."
-msgstr "Godziny pracy używają nowej strefy czasowej od razu po jej zastosowaniu; czasy wiadomości poczty głosowej i rekordów połączeń dopiero po następnym restarcie."
+msgstr ""
+"Godziny pracy używają nowej strefy czasowej od razu po jej zastosowaniu; czasy wiadomości poczty głosowej i rekordów "
+"połączeń dopiero po następnym restarcie."
 
 msgid "Business hours used by a special period cannot have special periods"
 msgstr "Godziny pracy używane przez okres specjalny nie mogą mieć okresów specjalnych"
@@ -1096,6 +1098,10 @@ msgstr "Obecne hasło"
 
 msgid "Current password is wrong"
 msgstr "Obecne hasło jest nieprawidłowe"
+
+#, python-format
+msgid "Current time: %(time)s"
+msgstr "Aktualny czas: %(time)s"
 
 msgid "Customer number"
 msgstr "Numer klienta"

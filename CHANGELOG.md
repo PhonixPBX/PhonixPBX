@@ -6,6 +6,10 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- *System → General Setup* shows the current time of the system in the saved time zone below the time zone field.
+
 ### Changed
 
 - Placeholder text in form fields is fainter (lighter in the light theme, darker in the dark theme), so it is easier to tell apart from entered values.

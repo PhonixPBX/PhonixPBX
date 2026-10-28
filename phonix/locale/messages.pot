@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-27 18:51+0100\n"
+"POT-Creation-Date: 2026-10-28 07:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1084,6 +1084,10 @@ msgid "Current password"
 msgstr ""
 
 msgid "Current password is wrong"
+msgstr ""
+
+#, python-format
+msgid "Current time: %(time)s"
 msgstr ""
 
 msgid "Customer number"

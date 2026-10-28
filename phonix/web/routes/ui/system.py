@@ -5,11 +5,13 @@
 from __future__ import annotations
 
 import contextlib
+import datetime as dt
 import os
 import secrets
 import shutil
 import tempfile
 import time
+import zoneinfo
 from pathlib import Path
 from typing import Any
 
@@ -39,6 +41,16 @@ def _timezones() -> list[str]:
     return zones if "UTC" in zones else ["UTC", *zones]
 
 
+def _current_time(zone: str) -> str:
+    """Now in the saved time zone, e.g. ``2026-10-28 14:03 CET (UTC+01:00)``; not the process local time."""
+    try:
+        now = dt.datetime.now(zoneinfo.ZoneInfo(zone))
+    except (zoneinfo.ZoneInfoNotFoundError, ValueError):
+        now = dt.datetime.now(dt.timezone.utc)
+    offset = now.strftime("%z")
+    return f"{now:%Y-%m-%d %H:%M %Z} (UTC{offset[:3]}:{offset[3:]})"
+
+
 def _alert(request: Request, level: str, message: str, status_code: int = 200) -> Response:
     resp = render(request, "partials/alert.html", {"level": level, "message": message})
     resp.status_code = status_code
@@ -50,8 +62,13 @@ def _alert(request: Request, level: str, message: str, status_code: int = 200) -
 
 @router.get("/general")
 def general(request: Request, user: User = Depends(ui_user), db: Session = Depends(get_db)) -> Response:
+    values = st.load(db, st.SystemSettings).model_dump()
     return page(
-        request, "pages/system_general.html", values=st.load(db, st.SystemSettings).model_dump(), timezones=_timezones()
+        request,
+        "pages/system_general.html",
+        values=values,
+        timezones=_timezones(),
+        current_time=_current_time(values["timezone"]),
     )
 
 
@@ -73,6 +90,7 @@ async def general_save(request: Request, user: User = Depends(ui_user), db: Sess
                 values=values,
                 errors=errors,
                 timezones=_timezones(),
+                current_time=_current_time(st.load(db, st.SystemSettings).timezone),
             )
         extra["ssh_password_hash"] = sha512_crypt(password)
     saved, values, errors = await save_settings_form(
@@ -85,7 +103,13 @@ async def general_save(request: Request, user: User = Depends(ui_user), db: Sess
     )
     if not saved:
         return page(
-            request, "pages/system_general.html", status_code=422, values=values, errors=errors, timezones=_timezones()
+            request,
+            "pages/system_general.html",
+            status_code=422,
+            values=values,
+            errors=errors,
+            timezones=_timezones(),
+            current_time=_current_time(st.load(db, st.SystemSettings).timezone),
         )
     return redirect(request, "/system/general")
 

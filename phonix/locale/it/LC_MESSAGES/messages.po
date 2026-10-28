@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-27 18:51+0100\n"
+"POT-Creation-Date: 2026-10-28 07:30+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: it\n"
@@ -746,7 +746,9 @@ msgstr ""
 "es. a un menu fuori orario."
 
 msgid "Business hours use a new time zone as soon as it is applied; voicemail and call record times after the next restart."
-msgstr "Gli orari di apertura usano un nuovo fuso orario non appena viene applicato; gli orari dei messaggi della casella vocale e dei registri delle chiamate dopo il prossimo riavvio."
+msgstr ""
+"Gli orari di apertura usano un nuovo fuso orario non appena viene applicato; gli orari dei messaggi della casella "
+"vocale e dei registri delle chiamate dopo il prossimo riavvio."
 
 msgid "Business hours used by a special period cannot have special periods"
 msgstr "Gli orari di apertura usati da un periodo speciale non possono avere periodi speciali"
@@ -1082,6 +1084,10 @@ msgstr "Password attuale"
 
 msgid "Current password is wrong"
 msgstr "La password attuale è errata"
+
+#, python-format
+msgid "Current time: %(time)s"
+msgstr "Ora attuale: %(time)s"
 
 msgid "Customer number"
 msgstr "Numero cliente"

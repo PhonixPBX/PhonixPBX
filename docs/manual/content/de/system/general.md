@@ -23,6 +23,8 @@ In einem Container (LXC/Incus oder OCI) ändert PhonixPBX den Hostnamen des Cont
 | Zeitzone | Zeitzone des Systems, aus einer durchsuchbaren Liste gewählt. Sie bestimmt die lokale Zeit von System und Asterisk, zum Beispiel in Logs, in den Zeitstempeln von Mailbox-Nachrichten und für die Zeitbedingungen der [Geschäftszeiten]({{< relref "/dialplan/hours.md" >}}). Die Geschäftszeiten verwenden eine geänderte Zeitzone, sobald sie übernommen ist; Zeiten von Mailbox-Nachrichten und Anrufdaten erst nach dem nächsten Neustart (*System → Neustart*). | `UTC` |
 | Zeitserver | NTP-Server, mit denen das System seine Uhr abgleicht, einer pro Zeile (Hostname oder IP-Adresse). | `pool.ntp.org` |
 
+Unter der Zeitzone zeigt **Aktuelle Uhrzeit** Datum und Uhrzeit des Systems in der gespeicherten Zeitzone, mit deren Kürzel und Abstand zu UTC (zum Beispiel `2026-10-28 14:03 CET (UTC+01:00)`). So lässt sich schnell prüfen, ob Uhr und Zeitzone stimmen; nach der Wahl einer anderen Zeitzone speichern, um die Zeit darin zu sehen.
+
 In einem Container werden die Zeitserver nicht verwendet: Die Uhrzeit kommt vom Container-Host.
 
 ## Töne und Sprache {#tones-language}

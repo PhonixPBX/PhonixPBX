@@ -187,6 +187,17 @@ def test_settings_page_roundtrip(client):
     assert 'value="pbx1"' in page and "ntp.example.org" in page
 
 
+def test_general_shows_current_time(client):
+    import re
+
+    from phonix.web.routes.ui.system import _current_time
+
+    login(client)
+    assert re.search(r"Current time: \d{4}-\d\d-\d\d \d\d:\d\d UTC \(UTC\+00:00\)", client.get("/system/general").text)
+    assert re.fullmatch(r"\d{4}-\d\d-\d\d \d\d:\d\d (CET|CEST) \(UTC\+0[12]:00\)", _current_time("Europe/Zurich"))
+    assert _current_time("No/Such_Zone").endswith("UTC (UTC+00:00)")
+
+
 def test_outgoing_settings_form(client):
     from phonix.core import settings as st
     from phonix.services.common import dirty_areas
