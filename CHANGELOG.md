@@ -4,15 +4,6 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
-
-### Fixed
-
-- E-mail with SMTP authentication now works: the test message in *Services → Notifications* and the voicemail and missed
-  call notifications failed with "msmtp: /etc/phonix/msmtprc: contains secrets and therefore must have no more than
-  user read/write permissions". The SMTP password is now kept in a separate file; no action is needed after the
-  update.
-
 ## [1.11.1] - 2026-10-28
 
 ### Added
@@ -22,6 +13,13 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 ### Changed
 
 - Placeholder text in form fields is fainter (lighter in the light theme, darker in the dark theme), so it is easier to tell apart from entered values.
+
+### Fixed
+
+- E-mail with SMTP authentication now works: the test message in *Services → Notifications* and the voicemail and missed
+  call notifications failed with "msmtp: /etc/phonix/msmtprc: contains secrets and therefore must have no more than
+  user read/write permissions". The SMTP password is now kept in a separate file; no action is needed after the
+  update.
 
 ## [1.11.0] - 2026-10-27
 
