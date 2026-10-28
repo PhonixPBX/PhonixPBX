@@ -6,6 +6,10 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Placeholder text in form fields is fainter (lighter in the light theme, darker in the dark theme), so it is easier to tell apart from entered values.
+
 ## [1.11.0] - 2026-10-27
 
 ### Added

@@ -44,6 +44,14 @@
   --tblr-border-color-translucent: light-dark(#c3cad6, var(--tblr-dark-mode-border-color-translucent));
 }
 
+/* placeholders clearly fainter than entered values (Tabler: gray-500 / gray-400) */
+.form-control,
+.form-control-plaintext,
+.form-select,
+.ts-control {
+  --tblr-control-placeholder-color: light-dark(var(--tblr-gray-400), var(--tblr-gray-600));
+}
+
 [data-bs-theme="dark"] {
   --tblr-primary: #6d82ab;
   --tblr-primary-rgb: 109, 130, 171;
