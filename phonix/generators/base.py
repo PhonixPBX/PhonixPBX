@@ -159,6 +159,14 @@ def _quote(value: Any) -> str:
     return '"' + str(value).replace('"', "") + '"'
 
 
+def _msmtp_quote(value: Any) -> str:
+    """Quote for msmtprc; a line break would start a new directive (e.g. passwordeval)."""
+    text = str(value)
+    if "\n" in text or "\r" in text:
+        raise ValueError("line break in an msmtprc value")
+    return '"' + text.replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+
 _env: Environment | None = None
 
 
@@ -176,7 +184,7 @@ def env() -> Environment:
         _env.filters["cfg"] = _cfg_escape
         _env.filters["quote"] = _quote
         _env.filters["yesno"] = lambda b: "yes" if b else "no"
-        _env.filters["msmtp_quote"] = lambda s: '"' + str(s).replace("\\", "\\\\").replace('"', '\\"') + '"'
+        _env.filters["msmtp_quote"] = _msmtp_quote
         _env.globals["header"] = lambda: HEADER.format(version=__version__)
     return _env
 

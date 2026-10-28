@@ -21,6 +21,13 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   user read/write permissions". The SMTP password is now kept in a separate file; no action is needed after the
   update.
 
+### Security
+
+- The SMTP username in *Services → Notifications* no longer accepts line breaks or other control characters. A
+  username with a line break could add commands to the mail configuration that ran on the system when a
+  notification or test message was sent. A stored username with a line break is cleared on update; enter it again if
+  e-mail stops working.
+
 ## [1.11.0] - 2026-10-27
 
 ### Added

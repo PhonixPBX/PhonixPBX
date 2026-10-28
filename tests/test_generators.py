@@ -165,6 +165,24 @@ def test_msmtp_quoting(session, secret):
     assert pw.content == secret and pw.mode == 0o640 and pw.component == "email" and not pw.privileged
 
 
+@pytest.mark.parametrize("username", ['u"\npasswordeval "id"', "u\rx", "u\x00"])
+def test_msmtp_username_no_line_break(session, username):
+    from phonix.core.models import Setting
+    from phonix.generators.base import _msmtp_quote
+
+    with pytest.raises(ValueError, match="control characters"):
+        st.EmailSettings(host="smtp.example.com", from_address="a@example.com", username=username)
+    with pytest.raises(ValueError):
+        _msmtp_quote("u\npasswordeval x")
+    # a value stored before the validator existed is dropped, not rendered
+    session.add(
+        Setting(group="email", data={"host": "smtp.example.com", "from_address": "a@example.com", "username": username})
+    )
+    session.flush()
+    assert st.load(session, st.EmailSettings).username == ""
+    assert 'passwordeval "id"' not in render(session)["/etc/phonix/msmtprc"].content
+
+
 def test_ssh_root_password_line(session):
     from phonix.core.shacrypt import sha512_crypt
 

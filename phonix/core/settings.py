@@ -225,6 +225,12 @@ class EmailSettings(SettingsGroup):
     def _from(cls, value: str) -> str:
         return v.email(value) if value else ""
 
+    @field_validator("username")
+    @classmethod
+    def _username(cls, value: str) -> str:
+        # written into msmtprc: a line break would add msmtp directives such as passwordeval
+        return v.no_control(value, N_("Username"))
+
     @property
     def configured(self) -> bool:
         return bool(self.host and self.from_address)
