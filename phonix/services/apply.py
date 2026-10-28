@@ -116,7 +116,7 @@ def write_files(files: list[GeneratedFile], direct_privileged: bool, force: bool
         changed.append(f)
         if f.privileged and not direct_privileged:
             _write_atomic(cfg.staged_dir / f.path.lstrip("/"), f.content, 0o640)
-        elif f.path.startswith(("/etc/asterisk/", "/etc/phonix/msmtprc")):
+        elif f.path.startswith(("/etc/asterisk/", "/etc/phonix/msmtp")):
             _write_atomic(target, f.content, f.mode, "asterisk")
         else:
             # system files written as root at boot: root keeps them, the web

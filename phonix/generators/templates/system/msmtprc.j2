@@ -20,7 +20,9 @@ tls_certcheck {{ "on" if email.verify_cert else "off" }}
 {% if email.auth %}
 auth on
 user {{ email.username | msmtp_quote }}
-password {{ email.password | msmtp_quote }}
+{# msmtp refuses a -C file with an inline password unless it is 0600 and owned by
+   the caller; phonix (test mail) and asterisk (notifications) both read it #}
+passwordeval "cat /etc/phonix/msmtp-password"
 {% else %}
 auth off
 {% endif %}

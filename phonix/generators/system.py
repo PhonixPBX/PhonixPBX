@@ -97,6 +97,12 @@ def generate(snap: Snapshot) -> list[GeneratedFile]:
             component="email",
             mode=0o640,
         ),
+        GeneratedFile(
+            path="/etc/phonix/msmtp-password",
+            content=snap.email.password if snap.email.configured and snap.email.auth else "",
+            component="email",
+            mode=0o640,
+        ),
     ]
     # with DHCP the resolver is managed by udhcpc unless servers are pinned
     if net.mode == "static" or net.dns_servers:

@@ -151,11 +151,18 @@ def test_privileged_flags(session):
 @pytest.mark.parametrize("secret", ['p"w', "back\\slash"])
 def test_msmtp_quoting(session, secret):
     st.save(
-        session, st.EmailSettings(host="smtp.example.com", from_address="a@example.com", username="u", password=secret)
+        session,
+        st.EmailSettings(host="smtp.example.com", from_address="a@example.com", username=secret, password=secret),
     )
-    rc = render(session)["/etc/phonix/msmtprc"].content
-    line = next(x for x in rc.splitlines() if x.startswith("password "))
-    assert line.startswith('password "') and line.endswith('"')
+    files = render(session)
+    rc = files["/etc/phonix/msmtprc"].content
+    line = next(x for x in rc.splitlines() if x.startswith("user "))
+    assert line.startswith('user "') and line.endswith('"')
+    # msmtp only accepts an inline password in a 0600 file owned by the caller
+    assert "\npassword " not in rc
+    assert 'passwordeval "cat /etc/phonix/msmtp-password"' in rc
+    pw = files["/etc/phonix/msmtp-password"]
+    assert pw.content == secret and pw.mode == 0o640 and pw.component == "email" and not pw.privileged
 
 
 def test_ssh_root_password_line(session):

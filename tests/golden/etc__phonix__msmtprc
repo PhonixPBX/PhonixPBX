@@ -13,4 +13,4 @@ tls_trust_file /etc/ssl/certs/ca-certificates.crt
 tls_certcheck on
 auth on
 user "pbx"
-password "p\"w;d"
+passwordeval "cat /etc/phonix/msmtp-password"
