@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-28 07:30+0100\n"
+"POT-Creation-Date: 2026-11-07 11:01+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: pt_BR\n"
@@ -33,6 +33,10 @@ msgstr "%(domain)s não é um nome DNS público. Informe os nomes pelos quais o 
 #, python-format
 msgid "%(ext)s (slots %(start)s–%(end)s)"
 msgstr "%(ext)s (vagas %(start)s–%(end)s)"
+
+#, python-format
+msgid "%(first)s and %(second)s both use the dial pattern %(pattern)s. Block one of them."
+msgstr "%(first)s e %(second)s usam o mesmo padrão de discagem %(pattern)s. Bloqueie um deles."
 
 #, python-format
 msgid "%(label)s (optional)"
@@ -2614,8 +2618,12 @@ msgid "Passwords do not match"
 msgstr "As senhas não coincidem"
 
 #, python-format
-msgid "Pattern %(pattern)s is already used by %(name)s"
-msgstr "O padrão %(pattern)s já é usado por %(name)s"
+msgid ""
+"Pattern %(pattern)s is also used by %(name)s, and phone %(phone)s may use both providers. Block one of them on the "
+"phone first."
+msgstr ""
+"O padrão de discagem %(pattern)s também é usado por %(name)s, e o telefone %(phone)s pode usar ambos os provedores. "
+"Bloqueie primeiro um deles no telefone."
 
 msgid "Pending changes"
 msgstr "Alterações pendentes"

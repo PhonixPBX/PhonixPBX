@@ -74,7 +74,7 @@ Nur SIP- und IAX-Telefone. Dieser Reiter listet die eingerichteten Provider auf.
 | Provider sperren | Das Telefon kann über die gewählten Provider keine ausgehenden Anrufe führen, zum Beispiel damit ein Telefon im Eingangsbereich nur intern telefoniert. | keine |
 | Ausgehende Anruferkennung pro Provider | Ein Feld pro Provider. Eine Anruferkennung wie `Vertrieb <4930123456>` (oder nur eine Nummer), die gesendet wird, wenn dieses Telefon über diesen Provider anruft. Sie hat Vorrang vor der Einstellung *Ausgehende Anruferkennung* des Providers. Leer verwendet die Einstellung des Providers. | leer |
 
-Welche Nummern über welchen Provider gehen, bestimmen die [Wählmuster]({{< relref "/accounts/providers.md#dial-patterns" >}}) des Providers.
+Welche Nummern über welchen Provider gehen, bestimmen die [Wählmuster]({{< relref "/accounts/providers.md#dial-patterns" >}}) des Providers. Teilen sich mehrere Konten ein Wählmuster, sperren Sie hier alle bis auf eines und wählen so das Konto, über das dieses Telefon hinaustelefoniert, siehe [Mehrere Konten bei einem Provider]({{< relref "/accounts/providers.md#multiple-accounts" >}}).
 
 ### Codecs & Erweitert {#advanced}
 

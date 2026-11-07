@@ -15,6 +15,7 @@ from phonix.core import validation as v
 from phonix.core.models import Phone, PhoneProviderCallerId, Provider
 from phonix.i18n import N_, _
 from phonix.services import destinations as dst
+from phonix.services import providers as pv
 from phonix.services.common import (
     NotFound,
     ServiceError,
@@ -258,6 +259,22 @@ def _apply(session: Session, phone: Phone, data: PhoneIn) -> None:
     ]
 
 
+def _check_dialpatterns(session: Session, phone: Phone) -> None:
+    conflict = pv.dialpattern_conflict(session, phone=phone)
+    if conflict is not None:
+        pattern, _phone, first, second = conflict
+        raise ServiceError(
+            fields={
+                "blocked_provider_ids": _(
+                    "%(first)s and %(second)s both use the dial pattern %(pattern)s. Block one of them.",
+                    first=first.name,
+                    second=second.name,
+                    pattern=pattern,
+                )
+            }
+        )
+
+
 def create_phone(session: Session, data: PhoneIn, user: str = "") -> Phone:
     ensure_extension_free(session, data.extension, "extension")
     if data.tech != "external" and not data.secret:
@@ -268,6 +285,7 @@ def create_phone(session: Session, data: PhoneIn, user: str = "") -> Phone:
     session.add(phone)
     _apply(session, phone, data)
     session.flush()
+    _check_dialpatterns(session, phone)
     audit(session, user, "create", "phone", phone.id, f"{phone.callerid} <{phone.extension}>")
     mark_dirty(session, "accounts")
     return phone
@@ -279,6 +297,7 @@ def update_phone(session: Session, phone_id: int, data: PhoneIn, user: str = "")
     before = to_dict(phone, with_secret=True)
     _apply(session, phone, data)
     session.flush()
+    _check_dialpatterns(session, phone)
     diff = diff_dicts(before, to_dict(phone, with_secret=True), hide={"secret", "vm_pin"})
     audit(session, user, "update", "phone", phone.id, f"{phone.callerid} <{phone.extension}>", diff)
     mark_dirty(session, "accounts")

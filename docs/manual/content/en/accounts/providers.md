@@ -113,7 +113,7 @@ Tips:
 
 - A typical setup uses an outside line prefix: `0|X.` on the main provider sends everything that starts with `0` there.
 - When several patterns (of one or several providers) match a number, the most specific pattern wins, so `0|00X.` for international calls beats `0|X.`.
-- The same pattern cannot be used by two providers; the form reports which provider already has it. Use the [failover provider](#failover) for a backup route instead.
+- Two providers may use the same pattern only if every phone blocks one of them, see [Several accounts at one provider](#multiple-accounts). Otherwise the form reports which provider already has it and which phone could use both. For a backup route, use the [failover provider](#failover) instead.
 - Always add the emergency numbers (for example `112`, `110`, `911`) if phones dial them without a prefix.
 - Patterns must not overlap with internal numbers that should stay internal. Internal numbers are checked first when a phone dials.
 - Numbers dialled with a leading `+` are matched after the `+` has been replaced, see [*Dialplan → Transfers & Parking*]({{< relref "/dialplan/transfers.md#plus" >}}).
@@ -150,3 +150,12 @@ If a call through this provider fails because the provider is unavailable or con
 ## Several accounts at one provider {#multiple-accounts}
 
 You can add several SIP accounts with the same host, for example one per number. The PBX tells incoming calls apart by the account user name, so each account's incoming routes apply to its own calls.
+
+To make each phone call out through its own account, so that the person you call sees the right number:
+
+1. Give every account the same dial patterns, for example `0|X.`.
+2. On each phone, tab *Outgoing calls*, select all other accounts under *Block providers*.
+
+Every phone has to block all but one of the providers that share a pattern, so that it is always clear which provider a call goes to. The form refuses a provider or a phone that would leave a phone with two providers for the same pattern, and names the phone or the providers. Add the blocks on the phones first, then the pattern on the next account. Phones that are disabled count as well.
+
+If all phones may use the same account and only the number shown to the called party differs, set *Outgoing caller ID per provider* on the phones instead, if your provider accepts it.

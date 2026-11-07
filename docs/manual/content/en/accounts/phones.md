@@ -74,7 +74,7 @@ SIP and IAX phones only. This tab lists the configured providers.
 | Block providers | The phone cannot place outgoing calls through the selected providers, for example to keep a lobby phone internal. | none |
 | Outgoing caller ID per provider | One field per provider. A caller ID such as `Sales <4930123456>` (or just a number) sent when this phone calls through that provider. It overrides the provider's *Outgoing caller ID* setting. Empty uses the provider setting. | empty |
 
-Which numbers go to which provider is set by the provider's [dial patterns]({{< relref "/accounts/providers.md#dial-patterns" >}}).
+Which numbers go to which provider is set by the provider's [dial patterns]({{< relref "/accounts/providers.md#dial-patterns" >}}). With several accounts that share a dial pattern, block all but one of them here to choose the account this phone calls out through, see [Several accounts at one provider]({{< relref "/accounts/providers.md#multiple-accounts" >}}).
 
 ### Codecs & advanced {#advanced}
 

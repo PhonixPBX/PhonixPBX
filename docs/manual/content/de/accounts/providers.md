@@ -113,7 +113,7 @@ Tipps:
 
 - Üblich ist eine Amtsholung: `0|X.` beim Hauptprovider schickt alles, was mit `0` beginnt, dorthin.
 - Passen mehrere Muster (eines oder mehrerer Provider) auf eine Nummer, gewinnt das spezifischste. So hat `0|00X.` für internationale Anrufe Vorrang vor `0|X.`.
-- Dasselbe Muster kann nicht von zwei Providern verwendet werden; das Formular meldet, welcher Provider es bereits hat. Für einen Ausweichweg verwenden Sie stattdessen den [Ersatzprovider](#failover).
+- Zwei Provider können dasselbe Muster nur verwenden, wenn jedes Telefon einen der beiden sperrt, siehe [Mehrere Konten bei einem Provider](#multiple-accounts). Sonst meldet das Formular, welcher Provider es bereits hat und welches Telefon beide verwenden könnte. Für einen Ausweichweg verwenden Sie stattdessen den [Ersatzprovider](#failover).
 - Tragen Sie immer die Notrufnummern ein (zum Beispiel `112`, `110`), wenn sie an den Telefonen ohne Amtsholung gewählt werden.
 - Muster dürfen nicht mit internen Nummern kollidieren, die intern bleiben sollen. Wählt ein Telefon, werden zuerst die internen Nummern geprüft.
 - Mit führendem `+` gewählte Nummern werden erst geprüft, nachdem das `+` ersetzt wurde, siehe [*Wählplan → Vermittlung & Parken*]({{< relref "/dialplan/transfers.md#plus" >}}).
@@ -150,3 +150,12 @@ Scheitert ein Anruf über diesen Provider, weil der Provider nicht erreichbar od
 ## Mehrere Konten bei einem Provider {#multiple-accounts}
 
 Sie können mehrere SIP-Konten mit demselben Host anlegen, zum Beispiel eines pro Rufnummer. Die Anlage unterscheidet eingehende Anrufe anhand des Kontobenutzernamens, sodass für jedes Konto seine eigenen eingehenden Routen gelten.
+
+Soll jedes Telefon über sein eigenes Konto hinaustelefonieren, damit der Angerufene die richtige Nummer sieht:
+
+1. Geben Sie allen Konten dieselben Wählmuster, zum Beispiel `0|X.`.
+2. Wählen Sie an jedem Telefon, Reiter *Ausgehende Anrufe*, unter *Provider sperren* alle anderen Konten aus.
+
+Jedes Telefon muss alle Provider mit einem gemeinsamen Muster bis auf einen sperren, damit immer eindeutig ist, über welchen Provider ein Anruf geht. Das Formular lehnt einen Provider oder ein Telefon ab, bei dem ein Telefon zwei Provider für dasselbe Muster hätte, und nennt das Telefon bzw. die Provider. Tragen Sie also zuerst die Sperren an den Telefonen ein, dann das Muster beim nächsten Konto. Deaktivierte Telefone zählen ebenfalls.
+
+Dürfen alle Telefone dasselbe Konto verwenden und soll sich nur die beim Angerufenen angezeigte Nummer unterscheiden, setzen Sie stattdessen an den Telefonen die *Ausgehende Anruferkennung pro Provider*, sofern Ihr Provider das annimmt.

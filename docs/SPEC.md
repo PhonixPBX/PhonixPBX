@@ -106,6 +106,7 @@ The table list below is derived from the old `config.xml` schema:
 - `phones`: id, tech (`pjsip|iax|external`), extension (unique), name, secret, callerid, codecs, language, `voicemail_enabled`, `vm_pin`, `vm_email`, `nat`, `qualify`, `dtmf_mode`, `max_contacts`, `external_number` (for tech=`external`), `ui_order`.
 - `providers`: id, tech (`pjsip|iax`), name, host, port, username, secret, `auth_user`, `from_domain`, `from_user`, `register`, codecs, `outbound_callerid`, enabled.
   - `provider_dialpatterns`: provider_id, pattern, position. The pattern keeps the legacy syntax `[add+][strip|]pattern` (e.g. `49+0|X.`), so legacy configs import 1:1.
+  - Two providers may share a pattern (several accounts at one carrier) as long as no phone can use both. The check compares the Asterisk pattern (the prefix rules removed) and runs on provider and phone saves, counting disabled phones and providers. Each phone then picks its account by blocking the others (`phone_blocked_providers`), so `phone-<ext>-out` never holds the same extension twice. AskoziaPBX forbade shared patterns outright, and the legacy importer still drops them.
   - `provider_incoming_map`: provider_id, did_pattern, target_type, target_id.
 - `callgroups` (ring groups): id, extension (optional), name, description, strategy (`ringall|linear`), ringlength, public access/name.
   - `callgroup_members`: group_id, position, and either phone_id or member_group_id (a nested call group, exactly one of the two is set).

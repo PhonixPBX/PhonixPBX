@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-28 07:30+0100\n"
+"POT-Creation-Date: 2026-11-07 11:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,6 +33,12 @@ msgstr ""
 
 #, python-format
 msgid "%(ext)s (slots %(start)s–%(end)s)"
+msgstr ""
+
+#, python-format
+msgid ""
+"%(first)s and %(second)s both use the dial pattern %(pattern)s. Block one"
+" of them."
 msgstr ""
 
 #, python-format
@@ -2621,7 +2627,9 @@ msgid "Passwords do not match"
 msgstr ""
 
 #, python-format
-msgid "Pattern %(pattern)s is already used by %(name)s"
+msgid ""
+"Pattern %(pattern)s is also used by %(name)s, and phone %(phone)s may use"
+" both providers. Block one of them on the phone first."
 msgstr ""
 
 msgid "Pending changes"
