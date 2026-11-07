@@ -19,6 +19,9 @@ All notable changes to PhonixPBX are documented in this file. The format follows
   `49+0|X.`), and Asterisk then used only one of them. Such patterns now count as the same pattern. An existing
   configuration with them keeps working, but saving one of these providers, or a phone that may use both, asks you to
   block one of them on the phone first.
+- Music on hold files uploaded or deleted under *Services → Media* while your own music on hold was already in use
+  were only picked up after Asterisk restarted: callers kept hearing the old selection, and deleted files were still
+  tried. Applying the change now reloads music on hold.
 
 ## [1.11.2] - 2026-11-07
 
