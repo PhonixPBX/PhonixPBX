@@ -39,14 +39,60 @@ def test_next_free_extension(session):
     assert phones.next_free_extension(session) == "102"
 
 
-def test_duplicate_dialpattern_rejected(session):
+def _provider(name, patterns):
+    return providers.parse_provider(
+        {"name": name, "host": "h.example", "username": name.lower(), "dialpatterns": patterns}
+    )
+
+
+def _block(session, phone_id, provider_ids):
+    phone = phones.get_phone(session, phone_id)
+    data = {**phones.to_dict(phone), "blocked_provider_ids": provider_ids}
+    return phones.update_phone(session, phone_id, phones.parse_phone(data))
+
+
+def test_duplicate_dialpattern_rejected_when_a_phone_sees_both(session):
     sample_pbx(session)
     with pytest.raises(ServiceError) as exc:
-        providers.create_provider(
-            session,
-            providers.parse_provider({"name": "Dup", "host": "h.example", "username": "u", "dialpatterns": ["0|X."]}),
-        )
-    assert "already used" in exc.value.fields["dialpatterns"]
+        providers.create_provider(session, _provider("Dup", ["0|X."]))
+    msg = exc.value.fields["dialpatterns"]
+    assert "0|X." in msg and "Example Trunk" in msg and "phone 101" in msg
+    # same Asterisk pattern with a different prefix rule is just as ambiguous
+    with pytest.raises(ServiceError):
+        providers.create_provider(session, _provider("Dup", ["0049+0X."]))
+
+
+def test_same_dialpattern_on_several_trunks(session):
+    """Issue #5: one trunk per phone at the same carrier, all with the same dial pattern."""
+    from phonix.generators import Facts, Secrets, build_snapshot, generate_all
+
+    ids = sample_pbx(session)
+    _block(session, ids["alice"], [ids["second"]])
+    _block(session, ids["bob"], [ids["second"], ids["iax_trunk"]])
+    _block(session, ids["carol"], [ids["trunk"]])
+
+    second = providers.get_provider(session, ids["second"])
+    data = providers.to_dict(second)
+    data["dialpatterns"] = ["0|X."]
+    providers.update_provider(session, second.id, providers.parse_provider(data))
+    assert providers.dialpattern_conflict(session) is None
+    conf = {f.path: f for f in generate_all(build_snapshot(session, Facts(), Secrets()))}
+    ext = conf["/etc/asterisk/extensions.conf"].content
+    alice = ext.split("[phone-101-out]")[1].split("\n[")[0]
+    carol = ext.split("[phone-103-out]")[1].split("\n[")[0]
+    assert f"Goto(prov-{ids['trunk']}-out" in alice and f"prov-{ids['second']}-out" not in alice
+    assert f"Goto(prov-{ids['second']}-out" in carol and f"prov-{ids['trunk']}-out" not in carol
+
+    # unblocking makes it ambiguous again: the phone save is refused
+    with pytest.raises(ServiceError) as exc, session.begin_nested():
+        _block(session, ids["carol"], [])
+    msg = exc.value.fields["blocked_provider_ids"]
+    assert "Example Trunk" in msg and "Second Account" in msg and "0|X." in msg
+
+    # so is a new phone that may use every provider
+    with pytest.raises(ServiceError) as exc:
+        phones.create_phone(session, phones.parse_phone({"extension": "150", "callerid": "New"}))
+    assert "blocked_provider_ids" in exc.value.fields
 
 
 def test_delete_phone_removes_routes(session):

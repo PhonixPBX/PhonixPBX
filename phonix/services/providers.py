@@ -258,17 +258,59 @@ def _check_refs(session: Session, data: ProviderIn, own_id: int | None) -> None:
             raise ServiceError(fields={"failover_provider_id": _("A provider cannot fail over to itself")})
         if session.get(Provider, data.failover_provider_id) is None:
             raise ServiceError(fields={"failover_provider_id": _("Unknown provider")})
-    # legacy pbx_dialpattern_exists(): identical patterns on two providers are ambiguous
-    for pattern in data.dialpatterns:
-        stmt = select(ProviderDialPattern).where(ProviderDialPattern.pattern == pattern)
-        for other in session.scalars(stmt):
-            if other.provider_id != own_id:
-                name = session.get(Provider, other.provider_id).name  # type: ignore[union-attr]
-                raise ServiceError(
-                    fields={
-                        "dialpatterns": _("Pattern %(pattern)s is already used by %(name)s", pattern=pattern, name=name)
-                    }
+
+
+def dialpattern_conflict(
+    session: Session, provider: Provider | None = None, phone: Phone | None = None
+) -> tuple[str, Phone, Provider, Provider] | None:
+    """A phone that could reach two providers through the same dial pattern, as (pattern, phone, a, b).
+
+    Two providers may share a pattern (several trunks at the same carrier) as long as every phone
+    blocks at least one of them: ``phone-<ext>-out`` only holds the patterns of the providers the
+    phone may use. Disabled phones and providers count too, so enabling one never makes the dialplan
+    ambiguous. ``provider`` / ``phone`` limit the search to conflicts involving that object. Call it
+    after the change was applied to the session.
+    """
+    owners: dict[str, list[tuple[Provider, str]]] = {}
+    for prov in session.scalars(select(Provider).order_by(Provider.name, Provider.id)):
+        for dp in prov.dialpatterns:
+            entries = owners.setdefault(v.parse_dialpattern(dp.pattern)[0], [])
+            if all(p is not prov for p, _raw in entries):
+                entries.append((prov, dp.pattern))
+    shared = [e for e in owners.values() if len(e) > 1 and (provider is None or any(p is provider for p, _r in e))]
+    if not shared:
+        return None
+    phones = [phone] if phone is not None else session.scalars(select(Phone).order_by(Phone.extension))
+    for ph in phones:
+        if ph.tech == "external":
+            continue
+        blocked = {p.id for p in ph.blocked_providers}
+        for entries in shared:
+            usable = [(p, raw) for p, raw in entries if p.id not in blocked]
+            if len(usable) < 2 or (provider is not None and all(p is not provider for p, _r in usable)):
+                continue
+            if provider is not None:  # report the edited provider first
+                usable.sort(key=lambda e: e[0] is not provider)
+            (first, raw), (second, _raw) = usable[0], usable[1]
+            return raw, ph, first, second
+    return None
+
+
+def _check_dialpatterns(session: Session, provider: Provider) -> None:
+    conflict = dialpattern_conflict(session, provider=provider)
+    if conflict is not None:
+        pattern, phone, _own, other = conflict
+        raise ServiceError(
+            fields={
+                "dialpatterns": _(
+                    "Pattern %(pattern)s is also used by %(name)s, and phone %(phone)s may use both providers. "
+                    "Block one of them on the phone first.",
+                    pattern=pattern,
+                    name=other.name,
+                    phone=phone.extension,
                 )
+            }
+        )
 
 
 def _apply(provider: Provider, data: ProviderIn) -> None:
@@ -314,6 +356,7 @@ def create_provider(session: Session, data: ProviderIn, user: str = "") -> Provi
     _apply(provider, data)
     session.add(provider)
     session.flush()
+    _check_dialpatterns(session, provider)
     audit(session, user, "create", "provider", provider.id, provider.name)
     mark_dirty(session, "accounts", "dialplan")
     return provider
@@ -325,6 +368,7 @@ def update_provider(session: Session, provider_id: int, data: ProviderIn, user: 
     before = to_dict(provider, with_secret=True)
     _apply(provider, data)
     session.flush()
+    _check_dialpatterns(session, provider)
     diff = diff_dicts(before, to_dict(provider, with_secret=True), hide={"secret"})
     audit(session, user, "update", "provider", provider.id, provider.name, diff)
     mark_dirty(session, "accounts", "dialplan")

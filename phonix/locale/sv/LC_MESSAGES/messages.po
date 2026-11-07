@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-28 07:30+0100\n"
+"POT-Creation-Date: 2026-11-07 11:01+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: sv\n"
@@ -33,6 +33,10 @@ msgstr "%(domain)s är inte ett publikt DNS-namn. Ange de namn som växeln nås 
 #, python-format
 msgid "%(ext)s (slots %(start)s–%(end)s)"
 msgstr "%(ext)s (platser %(start)s–%(end)s)"
+
+#, python-format
+msgid "%(first)s and %(second)s both use the dial pattern %(pattern)s. Block one of them."
+msgstr "%(first)s och %(second)s använder båda nummermönstret %(pattern)s. Spärra en av dem."
 
 #, python-format
 msgid "%(label)s (optional)"
@@ -2611,8 +2615,12 @@ msgid "Passwords do not match"
 msgstr "Lösenorden stämmer inte överens"
 
 #, python-format
-msgid "Pattern %(pattern)s is already used by %(name)s"
-msgstr "Mönstret %(pattern)s används redan av %(name)s"
+msgid ""
+"Pattern %(pattern)s is also used by %(name)s, and phone %(phone)s may use both providers. Block one of them on the "
+"phone first."
+msgstr ""
+"Nummermönstret %(pattern)s används även av %(name)s, och telefonen %(phone)s får använda båda leverantörerna. Spärra "
+"först en av dem på telefonen."
 
 msgid "Pending changes"
 msgstr "Väntande ändringar"

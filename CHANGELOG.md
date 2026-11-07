@@ -4,6 +4,22 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- Several accounts at the same provider can use the same dial pattern, so each phone can call out through its own
+  account: give the accounts the same pattern and, on each phone, select the other accounts under *Accounts → Phones →
+  Outgoing calls → Block providers*. A provider or phone is refused only when a phone could use two providers with the
+  same pattern; the message names the phone or the providers.
+
+### Fixed
+
+- Two providers could have dial patterns that differ only in the prefix to add or strip (for example `0|X.` and
+  `49+0|X.`), and Asterisk then used only one of them. Such patterns now count as the same pattern. An existing
+  configuration with them keeps working, but saving one of these providers, or a phone that may use both, asks you to
+  block one of them on the phone first.
+
 ## [1.11.2] - 2026-11-07
 
 ### Security

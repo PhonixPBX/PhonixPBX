@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PhonixPBX VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-28 07:30+0100\n"
+"POT-Creation-Date: 2026-11-07 11:01+0100\n"
 "PO-Revision-Date: 2026-10-12 21:37+0200\n"
 "Last-Translator: PhonixPBX contributors\n"
 "Language: ru\n"
@@ -33,6 +33,10 @@ msgstr "%(domain)s не является публичным DNS-именем. В
 #, python-format
 msgid "%(ext)s (slots %(start)s–%(end)s)"
 msgstr "%(ext)s (места %(start)s–%(end)s)"
+
+#, python-format
+msgid "%(first)s and %(second)s both use the dial pattern %(pattern)s. Block one of them."
+msgstr "%(first)s и %(second)s используют один и тот же шаблон набора %(pattern)s. Заблокируйте один из них."
 
 #, python-format
 msgid "%(label)s (optional)"
@@ -2629,8 +2633,12 @@ msgid "Passwords do not match"
 msgstr "Пароли не совпадают"
 
 #, python-format
-msgid "Pattern %(pattern)s is already used by %(name)s"
-msgstr "Шаблон %(pattern)s уже используется провайдером %(name)s"
+msgid ""
+"Pattern %(pattern)s is also used by %(name)s, and phone %(phone)s may use both providers. Block one of them on the "
+"phone first."
+msgstr ""
+"Шаблон набора %(pattern)s также используется провайдером %(name)s, а телефон %(phone)s может использовать оба "
+"провайдера. Сначала заблокируйте один из них на телефоне."
 
 msgid "Pending changes"
 msgstr "Ожидающие изменения"

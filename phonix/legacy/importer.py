@@ -392,16 +392,21 @@ class LegacyImporter:
                     self.provider_nodes.append((node, data, obj.id))
 
     def _free_patterns(self, data: dict[str, Any], own_id: int | None, name: str) -> None:
-        """Drop dial patterns another provider already uses (legacy pbx_dialpattern_exists)."""
+        """Drop dial patterns another provider already uses (legacy pbx_dialpattern_exists).
+
+        AskoziaPBX phones could not avoid an ambiguous pattern, so it is dropped rather than
+        left for the dial pattern conflict check to reject the provider or its phones.
+        """
         kept = []
+        used = [dp for dp in self.session.scalars(select(ProviderDialPattern)) if dp.provider_id != own_id]
         for pattern in data.get("dialpatterns", []):
             try:
                 pattern = v.dialpattern(pattern)
             except ValueError:
                 kept.append(pattern)  # reported by the schema validation
                 continue
-            stmt = select(ProviderDialPattern).where(ProviderDialPattern.pattern == pattern)
-            other = next((p for p in self.session.scalars(stmt) if p.provider_id != own_id), None)
+            ext = v.parse_dialpattern(pattern)[0]
+            other = next((dp for dp in used if v.parse_dialpattern(dp.pattern)[0] == ext), None)
             if other is not None:
                 owner = self.session.get(Provider, other.provider_id)
                 self.report.warning(
