@@ -6,6 +6,12 @@ All notable changes to PhonixPBX are documented in this file. The format follows
 
 ## [Unreleased]
 
+### Security
+
+- The container image `ghcr.io/phonixpbx/phonix` and the disk images are based on Alpine Linux 3.24.4, which fixes
+  a crash in apk-tools on malformed package data. The OpenSSH password authentication bypass fixed in the same Alpine
+  release does not affect PhonixPBX: it uses Dropbear for SSH, and the container image runs no SSH server.
+
 ## [1.11.1] - 2026-10-28
 
 ### Added
