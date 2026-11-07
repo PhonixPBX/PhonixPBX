@@ -18,7 +18,7 @@ LOCAL_REPO=$OUT/repo
 # build runs on the Alpine release. build-apk.sh puts it into the local
 # repository, where it wins over the release's lego 4. Pinned for reproducible
 # builds: edge drops old versions, bump it (and the Containerfiles) then.
-LEGO_VERSION=${LEGO_VERSION:-5.5.2-r0}
+LEGO_VERSION=${LEGO_VERSION:-5.5.2-r1}
 LEGO_REPO=${LEGO_REPO:-$ALPINE_MIRROR/edge/community}
 SOURCE_DATE_EPOCH=${SOURCE_DATE_EPOCH:-$(date +%s)}
 export SOURCE_DATE_EPOCH

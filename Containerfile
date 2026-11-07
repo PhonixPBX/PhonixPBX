@@ -58,7 +58,7 @@ RUN apk add --no-cache \
 
 # lego >= 5.2 is only in Alpine edge; same pinned version as the appliance
 # images (LEGO_VERSION in image/lib/common.sh)
-ARG LEGO_VERSION=5.5.2-r0
+ARG LEGO_VERSION=5.5.2-r1
 RUN apk add --no-cache --repository https://dl-cdn.alpinelinux.org/alpine/edge/community "lego=$LEGO_VERSION"
 
 COPY --from=build /staging/ /
