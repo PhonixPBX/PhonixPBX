@@ -34,3 +34,21 @@ def test_upload_sets_custom_moh(session, monkeypatch):
     assert st.load(session, st.MediaSettings).custom_moh
     media.delete_media(session, item.id)
     assert not st.load(session, st.MediaSettings).custom_moh
+
+
+def test_moh_upload_and_delete_reload_moh(session, monkeypatch):
+    """Asterisk scans the MOH directory only on (re)load: every upload or delete must reload it."""
+    from phonix.services import apply as ap
+
+    monkeypatch.setattr(media.shutil, "which", lambda _name: None)
+    monkeypatch.setattr(ap.ami, "is_running", lambda: False)
+    ap.apply(session)
+    media.add_media(session, "moh", "first.wav", _wav())
+    assert ap.apply(session).components == ["asterisk:moh"]
+    second = media.add_media(session, "moh", "second.wav", _wav())
+    assert ap.apply(session).components == ["asterisk:moh"]
+    conf = (ap.config.get().path("/etc/asterisk/musiconhold.conf")).read_text()
+    assert "; first.wav\n; second.wav\n" in conf
+    media.delete_media(session, second.id)
+    assert ap.apply(session).components == ["asterisk:moh"]
+    assert "second.wav" not in ap.config.get().path("/etc/asterisk/musiconhold.conf").read_text()

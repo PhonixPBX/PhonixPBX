@@ -145,10 +145,23 @@ def manager_conf(snap: Snapshot) -> str:
     )
 
 
+def moh_files(snap: Snapshot) -> list[str]:
+    """Uploaded music on hold files, empty when the stock music plays."""
+    if not snap.media.custom_moh:
+        return []
+    return sorted(m.path.rsplit("/", 1)[-1] for m in snap.media_files if m.kind == "moh")
+
+
 def moh_dir(snap: Snapshot) -> str:
-    if snap.media.custom_moh and any(m.kind == "moh" for m in snap.media_files):
+    if moh_files(snap):
         return f"{snap.facts.data_dir}/media/moh"
     return "/usr/share/asterisk/moh"
+
+
+def musiconhold_conf(snap: Snapshot) -> str:
+    # Asterisk reads the file list of a directory class only on (re)load: listing
+    # the files makes an upload or delete change this file, so apply reloads MOH
+    return render("asterisk/musiconhold.conf.j2", moh_dir=moh_dir(snap), files=moh_files(snap))
 
 
 def generate(snap: Snapshot) -> list[GeneratedFile]:
@@ -178,7 +191,7 @@ def generate(snap: Snapshot) -> list[GeneratedFile]:
         # read by /usr/libexec/phonix/notify (user asterisk) at send time, no reload needed
         _file("phonix-notify.json", notify_json(snap), "asterisk:voicemail"),
         _file("confbridge.conf", render("asterisk/confbridge.conf.j2"), "asterisk:confbridge"),
-        _file("musiconhold.conf", render("asterisk/musiconhold.conf.j2", moh_dir=moh_dir(snap)), "asterisk:moh"),
+        _file("musiconhold.conf", musiconhold_conf(snap), "asterisk:moh"),
         _file("features.conf", render("asterisk/features.conf.j2", f=snap.features), "asterisk:features"),
         _file("res_parking.conf", render("asterisk/res_parking.conf.j2", f=snap.features), "asterisk:parking"),
         _file("rtp.conf", render("asterisk/rtp.conf.j2", rtp=snap.rtp), "asterisk:rtp"),

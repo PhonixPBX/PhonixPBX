@@ -7,3 +7,6 @@ cachertclasses=yes
 mode=files
 directory={{ moh_dir }}
 sort=random
+{% for f in files %}
+; {{ f }}
+{% endfor %}
